@@ -4,4 +4,5 @@
     <string name="select_region">Select Region</string>
     <string name="BattleTag">hint</string>
     <string name="login">Login</string>
+    <string name="battlenetlogo">battlenetLogo</string>
 </resources>
