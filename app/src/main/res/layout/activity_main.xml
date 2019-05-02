@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background"
+    android:background="#242C37"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="357dp"
+        android:layout_height="417dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:maxLines="1"
+            android:background="#0F1014"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeColor="#FFFFFF">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/battleTag"
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:hint="@string/battle_tag"
+                android:lineSpacingExtra="8sp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+            android:id="@+id/android_material_design_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:hint="@string/select_region"
+            android:layout_marginTop="100dp"
+            android:paddingLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.535"
+            app:layout_constraintStart_toStartOf="parent"
+            app:met_textColorHint="#FFFFFF" />
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:layout_marginTop="60dp"
+            android:background="#018ECD"
+            android:text="@string/login"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@id/android_material_design_spinner"
+            tools:layout_editor_absoluteY="436dp" />
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>
