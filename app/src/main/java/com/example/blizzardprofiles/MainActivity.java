@@ -1,6 +1,10 @@
 package com.example.blizzardprofiles;
 
+
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -8,13 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.dementh.lib.battlenet_oauth2.BnConstants;
+import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-
-
-    String selectedItem = "";
+    private SharedPreferences sharedPreferences;
+    public static String selectedItem = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
+            /**
+             * Set drop down menu color and text size.
+             *
+             * @param position
+             * @param convertView
+             * @param parent
+             * @return
+             */
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent){
                 View view = super.getDropDownView(position, convertView, parent);
@@ -68,7 +88,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button login = findViewById(R.id.buttonLogin);
 
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(selectedItem.equals("Select Region")){
+                    Toast.makeText(getApplicationContext(),"Please select a region", Toast.LENGTH_SHORT).show();
+                }else{
+                    CreateToken();
+                    setContentView(R.layout.activity_games);
+                }
+            }
+        });
+    }
+
+    private void CreateToken() {
+        final BnOAuth2Params bnOAuth2Params = new BnOAuth2Params(OAuthTokens.WARCRAFT.getClientKey(), OAuthTokens.WARCRAFT.getClientKey(),
+                selectedItem.toLowerCase(), "https://localhost",
+                "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
+        startOauthFlow(bnOAuth2Params);
+    }
+
+    private void startOauthFlow(final BnOAuth2Params bnOAuth2Params) {
+        final Intent intent = new Intent(this, BnOAuthAccessTokenActivity.class);
+        // Send BnOAuth2Params
+        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
+        // Send redirect Activity
+        intent.putExtra(BnConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity.class);
+        startActivity(intent);
+    }
+
+    private void clearCredentials(final BnOAuth2Params bnOAuth2Params)  {
+        try {
+            new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
