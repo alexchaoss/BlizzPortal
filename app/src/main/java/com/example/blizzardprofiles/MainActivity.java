@@ -24,8 +24,6 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     public static String selectedItem = "";
     public static String battleTag = "";
-    private ArrayList<String> servers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void CreateToken() {
-        getRandomServer();
-        final BnOAuth2Params bnOAuth2Params = new BnOAuth2Params(servers.get(0), servers.get(1),
+        final BnOAuth2Params bnOAuth2Params = new BnOAuth2Params(OAuthTokens.WARCRAFT.getClientKey(), OAuthTokens.WARCRAFT.getSecretKey(),
                 selectedItem.toLowerCase(), CALLBACK_URL,
                 "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
         startOauthFlow(bnOAuth2Params);
@@ -139,14 +135,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void getRandomServer(){
-        Random random = new Random();
-        int serverNumber = random.nextInt(4);
-        Servers getServers = Servers.fromOrdinal(serverNumber);
-        servers.add(getServers.getClientKey());
-        servers.add(getServers.getSecretKey());
     }
 
 

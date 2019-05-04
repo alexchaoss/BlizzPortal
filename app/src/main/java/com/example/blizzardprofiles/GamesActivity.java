@@ -24,7 +24,6 @@ public class GamesActivity extends AppCompatActivity {
 
         btag = findViewById(R.id.btag_header);
         btag.setText(MainActivity.battleTag);
-        btag.setFocusable(false);
 
         bnOAuth2Params = this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
     }
