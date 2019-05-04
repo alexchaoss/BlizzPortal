@@ -122,13 +122,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void clearCredentials(final BnOAuth2Params bnOAuth2Params)  {
-        try {
-            new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void getRandomServer(){
         Random random = new Random();

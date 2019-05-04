@@ -12,7 +12,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="120dp"
         android:layout_marginBottom="675dp"
         android:background="?attr/colorPrimary"
         android:backgroundTint="@color/colorHeader"
@@ -26,36 +26,119 @@
         app:layout_constraintVertical_bias="0.0"
         tools:targetApi="lollipop" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="78dp"
-        android:layout_marginBottom="78dp"
-        android:contentDescription="@string/bnetlogo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:srcCompat="@drawable/bnet_logo" />
-
     <EditText
         android:id="@+id/btag_header"
         android:layout_width="251dp"
         android:layout_height="46dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:autofillHints=""
+        android:background="@null"
         android:gravity="center"
+        android:hint="@string/btag"
+        android:inputType="textNoSuggestions"
         android:text="@string/btag"
         android:textColor="#FFFFFF"
         android:textSize="23sp"
-        android:background="@null"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
-        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar"
-        android:autofillHints=""
-        android:inputType="" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:targetApi="o" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/backgroundColor"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btag_header"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/btag_header"
+        app:layout_constraintVertical_bias="0.642">
+
+        <ImageButton
+            android:id="@+id/wowButton"
+            android:layout_width="35dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="@drawable/wow_icon"
+            android:contentDescription="@string/wow_button" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_height="match_parent"
+            android:background="@color/backgroundColor" />
+
+        <ImageButton
+            android:id="@+id/diablo3Button"
+            android:layout_width="35dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="@drawable/diablo3_icon"
+            android:contentDescription="@string/diablo_button" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:background="@color/backgroundColor" />
+
+        <ImageButton
+            android:id="@+id/starcraft2Button"
+            android:layout_width="35dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="@drawable/sc2_icon"
+            android:contentDescription="@string/starcraft_button" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:background="@color/backgroundColor" />
+
+        <ImageButton
+            android:id="@+id/overwatchButton"
+            android:layout_width="35dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+
+            android:background="@drawable/overwatch_icon"
+            android:contentDescription="@string/overwatch_button" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="414dp"
+        android:layout_height="550dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"></android.support.v4.view.ViewPager>
 
 </android.support.constraint.ConstraintLayout>
