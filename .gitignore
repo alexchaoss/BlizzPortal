@@ -13,3 +13,14 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+local.properties
+BlizzardProfiles.iml
+app/src/main/java/com/example/blizzardprofiles/Servers.java
+app/app.iml
+.idea/workspace.xml
+.idea/runConfigurations.xml
+.idea/modules.xml
+.idea/caches/gradle_models.ser
+.idea/caches/build_file_checksums.ser
+.idea/assetWizardSettings.xml
+.idea/modules.xml
