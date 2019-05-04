@@ -27,6 +27,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView">
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/inputstyle"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/battleTag"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:gravity="center"
+                android:hint="@string/battle_tag"
+                android:lineSpacingExtra="8sp"
+                android:maxLength="17"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textSize="23sp" />
+        </android.support.design.widget.TextInputLayout>
+
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
@@ -60,7 +82,7 @@
         android:layout_height="186dp"
         android:layout_marginStart="136dp"
         android:layout_marginLeft="136dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="130dp"
         android:layout_marginEnd="137dp"
         android:layout_marginRight="137dp"
         android:layout_marginBottom="62dp"
@@ -71,6 +93,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/bnet_logo" />
+
+
 
 
 </android.support.constraint.ConstraintLayout>

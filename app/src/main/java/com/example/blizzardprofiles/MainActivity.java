@@ -4,6 +4,7 @@ package com.example.blizzardprofiles;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,8 +26,11 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final String CALLBACK_URL = "https://localhost";
     private SharedPreferences sharedPreferences;
     public static String selectedItem = "";
+    public static String battleTag = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Spinner regions = findViewById(R.id.spinner);
         String [] REGION_LIST={"Select Region", "CN", "US", "EU", "KR", "TW"};
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
             @Override
@@ -93,7 +99,11 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(selectedItem.equals("Select Region")){
+                TextInputEditText btag = findViewById(R.id.battleTag);
+                battleTag = btag.getText().toString();
+                if(!battleTag.matches(Constants.BATTLE_TAG_REGEX)){
+                    Toast.makeText(getApplicationContext(),"Invalid Battle Tag", Toast.LENGTH_SHORT).show();
+                }else if(selectedItem.equals("Select Region")){
                     Toast.makeText(getApplicationContext(),"Please select a region", Toast.LENGTH_SHORT).show();
                 }else{
                     CreateToken();
@@ -104,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void CreateToken() {
-        final BnOAuth2Params bnOAuth2Params = new BnOAuth2Params(OAuthTokens.WARCRAFT.getClientKey(), OAuthTokens.WARCRAFT.getClientKey(),
-                selectedItem.toLowerCase(), "https://localhost",
+        final BnOAuth2Params bnOAuth2Params = new BnOAuth2Params(OAuthTokens.WARCRAFT.getClientKey(), OAuthTokens.WARCRAFT.getSecretKey(),
+                selectedItem.toLowerCase(), CALLBACK_URL,
                 "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
         startOauthFlow(bnOAuth2Params);
     }

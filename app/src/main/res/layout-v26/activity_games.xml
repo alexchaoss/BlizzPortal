@@ -44,18 +44,18 @@
         android:layout_width="251dp"
         android:layout_height="46dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:autofillHints=""
+        android:background="@null"
         android:gravity="center"
+        android:inputType=""
         android:text="@string/btag"
+        android:hint="@string/btag"
         android:textColor="#FFFFFF"
         android:textSize="23sp"
-        android:background="@null"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
-        android:autofillHints=""
-        android:inputType="" />
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
 </android.support.constraint.ConstraintLayout>
