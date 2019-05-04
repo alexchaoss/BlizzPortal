@@ -12,3 +12,10 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+app/src/main/java/com/example/blizzardprofiles/OAuthTokens.java
+.idea/workspace.xml
+.idea/assetWizardSettings.xml
+.idea/workspace.xml
+app/src/main/java/com/example/blizzardprofiles/Servers.java
+app/src/main/java/com/example/blizzardprofiles/Servers.java
+.idea/workspace.xml
