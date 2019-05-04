@@ -11,7 +11,7 @@ import retrofit2.Retrofit;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public class ServiceConnection {
+public class ConnectionService {
 
     private static final String BASE_URL = "https://zone.api.battle.net/";
 

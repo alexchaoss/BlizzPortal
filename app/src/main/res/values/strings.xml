@@ -26,4 +26,8 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="btag">btag</string>
+    <string name="wow_button">wow button</string>
+    <string name="starcraft_button">starcraft button</string>
+    <string name="overwatch_button">overwatch button</string>
+    <string name="diablo_button">diablo button</string>
 </resources>
