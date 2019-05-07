@@ -2,15 +2,17 @@ package com.example.blizzardprofiles;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dementh.lib.battlenet_oauth2.BnConstants;
@@ -43,25 +45,88 @@ public class WoWFragment  extends Fragment {
 
         try {
             wowCharacters = (JSONObject) JSONSerializer.toJSON(ConnectionService.getStringJSONFromRequest(WOW_CHAR_URL, bnOAuth2Helper.getAccessToken()));
+            Log.i("json", wowCharacters.toString());
         }catch (IOException e){
             Log.e("Error", e.toString());
         }
         linearLayout = view.findViewById(R.id.linear_wow_characters);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         WOWCharacters characterList = new WOWCharacters(wowCharacters);
-        ArrayList<String> characters = characterList.getCharacterNamesList();
-        Log.i("character number", String.valueOf(characters.size()));
-        ArrayList<TextView> textViews = new ArrayList<>();
-        for(int i = 0; i<characters.size();i++) {
-            TextView textView = new TextView(view.getContext());
-            textView.setText(characters.get(i));
-            textView.setTextColor(Color.WHITE);
-            textView.setTextSize(25);
-            textViews.add(textView);
+        ArrayList<String> characterNames = characterList.getCharacterNamesList();
+        ArrayList<String> realms = characterList.getRealmsList();
+        ArrayList<String> levels = characterList.getLevelList();
+        ArrayList<Drawable> thumbnails =  new WoWThumbnail(characterList, getContext()).getImageFromURL();
+        //ArrayList<String> className = characterList.getClassList();
+
+        ArrayList<LinearLayout> linearLayoutCharacterList = new ArrayList<>();
+
+        LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0,0,0,75);
+
+        LinearLayout.LayoutParams layoutParamsInfo = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParamsInfo.setMargins(25,0,0,0);
+
+
+        for(int i = 0; i<characterNames.size();i++) {
+
+            LinearLayout linearLayoutCharacters = new LinearLayout(view.getContext());
+            LinearLayout linearLayoutText = new LinearLayout(view.getContext());
+            LinearLayout linearLayoutLevelClass = new LinearLayout(view.getContext());
+            linearLayoutCharacters.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayoutText.setOrientation(LinearLayout.VERTICAL);
+            linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayoutText.setDividerPadding(10);
+
+
+            //Add character thumbnail to view
+            ImageView imageView = new ImageView(view.getContext());
+            imageView.setImageDrawable(thumbnails.get(i));
+            imageView.setLayoutParams(layoutParamsImage);
+
+            //Add character name to view
+            TextView textViewName = new TextView(view.getContext());
+            textViewName.setText(characterNames.get(i));
+            textViewName.setTextColor(Color.WHITE);
+            textViewName.setTextSize(17);
+
+            //Add level to view
+            TextView textViewLevel = new TextView(view.getContext());
+            textViewLevel.setText(levels.get(i));
+            textViewLevel.setTextColor(Color.WHITE);
+            textViewLevel.setTextSize(15);
+
+            //Add class to view
+           // TextView textViewClass = new TextView(view.getContext());
+           // textViewClass.setText(className.get(i));
+           // textViewLevel.setTextColor(Color.WHITE);
+           // textViewLevel.setTextSize(15);
+
+
+            //Add realm to view
+            TextView textViewRealm = new TextView(view.getContext());
+            textViewRealm.setText(realms.get(i));
+            textViewRealm.setTextColor(Color.WHITE);
+            textViewRealm.setTextSize(15);
+
+            linearLayoutLevelClass.addView(textViewLevel, layoutParamsInfo);
+           // linearLayoutLevelClass.addView(textViewClass, layoutParamsInfo);
+
+            linearLayoutText.addView(textViewName, layoutParamsInfo);
+            linearLayoutText.addView(linearLayoutLevelClass, layoutParamsInfo);
+            linearLayoutText.addView(textViewRealm, layoutParamsInfo);
+
+
+            //Add views to layout
+            linearLayoutCharacters.addView(imageView);
+            linearLayoutCharacters.addView(linearLayoutText);
+            linearLayoutCharacterList.add(linearLayoutCharacters);
         }
-        for(TextView textView: textViews) {
-            linearLayout.addView(textView);
+
+        for(LinearLayout linear: linearLayoutCharacterList) {
+            linearLayout.addView(linear);
+            linear.setLayoutParams(layoutParams);
         }
 
         return view;
