@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,6 +16,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,22 +26,25 @@ import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
-import java.io.IOException;
-
 public class MainActivity extends AppCompatActivity {
 
     private final String CALLBACK_URL = "https://localhost";
     private SharedPreferences sharedPreferences;
-    public static String selectedItem = "";
-    public static String battleTag = "";
+    public static String selectedRegion = "";
     private ArrayList<String> servers = new ArrayList<>();
+    private Button login;
+    private Button clearCredentials;
+    BnOAuth2Params bnOAuth2Params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Spinner regions = findViewById(R.id.spinner);
+        login = findViewById(R.id.buttonLogin);
+        clearCredentials = findViewById(R.id.clear_credentials);
         String [] REGION_LIST={"Select Region", "CN", "US", "EU", "KR", "TW"};
+        getRandomServer();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -75,11 +79,12 @@ public class MainActivity extends AppCompatActivity {
          regions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedItem = (String) parent.getItemAtPosition(position);
+                selectedRegion = (String) parent.getItemAtPosition(position);
                 ((TextView) view).setTextColor(Color.WHITE);
                 ((TextView) view).setTextSize(20);
                 ((TextView) view).setGravity(Gravity.CENTER);
-
+                bnOAuth2Params = new BnOAuth2Params(servers.get(0), servers.get(1), selectedRegion.toLowerCase(),
+                        CALLBACK_URL, "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
             }
 
             @Override
@@ -89,34 +94,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button login = findViewById(R.id.buttonLogin);
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextInputEditText btag = findViewById(R.id.battleTag);
-                battleTag = btag.getText().toString();
-                if(!battleTag.matches(Constants.BATTLE_TAG_REGEX)){
-                    Toast.makeText(getApplicationContext(),"Invalid Battle Tag", Toast.LENGTH_SHORT).show();
-                }else if(selectedItem.equals("Select Region")){
+                if(selectedRegion.equals("Select Region")){
                     Toast.makeText(getApplicationContext(),"Please select a region", Toast.LENGTH_SHORT).show();
                 }else{
-                    CreateToken();
+                    CreateToken(bnOAuth2Params);
                     setContentView(R.layout.activity_games);
+                }
+            }
+        });
+
+
+
+        clearCredentials.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedRegion.equals("Select Region")){
+                    Toast.makeText(getApplicationContext(),"Please select a region", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"Login information cleared", Toast.LENGTH_SHORT).show();
+                    clearCredentials(bnOAuth2Params);
                 }
             }
         });
     }
 
-    private void CreateToken() {
-        getRandomServer();
-        final BnOAuth2Params bnOAuth2Params = new BnOAuth2Params(servers.get(0), servers.get(1), selectedItem.toLowerCase(),
-                CALLBACK_URL, "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
+    private void CreateToken(BnOAuth2Params bnOAuth2Params) {
         startOauthFlow(bnOAuth2Params);
     }
 
     private void startOauthFlow(final BnOAuth2Params bnOAuth2Params) {
         final Intent intent = new Intent(this, BnOAuthAccessTokenActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         intent.putExtra(BnConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity.class);
         startActivity(intent);
@@ -129,6 +140,14 @@ public class MainActivity extends AppCompatActivity {
         Servers getServers = Servers.fromOrdinal(serverNumber);
         servers.add(getServers.getClientKey());
         servers.add(getServers.getSecretKey());
+    }
+
+    private void clearCredentials(final BnOAuth2Params bnOAuth2Params)  {
+        try {
+            new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

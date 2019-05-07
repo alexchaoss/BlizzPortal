@@ -4,10 +4,10 @@
     <string name="select_region">Select Region</string>
     <string name="login">Login</string>
     <string name="battlenetlogo">battlenetLogo</string>
-    <string name="d3_icon">TODO</string>
-    <string name="wow_icon">TODO</string>
-    <string name="sc2_icon">TODO</string>
-    <string name="ow_icon">TODO</string>
+    <string name="d3_icon">d3_icon</string>
+    <string name="wow_icon">wow_icon</string>
+    <string name="sc2_icon">sc2_icon</string>
+    <string name="ow_icon">ow_icon</string>
     <string name="bnetlogo">bnetLogo</string>
     <string name="blizzard_profiles">Blizzard Profiles</string>
     <string name="title">TextView</string>
@@ -30,4 +30,6 @@
     <string name="starcraft_button">starcraft button</string>
     <string name="overwatch_button">overwatch button</string>
     <string name="diablo_button">diablo button</string>
+    <string name="clear_credentials">Clear Credentials</string>
+    <string name="wow_characters">Characters</string>
 </resources>
