@@ -2,10 +2,11 @@ package com.example.blizzardprofiles;
 
 import android.util.Log;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class WOWCharacters {
 
@@ -26,20 +27,22 @@ public class WOWCharacters {
     }
 
     private JSONArray getCharacterInfo() {
-        characterInfo = (JSONArray) characterList.get("characters");
-        for(int i = 0; i< characterInfo.size(); i++){
-            JSONObject characters = (JSONObject) this.characterInfo.get(i);
+        try{
+            characterInfo = (JSONArray) characterList.get("characters");
+            for(int i = 0; i< characterInfo.length(); i++) {
+                JSONObject characters = (JSONObject) this.characterInfo.get(i);
 
-            try{
+
                 characterNamesList.add(characters.get("name").toString());
                 realmList.add(characters.get("realm").toString());
                 levelList.add(characters.get("level").toString());
                 urlThumbnail.add(characters.get("thumbnail").toString());
-               // classListNumber.add(characters.get("class").toString());
+                classListNumber.add(characters.get("class").toString());
+            }
             }catch (Exception e){
                 Log.e("Error", e.toString());
             }
-        }
+
         return characterInfo;
     }
 
@@ -64,7 +67,6 @@ public class WOWCharacters {
         for(String number: classListNumber){
             classList.add(WoWClassEnum.fromOrdinal(Integer.parseInt(number)-1).toString());
         }
-        Log.i("Classes", classList.toString());
         return classList;
     }
 }
