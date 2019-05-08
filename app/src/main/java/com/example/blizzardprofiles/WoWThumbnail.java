@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.zip.GZIPInputStream;
 
 public class WoWThumbnail {
 
@@ -15,6 +16,7 @@ public class WoWThumbnail {
     private Context context;
     private ArrayList<Drawable> thumbnails = new ArrayList<>();
     private final String THUMNAIL_URL = "http://render-us.worldofwarcraft.com/character/";
+    private final String ENCODING = "?accept-encoding:gzip";
 
     public WoWThumbnail(WOWCharacters wowCharacters, Context context){
         this.characters = wowCharacters;
@@ -22,10 +24,11 @@ public class WoWThumbnail {
     }
 
     public ArrayList<Drawable> getImageFromURL(){
+
         ArrayList<String> urls = characters.getUrlThumbnail();
         for(int i = 0; i<urls.size();i++){
             try{
-                InputStream is = (InputStream) new URL(THUMNAIL_URL + urls.get(i)).getContent();
+                InputStream is = (InputStream) new URL(THUMNAIL_URL + urls.get(i) + ENCODING).getContent();
                 Drawable drawable = Drawable.createFromStream(is, "src");
                 thumbnails.add(drawable);
             }catch (Exception e){

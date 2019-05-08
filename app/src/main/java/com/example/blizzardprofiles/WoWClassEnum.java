@@ -28,4 +28,9 @@ public enum WoWClassEnum {
     public static WoWClassEnum fromOrdinal(int ordinal) {
         return lookup.get(ordinal);
     }
+
+    @Override
+    public String toString() {
+        return className;
+    }
 }
