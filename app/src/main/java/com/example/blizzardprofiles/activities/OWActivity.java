@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles;
+package com.example.blizzardprofiles.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,8 +13,10 @@ import android.widget.TextView;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.example.blizzardprofiles.R;
+import com.example.blizzardprofiles.UserInformation;
 
-class D3Activity extends AppCompatActivity {
+public class OWActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
@@ -23,7 +25,7 @@ class D3Activity extends AppCompatActivity {
 
     private ImageButton wowButton;
     private ImageButton sc2Button;
-    private ImageButton owButton;
+    private ImageButton d3Button;
     private TextView btag;
 
     @Override
@@ -32,7 +34,7 @@ class D3Activity extends AppCompatActivity {
         setContentView(R.layout.ow_activity);
         wowButton = findViewById(R.id.wowButton);
         sc2Button = findViewById(R.id.starcraft2Button);
-        owButton = findViewById(R.id.overwatchButton);
+        d3Button = findViewById(R.id.diablo3Button);
         btag = findViewById(R.id.btag_header);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -46,8 +48,17 @@ class D3Activity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(D3Activity.this, "", "loading...");
+                final ProgressDialog dialog = ProgressDialog.show(OWActivity.this, "", "loading...");
                 callNextActivity(WoWActivity.class);
+            }
+        });
+
+        d3Button.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                final ProgressDialog dialog = ProgressDialog.show(OWActivity.this, "", "loading...");
+                callNextActivity(D3Activity.class);
             }
         });
 
@@ -55,17 +66,8 @@ class D3Activity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(D3Activity.this, "", "loading...");
+                final ProgressDialog dialog = ProgressDialog.show(OWActivity.this, "", "loading...");
                 callNextActivity(SC2Activity.class);
-            }
-        });
-
-        owButton.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(D3Activity.this, "", "loading...");
-                callNextActivity(OWActivity.class);
             }
         });
     }
@@ -73,7 +75,7 @@ class D3Activity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         super.onBackPressed();
-        Intent intent = new Intent(D3Activity.this, GamesActivity.class);
+        Intent intent = new Intent(OWActivity.this, GamesActivity.class);
         startActivity(intent);
     }
 

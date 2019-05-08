@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles;
+package com.example.blizzardprofiles.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,8 +13,10 @@ import android.widget.TextView;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.example.blizzardprofiles.R;
+import com.example.blizzardprofiles.UserInformation;
 
-class SC2Activity extends AppCompatActivity {
+public class SC2Activity extends AppCompatActivity {
 
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;

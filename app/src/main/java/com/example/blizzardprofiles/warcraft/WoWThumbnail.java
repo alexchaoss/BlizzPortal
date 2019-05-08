@@ -1,14 +1,15 @@
-package com.example.blizzardprofiles;
+package com.example.blizzardprofiles.warcraft;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.example.blizzardprofiles.R;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.zip.GZIPInputStream;
 
 public class WoWThumbnail {
 
