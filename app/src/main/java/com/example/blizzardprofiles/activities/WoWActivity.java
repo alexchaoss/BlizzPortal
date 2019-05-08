@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles;
+package com.example.blizzardprofiles.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -19,6 +19,11 @@ import android.widget.TextView;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.example.blizzardprofiles.connection.ConnectionService;
+import com.example.blizzardprofiles.R;
+import com.example.blizzardprofiles.UserInformation;
+import com.example.blizzardprofiles.warcraft.WOWCharacters;
+import com.example.blizzardprofiles.warcraft.WoWThumbnail;
 
 import org.json.JSONObject;
 

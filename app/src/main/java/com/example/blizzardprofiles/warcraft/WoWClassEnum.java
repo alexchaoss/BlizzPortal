@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles;
+package com.example.blizzardprofiles.warcraft;
 
 import java.util.EnumSet;
 import java.util.HashMap;

@@ -1,7 +1,9 @@
-package com.example.blizzardprofiles;
+package com.example.blizzardprofiles.connection;
 
 import android.os.StrictMode;
 import android.util.Log;
+
+import com.example.blizzardprofiles.activities.MainActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
