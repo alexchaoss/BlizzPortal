@@ -1,14 +1,16 @@
 package com.example.blizzardprofiles.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dementh.lib.battlenet_oauth2.BnConstants;
@@ -69,7 +71,7 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(GamesActivity.this, "", "loading...");
+                showProgressBar();
                 callNextActivity(WoWActivity.class);
             }
         });
@@ -78,7 +80,7 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(GamesActivity.this, "", "loading...");
+                showProgressBar();
                 callNextActivity(D3Activity.class);
             }
         });
@@ -87,7 +89,7 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(GamesActivity.this, "", "loading...");
+                showProgressBar();
                 callNextActivity(SC2Activity.class);
             }
         });
@@ -96,10 +98,19 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(GamesActivity.this, "", "loading...");
+                showProgressBar();
                 callNextActivity(OWActivity.class);
             }
         });
+    }
+
+    private void showProgressBar() {
+        ProgressBar progressBar = new ProgressBar(GamesActivity.this,null,android.R.attr.progressBarStyleLarge);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        ConstraintLayout layout = findViewById(R.id.background);
+        layout.addView(progressBar,params);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

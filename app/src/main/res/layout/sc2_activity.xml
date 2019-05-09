@@ -5,7 +5,7 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/wowBackgroundColor"
+    android:background="@color/sc2BackgroundColor"
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginBottom="675dp"
-        android:background="@color/wowHeaderColor"
+        android:background="@color/sc2HeaderColor"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,7 +28,6 @@
         android:id="@+id/btag_header"
         android:layout_width="0dp"
         android:layout_height="46dp"
-        android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:background="@null"
         android:gravity="center"
@@ -47,7 +46,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/wowBackgroundColor"
+        android:background="@color/sc2BackgroundColor"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -82,7 +81,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
             android:layout_height="match_parent"
-            android:background="@color/wowBackgroundColor" />
+            android:background="@color/sc2BackgroundColor" />
 
         <ImageButton
             android:id="@+id/diablo3Button"
@@ -97,7 +96,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
-            android:background="@color/wowBackgroundColor" />
+            android:background="@color/sc2BackgroundColor" />
 
         <ImageButton
             android:id="@+id/starcraft2Button"
@@ -112,7 +111,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
-            android:background="@color/wowBackgroundColor" />
+            android:background="@color/sc2BackgroundColor" />
 
         <ImageButton
             android:id="@+id/overwatchButton"
@@ -123,41 +122,5 @@
             android:background="@drawable/overwatch_icon"
             android:contentDescription="@string/overwatch_button" />
     </LinearLayout>
-
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <LinearLayout
-            android:id="@+id/linear_wow_characters"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/wow_characters"
-                android:textColor="#FFFFFF"
-                android:textSize="30sp"
-                android:gravity="center"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </LinearLayout>
-    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

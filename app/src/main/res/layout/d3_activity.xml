@@ -28,7 +28,6 @@
         android:id="@+id/btag_header"
         android:layout_width="0dp"
         android:layout_height="46dp"
-        android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:background="@null"
         android:gravity="center"
