@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles.warcraft;
+package com.example.blizzardprofiles.connection;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,23 +9,26 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import com.example.blizzardprofiles.R;
+import com.example.blizzardprofiles.URLConstants;
+import com.example.blizzardprofiles.warcraft.WOWCharacters;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class WoWThumbnail extends AsyncTask<String, Void, ArrayList<Drawable>> {
+public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> {
 
     private WOWCharacters characters;
     private Context context;
     private ArrayList<Drawable> thumbnails = new ArrayList<>();
-    private final String THUMNAIL_URL = "http://render-us.worldofwarcraft.com/character/";
-    ArrayList<String> urls;
+    private ArrayList<String> urls;
+    private String baseURL;
 
-    public WoWThumbnail(WOWCharacters wowCharacters, Context context){
-        this.characters = wowCharacters;
+    public ImageDownload(ArrayList<String> urls, String baseURL,Context context){
+        this.urls = urls;
         this.context = context;
+        this.baseURL = baseURL;
     }
 
     public ArrayList<Drawable> getImageFromURL(){
@@ -35,7 +38,7 @@ public class WoWThumbnail extends AsyncTask<String, Void, ArrayList<Drawable>> {
             Bitmap bmp=null;
             try{
 
-                URL url = new URL(THUMNAIL_URL + urls.get(i));
+                URL url = new URL(baseURL + urls.get(i));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setDoInput(true);
                 con.connect();
@@ -47,8 +50,10 @@ public class WoWThumbnail extends AsyncTask<String, Void, ArrayList<Drawable>> {
             }
             catch(Exception ex){
                 Log.e("Exception",ex.toString());
-                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.no_avatar);
-                thumbnails.add(drawable);
+                if(baseURL.equals(URLConstants.WOW_CHARACTER_THUMNAIL_URL)){
+                    Drawable drawable = ContextCompat.getDrawable(context, R.drawable.no_avatar);
+                    thumbnails.add(drawable);
+                }
             }
 
         }

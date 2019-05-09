@@ -3,6 +3,7 @@ package com.example.blizzardprofiles.connection;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.activities.MainActivity;
 
 import java.io.BufferedReader;
@@ -17,23 +18,15 @@ import javax.net.ssl.SSLSession;
 
 public class ConnectionService {
 
-
-    private static final String BASE_URL_USER_INFO = "https://zone.battle.net";
-    private static final String BASE_URL_CN_USER_INFO = "https://www.battlenet.com.cn";
-    private static final String BASE_URL_API = "https://zone.api.blizzard.com";
-    private static final String BASE_URL_CN_API = "https://gateway.battlenet.com.cn";
-    private static final String ACCESS_TOKEN = "?access_token=";
-
     private static String returnJson;
     private static BufferedReader reader = null;
     private static HttpsURLConnection urlConnection;
     private static String url;
 
-    public static String getStringJSONFromRequest(String urlEndPoint, String accessToken) throws IOException{
+    public static String getStringJSONFromRequest(String baseURL, String urlEndPoint, String accessToken) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        url = "";
-        getURL(urlEndPoint, accessToken);
+        url = baseURL + urlEndPoint + URLConstants.ACCESS_TOKEN_QUERY + accessToken;
         Log.i("URL",url );
 
         HostnameVerifier allHostsValid = new HostnameVerifier() {
@@ -77,19 +70,5 @@ public class ConnectionService {
         }
         Log.i("JSON Response", returnJson);
         return returnJson;
-    }
-
-    private static void getURL(String urlEndPoint, String accessToken) {
-        if(MainActivity.selectedRegion.equals("cn")){
-            if(urlEndPoint.equals("/oauth/userinfo")) {
-                url += BASE_URL_CN_USER_INFO + urlEndPoint + ACCESS_TOKEN + accessToken;
-            }else{
-                url += BASE_URL_CN_API + urlEndPoint + ACCESS_TOKEN + accessToken;
-            }
-        }else if(urlEndPoint.equals("/oauth/userinfo")){
-            url += BASE_URL_USER_INFO.replace("zone",MainActivity.selectedRegion.toLowerCase()) + urlEndPoint + ACCESS_TOKEN + accessToken;
-        }else{
-            url += BASE_URL_API.replace("zone",MainActivity.selectedRegion.toLowerCase()) + urlEndPoint + ACCESS_TOKEN + accessToken;
-        }
     }
 }
