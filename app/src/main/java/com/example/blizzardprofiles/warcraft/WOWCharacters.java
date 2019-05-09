@@ -31,7 +31,6 @@ public class WOWCharacters {
             for(int i = 0; i< characterInfo.length(); i++) {
                 JSONObject characters = (JSONObject) this.characterInfo.get(i);
 
-
                 characterNamesList.add(characters.get("name").toString());
                 realmList.add(characters.get("realm").toString());
                 levelList.add(characters.get("level").toString());

@@ -3,7 +3,6 @@ package com.example.blizzardprofiles.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,11 +20,12 @@ import android.widget.TextView;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.UserInformation;
 import com.example.blizzardprofiles.warcraft.WOWCharacters;
-import com.example.blizzardprofiles.warcraft.WoWThumbnail;
+import com.example.blizzardprofiles.connection.ImageDownload;
 
 import org.json.JSONObject;
 
@@ -40,7 +40,6 @@ public class WoWActivity extends AppCompatActivity {
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
 
-    private final String WOW_CHAR_URL = "/wow/user/characters";
     private JSONObject wowCharacters;
     private LinearLayout linearLayout;
 
@@ -70,7 +69,7 @@ public class WoWActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
 
         try {
-            wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(WOW_CHAR_URL, bnOAuth2Helper.getAccessToken()));
+            wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.BASE_URL_API, URLConstants.WOW_CHAR_URL, bnOAuth2Helper.getAccessToken()));
         }catch (Exception e){
             Log.e("Error", e.toString());
         }
@@ -83,7 +82,7 @@ public class WoWActivity extends AppCompatActivity {
         ArrayList<String> characterNames = characterList.getCharacterNamesList();
         ArrayList<String> realms = characterList.getRealmsList();
         ArrayList<String> levels = characterList.getLevelList();
-        ArrayList<Drawable> thumbnails =  new WoWThumbnail(characterList, this).getImageFromURL();
+        ArrayList<Drawable> thumbnails =  new ImageDownload(characterList.getUrlThumbnail(), URLConstants.WOW_CHARACTER_THUMNAIL_URL, this).getImageFromURL();
         ArrayList<String> className = characterList.getClassList();
 
         ArrayList<LinearLayout> linearLayoutCharacterList = new ArrayList<>();

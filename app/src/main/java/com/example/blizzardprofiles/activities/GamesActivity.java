@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.UserInformation;
@@ -56,7 +57,7 @@ public class GamesActivity extends AppCompatActivity {
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
         try {
-            userInfo = (JSONObject) JSONSerializer.toJSON(ConnectionService.getStringJSONFromRequest(USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
+            userInfo = (JSONObject) JSONSerializer.toJSON(ConnectionService.getStringJSONFromRequest(getBaseURL(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
         }catch (IOException e){
             Log.e("Error", e.toString());
         }
@@ -124,5 +125,13 @@ public class GamesActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);
+    }
+
+    private String getBaseURL(){
+        if(MainActivity.selectedRegion.equals("cn")){
+            return URLConstants.BASE_URL_CN_USER_INFO;
+            }else {
+            return URLConstants.END_USER_INFO_URL;
+        }
     }
 }
