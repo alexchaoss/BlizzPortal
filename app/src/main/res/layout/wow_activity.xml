@@ -28,7 +28,6 @@
         android:id="@+id/btag_header"
         android:layout_width="0dp"
         android:layout_height="46dp"
-        android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:background="@null"
         android:gravity="center"
@@ -45,6 +44,7 @@
         tools:targetApi="o" />
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/wowBackgroundColor"
@@ -125,6 +125,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -148,16 +149,32 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
                 android:text="@string/wow_characters"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
-                android:gravity="center"
-                android:layout_marginBottom="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView2">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></android.support.v4.view.ViewPager>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

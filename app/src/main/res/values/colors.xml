@@ -5,6 +5,10 @@
     <color name="wowHeaderColor">#6a2214</color>
     <color name="d3BackgroundColor">#240703</color>
     <color name="d3HeaderColor">#000000</color>
+    <color name="owBackgroundColor">#f2f1ed</color>
+    <color name="owHeaderColor">#f79d19</color>
+    <color name="sc2BackgroundColor">#71c2ee</color>
+    <color name="sc2HeaderColor">#1b6695</color>
     <color name="colorHeader">#243a54</color>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>

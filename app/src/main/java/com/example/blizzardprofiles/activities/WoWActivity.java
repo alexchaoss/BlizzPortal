@@ -3,10 +3,12 @@ package com.example.blizzardprofiles.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,6 +32,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class WoWActivity extends AppCompatActivity {
+
+    private SectionsStatePageAdapter mSectionStatePageAdapter;
+    private ViewPager mViewPager;
 
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
@@ -61,6 +66,9 @@ public class WoWActivity extends AppCompatActivity {
 
         btag.setText(UserInformation.getBattleTag());
 
+        mSectionStatePageAdapter = new SectionsStatePageAdapter(getSupportFragmentManager());
+        mViewPager = findViewById(R.id.container);
+
         try {
             wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(WOW_CHAR_URL, bnOAuth2Helper.getAccessToken()));
         }catch (Exception e){
@@ -81,6 +89,7 @@ public class WoWActivity extends AppCompatActivity {
         ArrayList<LinearLayout> linearLayoutCharacterList = new ArrayList<>();
 
         LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
+        layoutParamsImage.setMargins(15,0,0,0);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(100,0,100,75);
@@ -89,7 +98,8 @@ public class WoWActivity extends AppCompatActivity {
         layoutParamsInfo.setMargins(25,0,0,0);
 
         LinearLayout.LayoutParams layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsInfo.setMargins(50,0,0,0);
+        layoutParamsClass.setMargins(15,0,0,0);
+
 
         for(int i = 0; i<characterNames.size();i++) {
 
@@ -103,6 +113,7 @@ public class WoWActivity extends AppCompatActivity {
             //Add character thumbnail to view
             ImageView imageView = new ImageView(this);
             imageView.setImageDrawable(thumbnails.get(i));
+
             imageView.setLayoutParams(layoutParamsImage);
 
             //Add character name to view
@@ -145,12 +156,21 @@ public class WoWActivity extends AppCompatActivity {
             linearLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
             linearLayoutCharacterList.add(linearLayoutCharacters);
         }
-
-        for(LinearLayout linear: linearLayoutCharacterList) {
+        int i = 0;
+        for(final LinearLayout linear: linearLayoutCharacterList) {
+            linear.setId(i);
             linearLayout.addView(linear);
             linear.setLayoutParams(layoutParams);
             linear.setBackground(getResources().getDrawable(R.drawable.inputstyle));
-
+            linear.setClickable(true);
+            linear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setupViewPager(mViewPager);
+                    Log.i("Clicked", String.valueOf(linear.getId()));
+                }
+            });
+            i++;
         }
         //Button calls
 
@@ -193,5 +213,11 @@ public class WoWActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);
+    }
+
+    private void setupViewPager(ViewPager viewPager){
+        SectionsStatePageAdapter adapter = new SectionsStatePageAdapter(getSupportFragmentManager());
+        adapter.addFragment(new WoWCharacterFragment(), "WoWCharacterFragment");
+        viewPager.setAdapter(adapter);
     }
 }
