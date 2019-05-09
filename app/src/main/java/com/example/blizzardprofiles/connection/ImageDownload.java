@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> {
 
-    private WOWCharacters characters;
     private Context context;
     private ArrayList<Drawable> thumbnails = new ArrayList<>();
     private ArrayList<String> urls;
@@ -32,7 +31,6 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
     }
 
     public ArrayList<Drawable> getImageFromURL(){
-        urls = characters.getUrlThumbnail();
         for(int i = 0; i<urls.size();i++){
             InputStream in =null;
             Bitmap bmp=null;
