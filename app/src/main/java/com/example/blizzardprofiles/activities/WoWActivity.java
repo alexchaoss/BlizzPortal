@@ -33,6 +33,9 @@ import java.util.ArrayList;
 
 public class WoWActivity extends AppCompatActivity {
 
+    public static String characterClicked;
+    public static String characterRealm;
+
     private SectionsStatePageAdapter mSectionStatePageAdapter;
     private ViewPager mViewPager;
 
@@ -40,10 +43,9 @@ public class WoWActivity extends AppCompatActivity {
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
 
-    private JSONObject wowCharacters;
+    public static JSONObject wowCharacters;
     private LinearLayout linearLayout;
 
-    private ImageButton wowButton;
     private ImageButton sc2Button;
     private ImageButton d3Button;
     private ImageButton owButton;
@@ -52,8 +54,6 @@ public class WoWActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.wow_activity);
-        wowButton = findViewById(R.id.wowButton);
         sc2Button = findViewById(R.id.starcraft2Button);
         d3Button = findViewById(R.id.diablo3Button);
         owButton = findViewById(R.id.overwatchButton);
@@ -69,7 +69,7 @@ public class WoWActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
 
         try {
-            wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.BASE_URL_API, URLConstants.WOW_CHAR_URL, bnOAuth2Helper.getAccessToken()));
+            wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(), URLConstants.WOW_CHAR_URL, bnOAuth2Helper.getAccessToken()));
         }catch (Exception e){
             Log.e("Error", e.toString());
         }
@@ -79,10 +79,10 @@ public class WoWActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.linear_wow_characters);
 
         WOWCharacters characterList = new WOWCharacters(wowCharacters);
-        ArrayList<String> characterNames = characterList.getCharacterNamesList();
-        ArrayList<String> realms = characterList.getRealmsList();
+        final ArrayList<String> characterNames = characterList.getCharacterNamesList();
+        final ArrayList<String> realms = characterList.getRealmsList();
         ArrayList<String> levels = characterList.getLevelList();
-        ArrayList<Drawable> thumbnails =  new ImageDownload(characterList.getUrlThumbnail(), URLConstants.WOW_CHARACTER_THUMNAIL_URL, this).getImageFromURL();
+        ArrayList<Drawable> thumbnails =  new ImageDownload(characterList.getUrlThumbnail(), URLConstants.getRenderZoneURL(), this).getImageFromURL();
         ArrayList<String> className = characterList.getClassList();
 
         ArrayList<LinearLayout> linearLayoutCharacterList = new ArrayList<>();
@@ -166,6 +166,12 @@ public class WoWActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     setupViewPager(mViewPager);
+                    for(int i = 0; i<characterNames.size();i++){
+                        if(i == linear.getId()){
+                            characterClicked = characterNames.get(i);
+                            characterRealm = realms.get(i);
+                        }
+                    }
                     Log.i("Clicked", String.valueOf(linear.getId()));
                 }
             });
@@ -219,4 +225,6 @@ public class WoWActivity extends AppCompatActivity {
         adapter.addFragment(new WoWCharacterFragment(), "WoWCharacterFragment");
         viewPager.setAdapter(adapter);
     }
+
+
 }

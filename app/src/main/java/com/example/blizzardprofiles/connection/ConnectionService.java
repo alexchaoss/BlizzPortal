@@ -45,7 +45,7 @@ public class ConnectionService {
             StringBuilder sb = new StringBuilder();
             int responseCode = urlConnection.getResponseCode();
             Log.i("Response code", String.valueOf(responseCode));
-            // Read the correct stream based on the response code.
+
             if((responseCode == 404) || (responseCode == 500)) {
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
                 Log.i("Error", reader.toString());
@@ -57,16 +57,13 @@ public class ConnectionService {
             }
             returnJson = sb.toString();
         } catch (IOException e) {
-            // Some sort of connection error, let's just return some sort of error
             Log.e("Error", e.toString());
-            returnJson = "{\"status\":\"nok\", \"reason\":\"URL Connection Error\"}";
         }
         finally {
             if (reader != null) try {
                 reader.close();
             } catch (IOException ignored) {
             }
-
         }
         Log.i("JSON Response", returnJson);
         return returnJson;

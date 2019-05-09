@@ -1,5 +1,7 @@
 package com.example.blizzardprofiles;
 
+import com.example.blizzardprofiles.activities.MainActivity;
+
 public class UserInformation {
 
     private static String userID;
@@ -21,5 +23,4 @@ public class UserInformation {
     public static void setBattleTag(String battleTag) {
         UserInformation.battleTag = battleTag;
     }
-
 }

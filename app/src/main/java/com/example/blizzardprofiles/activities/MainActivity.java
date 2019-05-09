@@ -26,11 +26,11 @@ import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.example.blizzardprofiles.R;
+import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.connection.Servers;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String CALLBACK_URL = "https://localhost";
     private SharedPreferences sharedPreferences;
     public static String selectedRegion = "";
     private ArrayList<String> servers = new ArrayList<>();
@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) view).setTextColor(Color.WHITE);
                 ((TextView) view).setTextSize(20);
                 ((TextView) view).setGravity(Gravity.CENTER);
-                bnOAuth2Params = new BnOAuth2Params(servers.get(0), servers.get(1), selectedRegion.toLowerCase(),
-                        CALLBACK_URL, "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
+                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER1.getClientKey(),Servers.SERVER1.getSecretKey(), selectedRegion.toLowerCase(),
+                        URLConstants.CALLBACK_URL, "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
             }
 
             @Override
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
+    //For future usage
     private void getRandomServer(){
         Random random = new Random();
         int serverNumber = random.nextInt(4);

@@ -27,9 +27,6 @@ import java.io.IOException;
 
 public class GamesActivity extends AppCompatActivity {
 
-    private final String USER_INFO_URL = "/oauth/userinfo";
-
-
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
@@ -57,7 +54,7 @@ public class GamesActivity extends AppCompatActivity {
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
         try {
-            userInfo = (JSONObject) JSONSerializer.toJSON(ConnectionService.getStringJSONFromRequest(getBaseURL(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
+            userInfo = (JSONObject) JSONSerializer.toJSON(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforUserInformation(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
         }catch (IOException e){
             Log.e("Error", e.toString());
         }
@@ -125,13 +122,5 @@ public class GamesActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);
-    }
-
-    private String getBaseURL(){
-        if(MainActivity.selectedRegion.equals("cn")){
-            return URLConstants.BASE_URL_CN_USER_INFO;
-            }else {
-            return URLConstants.END_USER_INFO_URL;
-        }
     }
 }
