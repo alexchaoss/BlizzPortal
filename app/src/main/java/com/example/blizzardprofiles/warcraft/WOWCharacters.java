@@ -61,7 +61,6 @@ public class WOWCharacters {
     }
 
     public ArrayList<String> getClassList() {
-        Log.i("Classes", classListNumber.toString());
         for(String number: classListNumber){
             classList.add(WoWClassEnum.fromOrdinal(Integer.parseInt(number)-1).toString());
         }

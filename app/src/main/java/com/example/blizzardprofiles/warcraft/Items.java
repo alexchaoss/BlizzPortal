@@ -33,7 +33,7 @@ public class Items {
             shoulder = (JSONObject) items.get("shoulder");
             back = (JSONObject) items.get("back");
             chest = (JSONObject) items.get("chest");
-            shirt = (JSONObject) items.get("shirt");
+            //shirt = (JSONObject) items.get("shirt");
             wrist = (JSONObject) items.get("wrist");
             hands = (JSONObject) items.get("hands");
             waist = (JSONObject) items.get("waist");

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -20,7 +21,6 @@ import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.connection.ImageDownload;
 import com.example.blizzardprofiles.warcraft.Items;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,16 +28,58 @@ import java.util.ArrayList;
 
 public class WoWCharacterFragment extends Fragment {
 
+    private String characterRealm;
+    private String characterClicked;
+
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
     private JSONObject characterItems;
     private Items items;
-    ArrayList<String> iconURL = new ArrayList<>();
+    private ArrayList<String> iconURL = new ArrayList<>();
+    private TextView characterName;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.character_fragment, container, false);
+        return inflater.inflate(R.layout.character_fragment, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        Bundle bundle = getArguments();
+        characterRealm = bundle.getString("realm");
+        characterClicked = bundle.getString("name");
+        characterName = view.findViewById(R.id.character_name);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        bnOAuth2Params = this.getActivity().getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+
+        try {
+            characterItems = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
+                    swapRealmCharacterFromURL(), bnOAuth2Helper.getAccessToken()));
+            System.out.println(characterItems.toString());
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+        }
+        try{
+            if(characterItems.isNull("name")){
+                characterName.setText(characterItems.get("reason").toString());
+            }else{
+                characterName.setText(characterItems.get("name").toString());
+            }
+            items = new Items(characterItems.getJSONObject("items"));
+        }catch (JSONException e){
+            Log.e("Error", e.toString());
+        }
+
+
+        getItemIconURL();
+        ArrayList<Drawable> icons = new ImageDownload(iconURL, URLConstants.WOW_ICONS_URL + "56/", view.getContext()).getImageFromURL();
+
+
         ImageView head = view.findViewById(R.id.head);
         ImageView neck = view.findViewById(R.id.neck);
         ImageView shoulder = view.findViewById(R.id.shoulder);
@@ -55,65 +97,53 @@ public class WoWCharacterFragment extends Fragment {
         ImageView mainHand = view.findViewById(R.id.main_hand);
         ImageView offHand= view.findViewById(R.id.off_hand);
 
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        bnOAuth2Params = this.getActivity().getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
-        bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
-
         try {
-            characterItems = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
-                    URLConstants.WOW_CHAR_URL + swapRealmCharacterFromURL(), bnOAuth2Helper.getAccessToken()));
-            items = new Items(characterItems.getJSONObject("items"));
+            head.setImageDrawable(icons.get(0));
+            neck.setImageDrawable(icons.get(1));
+            shoulder.setImageDrawable(icons.get(2));
+            back.setImageDrawable(icons.get(3));
+            chest.setImageDrawable(icons.get(4));
+            wrist.setImageDrawable(icons.get(5));
+            hands.setImageDrawable(icons.get(6));
+            waist.setImageDrawable(icons.get(7));
+            legs.setImageDrawable(icons.get(8));
+            feet.setImageDrawable(icons.get(9));
+            finger1.setImageDrawable(icons.get(10));
+            finger2.setImageDrawable(icons.get(11));
+            trinket1.setImageDrawable(icons.get(12));
+            trinket2.setImageDrawable(icons.get(13));
+            mainHand.setImageDrawable(icons.get(14));
+            offHand.setImageDrawable(icons.get(15));
         }catch (Exception e){
             Log.e("Error", e.toString());
         }
-        getItemIconURL();
-
-        ArrayList<Drawable> icons = new ImageDownload(iconURL, URLConstants.WOW_ICONS_URL, view.getContext()).getImageFromURL();
-
-        head.setImageDrawable(icons.get(0));
-        neck.setImageDrawable(icons.get(1));
-        shoulder.setImageDrawable(icons.get(2));
-        back.setImageDrawable(icons.get(3));
-        chest.setImageDrawable(icons.get(4));
-        wrist.setImageDrawable(icons.get(5));
-        hands.setImageDrawable(icons.get(6));
-        waist.setImageDrawable(icons.get(7));
-        legs.setImageDrawable(icons.get(8));
-        feet.setImageDrawable(icons.get(9));
-        finger1.setImageDrawable(icons.get(10));
-        finger2.setImageDrawable(icons.get(11));
-        trinket1.setImageDrawable(icons.get(12));
-        trinket2.setImageDrawable(icons.get(13));
-        mainHand.setImageDrawable(icons.get(14));
-        offHand.setImageDrawable(icons.get(15));
-
-        return view;
     }
 
     private String swapRealmCharacterFromURL(){
-        return URLConstants.WOW_ITEM_QUERY.replace("realm/character", WoWActivity.characterRealm+"/"+WoWActivity.characterClicked);
+        return URLConstants.WOW_ITEM_QUERY.replace("realm/character", characterRealm +"/"+characterClicked);
     }
 
     private void getItemIconURL(){
         try{
-            iconURL.add(items.getHead().get("icon").toString());
-            iconURL.add(items.getNeck().get("icon").toString());
-            iconURL.add(items.getShoulder().get("icon").toString());
-            iconURL.add(items.getChest().get("icon").toString());
-            iconURL.add(items.getHands().get("icon").toString());
-            iconURL.add(items.getWrist().get("icon").toString());
-            iconURL.add(items.getWaist().get("icon").toString());
-            iconURL.add(items.getLegs().get("icon").toString());
-            iconURL.add(items.getFeet().get("icon").toString());
-            iconURL.add(items.getFinger1().get("icon").toString());
-            iconURL.add(items.getFinger2().get("icon").toString());
-            iconURL.add(items.getTrinket1().get("icon").toString());
-            iconURL.add(items.getTrinket2().get("icon").toString());
-            iconURL.add(items.getMainHand().get("icon").toString());
-            iconURL.add(items.getOffHand().get("icon").toString());
+            iconURL.add(items.getHead().get("icon").toString() + ".jpg");
+            iconURL.add(items.getNeck().get("icon").toString() + ".jpg");
+            iconURL.add(items.getShoulder().get("icon").toString() + ".jpg");
+            iconURL.add(items.getBack().get("icon").toString() + ".jpg");
+            iconURL.add(items.getChest().get("icon").toString() + ".jpg");
+            iconURL.add(items.getHands().get("icon").toString() + ".jpg");
+            iconURL.add(items.getWrist().get("icon").toString() + ".jpg");
+            iconURL.add(items.getWaist().get("icon").toString() + ".jpg");
+            iconURL.add(items.getLegs().get("icon").toString() + ".jpg");
+            iconURL.add(items.getFeet().get("icon").toString() + ".jpg");
+            iconURL.add(items.getFinger1().get("icon").toString() + ".jpg");
+            iconURL.add(items.getFinger2().get("icon").toString() + ".jpg");
+            iconURL.add(items.getTrinket1().get("icon").toString() + ".jpg");
+            iconURL.add(items.getTrinket2().get("icon").toString() + ".jpg");
+            iconURL.add(items.getMainHand().get("icon").toString() + ".jpg");
+            iconURL.add(items.getOffHand().get("icon").toString() + ".jpg");
         }catch (JSONException e){
             Log.e("Error", e.toString());
+
         }
     }
 }

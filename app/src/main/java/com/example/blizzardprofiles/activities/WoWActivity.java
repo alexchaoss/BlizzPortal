@@ -7,7 +7,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,11 +34,8 @@ import java.util.ArrayList;
 
 public class WoWActivity extends AppCompatActivity {
 
-    public static String characterClicked;
-    public static String characterRealm;
-
-    private SectionsStatePageAdapter mSectionStatePageAdapter;
-    private ViewPager mViewPager;
+    private String characterClicked;
+    private String characterRealm;
 
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
@@ -54,22 +52,20 @@ public class WoWActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.wow_activity);
         sc2Button = findViewById(R.id.starcraft2Button);
         d3Button = findViewById(R.id.diablo3Button);
         owButton = findViewById(R.id.overwatchButton);
         btag = findViewById(R.id.btag_header);
 
+        btag.setText(UserInformation.getBattleTag());
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         bnOAuth2Params = this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-        btag.setText(UserInformation.getBattleTag());
-
-        mSectionStatePageAdapter = new SectionsStatePageAdapter(getSupportFragmentManager());
-        mViewPager = findViewById(R.id.container);
-
         try {
-            wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(), URLConstants.WOW_CHAR_URL, bnOAuth2Helper.getAccessToken()));
+            wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(), URLConstants.WOW_CHAR_URL + "?", bnOAuth2Helper.getAccessToken()));
         }catch (Exception e){
             Log.e("Error", e.toString());
         }
@@ -165,14 +161,13 @@ public class WoWActivity extends AppCompatActivity {
             linear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setupViewPager(mViewPager);
                     for(int i = 0; i<characterNames.size();i++){
                         if(i == linear.getId()){
                             characterClicked = characterNames.get(i);
                             characterRealm = realms.get(i);
                         }
                     }
-                    Log.i("Clicked", String.valueOf(linear.getId()));
+                    displayFragment();
                 }
             });
             i++;
@@ -220,11 +215,16 @@ public class WoWActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void setupViewPager(ViewPager viewPager){
-        SectionsStatePageAdapter adapter = new SectionsStatePageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new WoWCharacterFragment(), "WoWCharacterFragment");
-        viewPager.setAdapter(adapter);
+    private void displayFragment(){
+        Bundle bundle = new Bundle();
+        bundle.putString("name", characterClicked);
+        bundle.putString("realm", characterRealm);
+        WoWCharacterFragment wowCharacterFragment = new WoWCharacterFragment();
+        wowCharacterFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
+        fragmentTransaction.addToBackStack(null).commit();
+
     }
-
-
 }

@@ -24,7 +24,7 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
     private ArrayList<String> urls;
     private String baseURL;
 
-    public ImageDownload(ArrayList<String> urls, String baseURL,Context context){
+    public ImageDownload(ArrayList<String> urls, String baseURL, Context context){
         this.urls = urls;
         this.context = context;
         this.baseURL = baseURL;
@@ -48,9 +48,9 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
             }
             catch(Exception ex){
                 Log.e("Exception",ex.toString());
-                if(baseURL.equals(URLConstants.WOW_CHARACTER_THUMNAIL_URL)){
-                    Drawable drawable = ContextCompat.getDrawable(context, R.drawable.no_avatar);
-                    thumbnails.add(drawable);
+                if(baseURL.equals(URLConstants.getRenderZoneURL())){
+                    Drawable noAvatar = ContextCompat.getDrawable(context, R.drawable.no_avatar);
+                    thumbnails.add(noAvatar);
                 }
             }
 

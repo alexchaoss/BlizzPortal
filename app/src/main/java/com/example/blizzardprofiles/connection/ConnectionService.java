@@ -40,9 +40,12 @@ public class ConnectionService {
         try {
             URL fullURL = new URL(url);
             urlConnection = (HttpsURLConnection) fullURL.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-length","0");
+            urlConnection.setUseCaches(false);
 
             String line;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
             int responseCode = urlConnection.getResponseCode();
             Log.i("Response code", String.valueOf(responseCode));
 
@@ -53,9 +56,9 @@ public class ConnectionService {
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             }
             while ((line = reader.readLine()) != null) {
-                sb.append(line).append('\n');
+                stringBuilder.append(line).append('\n');
             }
-            returnJson = sb.toString();
+            returnJson = stringBuilder.toString();
         } catch (IOException e) {
             Log.e("Error", e.toString());
         }
@@ -65,7 +68,20 @@ public class ConnectionService {
             } catch (IOException ignored) {
             }
         }
-        Log.i("JSON Response", returnJson);
+        if (returnJson.length() > 4000) {
+            Log.v("json", "sb.length = " + returnJson.length());
+            int chunkCount = returnJson.length() / 4000;     // integer division
+            for (int i = 0; i <= chunkCount; i++) {
+                int max = 4000 * (i + 1);
+                if (max >= returnJson.length()) {
+                    Log.v("json", returnJson.substring(4000 * i));
+                } else {
+                    Log.v("json", returnJson.substring(4000 * i, max));
+                }
+            }
+        } else {
+            Log.v("json", returnJson.toString());
+        }
         return returnJson;
     }
 }
