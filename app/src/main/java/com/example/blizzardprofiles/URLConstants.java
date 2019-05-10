@@ -24,13 +24,13 @@ public class URLConstants {
 
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
-    public final static String WOW_ITEM_QUERY = "/realm/character/?fields=items&locale=en_US&";
+    public final static String WOW_ITEM_QUERY = "/wow/character/realm/character?fields=items&locale=en_US&";
 
     public static String getBaseURLforUserInformation() {
         if (MainActivity.selectedRegion.equals("cn")) {
             return URLConstants.BASE_URL_CN_USER_INFO;
         } else {
-            return URLConstants.BASE_URL_USER_INFO.replace("zone", MainActivity.selectedRegion);
+            return URLConstants.BASE_URL_USER_INFO.replace("zone", MainActivity.selectedRegion.toLowerCase());
         }
     }
 
@@ -38,11 +38,11 @@ public class URLConstants {
         if (MainActivity.selectedRegion.equals("cn")) {
             return URLConstants.BASE_URL_CN_API;
         } else {
-            return URLConstants.BASE_URL_API.replace("zone", MainActivity.selectedRegion);
+            return URLConstants.BASE_URL_API.replace("zone", MainActivity.selectedRegion.toLowerCase());
         }
     }
 
     public static String getRenderZoneURL(){
-        return WOW_CHARACTER_THUMNAIL_URL.replace("zone", MainActivity.selectedRegion);
+        return WOW_CHARACTER_THUMNAIL_URL.replace("zone", MainActivity.selectedRegion.toLowerCase());
     }
 }

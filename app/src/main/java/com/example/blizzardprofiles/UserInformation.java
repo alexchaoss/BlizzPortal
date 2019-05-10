@@ -1,7 +1,5 @@
 package com.example.blizzardprofiles;
 
-import com.example.blizzardprofiles.activities.MainActivity;
-
 public class UserInformation {
 
     private static String userID;

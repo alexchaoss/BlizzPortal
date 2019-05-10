@@ -161,20 +161,17 @@
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:name="com.example.blizzardprofiles.activities.WoWCharacterFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scrollView2">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"></android.support.v4.view.ViewPager>
-    </LinearLayout>
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView2"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout="@layout/character_fragment" />
 
 </android.support.constraint.ConstraintLayout>
