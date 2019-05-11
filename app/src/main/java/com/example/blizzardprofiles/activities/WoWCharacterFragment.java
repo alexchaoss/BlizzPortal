@@ -65,10 +65,6 @@ public class WoWCharacterFragment extends Fragment {
 
         Drawable backgroundMain = new ImageDownload(urlMain, URLConstants.getRenderZoneURL(), view.getContext()).getImageFromURL().get(0);
 
-
-
-
-
         try {
             characterItems = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
                     swapRealmCharacterFromURL(), bnOAuth2Helper.getAccessToken()));
@@ -113,7 +109,11 @@ public class WoWCharacterFragment extends Fragment {
             ImageView mainHand = view.findViewById(R.id.main_hand);
             ImageView offHand = view.findViewById(R.id.off_hand);
 
+            Drawable backgroundStroke = ContextCompat.getDrawable(view.getContext(), R.drawable.inputstyle);
+
             head.setImageDrawable(icons.get(0));
+            head.setPadding(1,1,1,1);
+            head.setBackground(backgroundStroke);
             neck.setImageDrawable(icons.get(1));
             shoulder.setImageDrawable(icons.get(2));
             back.setImageDrawable(icons.get(3));
