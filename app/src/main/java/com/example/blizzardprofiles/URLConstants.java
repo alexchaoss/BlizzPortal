@@ -20,7 +20,7 @@ public class URLConstants {
 
     //URLs for WoW images
     public final static String WOW_CHARACTER_THUMNAIL_URL = "http://render-zone.worldofwarcraft.com/character/";
-    public final static String WOW_ICONS_URL = "http://media.blizzard.com/wow/icons/";
+    public final static String WOW_ICONS_URL = "https://render-us.worldofwarcraft.com/icons/";
 
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";

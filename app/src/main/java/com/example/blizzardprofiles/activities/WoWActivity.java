@@ -36,6 +36,7 @@ public class WoWActivity extends AppCompatActivity {
 
     private String characterClicked;
     private String characterRealm;
+    private String url;
 
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
@@ -74,7 +75,7 @@ public class WoWActivity extends AppCompatActivity {
         Log.i("json", wowCharacters.toString());
         linearLayout = findViewById(R.id.linear_wow_characters);
 
-        WOWCharacters characterList = new WOWCharacters(wowCharacters);
+        final WOWCharacters characterList = new WOWCharacters(wowCharacters);
         final ArrayList<String> characterNames = characterList.getCharacterNamesList();
         final ArrayList<String> realms = characterList.getRealmsList();
         ArrayList<String> levels = characterList.getLevelList();
@@ -165,6 +166,7 @@ public class WoWActivity extends AppCompatActivity {
                         if(i == linear.getId()){
                             characterClicked = characterNames.get(i);
                             characterRealm = realms.get(i);
+                            url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
                         }
                     }
                     displayFragment();
@@ -178,7 +180,6 @@ public class WoWActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(WoWActivity.this, "", "loading...");
                 callNextActivity(D3Activity.class);
             }
         });
@@ -187,7 +188,6 @@ public class WoWActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(WoWActivity.this, "", "loading...");
                 callNextActivity(SC2Activity.class);
             }
         });
@@ -196,17 +196,9 @@ public class WoWActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(WoWActivity.this, "", "loading...");
                 callNextActivity(OWActivity.class);
             }
         });
-    }
-
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        Intent intent = new Intent(WoWActivity.this, GamesActivity.class);
-        startActivity(intent);
     }
 
     private void callNextActivity(Class activity){
@@ -219,12 +211,13 @@ public class WoWActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("name", characterClicked);
         bundle.putString("realm", characterRealm);
+        bundle.putString("url", url);
         WoWCharacterFragment wowCharacterFragment = new WoWCharacterFragment();
         wowCharacterFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
         fragmentTransaction.addToBackStack(null).commit();
-
+        getSupportFragmentManager().executePendingTransactions();
     }
 }

@@ -48,7 +48,6 @@ public class SC2Activity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(SC2Activity.this, "", "loading...");
                 callNextActivity(WoWActivity.class);
             }
         });
@@ -57,7 +56,6 @@ public class SC2Activity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(SC2Activity.this, "", "loading...");
                 callNextActivity(D3Activity.class);
             }
         });
@@ -67,17 +65,9 @@ public class SC2Activity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(SC2Activity.this, "", "loading...");
                 callNextActivity(OWActivity.class);
             }
         });
-    }
-
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        Intent intent = new Intent(SC2Activity.this, GamesActivity.class);
-        startActivity(intent);
     }
 
     private void callNextActivity(Class activity){
