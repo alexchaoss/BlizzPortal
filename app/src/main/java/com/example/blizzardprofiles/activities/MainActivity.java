@@ -53,10 +53,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                }
-                return true;
+                return position != 0;
             }
 
             @Override
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) view).setTextColor(Color.WHITE);
                 ((TextView) view).setTextSize(20);
                 ((TextView) view).setGravity(Gravity.CENTER);
-                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER1.getClientKey(),Servers.SERVER1.getSecretKey(), selectedRegion.toLowerCase(),
+                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER2.getClientKey(),Servers.SERVER2.getSecretKey(), selectedRegion.toLowerCase(),
                         URLConstants.CALLBACK_URL, "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
             }
 

@@ -80,7 +80,7 @@ public class ConnectionService {
                 }
             }
         } else {
-            Log.v("json", returnJson.toString());
+            Log.v("json", returnJson);
         }
         return returnJson;
     }

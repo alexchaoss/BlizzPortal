@@ -8,9 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.URLConstants;
-import com.example.blizzardprofiles.warcraft.WOWCharacters;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -23,6 +23,7 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
     private ArrayList<Drawable> thumbnails = new ArrayList<>();
     private ArrayList<String> urls;
     private String baseURL;
+
 
     public ImageDownload(ArrayList<String> urls, String baseURL, Context context){
         this.urls = urls;
@@ -45,7 +46,10 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
 
                 URL url = new URL(baseURL + urls.get(i));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con.setRequestProperty("Accept-Encoding", "identity");
                 con.setDoInput(true);
+                int responseCode = con.getResponseCode();
+                Log.i("Response code", String.valueOf(responseCode));
                 con.connect();
                 in = con.getInputStream();
                 bmp = BitmapFactory.decodeStream(in);
