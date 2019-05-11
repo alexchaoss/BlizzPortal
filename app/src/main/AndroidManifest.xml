@@ -18,11 +18,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.blizzardprofiles.activities.GamesActivity" />
-        <activity android:name="com.example.blizzardprofiles.activities.WoWActivity"/>
-        <activity android:name="com.example.blizzardprofiles.activities.SC2Activity"/>
-        <activity android:name="com.example.blizzardprofiles.activities.OWActivity"/>
-        <activity android:name="com.example.blizzardprofiles.activities.D3Activity"/>
+        <activity
+            android:name="com.example.blizzardprofiles.activities.GamesActivity"
+            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name="com.example.blizzardprofiles.activities.WoWActivity"
+            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name="com.example.blizzardprofiles.activities.SC2Activity"
+            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name="com.example.blizzardprofiles.activities.OWActivity"
+            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name="com.example.blizzardprofiles.activities.D3Activity"
+            android:parentActivityName=".activities.MainActivity"/>
     </application>
 
 </manifest>

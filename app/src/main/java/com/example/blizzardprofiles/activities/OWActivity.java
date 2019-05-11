@@ -48,7 +48,6 @@ public class OWActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(OWActivity.this, "", "loading...");
                 callNextActivity(WoWActivity.class);
             }
         });
@@ -57,7 +56,6 @@ public class OWActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(OWActivity.this, "", "loading...");
                 callNextActivity(D3Activity.class);
             }
         });
@@ -66,17 +64,9 @@ public class OWActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(OWActivity.this, "", "loading...");
                 callNextActivity(SC2Activity.class);
             }
         });
-    }
-
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        Intent intent = new Intent(OWActivity.this, GamesActivity.class);
-        startActivity(intent);
     }
 
     private void callNextActivity(Class activity){

@@ -30,6 +30,13 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
         this.baseURL = baseURL;
     }
 
+    public ImageDownload(String url, String baseURL, Context context){
+        this.urls = new ArrayList<>();
+        this.urls.add(url);
+        this.context = context;
+        this.baseURL = baseURL;
+    }
+
     public ArrayList<Drawable> getImageFromURL(){
         for(int i = 0; i<urls.size();i++){
             InputStream in =null;
@@ -52,8 +59,8 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
                     Drawable noAvatar = ContextCompat.getDrawable(context, R.drawable.no_avatar);
                     thumbnails.add(noAvatar);
                 }
-            }
 
+            }
         }
         return  thumbnails;
     }
