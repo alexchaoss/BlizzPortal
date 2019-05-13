@@ -21,7 +21,7 @@ import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.UserInformation;
 
-import net.sf.json.*;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -54,13 +54,12 @@ public class GamesActivity extends AppCompatActivity {
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
         try {
-            userInfo = (JSONObject) JSONSerializer.toJSON(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforUserInformation(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
-        }catch (IOException e){
+            userInfo = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforUserInformation(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
+            UserInformation.setBattleTag(userInfo.getString("battletag"));
+            UserInformation.setUserID(userInfo.getString("id"));
+        }catch (Exception e){
             Log.e("Error", e.toString());
         }
-
-        UserInformation.setBattleTag(userInfo.getString("battletag"));
-        UserInformation.setUserID(userInfo.getString("id"));
 
         btag.setText(UserInformation.getBattleTag());
 
