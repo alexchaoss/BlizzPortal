@@ -22,6 +22,10 @@ public class URLConstants {
     public final static String WOW_CHARACTER_THUMNAIL_URL = "http://render-zone.worldofwarcraft.com/character/";
     public final static String WOW_ICONS_URL = "https://render-us.worldofwarcraft.com/icons/";
 
+    //URLs for D3 images
+    public final static String D3_ICONS_ITEMS_URL = "http://media.blizzard.com/d3/icons/items/large/";
+    public final static String D3_ICONS_SKILLS_URL = "http://media.blizzard.com/d3/icons/skills/64/";
+
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
     public final static String WOW_ITEM_QUERY = "/wow/character/realm/character?fields=items&locale=en_US&";

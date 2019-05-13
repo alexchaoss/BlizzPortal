@@ -1,11 +1,14 @@
 package com.example.blizzardprofiles.activities;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,7 @@ public class WoWCharacterFragment extends Fragment {
     private TextView characterName;
     private ImageView background;
     ArrayList<Drawable> icons = new ArrayList<>();
+    ArrayList<ImageView> gear = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -109,28 +113,38 @@ public class WoWCharacterFragment extends Fragment {
             ImageView mainHand = view.findViewById(R.id.main_hand);
             ImageView offHand = view.findViewById(R.id.off_hand);
 
-            Drawable backgroundStroke = ContextCompat.getDrawable(view.getContext(), R.drawable.inputstyle);
+            gear.add(head);
+            gear.add(neck);
+            gear.add(shoulder);
+            gear.add(back);
+            gear.add(chest);
+            gear.add(shirt);
+            gear.add(tabard);
+            gear.add(wrist);
+            gear.add(hands);
+            gear.add(waist);
+            gear.add(legs);
+            gear.add(feet);
+            gear.add(finger1);
+            gear.add(finger2);
+            gear.add(trinket1);
+            gear.add(trinket2);
+            gear.add(mainHand);
+            gear.add(offHand);
 
-            head.setImageDrawable(icons.get(0));
-            head.setPadding(1,1,1,1);
-            head.setBackground(backgroundStroke);
-            neck.setImageDrawable(icons.get(1));
-            shoulder.setImageDrawable(icons.get(2));
-            back.setImageDrawable(icons.get(3));
-            chest.setImageDrawable(icons.get(4));
-            shirt.setImageDrawable(icons.get(5));
-            tabard.setImageDrawable(icons.get(6));
-            wrist.setImageDrawable(icons.get(7));
-            hands.setImageDrawable(icons.get(8));
-            waist.setImageDrawable(icons.get(9));
-            legs.setImageDrawable(icons.get(10));
-            feet.setImageDrawable(icons.get(11));
-            finger1.setImageDrawable(icons.get(12));
-            finger2.setImageDrawable(icons.get(13));
-            trinket1.setImageDrawable(icons.get(14));
-            trinket2.setImageDrawable(icons.get(15));
-            mainHand.setImageDrawable(icons.get(16));
-            offHand.setImageDrawable(icons.get(17));
+            Drawable backgroundStroke = ContextCompat.getDrawable(view.getContext(), R.drawable.inputstyle);
+            for(int i = 0; i<gear.size();i++){
+                gear.get(i).setImageDrawable(icons.get(i));
+                gear.get(i).setBackground(backgroundStroke);
+                gear.get(i).setPadding(3,2,2,3);
+                gear.get(i).setClipToOutline(true);
+                gear.get(i).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+            }
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
