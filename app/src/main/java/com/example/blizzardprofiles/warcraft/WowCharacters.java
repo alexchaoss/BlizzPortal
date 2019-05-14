@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class WOWCharacters {
+public class WowCharacters {
 
     private JSONObject characterList;
     private JSONArray characterInfo;
@@ -20,7 +20,7 @@ public class WOWCharacters {
     private ArrayList<String> classListNumber = new ArrayList<>();
     private ArrayList<String> classList = new ArrayList<>();
 
-    public WOWCharacters(JSONObject characterList){
+    public WowCharacters(JSONObject characterList){
         this.characterList = characterList;
         this.characterInfo = getCharacterInfo();
     }
@@ -62,7 +62,7 @@ public class WOWCharacters {
 
     public ArrayList<String> getClassList() {
         for(String number: classListNumber){
-            classList.add(WoWClassEnum.fromOrdinal(Integer.parseInt(number)-1).toString());
+            classList.add(WowClassEnum.fromOrdinal(Integer.parseInt(number)-1).toString());
         }
         return classList;
     }

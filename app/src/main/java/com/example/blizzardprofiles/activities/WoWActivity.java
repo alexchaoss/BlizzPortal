@@ -1,6 +1,5 @@
 package com.example.blizzardprofiles.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -25,7 +24,7 @@ import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.UserInformation;
-import com.example.blizzardprofiles.warcraft.WOWCharacters;
+import com.example.blizzardprofiles.warcraft.WowCharacters;
 import com.example.blizzardprofiles.connection.ImageDownload;
 
 import org.json.JSONObject;
@@ -75,7 +74,7 @@ public class WoWActivity extends AppCompatActivity {
         Log.i("json", wowCharacters.toString());
         linearLayout = findViewById(R.id.linear_wow_characters);
 
-        final WOWCharacters characterList = new WOWCharacters(wowCharacters);
+        final WowCharacters characterList = new WowCharacters(wowCharacters);
         final ArrayList<String> characterNames = characterList.getCharacterNamesList();
         final ArrayList<String> realms = characterList.getRealmsList();
         ArrayList<String> levels = characterList.getLevelList();

@@ -11,7 +11,8 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/background_character" />
 
     <ScrollView
         android:id="@+id/scrollView3"
@@ -211,7 +212,7 @@
         android:id="@+id/character_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="name"
+        android:text="@string/name"
         android:textSize="30sp"
         android:textColor="#FFFFFF"
         android:gravity="center"
@@ -221,5 +222,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/item_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView3"
+        app:layout_constraintStart_toStartOf="@+id/scrollView3"
+        app:layout_constraintTop_toBottomOf="@+id/character_name" />
 
 </android.support.constraint.ConstraintLayout>
