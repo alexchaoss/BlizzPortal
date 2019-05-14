@@ -6,7 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Items {
+public class Gear {
 
     private JSONObject head;
     private JSONObject neck;
@@ -27,7 +27,7 @@ public class Items {
     private JSONObject mainHand;
     private JSONObject offHand;
 
-    public Items(JSONObject items){
+    public Gear(JSONObject items){
 
         try{
             head = (JSONObject) items.get("head");
