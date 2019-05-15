@@ -29,6 +29,8 @@ public class URLConstants {
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
     public final static String WOW_ITEM_QUERY = "/wow/character/realm/character?fields=items&locale=en_US&";
+    public final static String WOW_CHAR_STATS_QUERY = "/wow/character/realm/character?fields=stats&locale=en_US&";
+    public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
 
     public static String getBaseURLforUserInformation() {
         if (MainActivity.selectedRegion.equals("cn")) {

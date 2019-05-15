@@ -35,4 +35,6 @@
     <string name="items">item</string>
     <string name="name">name</string>
     <string name="background_character">TODO</string>
+    <string name="item_level">item level</string>
+    <string name="itemlevel">itemlvl</string>
 </resources>
