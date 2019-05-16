@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dementh.lib.battlenet_oauth2.BnConstants;
@@ -70,7 +72,6 @@ public class WoWActivity extends AppCompatActivity {
             Log.e("Error", e.toString());
         }
 
-
         Log.i("json", wowCharacters.toString());
         linearLayout = findViewById(R.id.linear_wow_characters);
 
@@ -78,7 +79,7 @@ public class WoWActivity extends AppCompatActivity {
         final ArrayList<String> characterNames = characterList.getCharacterNamesList();
         final ArrayList<String> realms = characterList.getRealmsList();
         ArrayList<String> levels = characterList.getLevelList();
-        ArrayList<Drawable> thumbnails =  new ImageDownload(characterList.getUrlThumbnail(), URLConstants.getRenderZoneURL(), this).getImageFromURL();
+        ArrayList<Drawable> thumbnails =  new ImageDownload(characterList.getUrlThumbnail(), URLConstants.getRenderZoneURL(), this, wowCharacters).getImageFromURL();
         ArrayList<String> className = characterList.getClassList();
 
         ArrayList<LinearLayout> linearLayoutCharacterList = new ArrayList<>();

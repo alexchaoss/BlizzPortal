@@ -21,6 +21,7 @@ public class URLConstants {
     //URLs for WoW images
     public final static String WOW_CHARACTER_THUMNAIL_URL = "http://render-zone.worldofwarcraft.com/character/";
     public final static String WOW_ICONS_URL = "https://render-us.worldofwarcraft.com/icons/";
+    public final static String NOT_FOUND_URL_AVATAR = "?alt=/wow/static/images/2d/avatar/";
 
     //URLs for D3 images
     public final static String D3_ICONS_ITEMS_URL = "http://media.blizzard.com/d3/icons/items/large/";
@@ -28,7 +29,7 @@ public class URLConstants {
 
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
-    public final static String WOW_ITEM_QUERY = "/wow/character/realm/character?fields=items&locale=en_US&";
+    public final static String WOW_ITEM_QUERY = "/wow/character/realm/character?fields=items,stats&locale=en_US&";
     public final static String WOW_CHAR_STATS_QUERY = "/wow/character/realm/character?fields=stats&locale=en_US&";
     public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
 
