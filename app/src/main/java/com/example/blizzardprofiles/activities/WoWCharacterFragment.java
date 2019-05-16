@@ -3,6 +3,7 @@ package com.example.blizzardprofiles.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -50,8 +51,7 @@ public class WoWCharacterFragment extends Fragment {
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
 
-    private JSONObject characterItems;
-    private JSONObject characterStats;
+    private JSONObject characterInformation;
     private JSONObject bonusID;
 
     private Gear equipment;
@@ -107,19 +107,18 @@ public class WoWCharacterFragment extends Fragment {
         bnOAuth2Params = this.getActivity().getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-        Drawable backgroundMain = new ImageDownload(urlMain, URLConstants.getRenderZoneURL(), view.getContext()).getImageFromURL().get(0);
+        Drawable backgroundMain = null;
 
         try {
-            characterItems = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
+            characterInformation = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
                     swapRealmCharacterFromURL(URLConstants.WOW_ITEM_QUERY), bnOAuth2Helper.getAccessToken()));
-            characterStats = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
-                    swapRealmCharacterFromURL(URLConstants.WOW_CHAR_STATS_QUERY), bnOAuth2Helper.getAccessToken()));
+
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
 
-        JSONObject itemObject;
-        JSONObject statsObject;
+        JSONObject itemObject = null;
+        JSONObject statsObject = null;
 
         ImageView head = view.findViewById(R.id.head);
         ImageView neck = view.findViewById(R.id.neck);
@@ -170,34 +169,86 @@ public class WoWCharacterFragment extends Fragment {
         gear.add(offHand);
 
         try {
-            itemObject = characterItems.getJSONObject("items");
-            statsObject = characterStats.getJSONObject("stats");
-
-            String reason = "";
-            if (characterItems.isNull("name")) {
-                characterName.setText(characterItems.get("reason").toString());
-                reason = characterItems.get("reason").toString();
+            if (characterInformation.isNull("items")) {
+                Log.i("test", "test");
+                characterName.setText(characterInformation.get("reason").toString());
+                background.setBackgroundColor(getResources().getColor(R.color.wowBackgroundColor));
+                itemLVL.setText("");
             } else {
-                characterName.setText(characterItems.get("name").toString());
-                itemLVL.setText("Item Level: " + itemObject.get("averageItemLevel"));
-            }
-
-            if(!reason.equals("Character not found.")){
+                itemObject = characterInformation.getJSONObject("items");
+                statsObject = characterInformation.getJSONObject("stats");
+                backgroundMain = new ImageDownload(urlMain, URLConstants.getRenderZoneURL(), view.getContext(), characterInformation).getImageFromURL().get(0);
                 background.setImageDrawable(backgroundMain);
+                characterName.setText(characterInformation.get("name").toString());
+                itemLVL.setText(String.format("Item Level: %s", itemObject.get("averageItemLevel")));
             }
 
-            strength.setText("Strength: " + statsObject.get("str"));
-            agility.setText("Agility: " + statsObject.get("agi"));
-            intellect.setText("Intellect: " + statsObject.get("int"));
-            stamina.setText("Stamina: " + statsObject.get("sta"));
+            strength.setText(String.format("Strength: %s", statsObject.get("str")));
+            agility.setText(String.format("Agility: %s", statsObject.get("agi")));
+            intellect.setText(String.format("Intellect: %s", statsObject.get("int")));
+            stamina.setText(String.format("Stamina: %s", statsObject.get("sta")));
 
-            crit.setText(String.format("Critical Strike: %.2f%%", Double.valueOf(statsObject.get("crit").toString())));
-            haste.setText(String.format("Haste: %.2f%%", Double.valueOf(statsObject.get("haste").toString())));
-            mastery.setText(String.format("Mastery: %.2f%%", Double.valueOf(statsObject.get("mastery").toString())));
-            versatility.setText(String.format("Versatility: %.2f%%", Double.valueOf(statsObject.get("versatilityDamageDoneBonus").toString())));
+            crit.setText(String.format("Critical Strike: %.2f%%", (double)statsObject.get("crit")));
+            haste.setText(String.format("Haste: %.2f%%", (double) statsObject.get("haste")));
+            mastery.setText(String.format("Mastery: %.2f%%", (double) statsObject.get("mastery")));
+            versatility.setText(String.format("Versatility: %.2f%%", (double) statsObject.get("versatilityDamageDoneBonus")));
 
             equipment = new Gear(itemObject);
             getIcons(view);
+
+            Drawable backgroundStroke;
+
+            for(final ImageView imageView: gear){
+
+                if(itemsInfoList.get(index).getName() != null){
+                    backgroundStroke = itemColor(itemsInfoList.get(index), new GradientDrawable());
+                    itemName = itemsInfoList.get(index).getName();
+                    itemLvl = itemsInfoList.get(index).getItemLevel().toString();
+                    armor = itemsInfoList.get(index).getArmor().toString();
+                    String tempStats = "";
+                    for (Stat stat : itemsInfoList.get(index).getStats()) {
+                        tempStats += "+ " + StatsEnum.fromOrdinal(stat.getStat()) + " " + stat.getAmount() + "\n";
+                    }
+                    nameList.put(index, itemName);
+                    if(Integer.valueOf(armor) > 0){
+                        stats.put(index, "Item Level " + itemLvl + "\n"+ armor + " Armor\n" + tempStats);
+                    }else {
+                        stats.put(index, "Item Level " + itemLvl + "\n"+ tempStats);
+                    }
+
+                    imageView.setBackground(backgroundStroke);
+                }
+
+                imageView.setId(index);
+                imageView.setImageDrawable(icons.get(index));
+                imageView.setPadding(3,2,2,3);
+                imageView.setClipToOutline(true);
+
+                imageView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                            {
+                                if(stats.get(imageView.getId()) != null){
+                                    nameView.setText(nameList.get(imageView.getId()));
+                                    nameView.setTextColor(getItemColor(itemsInfoList.get(imageView.getId())));
+                                    statsView.setText(stats.get(imageView.getId()));
+                                    statsView.setTextColor(Color.WHITE);
+                                    cardView.setContentPadding(10,10,10,10);
+                                    cardView.setBackground(imageView.getBackground());
+                                    cardView.setVisibility(View.VISIBLE);
+                                }
+                                break;
+                            }
+                            case MotionEvent.ACTION_UP:
+                                cardView.setVisibility(View.GONE);
+                        }
+                        return true;
+                    }
+                });
+                index++;
+            }
 
             for(int i = 0; i < gear.size();i++){
                 bonusID = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
@@ -207,60 +258,6 @@ public class WoWCharacterFragment extends Fragment {
 
         } catch (Exception e) {
             Log.e("Error", e.toString());
-        }
-
-        Drawable backgroundStroke;
-
-        for(final ImageView imageView: gear){
-
-            if(itemsInfoList.get(index).getName() != null){
-                backgroundStroke = itemColor(itemsInfoList.get(index), new GradientDrawable());
-                itemName = itemsInfoList.get(index).getName();
-                itemLvl = itemsInfoList.get(index).getItemLevel().toString();
-                armor = itemsInfoList.get(index).getArmor().toString();
-                String tempStats = "";
-                for (Stat stat : itemsInfoList.get(index).getStats()) {
-                    tempStats += "+ " + StatsEnum.fromOrdinal(stat.getStat()) + " " + stat.getAmount() + "\n";
-                }
-                nameList.put(index, itemName);
-                if(Integer.valueOf(armor) > 0){
-                    stats.put(index, "Item Level " + itemLvl + "\n"+ armor + " Armor\n" + tempStats);
-                }else {
-                    stats.put(index, "Item Level " + itemLvl + "\n"+ tempStats);
-                }
-
-                imageView.setBackground(backgroundStroke);
-            }
-
-            imageView.setId(index);
-            imageView.setImageDrawable(icons.get(index));
-            imageView.setPadding(3,2,2,3);
-            imageView.setClipToOutline(true);
-
-            imageView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()){
-                        case MotionEvent.ACTION_DOWN:
-                        {
-                            if(stats.get(imageView.getId()) != null){
-                                nameView.setText(nameList.get(imageView.getId()));
-                                nameView.setTextColor(getItemColor(itemsInfoList.get(imageView.getId())));
-                                statsView.setText(stats.get(imageView.getId()));
-                                statsView.setTextColor(Color.WHITE);
-                                cardView.setContentPadding(10,10,10,10);
-                                cardView.setBackground(imageView.getBackground());
-                                cardView.setVisibility(View.VISIBLE);
-                            }
-                            break;
-                        }
-                        case MotionEvent.ACTION_UP:
-                            cardView.setVisibility(View.GONE);
-                    }
-                    return true;
-                }
-            });
-            index++;
         }
     }
 
@@ -303,7 +300,7 @@ public class WoWCharacterFragment extends Fragment {
             } else {
                 Item currentItem = gson.fromJson(gearList.get(i).toString(), Item.class);
                 itemsInfoList.add(currentItem);
-                Drawable item = new ImageDownload(currentItem.getIcon()+ ".jpg", URLConstants.WOW_ICONS_URL + "56/", view.getContext()).getImageFromURL().get(0);
+                Drawable item = new ImageDownload(currentItem.getIcon()+ ".jpg", URLConstants.WOW_ICONS_URL + "56/", view.getContext(), characterInformation).getImageFromURL().get(0);
                 icons.add(item);
             }
         }

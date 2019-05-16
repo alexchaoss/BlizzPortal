@@ -11,6 +11,9 @@ import android.util.Log;
 
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.URLConstants;
+import com.example.blizzardprofiles.warcraft.WowCharacters;
+
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -23,15 +26,18 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
     private ArrayList<Drawable> thumbnails = new ArrayList<>();
     private ArrayList<String> urls;
     private String baseURL;
+    private JSONObject characterInformation;
 
 
-    public ImageDownload(ArrayList<String> urls, String baseURL, Context context){
+    public ImageDownload(ArrayList<String> urls, String baseURL, Context context, JSONObject characterInformation){
         this.urls = urls;
         this.context = context;
         this.baseURL = baseURL;
+        this.characterInformation = characterInformation;
     }
 
-    public ImageDownload(String url, String baseURL, Context context){
+    public ImageDownload(String url, String baseURL, Context context, JSONObject characterInformation){
+        this.characterInformation = characterInformation;
         this.urls = new ArrayList<>();
         this.urls.add(url);
         this.context = context;
@@ -39,17 +45,36 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
     }
 
     public ArrayList<Drawable> getImageFromURL(){
+        return doInBackground();
+    }
+
+    @Override
+    protected ArrayList<Drawable> doInBackground(String... strings) {
+        WowCharacters wowCharacters = null;
+        if(characterInformation != null){
+            wowCharacters = new WowCharacters(characterInformation);
+
+        }
         for(int i = 0; i<urls.size();i++){
             InputStream in =null;
             Bitmap bmp=null;
             try{
-
-                URL url = new URL(baseURL + urls.get(i));
+                if(characterInformation != null){
+                    URL url = new URL(baseURL + urls.get(i) + URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
+                }
+                URL url = new URL(baseURL + urls.get(i) + URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Accept-Encoding", "identity");
                 con.setDoInput(true);
                 int responseCode = con.getResponseCode();
                 Log.i("Response code", String.valueOf(responseCode));
+                if(responseCode == 403){
+                    Log.i("json", characterInformation.toString());
+                    url = new URL(URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
+                    con = (HttpURLConnection)url.openConnection();
+                    con.setRequestProperty("Accept-Encoding", "identity");
+                    con.setDoInput(true);
+                }
                 con.connect();
                 in = con.getInputStream();
                 bmp = BitmapFactory.decodeStream(in);
@@ -59,18 +84,8 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
             }
             catch(Exception ex){
                 Log.e("Exception",ex.toString());
-                if(baseURL.equals(URLConstants.getRenderZoneURL())){
-                    Drawable noAvatar = ContextCompat.getDrawable(context, R.drawable.no_avatar);
-                    thumbnails.add(noAvatar);
-                }
-
             }
         }
         return  thumbnails;
-    }
-
-    @Override
-    protected ArrayList<Drawable> doInBackground(String... strings) {
-        return getImageFromURL();
     }
 }

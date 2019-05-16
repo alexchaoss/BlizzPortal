@@ -19,29 +19,43 @@ public class WowCharacters {
     private ArrayList<String> urlThumbnail = new ArrayList<>();
     private ArrayList<String> classListNumber = new ArrayList<>();
     private ArrayList<String> classList = new ArrayList<>();
+    private ArrayList<String> genderList = new ArrayList<>();
+
+    private ArrayList<String> raceList = new ArrayList<>();
 
     public WowCharacters(JSONObject characterList){
         this.characterList = characterList;
-        this.characterInfo = getCharacterInfo();
+        getCharacterInfo();
     }
 
-    private JSONArray getCharacterInfo() {
+    private void getCharacterInfo() {
         try{
-            characterInfo = (JSONArray) characterList.get("characters");
-            for(int i = 0; i< characterInfo.length(); i++) {
-                JSONObject characters = (JSONObject) this.characterInfo.get(i);
+            if(characterList.has("characters")) {
+                characterInfo = (JSONArray) characterList.get("characters");
 
-                characterNamesList.add(characters.get("name").toString());
-                realmList.add(characters.get("realm").toString());
-                levelList.add(characters.get("level").toString());
-                urlThumbnail.add(characters.get("thumbnail").toString());
-                classListNumber.add(characters.get("class").toString());
+                for (int i = 0; i < characterInfo.length(); i++) {
+                    JSONObject characters = (JSONObject) this.characterInfo.get(i);
+
+                    characterNamesList.add(characters.get("name").toString());
+                    realmList.add(characters.get("realm").toString());
+                    levelList.add(characters.get("level").toString());
+                    urlThumbnail.add(characters.get("thumbnail").toString());
+                    classListNumber.add(characters.get("class").toString());
+                    genderList.add(characters.get("gender").toString());
+                    raceList.add(characters.get("race").toString());
+                }
+            }else{
+                characterNamesList.add(characterList.get("name").toString());
+                realmList.add(characterList.get("realm").toString());
+                levelList.add(characterList.get("level").toString());
+                urlThumbnail.add(characterList.get("thumbnail").toString());
+                classListNumber.add(characterList.get("class").toString());
+                genderList.add(characterList.get("gender").toString());
+                raceList.add(characterList.get("race").toString());
             }
             }catch (Exception e){
-                Log.e("Error", e.toString());
+                Log.e("Error WowCharacters", e.toString());
             }
-
-        return characterInfo;
     }
 
     public ArrayList<String> getCharacterNamesList() {
@@ -65,5 +79,13 @@ public class WowCharacters {
             classList.add(WowClassEnum.fromOrdinal(Integer.parseInt(number)-1).toString());
         }
         return classList;
+    }
+
+    public ArrayList<String> getGenderList(){
+        return genderList;
+    }
+
+    public ArrayList<String> getRaceList() {
+        return raceList;
     }
 }

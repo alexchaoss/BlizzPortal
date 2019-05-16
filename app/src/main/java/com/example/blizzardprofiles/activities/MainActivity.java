@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     private void clearCredentials(final BnOAuth2Params bnOAuth2Params)  {
         try {
             new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
+            sharedPreferences.getAll().clear();
         } catch (IOException e) {
             e.printStackTrace();
         }

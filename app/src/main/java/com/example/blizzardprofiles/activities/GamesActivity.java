@@ -23,8 +23,6 @@ import com.example.blizzardprofiles.UserInformation;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
-
 public class GamesActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
@@ -63,12 +61,11 @@ public class GamesActivity extends AppCompatActivity {
 
         btag.setText(UserInformation.getBattleTag());
 
-        //Button calls
         wowButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                showProgressBar();
+                showProgressBar(true);
                 callNextActivity(WoWActivity.class);
             }
         });
@@ -77,7 +74,7 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showProgressBar();
+                showProgressBar(true);
                 callNextActivity(D3Activity.class);
             }
         });
@@ -86,7 +83,7 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showProgressBar();
+                showProgressBar(true);
                 callNextActivity(SC2Activity.class);
             }
         });
@@ -95,25 +92,29 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showProgressBar();
+                showProgressBar(true);
                 callNextActivity(OWActivity.class);
             }
         });
     }
 
-    private void showProgressBar() {
-        ProgressBar progressBar = new ProgressBar(GamesActivity.this,null,android.R.attr.progressBarStyleLarge);
+    private void showProgressBar(boolean toggle) {
+        ProgressBar progressBar = new ProgressBar(this,null,android.R.attr.progressBarStyleLarge);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         ConstraintLayout layout = findViewById(R.id.background);
         layout.addView(progressBar,params);
-        progressBar.setVisibility(View.VISIBLE);
+        if(toggle){
+            progressBar.setVisibility(View.VISIBLE);
+        }else{
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onBackPressed(){
             super.onBackPressed();
-            Intent intent = new Intent(GamesActivity.this, MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
     }
 
