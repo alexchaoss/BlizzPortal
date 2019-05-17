@@ -205,13 +205,15 @@ public class WoWCharacterFragment extends Fragment {
                     itemName = itemsInfoList.get(index).getName();
                     itemLvl = itemsInfoList.get(index).getItemLevel().toString();
                     armor = itemsInfoList.get(index).getArmor().toString();
+                    String itemSlot = view.getResources().getResourceEntryName(imageView.getId());
+                    itemSlot = itemSlot.substring(0,1).toUpperCase() + itemSlot.substring(1);
                     String tempStats = "";
                     for (Stat stat : itemsInfoList.get(index).getStats()) {
                         tempStats += "+ " + StatsEnum.fromOrdinal(stat.getStat()) + " " + stat.getAmount() + "\n";
                     }
                     nameList.put(index, itemName);
                     if(Integer.valueOf(armor) > 0){
-                        stats.put(index, "Item Level " + itemLvl + "\n"+ armor + " Armor\n" + tempStats);
+                        stats.put(index, String.format("Item Level %s\n%s\n%s Armor\n%s",itemLvl, itemSlot, armor, tempStats));
                     }else {
                         stats.put(index, "Item Level " + itemLvl + "\n"+ tempStats);
                     }
