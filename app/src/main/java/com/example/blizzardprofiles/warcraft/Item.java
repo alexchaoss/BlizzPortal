@@ -35,6 +35,9 @@ public class Item {
     @SerializedName("armor")
     @Expose
     private Integer armor;
+    @SerializedName("weaponInfo")
+    @Expose
+    private WeaponInfo weaponInfo;
     @SerializedName("context")
     @Expose
     private String context;
@@ -125,6 +128,14 @@ public class Item {
 
     public void setArmor(Integer armor) {
         this.armor = armor;
+    }
+
+    public WeaponInfo getWeaponInfo() {
+        return weaponInfo;
+    }
+
+    public void setWeaponInfo(WeaponInfo weaponInfo) {
+        this.weaponInfo = weaponInfo;
     }
 
     public String getContext() {

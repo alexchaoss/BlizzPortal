@@ -52,7 +52,7 @@ public class GamesActivity extends AppCompatActivity {
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
         try {
-            userInfo = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforUserInformation(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
+            userInfo = new JSONObject(new ConnectionService().getStringJSONFromRequest(URLConstants.getBaseURLforUserInformation(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
             UserInformation.setBattleTag(userInfo.getString("battletag"));
             UserInformation.setUserID(userInfo.getString("id"));
         }catch (Exception e){

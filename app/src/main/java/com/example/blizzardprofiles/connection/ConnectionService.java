@@ -1,32 +1,40 @@
 package com.example.blizzardprofiles.connection;
 
+import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
 
 import com.example.blizzardprofiles.URLConstants;
-import com.example.blizzardprofiles.activities.MainActivity;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 
-public class ConnectionService {
+public class ConnectionService extends AsyncTask<String, Void, String> {
 
     private static String returnJson;
     private static BufferedReader reader = null;
     private static HttpsURLConnection urlConnection;
     private static String url;
 
-    public static String getStringJSONFromRequest(String baseURL, String urlEndPoint, String accessToken) {
+    public String getStringJSONFromRequest(String baseURL, String urlEndPoint, String accessToken) {
+        return doInBackground(baseURL, urlEndPoint, accessToken);
+    }
+
+    @Override
+    protected String doInBackground(String... strings) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        url = baseURL + urlEndPoint + URLConstants.ACCESS_TOKEN_QUERY + accessToken;
+        url = strings[0] + strings[1] + URLConstants.ACCESS_TOKEN_QUERY + strings[2];
         Log.i("URL",url );
 
         HostnameVerifier allHostsValid = new HostnameVerifier() {
