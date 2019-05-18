@@ -3,7 +3,6 @@ package com.example.blizzardprofiles.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -11,7 +10,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,15 +30,19 @@ import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.connection.ImageDownload;
 import com.example.blizzardprofiles.warcraft.Gear;
 import com.example.blizzardprofiles.warcraft.Item;
+import com.example.blizzardprofiles.warcraft.ItemInformation;
+import com.example.blizzardprofiles.warcraft.ItemSpell;
 import com.example.blizzardprofiles.warcraft.Stat;
 import com.example.blizzardprofiles.warcraft.StatsEnum;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -68,13 +73,10 @@ public class WoWCharacterFragment extends Fragment {
     private ArrayList<ImageView> gear = new ArrayList<>();
     private ArrayList<Item> itemsInfoList = new ArrayList<>();
     private ArrayList<JSONObject> bonusIDList = new ArrayList<>();
+    private ArrayList<ItemInformation> itemInformations = new ArrayList<>();
 
     private Map<Integer, String> stats = new HashMap<>();
     private Map<Integer, String> nameList = new HashMap<>();
-
-    private String itemName;
-    private String itemLvl;
-    private String armor;
 
     private int index = 0;
 
@@ -94,13 +96,23 @@ public class WoWCharacterFragment extends Fragment {
         itemLVL = view.findViewById(R.id.item_lvl);
         background = view.findViewById(R.id.background);
         cardView = view.findViewById(R.id.item_stats);
+        cardView.setContentPadding(10,10,10,10);
         linearLayoutItemStats = new LinearLayout(view.getContext());
         linearLayoutItemStats.setOrientation(LinearLayout.VERTICAL);
+        linearLayoutItemStats.setGravity(Gravity.CENTER);
         cardView.addView(linearLayoutItemStats);
         statsView = new TextView(view.getContext());
         nameView = new TextView(view.getContext());
         linearLayoutItemStats.addView(nameView);
         linearLayoutItemStats.addView(statsView);
+
+        ViewGroup.LayoutParams layoutParamsName = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        ((LinearLayout.LayoutParams) layoutParamsName).setMargins(20,20,20,0);
+        nameView.setLayoutParams(layoutParamsName);
+        ((LinearLayout.LayoutParams) layoutParamsStats).setMargins(20,0,20,0);
+        statsView.setLayoutParams(layoutParamsStats);
+
 
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
@@ -110,9 +122,8 @@ public class WoWCharacterFragment extends Fragment {
         Drawable backgroundMain = null;
 
         try {
-            characterInformation = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
+            characterInformation = new JSONObject(new ConnectionService().getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
                     swapRealmCharacterFromURL(URLConstants.WOW_ITEM_QUERY), bnOAuth2Helper.getAccessToken()));
-
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
@@ -196,26 +207,78 @@ public class WoWCharacterFragment extends Fragment {
             equipment = new Gear(itemObject);
             getIcons(view);
 
+            for(int i = 0; i < gear.size();i++){
+                if(itemsInfoList.get(i).getName() != null){
+                    bonusID = new JSONObject(new ConnectionService().getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
+                            swapItemIDBonusID(URLConstants.BONUSID_QUERY, i), bnOAuth2Helper.getAccessToken()));
+                    bonusIDList.add(bonusID);
+                }else{
+                    bonusIDList.add(null);
+                }
+            }
+
+            Gson gson = new GsonBuilder().create();
+            for(int i = 0; i < bonusIDList.size(); i++){
+                if(bonusIDList.get(i) != null){
+                    ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
+                    itemInformations.add(itemInformation);
+                }else{
+                    itemInformations.add(new ItemInformation());
+                }
+
+            }
+
             Drawable backgroundStroke;
 
             for(final ImageView imageView: gear){
 
                 if(itemsInfoList.get(index).getName() != null){
+                    String description = "";
+                    String nameDescription = "";
+                    String trigger = "";
                     backgroundStroke = itemColor(itemsInfoList.get(index), new GradientDrawable());
-                    itemName = itemsInfoList.get(index).getName();
-                    itemLvl = itemsInfoList.get(index).getItemLevel().toString();
-                    armor = itemsInfoList.get(index).getArmor().toString();
-                    String itemSlot = view.getResources().getResourceEntryName(imageView.getId());
-                    itemSlot = itemSlot.substring(0,1).toUpperCase() + itemSlot.substring(1);
-                    String tempStats = "";
-                    for (Stat stat : itemsInfoList.get(index).getStats()) {
-                        tempStats += "+ " + StatsEnum.fromOrdinal(stat.getStat()) + " " + stat.getAmount() + "\n";
+                    String itemName = itemsInfoList.get(index).getName();
+                    String itemLvl = "<font color=#edc201>Item Level " + itemsInfoList.get(index).getItemLevel().toString() + "</font>";
+                    String armor = itemsInfoList.get(index).getArmor().toString();
+                    if(itemInformations.get(index).getName() != null){
+                        description = "<font color=#edc201>" + itemInformations.get(index).getDescription() + "</font>";
+                        nameDescription = "<font color=#00cc00>" + itemInformations.get(index).getNameDescription() + "</font><br>";
+                        trigger = getTrigger(index);
                     }
+
+                    String itemSlot = view.getResources().getResourceEntryName(imageView.getId());
+                    itemSlot = formatItemSlotName(itemSlot);
+
+                    String damageInfo = "";
+                    damageInfo = getDamageInformation(itemSlot, damageInfo);
+
+                    String tempStats = "";
+                    List<Stat> statList = itemsInfoList.get(index).getStats();
+                    sortStats(statList);
+                    tempStats = getStatsFormatted(tempStats, statList);
+
                     nameList.put(index, itemName);
+
+                    Log.i("test", nameDescription);
+
+
+
                     if(Integer.valueOf(armor) > 0){
-                        stats.put(index, String.format("Item Level %s\n%s\n%s Armor\n%s",itemLvl, itemSlot, armor, tempStats));
+                        stats.put(index, String.format("%s<br>%s%s<br>%s Armor<br>%s",itemLvl, itemSlot, damageInfo, armor, tempStats));
                     }else {
-                        stats.put(index, "Item Level " + itemLvl + "\n"+ tempStats);
+                        stats.put(index, String.format("%s<br>%s%s<br>%s",itemLvl, itemSlot, damageInfo,tempStats));
+                    }
+
+                    if(!nameDescription.equals("<font color=#00cc00></font><br>")){
+                        stats.put(index, nameDescription + stats.get(index));
+                    }
+
+                    if (!trigger.equals("")){
+                        stats.put(index, stats.get(index) + String.format("<br>%s", trigger));
+                    }
+
+                    if(!itemInformations.get(index).getDescription().equals("")){
+                        stats.put(index, stats.get(index) + String.format("<br>%s", description));
                     }
 
                     imageView.setBackground(backgroundStroke);
@@ -235,7 +298,8 @@ public class WoWCharacterFragment extends Fragment {
                                 if(stats.get(imageView.getId()) != null){
                                     nameView.setText(nameList.get(imageView.getId()));
                                     nameView.setTextColor(getItemColor(itemsInfoList.get(imageView.getId())));
-                                    statsView.setText(stats.get(imageView.getId()));
+                                    nameView.setTextSize(17);
+                                    statsView.setText(Html.fromHtml(stats.get(imageView.getId())));
                                     statsView.setTextColor(Color.WHITE);
                                     cardView.setContentPadding(10,10,10,10);
                                     cardView.setBackground(imageView.getBackground());
@@ -252,23 +316,92 @@ public class WoWCharacterFragment extends Fragment {
                 index++;
             }
 
-            for(int i = 0; i < gear.size();i++){
-                bonusID = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(),
-                        swapItemIDBonusID(URLConstants.BONUSID_QUERY, i), bnOAuth2Helper.getAccessToken()));
-                bonusIDList.add(bonusID);
-            }
-
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
+
+    }
+
+    private String getTrigger(int index) {
+        String trigger = "";
+        for(int i = 0; i < itemInformations.get(index).getItemSpells().size();i++){
+            ItemSpell itemSpell = itemInformations.get(index).getItemSpells().get(i);
+            if(itemSpell.getTrigger().equals("ON_EQUIP") && !itemSpell.getScaledDescription().equals("")){
+                trigger += "<font color=#00cc00>Equip: " + itemSpell.getScaledDescription() + "</font>";
+            }else if(itemSpell.getTrigger().equals("ON_USE") && !itemSpell.getScaledDescription().equals("")){
+                trigger += "<font color=#00cc00>Use: " + itemSpell.getScaledDescription() + "</font>";
+            }
+        }
+        Log.i("test", trigger);
+        return trigger;
+    }
+
+    private String getStatsFormatted(String tempStats, List<Stat> statList) {
+        for (Stat stat : statList) {
+            String currentStat;
+            if(stat.getStat() > 7 && stat.getStat() < 71){
+                currentStat = "<font color=#00cc00>" + "+" + StatsEnum.fromOrdinal(stat.getStat())  + " " + stat.getAmount() + "</font>";
+            }else{
+                currentStat = "+" +  StatsEnum.fromOrdinal(stat.getStat()).toString() + " " + stat.getAmount();
+            }
+            tempStats += currentStat + "<br>";
+        }
+        return tempStats;
+    }
+
+    private String getDamageInformation(String itemSlot, String damageInfo) {
+        if(itemSlot.equals("Off-Hand") || itemSlot.equals("Main-Hand")){
+            int min = itemsInfoList.get(index).getWeaponInfo().getDamage().getMin();
+            int max = itemsInfoList.get(index).getWeaponInfo().getDamage().getMax();
+            double speed = itemsInfoList.get(index).getWeaponInfo().getWeaponSpeed();
+            double dps = itemsInfoList.get(index).getWeaponInfo().getDps();
+            damageInfo = String.format("<br>%d - %d Damage<br>Speed %.2f<br>(%.2f damage per second)", min, max, speed, dps);
+        }
+        return damageInfo;
+    }
+
+    private void sortStats(List<Stat> statList) {
+        Collections.sort(statList, new Comparator<Stat>() {
+            @Override
+            public int compare(Stat o1, Stat o2) {
+                if(o2.getStat() > 70){
+                    return 1;
+                }else if(o1.getStat() > 70){
+                    return -1;
+                }
+                return o1.getStat().compareTo(o2.getStat());
+            }
+        });
+    }
+
+    private String formatItemSlotName(String itemSlot) {
+        itemSlot = itemSlot.substring(0,1).toUpperCase() + itemSlot.substring(1);
+        itemSlot = itemSlot.replace("_", "-");
+        if(itemSlot.contains("-")) {
+            char before = itemSlot.charAt(itemSlot.indexOf("-")+1);
+            itemSlot = itemSlot.replace(before, Character.toUpperCase(before));
+        }
+        itemSlot = itemSlot.replaceAll("[0-9]", "");
+        return itemSlot;
     }
 
     private String swapItemIDBonusID(String bonusidQuery, int i) {
         String bonusIds = "";
-        for(int j = 0; j < itemsInfoList.get(i).getBonusLists().size(); j++){
-            bonusIds += itemsInfoList.get(i).getBonusLists().get(i) + ",";
+        String idURL = "";
+        int size = itemsInfoList.get(i).getBonusLists().size();
+        if(size > 0){
+
+            for(int j = 0; j < size; j++) {
+                for (int k = 0; k < size; k++) {
+                    bonusIds += itemsInfoList.get(i).getBonusLists().get(k) + ",";
+                }
+            }
+            idURL = itemsInfoList.get(i).getId().toString() + "?b1=" + bonusIds.substring(0,bonusIds.length()-1);
+        }else{
+            idURL = itemsInfoList.get(i).getId().toString() + "?b1=";
         }
-        return bonusidQuery.replace("id?b1=bonusList", itemsInfoList.get(i).getId().toString() + "?b1=" + bonusIds.substring(0,bonusIds.length()-1));
+
+        return bonusidQuery.replace("id?b1=bonusList",  idURL );
     }
 
     private void getIcons(View view) {
@@ -368,7 +501,7 @@ public class WoWCharacterFragment extends Fragment {
         }else if(item.getQuality() == 1){
             return Color.WHITE;
         }else if(item.getQuality() == 2){
-            return Color.parseColor("#1fd309");
+            return Color.parseColor("#00cc00");
         }else if(item.getQuality() == 3){
             return Color.parseColor("#0070ff");
         }else if(item.getQuality() == 4){

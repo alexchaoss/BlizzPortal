@@ -67,7 +67,7 @@ public class WoWActivity extends AppCompatActivity {
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
         try {
-            wowCharacters = new JSONObject(ConnectionService.getStringJSONFromRequest(URLConstants.getBaseURLforAPI(), URLConstants.WOW_CHAR_URL + "?", bnOAuth2Helper.getAccessToken()));
+            wowCharacters = new JSONObject(new ConnectionService().getStringJSONFromRequest(URLConstants.getBaseURLforAPI(), URLConstants.WOW_CHAR_URL + "?", bnOAuth2Helper.getAccessToken()));
         }catch (Exception e){
             Log.e("Error", e.toString());
         }
