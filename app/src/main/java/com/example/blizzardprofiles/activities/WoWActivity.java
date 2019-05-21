@@ -13,10 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dementh.lib.battlenet_oauth2.BnConstants;
@@ -50,6 +52,15 @@ public class WoWActivity extends AppCompatActivity {
     private ImageButton d3Button;
     private ImageButton owButton;
     private TextView btag;
+    private RelativeLayout loadingCircle;
+
+    private WowCharacters characterList;
+    private ArrayList<String> characterNames;
+    private ArrayList<String> realms;
+    private ArrayList<String> levels;
+    private ArrayList<Drawable> thumbnails;
+    private ArrayList<String> className;
+    private ArrayList<LinearLayout> linearLayoutCharacterList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,121 +70,15 @@ public class WoWActivity extends AppCompatActivity {
         d3Button = findViewById(R.id.diablo3Button);
         owButton = findViewById(R.id.overwatchButton);
         btag = findViewById(R.id.btag_header);
-
+        loadingCircle = findViewById(R.id.loadingCircle);
+        loadingCircle.setVisibility(View.VISIBLE);
         btag.setText(UserInformation.getBattleTag());
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        bnOAuth2Params = this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
-        bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        try {
-            wowCharacters = new JSONObject(new ConnectionService().getStringJSONFromRequest(URLConstants.getBaseURLforAPI(), URLConstants.WOW_CHAR_URL + "?", bnOAuth2Helper.getAccessToken()));
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-        }
+        new PrepareData().execute();
 
-        Log.i("json", wowCharacters.toString());
-        linearLayout = findViewById(R.id.linear_wow_characters);
-
-        final WowCharacters characterList = new WowCharacters(wowCharacters);
-        final ArrayList<String> characterNames = characterList.getCharacterNamesList();
-        final ArrayList<String> realms = characterList.getRealmsList();
-        ArrayList<String> levels = characterList.getLevelList();
-        ArrayList<Drawable> thumbnails =  new ImageDownload(characterList.getUrlThumbnail(), URLConstants.getRenderZoneURL(), this, wowCharacters).getImageFromURL();
-        ArrayList<String> className = characterList.getClassList();
-
-        ArrayList<LinearLayout> linearLayoutCharacterList = new ArrayList<>();
-
-        LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
-        layoutParamsImage.setMargins(15,0,0,0);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(100,0,100,75);
-
-        LinearLayout.LayoutParams layoutParamsInfo = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsInfo.setMargins(25,0,0,0);
-
-        LinearLayout.LayoutParams layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsClass.setMargins(15,0,0,0);
-
-
-        for(int i = 0; i<characterNames.size();i++) {
-
-            LinearLayout linearLayoutCharacters = new LinearLayout(this);
-            LinearLayout linearLayoutText = new LinearLayout(this);
-            LinearLayout linearLayoutLevelClass = new LinearLayout(this);
-            linearLayoutCharacters.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayoutText.setOrientation(LinearLayout.VERTICAL);
-            linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
-
-            //Add character thumbnail to view
-            ImageView imageView = new ImageView(this);
-            imageView.setImageDrawable(thumbnails.get(i));
-
-            imageView.setLayoutParams(layoutParamsImage);
-
-            //Add character name to view
-            TextView textViewName = new TextView(this);
-            textViewName.setText(characterNames.get(i));
-            textViewName.setTextColor(Color.WHITE);
-            textViewName.setTextSize(17);
-
-            //Add level to view
-            TextView textViewLevel = new TextView(this);
-            textViewLevel.setText(levels.get(i));
-            textViewLevel.setTextColor(Color.WHITE);
-            textViewLevel.setTextSize(15);
-
-            //Add class to view
-            TextView textViewClass = new TextView(this);
-            textViewClass.setText(className.get(i));
-            textViewClass.setTextColor(Color.WHITE);
-            textViewClass.setTextSize(15);
-
-
-            //Add realm to view
-            TextView textViewRealm = new TextView(this);
-            textViewRealm.setText(realms.get(i));
-            textViewRealm.setTextColor(Color.WHITE);
-            textViewRealm.setTextSize(15);
-
-            //Add level and class to parent layout
-            linearLayoutLevelClass.addView(textViewLevel);
-            linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
-
-            //Add layouts of texts to parent layout
-            linearLayoutText.addView(textViewName, layoutParamsInfo);
-            linearLayoutText.addView(linearLayoutLevelClass, layoutParamsInfo);
-            linearLayoutText.addView(textViewRealm, layoutParamsInfo);
-
-            //Add views to layout
-            linearLayoutCharacters.addView(imageView);
-            linearLayoutCharacters.addView(linearLayoutText);
-            linearLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
-            linearLayoutCharacterList.add(linearLayoutCharacters);
-        }
-        int i = 0;
-        for(final LinearLayout linear: linearLayoutCharacterList) {
-            linear.setId(i);
-            linearLayout.addView(linear);
-            linear.setLayoutParams(layoutParams);
-            linear.setBackground(getResources().getDrawable(R.drawable.inputstyle));
-            linear.setClickable(true);
-            linear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for(int i = 0; i<characterNames.size();i++){
-                        if(i == linear.getId()){
-                            characterClicked = characterNames.get(i);
-                            characterRealm = realms.get(i);
-                            url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
-                        }
-                    }
-                    displayFragment();
-                }
-            });
-            i++;
-        }
         //Button calls
 
         d3Button.setOnClickListener(new View.OnClickListener(){
@@ -219,5 +124,136 @@ public class WoWActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
         fragmentTransaction.addToBackStack(null).commit();
         getSupportFragmentManager().executePendingTransactions();
+    }
+
+    private class PrepareData extends AsyncTask<Void, Void, Void> {
+
+        protected void onPreExecute(Void param) {
+            super.onPreExecute();
+        }
+
+        protected Void doInBackground(Void... param) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(WoWActivity.this);
+            bnOAuth2Params = WoWActivity.this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
+            bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+
+            try {
+                wowCharacters = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() +
+                        URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken()).getStringJSONFromRequest().get(0));
+            }catch (Exception e){
+                Log.e("Error", e.toString());
+            }
+
+            Log.i("json", wowCharacters.toString());
+            linearLayout = findViewById(R.id.linear_wow_characters);
+
+            characterList = new WowCharacters(wowCharacters);
+            characterNames = characterList.getCharacterNamesList();
+            realms = characterList.getRealmsList();
+            levels = characterList.getLevelList();
+            thumbnails =  new ImageDownload(characterList.getUrlThumbnail(), URLConstants.getRenderZoneURL(), WoWActivity.this, wowCharacters).getImageFromURL();
+            className = characterList.getClassList();
+
+            linearLayoutCharacterList = new ArrayList<>();
+
+            LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
+            layoutParamsImage.setMargins(15,0,0,0);
+
+            LinearLayout.LayoutParams layoutParamsInfo = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParamsInfo.setMargins(25,0,0,0);
+
+            LinearLayout.LayoutParams layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParamsClass.setMargins(15,0,0,0);
+
+
+            for(int i = 0; i<characterNames.size();i++) {
+
+                LinearLayout linearLayoutCharacters = new LinearLayout(WoWActivity.this);
+                LinearLayout linearLayoutText = new LinearLayout(WoWActivity.this);
+                LinearLayout linearLayoutLevelClass = new LinearLayout(WoWActivity.this);
+                linearLayoutCharacters.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayoutText.setOrientation(LinearLayout.VERTICAL);
+                linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
+
+                //Add character thumbnail to view
+                ImageView imageView = new ImageView(WoWActivity.this);
+                imageView.setImageDrawable(thumbnails.get(i));
+
+                imageView.setLayoutParams(layoutParamsImage);
+
+                //Add character name to view
+                TextView textViewName = new TextView(WoWActivity.this);
+                textViewName.setText(characterNames.get(i));
+                textViewName.setTextColor(Color.WHITE);
+                textViewName.setTextSize(17);
+
+                //Add level to view
+                TextView textViewLevel = new TextView(WoWActivity.this);
+                textViewLevel.setText(levels.get(i));
+                textViewLevel.setTextColor(Color.WHITE);
+                textViewLevel.setTextSize(15);
+
+                //Add class to view
+                TextView textViewClass = new TextView(WoWActivity.this);
+                textViewClass.setText(className.get(i));
+                textViewClass.setTextColor(Color.WHITE);
+                textViewClass.setTextSize(15);
+
+
+                //Add realm to view
+                TextView textViewRealm = new TextView(WoWActivity.this);
+                textViewRealm.setText(realms.get(i));
+                textViewRealm.setTextColor(Color.WHITE);
+                textViewRealm.setTextSize(15);
+
+                //Add level and class to parent layout
+                linearLayoutLevelClass.addView(textViewLevel);
+                linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
+
+                //Add layouts of texts to parent layout
+                linearLayoutText.addView(textViewName, layoutParamsInfo);
+                linearLayoutText.addView(linearLayoutLevelClass, layoutParamsInfo);
+                linearLayoutText.addView(textViewRealm, layoutParamsInfo);
+
+                //Add views to layout
+                linearLayoutCharacters.addView(imageView);
+                linearLayoutCharacters.addView(linearLayoutText);
+                linearLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
+                linearLayoutCharacterList.add(linearLayoutCharacters);
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void param) {
+            super.onPostExecute(param);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(100,0,100,75);
+
+            int i = 0;
+            for(final LinearLayout linear: linearLayoutCharacterList) {
+                linear.setId(i);
+                linearLayout.addView(linear);
+                linear.setLayoutParams(layoutParams);
+                linear.setBackground(getResources().getDrawable(R.drawable.inputstyle, WoWActivity.this.getTheme()));
+                linear.setClickable(true);
+                linear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for(int i = 0; i<characterNames.size();i++){
+                            if(i == linear.getId()){
+                                characterClicked = characterNames.get(i);
+                                characterRealm = realms.get(i);
+                                url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
+                            }
+                        }
+                        displayFragment();
+                    }
+                });
+                i++;
+            }
+
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            loadingCircle.setVisibility(View.GONE);
+        }
     }
 }

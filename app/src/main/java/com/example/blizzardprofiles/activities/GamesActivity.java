@@ -2,24 +2,21 @@ package com.example.blizzardprofiles.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
-import com.example.blizzardprofiles.URLConstants;
-import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.R;
+import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.UserInformation;
+import com.example.blizzardprofiles.connection.ConnectionService;
 
 import org.json.JSONObject;
 
@@ -35,12 +32,13 @@ public class GamesActivity extends AppCompatActivity {
     private ImageButton d3Button;
     private ImageButton owButton;
     private TextView btag;
-    JSONObject userInfo;
+    private JSONObject userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
+
         wowButton = findViewById(R.id.wowButton);
         sc2Button = findViewById(R.id.starcraft2Button);
         d3Button = findViewById(R.id.diablo3Button);
@@ -51,8 +49,15 @@ public class GamesActivity extends AppCompatActivity {
         bnOAuth2Params = this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         try {
-            userInfo = new JSONObject(new ConnectionService().getStringJSONFromRequest(URLConstants.getBaseURLforUserInformation(), URLConstants.END_USER_INFO_URL, bnOAuth2Helper.getAccessToken()));
+            userInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforUserInformation() +
+                    URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY+ bnOAuth2Helper.getAccessToken()).getStringJSONFromRequest().get(0));
             UserInformation.setBattleTag(userInfo.getString("battletag"));
             UserInformation.setUserID(userInfo.getString("id"));
         }catch (Exception e){
@@ -65,7 +70,6 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showProgressBar(true);
                 callNextActivity(WoWActivity.class);
             }
         });
@@ -74,7 +78,6 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showProgressBar(true);
                 callNextActivity(D3Activity.class);
             }
         });
@@ -83,7 +86,6 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showProgressBar(true);
                 callNextActivity(SC2Activity.class);
             }
         });
@@ -92,23 +94,9 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showProgressBar(true);
                 callNextActivity(OWActivity.class);
             }
         });
-    }
-
-    private void showProgressBar(boolean toggle) {
-        ProgressBar progressBar = new ProgressBar(this,null,android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        ConstraintLayout layout = findViewById(R.id.background);
-        layout.addView(progressBar,params);
-        if(toggle){
-            progressBar.setVisibility(View.VISIBLE);
-        }else{
-            progressBar.setVisibility(View.GONE);
-        }
     }
 
     @Override
