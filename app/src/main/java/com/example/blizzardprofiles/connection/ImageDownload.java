@@ -51,6 +51,7 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
     @Override
     protected ArrayList<Drawable> doInBackground(String... strings) {
         WowCharacters wowCharacters = null;
+        HttpURLConnection con = null;
         if(characterInformation != null){
             wowCharacters = new WowCharacters(characterInformation);
 
@@ -63,7 +64,7 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
                     URL url = new URL(baseURL + urls.get(i) + URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
                 }
                 URL url = new URL(baseURL + urls.get(i) + URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
-                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Accept-Encoding", "identity");
                 con.setDoInput(true);
                 int responseCode = con.getResponseCode();
