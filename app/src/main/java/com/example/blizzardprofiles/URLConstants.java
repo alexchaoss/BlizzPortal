@@ -1,6 +1,6 @@
 package com.example.blizzardprofiles;
 
-import com.example.blizzardprofiles.activities.MainActivity;
+import com.example.blizzardprofiles.UI.MainActivity;
 
 public class URLConstants {
     //Callback URL

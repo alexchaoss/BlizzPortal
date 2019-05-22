@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles.activities;
+package com.example.blizzardprofiles.UI.UI_starcraft;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +17,11 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.UserInformation;
+import com.example.blizzardprofiles.UI.UI_diablo.D3Activity;
+import com.example.blizzardprofiles.UI.UI_overwatch.OWActivity;
+import com.example.blizzardprofiles.UI.UI_warcraft.WoWActivity;
 
-public class D3Activity extends AppCompatActivity {
+public class SC2Activity extends AppCompatActivity {
 
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
@@ -26,17 +29,18 @@ public class D3Activity extends AppCompatActivity {
 
 
     private ImageButton wowButton;
-    private ImageButton sc2Button;
+    private ImageButton d3Button;
     private ImageButton owButton;
     private TextView btag;
     private RelativeLayout loadingCircle;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.d3_activity);
+        setContentView(R.layout.sc2_activity);
         wowButton = findViewById(R.id.wowButton);
-        sc2Button = findViewById(R.id.starcraft2Button);
+        d3Button = findViewById(R.id.diablo3Button);
         owButton = findViewById(R.id.overwatchButton);
         btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
@@ -57,13 +61,14 @@ public class D3Activity extends AppCompatActivity {
             }
         });
 
-        sc2Button.setOnClickListener(new View.OnClickListener(){
+        d3Button.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                callNextActivity(SC2Activity.class);
+                callNextActivity(D3Activity.class);
             }
         });
+
 
         owButton.setOnClickListener(new View.OnClickListener(){
 
@@ -89,8 +94,8 @@ public class D3Activity extends AppCompatActivity {
         }
 
         protected Void doInBackground(Void... param) {
-            prefs = PreferenceManager.getDefaultSharedPreferences(D3Activity.this);
-            bnOAuth2Params = D3Activity.this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
+            prefs = PreferenceManager.getDefaultSharedPreferences(SC2Activity.this);
+            bnOAuth2Params = SC2Activity.this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
             bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
             return null;
         }

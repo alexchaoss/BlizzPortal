@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles.activities;
+package com.example.blizzardprofiles.UI;
 
 
 import android.content.Intent;

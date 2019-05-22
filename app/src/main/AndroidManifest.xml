@@ -13,27 +13,27 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".UI.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.blizzardprofiles.activities.GamesActivity"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:name="com.example.blizzardprofiles.UI.GamesActivity"
+            android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.activities.WoWActivity"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:name="com.example.blizzardprofiles.UI.UI_warcraft.WoWActivity"
+            android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.activities.SC2Activity"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:name="com.example.blizzardprofiles.UI.UI_starcraft.SC2Activity"
+            android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.activities.OWActivity"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:name="com.example.blizzardprofiles.UI.UI_overwatch.OWActivity"
+            android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.activities.D3Activity"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:name="com.example.blizzardprofiles.UI.UI_diablo.D3Activity"
+            android:parentActivityName=".UI.MainActivity"/>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles.activities;
+package com.example.blizzardprofiles.UI.UI_warcraft;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -100,6 +100,8 @@ public class WoWCharacterFragment extends Fragment {
     private TextView agility;
     private TextView intellect;
     private TextView stamina;
+    private TextView health;
+    private TextView power;
 
     private TextView crit;
     private TextView haste;
@@ -182,6 +184,9 @@ public class WoWCharacterFragment extends Fragment {
         mainHand = view.findViewById(R.id.main_hand);
         offHand = view.findViewById(R.id.off_hand);
 
+        health = view.findViewById(R.id.health);
+        power = view.findViewById(R.id.power);
+
         strength = view.findViewById(R.id.strength);
         agility = view.findViewById(R.id.agility);
         intellect = view.findViewById(R.id.intellect);
@@ -228,7 +233,12 @@ public class WoWCharacterFragment extends Fragment {
             if(itemSpell.getTrigger().equals("ON_EQUIP") && !itemSpell.getScaledDescription().equals("")){
                 trigger += "<font color=#00cc00>Equip: " + itemSpell.getScaledDescription() + "</font>";
             }else if(itemSpell.getTrigger().equals("ON_USE") && !itemSpell.getScaledDescription().equals("")){
-                trigger += "<font color=#00cc00>Use: " + itemSpell.getScaledDescription() + "</font>";
+                if(trigger.equals("")){
+                    trigger += "<font color=#00cc00>Use: " + itemSpell.getScaledDescription() + "</font>";
+                }else{
+                    trigger += "<br><br><font color=#00cc00>Use: " + itemSpell.getScaledDescription() + "</font>";
+                }
+
             }
         }
         return trigger;
@@ -503,6 +513,9 @@ public class WoWCharacterFragment extends Fragment {
                     characterName.setText(characterInformation.get("name").toString());
                     itemLVL.setText(String.format("Item Level: %s", itemObject.get("averageItemLevel")));
 
+                    health.setText(String.format("Health: %s", statsObject.get("health")));
+                    power.setText(String.format("%s: %s", formatItemSlotName(statsObject.get("powerType").toString().replace("-", " ")), statsObject.get("power")));
+
                     strength.setText(String.format("Strength: %s", statsObject.get("str")));
                     agility.setText(String.format("Agility: %s", statsObject.get("agi")));
                     intellect.setText(String.format("Intellect: %s", statsObject.get("int")));
@@ -520,6 +533,8 @@ public class WoWCharacterFragment extends Fragment {
                             String nameDescription = "";
                             String trigger = "";
                             String damageInfo = "";
+                            String durability = "Durability " + itemInformations.get(index).getMaxDurability() + "/" + itemInformations.get(index).getMaxDurability();
+                            String requiredLevel = "Requires Level " + itemInformations.get(index).getRequiredLevel();
                             backgroundStroke = itemColor(itemsInfoList.get(index), new GradientDrawable());
                             String itemName = itemsInfoList.get(index).getName();
                             String itemLvl = "<font color=#edc201>Item Level " + itemsInfoList.get(index).getItemLevel().toString() + "</font>";
@@ -554,12 +569,18 @@ public class WoWCharacterFragment extends Fragment {
                             }
 
                             if (!trigger.equals("")){
-                                stats.put(index, stats.get(index) + String.format("<br>%s", trigger));
+                                stats.put(index, stats.get(index) + String.format("<br>%s<br>", trigger));
                             }
 
                             if(!itemInformations.get(index).getDescription().equals("")){
-                                stats.put(index, stats.get(index) + String.format("<br>%s", description));
+                                stats.put(index, stats.get(index) + String.format("<br>%s<br>", description));
                             }
+                            if(itemInformations.get(index).getMaxDurability() != 0){
+                                stats.put(index, stats.get(index) + String.format("<br>%s<br>%s", durability, requiredLevel));
+                            }else{
+                                stats.put(index, stats.get(index) + String.format("<br>%s", requiredLevel));
+                            }
+
 
                             imageView.setBackground(backgroundStroke);
                         }

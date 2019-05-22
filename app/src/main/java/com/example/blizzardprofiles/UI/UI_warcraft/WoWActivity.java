@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles.activities;
+package com.example.blizzardprofiles.UI.UI_warcraft;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +24,9 @@ import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.example.blizzardprofiles.URLConstants;
+import com.example.blizzardprofiles.UI.UI_diablo.D3Activity;
+import com.example.blizzardprofiles.UI.UI_overwatch.OWActivity;
+import com.example.blizzardprofiles.UI.UI_starcraft.SC2Activity;
 import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.UserInformation;
