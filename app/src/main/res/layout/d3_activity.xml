@@ -5,16 +5,16 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/d3BackgroundColor"
+    android:background="@drawable/diablo3_background"
     android:orientation="vertical"
-    tools:context=".activities.MainActivity">
+    tools:context=".UI.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginBottom="675dp"
-        android:background="@color/d3HeaderColor"
+        android:background="@drawable/diablo3_background_header"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintBottom_toBottomOf="parent"

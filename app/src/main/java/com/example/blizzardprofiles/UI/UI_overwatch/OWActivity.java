@@ -1,4 +1,4 @@
-package com.example.blizzardprofiles.activities;
+package com.example.blizzardprofiles.UI.UI_overwatch;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +17,9 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.UserInformation;
+import com.example.blizzardprofiles.UI.UI_starcraft.SC2Activity;
+import com.example.blizzardprofiles.UI.UI_diablo.D3Activity;
+import com.example.blizzardprofiles.UI.UI_warcraft.WoWActivity;
 
 public class OWActivity extends AppCompatActivity {
 
