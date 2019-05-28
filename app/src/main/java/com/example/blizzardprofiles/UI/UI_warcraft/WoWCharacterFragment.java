@@ -32,6 +32,8 @@ import com.example.blizzardprofiles.R;
 import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.connection.ImageDownload;
+import com.example.blizzardprofiles.warcraft.AzeritePower;
+import com.example.blizzardprofiles.warcraft.AzeritePowersEnum;
 import com.example.blizzardprofiles.warcraft.Gear;
 import com.example.blizzardprofiles.warcraft.Item;
 import com.example.blizzardprofiles.warcraft.ItemInformation;
@@ -108,7 +110,7 @@ public class WoWCharacterFragment extends Fragment {
     private TextView mastery;
     private TextView versatility;
     private Drawable backgroundMain = null;
-    Drawable backgroundStroke;
+    private Drawable backgroundStroke;
 
     private RelativeLayout loadingCircle;
 
@@ -118,6 +120,12 @@ public class WoWCharacterFragment extends Fragment {
     private ArrayList<JSONObject> bonusIDList = new ArrayList<>();
     private ArrayList<ItemInformation> itemInformations = new ArrayList<>();
     private ArrayList<String> urlItemInfo;
+    private ArrayList<JSONObject> azeriteSpellsHead = new ArrayList<>();
+    private ArrayList<JSONObject> azeriteSpellsShoulder = new ArrayList<>();
+    private ArrayList<JSONObject> azeriteSpellsChest = new ArrayList<>();
+    private List<AzeritePower> powerHead;
+    private List<AzeritePower> powerShoulder;
+    private List<AzeritePower> powerChest;
 
     private Map<Integer, String> stats = new HashMap<>();
     private Map<Integer, String> nameList = new HashMap<>();
@@ -483,8 +491,55 @@ public class WoWCharacterFragment extends Fragment {
                         } else {
                             itemInformations.add(new ItemInformation());
                         }
-
                     }
+
+                        ArrayList<String> tempSpell= new ArrayList<>();
+                        powerHead = itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
+                        powerShoulder = itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers();
+                        powerChest = itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers();
+
+                        for(AzeritePower azeritePower: powerHead){
+                            if(azeritePower.getSpellId() != 0) {
+                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                            }
+                        }
+
+                        ArrayList<String> tempSpellHead = new ConnectionService(tempSpell).getStringJSONFromRequest();
+                        tempSpell.clear();
+
+                        for(AzeritePower azeritePower: powerShoulder){
+                            if(azeritePower.getSpellId() != 0) {
+                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                            }
+                        }
+
+                        ArrayList<String> tempSpellShoulder = new ConnectionService(tempSpell).getStringJSONFromRequest();
+                        tempSpell.clear();
+
+                        for(AzeritePower azeritePower: powerChest){
+                            if(azeritePower.getSpellId() != 0) {
+                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                            }
+                        }
+
+                        ArrayList<String> tempSpellChest = new ConnectionService(tempSpell).getStringJSONFromRequest();
+                        tempSpell.clear();
+                        Log.i("test", tempSpellHead.toString());
+
+                        for(int i = 0; i<tempSpellHead.size(); i++){
+                            azeriteSpellsHead.add(new JSONObject(tempSpellHead.get(i)));
+                        }
+                        for(int i = 0; i<tempSpellShoulder.size(); i++){
+                            azeriteSpellsShoulder.add(new JSONObject(tempSpellShoulder.get(i)));
+                        }
+                        for(int i = 0; i<tempSpellChest.size(); i++){
+                            azeriteSpellsChest.add(new JSONObject(tempSpellChest.get(i)));
+                        }
+
+
                 }
 
             } catch (JSONException e) {
@@ -564,6 +619,18 @@ public class WoWCharacterFragment extends Fragment {
                                 stats.put(index, String.format("%s<br>%s%s<br>%s",itemLvl, itemSlot, damageInfo,tempStats));
                             }
 
+                            if(itemSlot.equals("Head")){
+                                stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsHead)));
+                            }
+
+                            if(itemSlot.equals("Shoulder")){
+                                stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsShoulder)));
+                            }
+
+                            if(itemSlot.equals("Chest")){
+                                stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsChest)));
+                            }
+
                             if(!nameDescription.equals("<font color=#00cc00></font><br>")){
                                 stats.put(index, nameDescription + stats.get(index));
                             }
@@ -602,6 +669,7 @@ public class WoWCharacterFragment extends Fragment {
                                             nameView.setTextSize(17);
                                             statsView.setText(Html.fromHtml(stats.get(imageView.getId())));
                                             statsView.setTextColor(Color.WHITE);
+                                            statsView.setTextSize(13);
                                             cardView.setContentPadding(10,10,10,10);
                                             cardView.setBackground(imageView.getBackground());
                                             cardView.setVisibility(View.VISIBLE);
@@ -636,5 +704,14 @@ public class WoWCharacterFragment extends Fragment {
             WoWCharacterFragment.this.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             loadingCircle.setVisibility(View.GONE);
         }
+    }
+
+    private String getAzeritePowers(ArrayList<JSONObject> azeriteSpells) throws JSONException{
+        String azeriteText = "<br><font color=#edc201> Active Azerite Powers: </font><br>";
+        for(int i = 0; i <azeriteSpells.size(); i++){
+            azeriteText += azeriteSpells.get(i).get("name") + "<br>";
+            azeriteText += "<font color=#00cc00>" + azeriteSpells.get(i).get("description") + "</font><br>";
+        }
+        return azeriteText;
     }
 }

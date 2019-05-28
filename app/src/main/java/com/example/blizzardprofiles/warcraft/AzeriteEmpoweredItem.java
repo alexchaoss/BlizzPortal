@@ -11,13 +11,13 @@ public class AzeriteEmpoweredItem {
 
     @SerializedName("azeritePowers")
     @Expose
-    private List<Object> azeritePowers = null;
+    private List<AzeritePower> azeritePowers = null;
 
-    public List<Object> getAzeritePowers() {
+    public List<AzeritePower> getAzeritePowers() {
         return azeritePowers;
     }
 
-    public void setAzeritePowers(List<Object> azeritePowers) {
+    public void setAzeritePowers(List<AzeritePower> azeritePowers) {
         this.azeritePowers = azeritePowers;
     }
 
