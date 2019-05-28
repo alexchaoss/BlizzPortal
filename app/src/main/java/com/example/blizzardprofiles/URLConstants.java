@@ -32,6 +32,7 @@ public class URLConstants {
     public final static String WOW_ITEM_QUERY = "/wow/character/realm/character?fields=items,stats&locale=en_US&";
     public final static String WOW_CHAR_STATS_QUERY = "/wow/character/realm/character?fields=stats&locale=en_US&";
     public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
+    public final static String SPELL_ID_QUERY = "/wow/spell/";
 
     public static String getBaseURLforUserInformation() {
         if (MainActivity.selectedRegion.equals("cn")) {
