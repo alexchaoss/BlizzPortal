@@ -21,6 +21,18 @@ public class Spell {
     @SerializedName("castTime")
     @Expose
     private String castTime;
+    @SerializedName("range")
+    @Expose
+    private String range;
+    @SerializedName("powerCost")
+    @Expose
+    private String powerCost;
+    @SerializedName("cooldown")
+    @Expose
+    private String cooldown;
+    @SerializedName("subtext")
+    @Expose
+    private String subtext;
 
     public Integer getId() {
         return id;
@@ -60,6 +72,38 @@ public class Spell {
 
     public void setCastTime(String castTime) {
         this.castTime = castTime;
+    }
+
+    public String getRange() {
+        return range;
+    }
+
+    public void setRange(String range) {
+        this.range = range;
+    }
+
+    public String getPowerCost() {
+        return powerCost;
+    }
+
+    public void setPowerCost(String powerCost) {
+        this.powerCost = powerCost;
+    }
+
+    public String getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(String cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    public String getSubtext() {
+        return subtext;
+    }
+
+    public void setSubtext(String subtext) {
+        this.subtext = subtext;
     }
 
     @Override

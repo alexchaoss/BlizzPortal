@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="backgroundColor">#1b324d</color>
+    <color name="transparent">#70000000</color>
     <color name="wowBackgroundColor">#312019</color>
     <color name="wowHeaderColor">#6a2214</color>
     <color name="d3BackgroundColor">#240703</color>

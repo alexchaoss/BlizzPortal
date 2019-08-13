@@ -73,7 +73,6 @@ public class WoWActivity extends AppCompatActivity {
         owButton = findViewById(R.id.overwatchButton);
         btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
-        loadingCircle.setVisibility(View.VISIBLE);
         btag.setText(UserInformation.getBattleTag());
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -130,8 +129,10 @@ public class WoWActivity extends AppCompatActivity {
 
     private class PrepareData extends AsyncTask<Void, Void, Void> {
 
-        protected void onPreExecute(Void param) {
+        protected void onPreExecute () {
             super.onPreExecute();
+            loadingCircle.setVisibility(View.VISIBLE);
+
         }
 
         protected Void doInBackground(Void... param) {
@@ -141,7 +142,7 @@ public class WoWActivity extends AppCompatActivity {
 
             try {
                 wowCharacters = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() +
-                        URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken()).getStringJSONFromRequest().get(0));
+                        URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), WoWActivity.this).getStringJSONFromRequest().get(0));
             }catch (Exception e){
                 Log.e("Error", e.toString());
             }

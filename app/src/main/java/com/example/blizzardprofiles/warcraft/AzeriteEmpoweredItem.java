@@ -5,13 +5,14 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AzeriteEmpoweredItem {
 
     @SerializedName("azeritePowers")
     @Expose
-    private List<AzeritePower> azeritePowers = null;
+    private List<AzeritePower> azeritePowers = new ArrayList<>();
 
     public List<AzeritePower> getAzeritePowers() {
         return azeritePowers;

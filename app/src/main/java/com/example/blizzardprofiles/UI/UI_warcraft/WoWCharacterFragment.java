@@ -1,13 +1,17 @@
 package com.example.blizzardprofiles.UI.UI_warcraft;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.http.HttpResponseCache;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -33,26 +37,31 @@ import com.example.blizzardprofiles.URLConstants;
 import com.example.blizzardprofiles.connection.ConnectionService;
 import com.example.blizzardprofiles.connection.ImageDownload;
 import com.example.blizzardprofiles.warcraft.AzeritePower;
-import com.example.blizzardprofiles.warcraft.AzeritePowersEnum;
+import com.example.blizzardprofiles.warcraft.CharacterInformation;
 import com.example.blizzardprofiles.warcraft.Gear;
 import com.example.blizzardprofiles.warcraft.Item;
 import com.example.blizzardprofiles.warcraft.ItemInformation;
 import com.example.blizzardprofiles.warcraft.ItemSpell;
 import com.example.blizzardprofiles.warcraft.Stat;
 import com.example.blizzardprofiles.warcraft.StatsEnum;
+import com.example.blizzardprofiles.warcraft.Talent;
+import com.example.blizzardprofiles.warcraft.Talents;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class WoWCharacterFragment extends Fragment {
@@ -61,43 +70,24 @@ public class WoWCharacterFragment extends Fragment {
     private String characterClicked;
     private String urlMain;
 
-    private SharedPreferences prefs;
-    private BnOAuth2Helper bnOAuth2Helper;
-    private BnOAuth2Params bnOAuth2Params;
-
     private JSONObject characterInformation;
     private JSONObject itemObject = null;
     private JSONObject statsObject = null;
 
     private Gear equipment;
+    private Talent talents;
+    private CharacterInformation characterInfo;
 
+    //Character information
     private TextView characterName;
     private TextView itemLVL;
     private ImageView background;
-    private LinearLayout linearLayoutItemStats;
     private CardView cardView;
     private TextView statsView;
     private TextView nameView;
     private ScrollView scrollView;
-    private ImageView head;
-    private ImageView neck;
-    private ImageView shoulder;
-    private ImageView back;
-    private ImageView chest;
-    private ImageView shirt;
-    private ImageView tabard;
-    private ImageView wrist;
-    private ImageView hands;
-    private ImageView waist;
-    private ImageView legs;
-    private ImageView feet;
-    private ImageView finger1;
-    private ImageView finger2;
-    private ImageView trinket1;
-    private ImageView trinket2;
-    private ImageView mainHand;
-    private ImageView offHand;
 
+    //Primary stats
     private TextView strength;
     private TextView agility;
     private TextView intellect;
@@ -105,15 +95,25 @@ public class WoWCharacterFragment extends Fragment {
     private TextView health;
     private TextView power;
 
+    //Secondary stats
     private TextView crit;
     private TextView haste;
     private TextView mastery;
     private TextView versatility;
     private Drawable backgroundMain = null;
-    private Drawable backgroundStroke;
+
+    //Talents
+    private TextView  fifteen;
+    private TextView  thirty;
+    private TextView  forty_five;
+    private TextView  sixty;
+    private TextView  seventy_five;
+    private TextView  ninety;
+    private TextView  hundred;
 
     private RelativeLayout loadingCircle;
 
+    //Containers
     private ArrayList<Drawable> icons = new ArrayList<>();
     private ArrayList<ImageView> gear = new ArrayList<>();
     private ArrayList<Item> itemsInfoList = new ArrayList<>();
@@ -133,13 +133,14 @@ public class WoWCharacterFragment extends Fragment {
     private int index = 0;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.character_fragment, container, false);
     }
 
     @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         Bundle bundle = getArguments();
+        assert bundle != null;
         characterRealm = bundle.getString("realm");
         characterClicked = bundle.getString("name");
         urlMain = bundle.getString("url");
@@ -150,7 +151,7 @@ public class WoWCharacterFragment extends Fragment {
         background = view.findViewById(R.id.background);
         cardView = view.findViewById(R.id.item_stats);
         cardView.setContentPadding(10,10,10,10);
-        linearLayoutItemStats = new LinearLayout(view.getContext());
+        LinearLayout linearLayoutItemStats = new LinearLayout(view.getContext());
         linearLayoutItemStats.setOrientation(LinearLayout.VERTICAL);
         linearLayoutItemStats.setGravity(Gravity.CENTER);
         cardView.addView(linearLayoutItemStats);
@@ -159,38 +160,47 @@ public class WoWCharacterFragment extends Fragment {
         linearLayoutItemStats.addView(nameView);
         linearLayoutItemStats.addView(statsView);
         loadingCircle = view.findViewById(R.id.loadingCircle);
-        loadingCircle.setVisibility(View.VISIBLE);
 
-        WoWCharacterFragment.this.getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+        enableHttpResponseCache();
+
+        fifteen = view.findViewById(R.id.fifteen);
+        thirty = view.findViewById(R.id.thirty);
+        forty_five = view.findViewById(R.id.forty_five);
+        sixty = view.findViewById(R.id.sixty);
+        seventy_five = view.findViewById(R.id.seventy_five);
+        ninety = view.findViewById(R.id.ninety);
+        hundred = view.findViewById(R.id.hundred);
+
+        Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         new PrepareData().execute();
 
-        ViewGroup.LayoutParams layoutParamsName = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        ViewGroup.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        ((LinearLayout.LayoutParams) layoutParamsName).setMargins(20,20,20,0);
+        LinearLayout.LayoutParams layoutParamsName = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParamsName.setMargins(20,20,20,0);
         nameView.setLayoutParams(layoutParamsName);
-        ((LinearLayout.LayoutParams) layoutParamsStats).setMargins(20,0,20,0);
+        layoutParamsStats.setMargins(20,0,20,0);
         statsView.setLayoutParams(layoutParamsStats);
 
-        head = view.findViewById(R.id.head);
-        neck = view.findViewById(R.id.neck);
-        shoulder = view.findViewById(R.id.shoulder);
-        back = view.findViewById(R.id.back);
-        chest = view.findViewById(R.id.chest);
-        shirt = view.findViewById(R.id.shirt);
-        tabard = view.findViewById(R.id.tabard);
-        wrist = view.findViewById(R.id.wrist);
-        hands = view.findViewById(R.id.hands);
-        waist = view.findViewById(R.id.waist);
-        legs = view.findViewById(R.id.legs);
-        feet = view.findViewById(R.id.feet);
-        finger1 = view.findViewById(R.id.finger1);
-        finger2 = view.findViewById(R.id.finger2);
-        trinket1 = view.findViewById(R.id.trinket1);
-        trinket2 = view.findViewById(R.id.trinket2);
-        mainHand = view.findViewById(R.id.main_hand);
-        offHand = view.findViewById(R.id.off_hand);
+        ImageView head = view.findViewById(R.id.head);
+        ImageView neck = view.findViewById(R.id.neck);
+        ImageView shoulder = view.findViewById(R.id.shoulder);
+        ImageView back = view.findViewById(R.id.back);
+        ImageView chest = view.findViewById(R.id.chest);
+        ImageView shirt = view.findViewById(R.id.shirt);
+        ImageView tabard = view.findViewById(R.id.tabard);
+        ImageView wrist = view.findViewById(R.id.wrist);
+        ImageView hands = view.findViewById(R.id.hands);
+        ImageView waist = view.findViewById(R.id.waist);
+        ImageView legs = view.findViewById(R.id.legs);
+        ImageView feet = view.findViewById(R.id.feet);
+        ImageView finger1 = view.findViewById(R.id.finger1);
+        ImageView finger2 = view.findViewById(R.id.finger2);
+        ImageView trinket1 = view.findViewById(R.id.trinket1);
+        ImageView trinket2 = view.findViewById(R.id.trinket2);
+        ImageView mainHand = view.findViewById(R.id.main_hand);
+        ImageView offHand = view.findViewById(R.id.off_hand);
 
         health = view.findViewById(R.id.health);
         power = view.findViewById(R.id.power);
@@ -235,24 +245,25 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private String getTrigger(int index) {
-        String trigger = "";
+        StringBuilder trigger = new StringBuilder();
         for(int i = 0; i < itemInformations.get(index).getItemSpells().size();i++){
             ItemSpell itemSpell = itemInformations.get(index).getItemSpells().get(i);
             if(itemSpell.getTrigger().equals("ON_EQUIP") && !itemSpell.getScaledDescription().equals("")){
-                trigger += "<font color=#00cc00>Equip: " + itemSpell.getScaledDescription() + "</font>";
+                trigger.append("<font color=#00cc00>Equip: ").append(itemSpell.getScaledDescription()).append("</font>");
             }else if(itemSpell.getTrigger().equals("ON_USE") && !itemSpell.getScaledDescription().equals("")){
-                if(trigger.equals("")){
-                    trigger += "<font color=#00cc00>Use: " + itemSpell.getScaledDescription() + "</font>";
+                if(trigger.toString().equals("")){
+                    trigger.append("<font color=#00cc00>Use: ").append(itemSpell.getScaledDescription()).append("</font>");
                 }else{
-                    trigger += "<br><br><font color=#00cc00>Use: " + itemSpell.getScaledDescription() + "</font>";
+                    trigger.append("<br><br><font color=#00cc00>Use: ").append(itemSpell.getScaledDescription()).append("</font>");
                 }
 
             }
         }
-        return trigger;
+        return trigger.toString();
     }
 
     private String getStatsFormatted(String tempStats, List<Stat> statList) {
+        StringBuilder tempStatsBuilder = new StringBuilder(tempStats);
         for (Stat stat : statList) {
             String currentStat;
             if(stat.getStat() > 7 && stat.getStat() < 71){
@@ -260,8 +271,9 @@ public class WoWCharacterFragment extends Fragment {
             }else{
                 currentStat = "+" +  StatsEnum.fromOrdinal(stat.getStat()).toString() + " " + stat.getAmount();
             }
-            tempStats += currentStat + "<br>";
+            tempStatsBuilder.append(currentStat).append("<br>");
         }
+        tempStats = tempStatsBuilder.toString();
         return tempStats;
     }
 
@@ -271,7 +283,7 @@ public class WoWCharacterFragment extends Fragment {
             int max = itemsInfoList.get(index).getWeaponInfo().getDamage().getMax();
             double speed = itemsInfoList.get(index).getWeaponInfo().getWeaponSpeed();
             double dps = itemsInfoList.get(index).getWeaponInfo().getDps();
-            damageInfo = String.format("<br>%d - %d Damage<br>Speed %.2f<br>(%.2f damage per second)", min, max, speed, dps);
+            damageInfo = String.format(Locale.ENGLISH, "<br>%d - %d Damage<br>Speed %.2f<br>(%.2f damage per second)", min, max, speed, dps);
         }
         return damageInfo;
     }
@@ -301,15 +313,15 @@ public class WoWCharacterFragment extends Fragment {
         return itemSlot;
     }
 
-    private String swapItemIDBonusID(String bonusidQuery, int i) {
-        String bonusIds = "";
-        String idURL = "";
+    private String swapItemIDBonusID(int i) {
+        StringBuilder bonusIds = new StringBuilder();
+        String idURL;
         int size = itemsInfoList.get(i).getBonusLists().size();
         if(size > 0){
 
             for(int j = 0; j < size; j++) {
                 for (int k = 0; k < size; k++) {
-                    bonusIds += itemsInfoList.get(i).getBonusLists().get(k) + ",";
+                    bonusIds.append(itemsInfoList.get(i).getBonusLists().get(k)).append(",");
                 }
             }
             idURL = itemsInfoList.get(i).getId().toString() + "?b1=" + bonusIds.substring(0,bonusIds.length()-1);
@@ -317,7 +329,7 @@ public class WoWCharacterFragment extends Fragment {
             idURL = itemsInfoList.get(i).getId().toString() + "?b1=";
         }
 
-        return bonusidQuery.replace("id?b1=bonusList",  idURL );
+        return URLConstants.BONUSID_QUERY.replace("id?b1=bonusList",  idURL );
     }
 
     private void getIcons(View view) {
@@ -399,8 +411,8 @@ public class WoWCharacterFragment extends Fragment {
         return null;
     }
 
-    private String swapRealmCharacterFromURL(String url) {
-        return url.replace("realm/character", characterRealm + "/" + characterClicked);
+    private String swapRealmCharacterFromURL() {
+        return URLConstants.WOW_ITEM_QUERY.replace("realm/character", characterRealm + "/" + characterClicked);
     }
 
     private Drawable itemColor(Item item, GradientDrawable drawable){
@@ -434,30 +446,33 @@ public class WoWCharacterFragment extends Fragment {
 
     private class PrepareData extends AsyncTask<Void, Void, Void> {
 
-        protected void onPreExecute(Void param) {
-            super.onPreExecute();
-            // THIS WILL DISPLAY THE PROGRESS CIRCLE
 
+        protected void onPreExecute () {
+            super.onPreExecute();
+            loadingCircle.setVisibility(View.VISIBLE);
         }
 
         protected Void doInBackground(Void... param) {
             long startTime = System.nanoTime();
 
-            prefs = PreferenceManager.getDefaultSharedPreferences(WoWCharacterFragment.this.getContext());
-            bnOAuth2Params = WoWCharacterFragment.this.getActivity().getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
-            bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WoWCharacterFragment.this.getContext());
+            BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+            assert bnOAuth2Params != null;
+            BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
             try {
                 characterInformation = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() +
-                        swapRealmCharacterFromURL(URLConstants.WOW_ITEM_QUERY) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken()).getStringJSONFromRequest().get(0));
+                        swapRealmCharacterFromURL() + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), getContext()).getStringJSONFromRequest().get(0));
             } catch (Exception e) {
                 Log.e("Error", e.toString());
             }
 
             try {
                 if (characterInformation.isNull("items")) {
-                    Log.i("test", "test");
+                    Log.i("Character too old", "Havn't logged in in a long time.");
                 } else {
+                    Gson gson = new GsonBuilder().create();
+                    characterInfo = gson.fromJson(characterInformation.toString(), CharacterInformation.class);
                     itemObject = characterInformation.getJSONObject("items");
                     statsObject = characterInformation.getJSONObject("stats");
                     backgroundMain = new ImageDownload(urlMain, URLConstants.getRenderZoneURL(), WoWCharacterFragment.this.getContext(), characterInformation).getImageFromURL().get(0);
@@ -469,12 +484,13 @@ public class WoWCharacterFragment extends Fragment {
                     for (int i = 0; i < gear.size(); i++) {
                         if (itemsInfoList.get(i).getName() != null) {
                             urlItemInfo.add(URLConstants.getBaseURLforAPI() +
-                                    swapItemIDBonusID(URLConstants.BONUSID_QUERY, i) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                                    swapItemIDBonusID(i) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                         } else {
                             urlItemInfo.add(null);
                         }
                     }
-                    ArrayList<String> tempJSON = new ConnectionService(urlItemInfo).getStringJSONFromRequest();
+                    ArrayList<String> tempJSON = new ConnectionService(urlItemInfo, getContext()).getStringJSONFromRequest();
+
                     for (int i = 0; i < urlItemInfo.size(); i++) {
                         if (tempJSON.get(i) != null) {
                             bonusIDList.add(new JSONObject(tempJSON.get(i)));
@@ -483,7 +499,9 @@ public class WoWCharacterFragment extends Fragment {
                         }
                     }
 
-                    Gson gson = new GsonBuilder().create();
+
+
+
                     for (int i = 0; i < bonusIDList.size(); i++) {
                         if (bonusIDList.get(i) != null) {
                             ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
@@ -494,50 +512,57 @@ public class WoWCharacterFragment extends Fragment {
                     }
 
                         ArrayList<String> tempSpell= new ArrayList<>();
+                    if(itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
                         powerHead = itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
+                    }
+                    if(itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
                         powerShoulder = itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers();
+                    }
+                    if(itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
                         powerChest = itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers();
+                    }
 
-                        for(AzeritePower azeritePower: powerHead){
-                            if(azeritePower.getSpellId() != 0) {
+                        for (AzeritePower azeritePower : powerHead) {
+                            if (azeritePower.getSpellId() != 0) {
                                 tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
                                         URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                             }
                         }
 
-                        ArrayList<String> tempSpellHead = new ConnectionService(tempSpell).getStringJSONFromRequest();
+                        ArrayList<String> tempSpellHead = new ConnectionService(tempSpell, getContext()).getStringJSONFromRequest();
                         tempSpell.clear();
 
-                        for(AzeritePower azeritePower: powerShoulder){
-                            if(azeritePower.getSpellId() != 0) {
+                        for (AzeritePower azeritePower : powerShoulder) {
+                            if (azeritePower.getSpellId() != 0) {
                                 tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
                                         URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                             }
                         }
 
-                        ArrayList<String> tempSpellShoulder = new ConnectionService(tempSpell).getStringJSONFromRequest();
+                        ArrayList<String> tempSpellShoulder = new ConnectionService(tempSpell, getContext()).getStringJSONFromRequest();
                         tempSpell.clear();
 
-                        for(AzeritePower azeritePower: powerChest){
-                            if(azeritePower.getSpellId() != 0) {
+                        for (AzeritePower azeritePower : powerChest) {
+                            if (azeritePower.getSpellId() != 0) {
                                 tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
                                         URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                             }
                         }
 
-                        ArrayList<String> tempSpellChest = new ConnectionService(tempSpell).getStringJSONFromRequest();
+                        ArrayList<String> tempSpellChest = new ConnectionService(tempSpell, getContext()).getStringJSONFromRequest();
                         tempSpell.clear();
                         Log.i("test", tempSpellHead.toString());
 
-                        for(int i = 0; i<tempSpellHead.size(); i++){
+                        for (int i = 0; i < tempSpellHead.size(); i++) {
                             azeriteSpellsHead.add(new JSONObject(tempSpellHead.get(i)));
                         }
-                        for(int i = 0; i<tempSpellShoulder.size(); i++){
+                        for (int i = 0; i < tempSpellShoulder.size(); i++) {
                             azeriteSpellsShoulder.add(new JSONObject(tempSpellShoulder.get(i)));
                         }
-                        for(int i = 0; i<tempSpellChest.size(); i++){
+                        for (int i = 0; i < tempSpellChest.size(); i++) {
                             azeriteSpellsChest.add(new JSONObject(tempSpellChest.get(i)));
                         }
+
 
 
                 }
@@ -545,6 +570,8 @@ public class WoWCharacterFragment extends Fragment {
             } catch (JSONException e) {
                 Log.e("Error", e.toString());
             }catch (IOException e) {
+                Log.e("Error", e.toString());
+            }catch (NullPointerException e) {
                 Log.e("Error", e.toString());
             }
 
@@ -554,6 +581,7 @@ public class WoWCharacterFragment extends Fragment {
             return null;
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         protected void onPostExecute(Void param) {
             super.onPostExecute(param);
 
@@ -561,11 +589,11 @@ public class WoWCharacterFragment extends Fragment {
                 if (characterInformation.isNull("items")) {
                     Log.i("test", "test");
                     characterName.setText(characterInformation.get("reason").toString());
-                    background.setBackgroundColor(getResources().getColor(R.color.wowBackgroundColor, WoWCharacterFragment.this.getContext().getTheme()));
+                    background.setBackgroundColor(getResources().getColor(R.color.wowBackgroundColor, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme()));
                     itemLVL.setText("");
                 } else {
                     background.setImageDrawable(backgroundMain);
-                    characterName.setText(characterInformation.get("name").toString());
+                    characterName.setText(characterInfo.getName());
                     itemLVL.setText(String.format("Item Level: %s", itemObject.get("averageItemLevel")));
 
                     health.setText(String.format("Health: %s", statsObject.get("health")));
@@ -576,10 +604,29 @@ public class WoWCharacterFragment extends Fragment {
                     intellect.setText(String.format("Intellect: %s", statsObject.get("int")));
                     stamina.setText(String.format("Stamina: %s", statsObject.get("sta")));
 
-                    crit.setText(String.format("Critical Strike: %.2f%%", (double)statsObject.get("crit")));
-                    haste.setText(String.format("Haste: %.2f%%", (double) statsObject.get("haste")));
-                    mastery.setText(String.format("Mastery: %.2f%%", (double) statsObject.get("mastery")));
-                    versatility.setText(String.format("Versatility: %.2f%%", (double) statsObject.get("versatilityDamageDoneBonus")));
+                    crit.setText(String.format(Locale.ENGLISH, "Critical Strike: %.2f%%", (double)statsObject.get("crit")));
+                    haste.setText(String.format(Locale.ENGLISH, "Haste: %.2f%%", (double) statsObject.get("haste")));
+                    mastery.setText(String.format(Locale.ENGLISH, "Mastery: %.2f%%", (double) statsObject.get("mastery")));
+                    versatility.setText(String.format(Locale.ENGLISH, "Versatility: %.2f%%", (double) statsObject.get("versatilityDamageDoneBonus")));
+
+                    List<Talents> talents = new ArrayList<>();
+                    for(int i = 0; i < characterInfo.getTalents().size(); i++) {
+                        if(characterInfo.getTalents().get(i).getSelected() == true) {
+                            talents = characterInfo.getTalents().get(i).getTalents();
+                        }
+
+                    }
+                    Log.e("Test", String.valueOf(talents.size()));
+
+                    //fifteen.setText(String.format("15 %s", );
+                    //thirty.setText(String.format("30 %s", characterInfo.getTalents().get(0).getTalents().get(0).getSpell().getName()));
+                    //forty_five.setText(String.format("45 %s", characterInfo.getTalents().get(0).getTalents().get(0).getSpell().getName()));
+                    //sixty.setText(String.format("60 %s", characterInfo.getTalents().get(0).getTalents().get(0).getSpell().getName()));
+                    //seventy_five.setText(String.format("75 %s", characterInfo.getTalents().get(0).getTalents().get(0).getSpell().getName()));
+                    //ninety.setText(String.format("90 %s", characterInfo.getTalents().get(0).getTalents().get(0).getSpell().getName()));
+                    //hundred.setText(String.format("100 %s", characterInfo.getTalents().get(0).getTalents().get(0).getSpell().getName()));
+
+
 
                     for(final ImageView imageView: gear){
 
@@ -590,7 +637,7 @@ public class WoWCharacterFragment extends Fragment {
                             String damageInfo = "";
                             String durability = "Durability " + itemInformations.get(index).getMaxDurability() + "/" + itemInformations.get(index).getMaxDurability();
                             String requiredLevel = "Requires Level " + itemInformations.get(index).getRequiredLevel();
-                            backgroundStroke = itemColor(itemsInfoList.get(index), new GradientDrawable());
+                            Drawable backgroundStroke = itemColor(itemsInfoList.get(index), new GradientDrawable());
                             String itemName = itemsInfoList.get(index).getName();
                             String itemLvl = "<font color=#edc201>Item Level " + itemsInfoList.get(index).getItemLevel().toString() + "</font>";
                             String armor = itemsInfoList.get(index).getArmor().toString();
@@ -619,15 +666,15 @@ public class WoWCharacterFragment extends Fragment {
                                 stats.put(index, String.format("%s<br>%s%s<br>%s",itemLvl, itemSlot, damageInfo,tempStats));
                             }
 
-                            if(itemSlot.equals("Head")){
+                            if(itemSlot.equals("Head") && azeriteSpellsHead.size() > 0){
                                 stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsHead)));
                             }
 
-                            if(itemSlot.equals("Shoulder")){
+                            if(itemSlot.equals("Shoulder") && azeriteSpellsShoulder.size() > 0){
                                 stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsShoulder)));
                             }
 
-                            if(itemSlot.equals("Chest")){
+                            if(itemSlot.equals("Chest") && azeriteSpellsChest.size() > 0){
                                 stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsChest)));
                             }
 
@@ -658,6 +705,7 @@ public class WoWCharacterFragment extends Fragment {
                         imageView.setClipToOutline(true);
 
                         imageView.setOnTouchListener(new View.OnTouchListener() {
+
                             @Override
                             public boolean onTouch(View v, MotionEvent event) {
                                 switch (event.getAction()){
@@ -701,17 +749,33 @@ public class WoWCharacterFragment extends Fragment {
             } catch (JSONException e) {
                 Log.e("Error", e.toString());
             }
-            WoWCharacterFragment.this.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             loadingCircle.setVisibility(View.GONE);
         }
     }
 
     private String getAzeritePowers(ArrayList<JSONObject> azeriteSpells) throws JSONException{
-        String azeriteText = "<br><font color=#edc201> Active Azerite Powers: </font><br>";
+        StringBuilder azeriteText = new StringBuilder("<br><font color=#edc201> Active Azerite Powers: </font><br>");
         for(int i = 0; i <azeriteSpells.size(); i++){
-            azeriteText += azeriteSpells.get(i).get("name") + "<br>";
-            azeriteText += "<font color=#00cc00>" + azeriteSpells.get(i).get("description") + "</font><br>";
+            azeriteText.append(azeriteSpells.get(i).get("name")).append("<br>");
+            azeriteText.append("<font color=#00cc00>").append(azeriteSpells.get(i).get("description")).append("</font><br>");
         }
-        return azeriteText;
+        return azeriteText.toString();
+    }
+
+    public void enableHttpResponseCache() {
+        final long httpCacheSize = 30 * 1024 * 1024; // 10 MiB
+        final File httpCacheDir = new File(Objects.requireNonNull(getContext()).getCacheDir(), "https");
+        try {
+            Class.forName("android.net.http.HttpResponseCache")
+                    .getMethod("install", File.class, long.class)
+                    .invoke(null, httpCacheDir, httpCacheSize);
+        } catch (Exception httpResponseCacheNotAvailable) {
+            try{
+                HttpResponseCache.install(httpCacheDir, httpCacheSize); // Library that implements HttpResponseCache for pre-ICS phones
+            } catch(Exception e){
+                Log.e("Error: ", e.toString());
+            }
+        }
     }
 }

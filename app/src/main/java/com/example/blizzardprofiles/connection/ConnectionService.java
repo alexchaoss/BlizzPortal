@@ -1,14 +1,14 @@
 package com.example.blizzardprofiles.connection;
 
 import android.content.Context;
+import android.net.http.HttpResponseCache;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.example.blizzardprofiles.URLConstants;
-
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -25,13 +25,17 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
     private BufferedReader reader = null;
     private ArrayList<String> jsonList = new ArrayList<>();
     private ArrayList<String> urls = new ArrayList<>();
+    private long lastUpdateTime = 0;
+    private Context context;
 
-    public ConnectionService(String url){
+    public ConnectionService(String url, Context context){
         urls.add(url);
+        this.context = context;
     }
 
-    public ConnectionService(ArrayList<String> urls){
+    public ConnectionService(ArrayList<String> urls, Context context){
         this.urls = urls;
+        this.context = context;
     }
 
     public ArrayList<String> getStringJSONFromRequest() {
@@ -59,18 +63,36 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
                     urlConnection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
                     urlConnection.setRequestProperty("Accept","application/json");
                     urlConnection.setRequestMethod("GET");
+                    urlConnection.setDefaultUseCaches(true);
                     urlConnection.setUseCaches(true);
+
+                    long currentTime = System.currentTimeMillis();
+                    long expires = urlConnection.getHeaderFieldDate("Expires", currentTime);
+                    long lastModified = urlConnection.getHeaderFieldDate("Last-Modified", currentTime);
+
+                    if (lastModified < lastUpdateTime) {
+                        // Skip update
+                    } else {
+                        // Parse update
+                        lastUpdateTime = lastModified;
+                    }
+
+                    //File cachedFiles = new File(context.getCacheDir(), fullURL.toString());
+
                     String line;
                     StringBuilder stringBuilder = new StringBuilder();
                     int responseCode = urlConnection.getResponseCode();
                     Log.i("Response code", String.valueOf(responseCode));
 
-                    if((responseCode == 404) || (responseCode == 500)) {
+                    if((responseCode != HttpsURLConnection.HTTP_OK)) {
                         reader = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
                         Log.i("Error", reader.toString());
-                    } else {
+                    } else /*if(cachedFiles.isFile()){*/
                         reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    }
+                    /*}else {
+                        FileOutputStream out = new FileOutputStream(cachedFiles);
+                        out.write(urlConnection.getInputStream().read());
+                    }*/
                     while ((line = reader.readLine()) != null) {
                         stringBuilder.append(line).append('\n');
                     }
@@ -80,6 +102,7 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
                 }else{
                     jsonList.add(null);
                 }
+
 
             } catch (IOException e) {
                 Log.e("Error", e.toString());
@@ -104,6 +127,7 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
             } else {
                 Log.v("json", returnJson);
             }
+
         }
 
         return jsonList;
