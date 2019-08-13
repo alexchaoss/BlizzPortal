@@ -244,9 +244,10 @@
             <LinearLayout
                 android:id="@+id/stats_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="240dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/inputstyle"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -255,20 +256,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/character_name"
                 app:layout_constraintVertical_bias="1.0">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="#888888" />
-
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp">
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -279,18 +273,18 @@
                             android:id="@+id/health"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
-                            android:gravity="start"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/power"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
+                            android:layout_marginStart="20dp"
                             android:gravity="start"
-                            android:layout_marginStart="20dp"/>
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
                     </TableRow>
 
                     <TableRow
@@ -302,18 +296,18 @@
                             android:id="@+id/strength"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
-                            android:gravity="start"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/agility"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
+                            android:layout_marginStart="20dp"
                             android:gravity="start"
-                            android:layout_marginStart="20dp"/>
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
                     </TableRow>
 
                     <TableRow
@@ -325,18 +319,18 @@
                             android:id="@+id/intellect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
-                            android:gravity="start"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/stamina"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
+                            android:layout_marginStart="20dp"
                             android:gravity="start"
-                            android:layout_marginStart="20dp"/>
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
                     </TableRow>
 
                     <TableRow
@@ -348,18 +342,18 @@
                             android:id="@+id/crit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
-                            android:gravity="start"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/haste"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
+                            android:layout_marginStart="20dp"
                             android:gravity="start"
-                            android:layout_marginStart="20dp"/>
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
                     </TableRow>
 
                     <TableRow
@@ -371,28 +365,122 @@
                             android:id="@+id/mastery"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
-                            android:gravity="start"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/versatility"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/owBackgroundColor"
-                            android:textSize="15sp"
+                            android:layout_marginStart="20dp"
                             android:gravity="start"
-                            android:layout_marginStart="20dp"/>
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
                     </TableRow>
                 </TableLayout>
 
-                <View
-                    android:layout_width="wrap_content"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="#888888" />
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/fifteen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/seventy-five"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/thirty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/ninety"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/forty-five"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/hundred"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/sixty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/empty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:gravity="start"
+                            android:textColor="@color/owBackgroundColor"
+                            android:textSize="15sp" />
+                    </TableRow>
+                </TableLayout>
+
             </LinearLayout>
 
 
