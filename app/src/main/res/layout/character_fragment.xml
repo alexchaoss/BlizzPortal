@@ -244,7 +244,7 @@
             <LinearLayout
                 android:id="@+id/stats_layout"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/inputstyle"
@@ -256,11 +256,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/character_name"
                 app:layout_constraintVertical_bias="1.0">
 
+                <TextView
+                    android:id="@+id/stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/stats"
+                    android:textColor="@color/owBackgroundColor"
+                    android:textSize="18sp" />
+
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp">
 
@@ -380,11 +390,20 @@
                     </TableRow>
                 </TableLayout>
 
+                <TextView
+                    android:id="@+id/specialization"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/spec"
+                    android:textColor="@color/owBackgroundColor"
+                    android:textSize="18sp" />
+
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
+
                     android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp">
 

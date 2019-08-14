@@ -24,9 +24,10 @@ import com.example.blizzardprofiles.connection.ConnectionService;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class GamesActivity extends AppCompatActivity {
 
-    private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
 
@@ -36,7 +37,6 @@ public class GamesActivity extends AppCompatActivity {
     private ImageButton d3Button;
     private ImageButton owButton;
     private TextView btag;
-    private JSONObject userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +49,9 @@ public class GamesActivity extends AppCompatActivity {
         owButton = findViewById(R.id.overwatchButton);
         btag = findViewById(R.id.btag_header);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        bnOAuth2Params = this.getIntent().getExtras().getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        bnOAuth2Params = Objects.requireNonNull(this.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        assert bnOAuth2Params != null;
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
     }
@@ -60,8 +61,8 @@ public class GamesActivity extends AppCompatActivity {
         super.onStart();
 
         try {
-            userInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforUserInformation() +
-                    URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY+ bnOAuth2Helper.getAccessToken(), GamesActivity.this).getStringJSONFromRequest().get(0));
+            JSONObject userInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforUserInformation() +
+                    URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), GamesActivity.this).getStringJSONFromRequest().get(0));
             UserInformation.setBattleTag(userInfo.getString("battletag"));
             UserInformation.setUserID(userInfo.getString("id"));
         }catch (Exception e){
