@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -34,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     public static String selectedRegion = "";
     private ArrayList<String> servers = new ArrayList<>();
-    private Button login;
-    private Button clearCredentials;
     BnOAuth2Params bnOAuth2Params;
 
     @Override
@@ -43,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Spinner regions = findViewById(R.id.spinner);
-        login = findViewById(R.id.buttonLogin);
-        clearCredentials = findViewById(R.id.clear_credentials);
+        Button login = findViewById(R.id.buttonLogin);
+        Button clearCredentials = findViewById(R.id.clear_credentials);
         String [] REGION_LIST={"Select Region", "CN", "US", "EU", "KR", "TW"};
         getRandomServer();
 
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent){
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent){
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
                 tv.setBackgroundColor(Color.BLACK);
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
-                ((TextView) parent.getChildAt(0)).setTextColor(000000);
+                ((TextView) parent.getChildAt(0)).setTextColor(0);
             }
         });
 
