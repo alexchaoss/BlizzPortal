@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.blizzardprofiles">
+    package="com.blizzardprofiles">
     <uses-sdk tools:overrideLibrary="com.dementh.lib.battlenet_oauth2" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,19 +20,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.blizzardprofiles.UI.GamesActivity"
+            android:name="com.blizzardprofiles.UI.GamesActivity"
             android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.UI.UI_warcraft.WoWActivity"
+            android:name="com.blizzardprofiles.UI.UI_warcraft.WoWActivity"
             android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.UI.UI_starcraft.SC2Activity"
+            android:name="com.blizzardprofiles.UI.UI_starcraft.SC2Activity"
             android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.UI.UI_overwatch.OWActivity"
+            android:name="com.blizzardprofiles.UI.UI_overwatch.OWActivity"
             android:parentActivityName=".UI.MainActivity"/>
         <activity
-            android:name="com.example.blizzardprofiles.UI.UI_diablo.D3Activity"
+            android:name="com.blizzardprofiles.UI.UI_diablo.D3Activity"
             android:parentActivityName=".UI.MainActivity"/>
     </application>
 
