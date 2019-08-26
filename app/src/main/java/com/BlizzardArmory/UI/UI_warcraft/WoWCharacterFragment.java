@@ -651,8 +651,17 @@ public class WoWCharacterFragment extends Fragment {
                         }
                     }
 
+                    try {
+                        activity.specs.addTab(activity.specs.newTab());
+                        activity.specs.getTabAt(3).setText(activity.characterInfo.getTalents().get(3).getSpec().getName());
+                    }catch (NullPointerException e){
+                        Log.e("Error", e.toString());
+                        activity.specs.removeTab(activity.specs.getTabAt(3));
+                    }
+
                     for(int i = 0; i < 3; i++) {
                         TabLayout.Tab tab = activity.specs.getTabAt(i);
+
                         try {
                             assert tab != null;
                             tab.setText(activity.characterInfo.getTalents().get(i).getSpec().getName());
@@ -701,6 +710,9 @@ public class WoWCharacterFragment extends Fragment {
                                     break;
                                 case 2:
                                     getTalentsForSpecificSpec(2);
+                                    break;
+                                case 3:
+                                    getTalentsForSpecificSpec(3);
                                     break;
                                 default:
                             }
