@@ -39,4 +39,11 @@
     <string name="itemlevel">itemlvl</string>
     <string name="spec">Specialization</string>
     <string name="stats">Stats</string>
+    <string name="spec1">spec1</string>
+    <string name="spec2">spec2</string>
+    <string name="spec3">spec3</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="talent_information_not_available">Talent information not available</string>
 </resources>
