@@ -29,7 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/name"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
                 app:layout_constraintBottom_toTopOf="parent"
@@ -44,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/item_level"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="parent"
@@ -474,7 +472,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="50dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -495,7 +493,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="50dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -516,7 +514,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="50dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -537,7 +535,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="50dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -558,7 +556,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="50dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -579,7 +577,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="50dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -600,21 +598,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="50dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
                 </TableLayout>
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/viewpager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                </android.support.v4.view.ViewPager>
-
-
             </LinearLayout>
-
 
         </LinearLayout>
     </ScrollView>

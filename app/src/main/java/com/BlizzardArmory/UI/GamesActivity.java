@@ -24,6 +24,7 @@ import com.BlizzardArmory.connection.ConnectionService;
 
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 public class GamesActivity extends AppCompatActivity {

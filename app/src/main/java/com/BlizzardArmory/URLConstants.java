@@ -1,5 +1,6 @@
 package com.BlizzardArmory;
 
+import com.BlizzardArmory.UI.GamesActivity;
 import com.BlizzardArmory.UI.MainActivity;
 
 public class URLConstants {
@@ -27,11 +28,18 @@ public class URLConstants {
     public final static String D3_ICONS_ITEMS_URL = "http://media.blizzard.com/d3/icons/items/large/";
     public final static String D3_ICONS_SKILLS_URL = "http://media.blizzard.com/d3/icons/skills/64/";
 
+    //URLS for D3 characters and queries
+    public final static String D3_CHARACTERS = "/d3/profile/btag/?locale=en_US&";
+
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
     public final static String WOW_ITEM_QUERY = "/wow/character/realm/character?fields=items,stats,talents&locale=en_US&";
     public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
     public final static String SPELL_ID_QUERY = "/wow/spell/";
+
+    public static String getD3URLBtag(){
+        return URLConstants.D3_CHARACTERS.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+    }
 
     public static String getBaseURLforUserInformation() {
         if (MainActivity.selectedRegion.equals("cn")) {
