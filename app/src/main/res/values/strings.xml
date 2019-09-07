@@ -45,7 +45,7 @@
 
     <string name="talent_information_not_available">Talent information unavailable</string>
     <string name="career">Career</string>
-    <string name="paragon">Paragon: </string>
-    <string name="lifetime_kills">Lifetime Kills: </string>
-    <string name="elite_kills">Elite Kills:</string>
+    <string name="paragon">Paragon</string>
+    <string name="lifetime_kills">Lifetime Kills</string>
+    <string name="elite_kills">Elite Kills</string>
 </resources>

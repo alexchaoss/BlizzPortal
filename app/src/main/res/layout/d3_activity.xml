@@ -148,82 +148,99 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:stretchColumns="*">
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/paragon"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/paragon"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
+                    android:layout_weight="1"
+                    android:contentDescription="@string/lifetime_kills"
+                    app:srcCompat="@drawable/lifetime_kills" />
 
-                <TextView
-                    android:id="@+id/paragonLevel"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
-                    android:gravity="start"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
+                    android:layout_weight="1"
+                    android:contentDescription="@string/elite_kills"
+                    app:srcCompat="@drawable/elite_kills_image" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/paragon"
+                    app:srcCompat="@drawable/paragon_image" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/lifetime"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:text="@string/lifetime_kills"
                     android:textColor="@color/owBackgroundColor"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/lifetime_kills"
-                    android:layout_width="match_parent"
+                    android:id="@+id/elite"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
-                    android:gravity="start"
+                    android:layout_gravity="center"
+                    android:text="@string/elite_kills"
+                    android:textColor="@color/owBackgroundColor"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/paragon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/paragon"
                     android:textColor="@color/owBackgroundColor"
                     android:textSize="15sp" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/elite"
+                    android:id="@+id/lifetime_kills"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/elite_kills"
+                    android:layout_gravity="center"
                     android:textColor="@color/owBackgroundColor"
                     android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/elite_kills"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
-                    android:gravity="start"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:textColor="@color/owBackgroundColor"
                     android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/paragonLevel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:textColor="@color/owBackgroundColor"
+                    android:textSize="15sp" />
+
             </TableRow>
+
         </TableLayout>
 
         <TextView
@@ -236,21 +253,16 @@
             android:textColor="#FFFFFF"
             android:textSize="25sp" />
 
-        <ScrollView
-            android:id="@+id/scrollView4"
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginEnd="8dp">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:id="@+id/character_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"></LinearLayout>
-
-        </ScrollView>
+        </HorizontalScrollView>
 
     </LinearLayout>
 
