@@ -2,6 +2,7 @@ package com.BlizzardArmory.UI.UI_diablo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,13 +10,13 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.BlizzardArmory.URLConstants;
@@ -46,6 +47,7 @@ public class D3Activity extends AppCompatActivity {
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
 
+    List<Drawable> portraits;
 
     private ImageButton wowButton;
     private ImageButton sc2Button;
@@ -143,41 +145,7 @@ public class D3Activity extends AppCompatActivity {
                 Log.e("Error", e.toString());
             }
 
-            List<Drawable> portraits = activity.getCharacterImage(activity.accountInformation.getHeroes());
-
-            LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(350, 350);
-            layoutParamsImage.setMargins(15,0,0,0);
-
-            LinearLayout.LayoutParams layoutParamsCharacters = new LinearLayout.LayoutParams(400, 400);
-            layoutParamsImage.setMargins(20,0,0,0);
-
-            for(int i = 0; i < activity.accountInformation.getHeroes().size(); i++){
-                ImageView portrait = new ImageView(activity.getApplicationContext());
-                portrait.setImageDrawable(portraits.get(i));
-                portrait.setLayoutParams(layoutParamsImage);
-
-                TextView name = new TextView(activity.getApplicationContext());
-                name.setText(activity.accountInformation.getHeroes().get(i).getName());
-
-                TextView eliteKills = new TextView(activity.getApplicationContext());
-                eliteKills.setText(String.valueOf(activity.accountInformation.getHeroes().get(i).getKills().getElites()));
-
-                TextView level = new TextView(activity.getApplicationContext());
-                level.setText(String.valueOf(activity.accountInformation.getHeroes().get(i).getLevel()));
-
-                LinearLayout linearLayoutCharacter = new LinearLayout(activity.getApplicationContext());
-                linearLayoutCharacter.setOrientation(LinearLayout.HORIZONTAL);
-
-                linearLayoutCharacter.addView(portrait);
-                linearLayoutCharacter.addView(name);
-                linearLayoutCharacter.addView(eliteKills);
-                linearLayoutCharacter.addView(level);
-
-                linearLayoutCharacter.setLayoutParams(layoutParamsCharacters);
-                activity.linearLayoutCharacters.addView(linearLayoutCharacter);
-            }
-
-
+            activity.portraits = activity.getCharacterImage(activity.accountInformation.getHeroes());
             return null;
         }
 
@@ -195,6 +163,65 @@ public class D3Activity extends AppCompatActivity {
             activity.eliteKills.setText(String.valueOf(activity.accountInformation.getKills().getElites()));
             activity.lifetimeKills.setText(String.valueOf(activity.accountInformation.getKills().getMonsters()));
 
+            LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(420, 325);
+            layoutParamsImage.setMargins(0,0,30,0);
+
+            LinearLayout.LayoutParams layoutParamsCharacters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParamsImage.setMargins(20,0,0,0);
+
+            for(int i = 0; i < activity.accountInformation.getHeroes().size(); i++){
+                ImageView portrait = new ImageView(activity.getApplicationContext());
+                portrait.setImageDrawable(activity.portraits.get(i));
+                portrait.setLayoutParams(layoutParamsImage);
+
+                TextView name = new TextView(activity.getApplicationContext());
+                name.setText(activity.accountInformation.getHeroes().get(i).getName());
+                if(activity.accountInformation.getHeroes().get(i).getHardcore()){
+                    name.setTextColor(Color.RED);
+                }else {
+                    name.setTextColor(Color.WHITE);
+                }
+                name.setTextSize(15);
+                name.setGravity(Gravity.CENTER);
+
+                TextView eliteKills = new TextView(activity.getApplicationContext());
+                String eliteKillsText = "Elite Kills: " + activity.accountInformation.getHeroes().get(i).getKills().getElites();
+                eliteKills.setText(eliteKillsText);
+                eliteKills.setTextColor(Color.WHITE);
+                eliteKills.setTextSize(15);
+                eliteKills.setGravity(Gravity.CENTER);
+
+                TextView level = new TextView(activity.getApplicationContext());
+                String levelText = "Level: " + activity.accountInformation.getHeroes().get(i).getLevel();
+                level.setText(levelText);
+                level.setTextColor(Color.WHITE);
+                level.setTextSize(15);
+                level.setGravity(Gravity.CENTER);
+
+                Log.i("Test", name.getText().toString() + " " + eliteKills.getText().toString() + " " + level.getText().toString());
+
+                LinearLayout linearLayoutCharacter = new LinearLayout(activity.getApplicationContext());
+                linearLayoutCharacter.setOrientation(LinearLayout.VERTICAL);
+
+                LinearLayout linearLayoutSeasonal = new LinearLayout(activity.getApplicationContext());
+                linearLayoutSeasonal.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayoutSeasonal.setGravity(Gravity.CENTER);
+
+                linearLayoutCharacter.addView(portrait);
+                linearLayoutSeasonal.addView(name);
+                if(activity.accountInformation.getHeroes().get(i).getSeasonal()){
+                    ImageView leaf = new ImageView(activity.getApplicationContext());
+                    leaf.setImageDrawable(activity.getResources().getDrawable(R.drawable.leaf_seasonal, activity.getTheme()));
+                    linearLayoutSeasonal.addView(leaf);
+                }
+                linearLayoutCharacter.addView(linearLayoutSeasonal);
+                linearLayoutCharacter.addView(eliteKills);
+                linearLayoutCharacter.addView(level);
+
+                linearLayoutCharacter.setLayoutParams(layoutParamsCharacters);
+                activity.linearLayoutCharacters.addView(linearLayoutCharacter);
+            }
+
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             activity.loadingCircle.setVisibility(View.GONE);
         }
@@ -205,30 +232,71 @@ public class D3Activity extends AppCompatActivity {
         List<Drawable> portraits = new ArrayList<>();
 
         for(int i = 0; i < heroes.size(); i++){
+            Drawable characterImage = null;
             switch(heroes.get(i).getClassSlug()) {
                 case "barbarian":
-                    portraits.add(null);
+                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                        characterImage = getResources().getDrawable(R.drawable.barb_male, this.getTheme());
+                        portraits.add(characterImage);
+                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                        characterImage = getResources().getDrawable(R.drawable.barb_female, this.getTheme());
+                        portraits.add(characterImage);
+                    }
                     break;
                 case "wizard":
-                    portraits.add(null);
+                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                        characterImage = getResources().getDrawable(R.drawable.wizard_male, this.getTheme());
+                        portraits.add(characterImage);
+                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                        characterImage = getResources().getDrawable(R.drawable.wizard_female, this.getTheme());
+                        portraits.add(characterImage);
+                    }
                     break;
                 case "demon-hunter":
-                    portraits.add(null);
+                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                        characterImage = getResources().getDrawable(R.drawable.dh_male, this.getTheme());
+                        portraits.add(characterImage);
+                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                        characterImage = getResources().getDrawable(R.drawable.dh_female, this.getTheme());
+                        portraits.add(characterImage);
+                    }
                     break;
                 case "witch-doctor":
-                    portraits.add(null);
+                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                        characterImage = getResources().getDrawable(R.drawable.wd_male, this.getTheme());
+                        portraits.add(characterImage);
+                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                        characterImage = getResources().getDrawable(R.drawable.wd_female, this.getTheme());
+                        portraits.add(characterImage);
+                    }
                     break;
-                case "necromencer":
-                    portraits.add(null);
+                case "necromancer":
+                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                        characterImage = getResources().getDrawable(R.drawable.necro_male, this.getTheme());
+                        portraits.add(characterImage);
+                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                        characterImage = getResources().getDrawable(R.drawable.necro_female, this.getTheme());
+                        portraits.add(characterImage);
+                    }
                     break;
                 case "monk":
-                    portraits.add(null);
+                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                        characterImage = getResources().getDrawable(R.drawable.monk_male, this.getTheme());
+                        portraits.add(characterImage);
+                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                        characterImage = getResources().getDrawable(R.drawable.monk_female, this.getTheme());
+                        portraits.add(characterImage);
+                    }
                     break;
                 case "crusader":
-                    portraits.add(null);
+                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                        characterImage = getResources().getDrawable(R.drawable.crusader_male, this.getTheme());
+                        portraits.add(characterImage);
+                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                        characterImage = getResources().getDrawable(R.drawable.crusader_female, this.getTheme());
+                        portraits.add(characterImage);
+                    }
                     break;
-                default:
-                    portraits.add(null);
             }
         }
         return portraits;
