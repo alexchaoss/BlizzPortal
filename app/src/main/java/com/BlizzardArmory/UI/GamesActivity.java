@@ -1,11 +1,15 @@
 package com.BlizzardArmory.UI;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -76,7 +80,16 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                callNextActivity(WoWActivity.class);
+                try {
+                    if (ConnectionService.isConnected()) {
+                        callNextActivity(WoWActivity.class);
+                    }else{
+                        ConstraintLayout constraintLayout = findViewById(R.id.background);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                    }
+                }catch (Exception e){
+                    Log.e("Error", e.toString());
+                }
             }
         });
 
@@ -84,7 +97,16 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                callNextActivity(D3Activity.class);
+                try {
+                    if (ConnectionService.isConnected()) {
+                        callNextActivity(D3Activity.class);
+                    }else{
+                        ConstraintLayout constraintLayout = findViewById(R.id.background);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                    }
+                }catch (Exception e){
+                    Log.e("Error", e.toString());
+                }
             }
         });
 
@@ -92,7 +114,17 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                callNextActivity(SC2Activity.class);
+                try {
+                    if (ConnectionService.isConnected()) {
+                        callNextActivity(SC2Activity.class);
+                    }else{
+                        ConstraintLayout constraintLayout = findViewById(R.id.background);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                    }
+                }catch (Exception e){
+                    Log.e("Error", e.toString());
+                }
+
             }
         });
 
@@ -100,7 +132,17 @@ public class GamesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                callNextActivity(OWActivity.class);
+                try {
+                    if (ConnectionService.isConnected()) {
+                        callNextActivity(OWActivity.class);
+                    }else{
+                        ConstraintLayout constraintLayout = findViewById(R.id.background);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                    }
+                }catch (Exception e){
+                    Log.e("Error", e.toString());
+                }
+
             }
         });
     }
