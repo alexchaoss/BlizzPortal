@@ -1,5 +1,6 @@
 package com.BlizzardArmory.UI.UI_warcraft;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -7,8 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -71,7 +75,17 @@ public class WoWActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        new PrepareDataWoWActivity(this).execute();
+        try {
+            if (ConnectionService.isConnected()) {
+                new PrepareDataWoWActivity(this).execute();
+            }else{
+                ConstraintLayout constraintLayout = findViewById(R.id.background);
+                ConnectionService.showNoConnectionMessage(WoWActivity.this, constraintLayout);
+                finish();
+            }
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+        }
 
         //Button calls
 
@@ -253,7 +267,16 @@ public class WoWActivity extends AppCompatActivity {
                                 activity.url = activity.characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
                             }
                         }
-                        activity.displayFragment();
+                        try {
+                            if (ConnectionService.isConnected()) {
+                                activity.displayFragment();
+                            }else{
+                                Toast.makeText(activity.getApplicationContext(),"No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
+                            }
+                        }catch (Exception e){
+                            Log.e("Error", e.toString());
+                        }
+
                     }
                 });
                 i++;

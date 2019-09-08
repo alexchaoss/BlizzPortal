@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
@@ -79,7 +81,18 @@ public class D3Activity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        new PrepareDataD3Activity(this).execute();
+        try {
+            if (ConnectionService.isConnected()) {
+                new PrepareDataD3Activity(this).execute();
+            }else{
+                ConstraintLayout constraintLayout = findViewById(R.id.background);
+                ConnectionService.showNoConnectionMessage(D3Activity.this, constraintLayout);
+                finish();
+            }
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+        }
+
 
         //Button calls
         wowButton.setOnClickListener(new View.OnClickListener(){
@@ -117,6 +130,7 @@ public class D3Activity extends AppCompatActivity {
 
         private WeakReference<D3Activity> activityReference;
 
+
         PrepareDataD3Activity(D3Activity context) {
             activityReference = new WeakReference<>(context);
         }
@@ -134,24 +148,16 @@ public class D3Activity extends AppCompatActivity {
             activity.bnOAuth2Params = Objects.requireNonNull(activity.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
             assert activity.bnOAuth2Params != null;
             activity.bnOAuth2Helper = new BnOAuth2Helper(activity.prefs, activity.bnOAuth2Params);
-            Gson gson = new GsonBuilder().create();
-
-            try {
-                activity.D3AccountInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtag()
-                        + URLConstants.ACCESS_TOKEN_QUERY + activity.bnOAuth2Helper.getAccessToken(), activity.getApplicationContext()).getStringJSONFromRequest().get(0));
-                activity.accountInformation = gson.fromJson(activity.D3AccountInfo.toString(), AccountInformation.class);
-                Log.i("json", activity.D3AccountInfo.toString());
-            }catch (Exception e){
-                Log.e("Error", e.toString());
-            }
-
-            activity.portraits = activity.getCharacterImage(activity.accountInformation.getHeroes());
+            final Gson gson = new GsonBuilder().create();
+            getAccountInfo(activity, gson);
             return null;
         }
 
         protected void onPostExecute(Void param) {
             super.onPostExecute(param);
             D3Activity  activity = activityReference.get();
+
+            activity.portraits = activity.getCharacterImage(activity.accountInformation.getHeroes());
 
             String paragon = activity.accountInformation.getParagonLevel() +
                     " | " +
@@ -224,6 +230,17 @@ public class D3Activity extends AppCompatActivity {
 
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             activity.loadingCircle.setVisibility(View.GONE);
+        }
+    }
+
+    private static void getAccountInfo(D3Activity activity, Gson gson) {
+        try {
+            activity.D3AccountInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtag()
+                    + URLConstants.ACCESS_TOKEN_QUERY + activity.bnOAuth2Helper.getAccessToken(), activity.getApplicationContext()).getStringJSONFromRequest().get(0));
+            activity.accountInformation = gson.fromJson(activity.D3AccountInfo.toString(), AccountInformation.class);
+            Log.i("json", activity.D3AccountInfo.toString());
+        }catch (Exception e){
+            Log.e("Error", e.toString());
         }
     }
 

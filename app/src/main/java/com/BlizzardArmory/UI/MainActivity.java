@@ -1,11 +1,14 @@
 package com.BlizzardArmory.UI;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -22,6 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.BlizzardArmory.UI.UI_diablo.D3Activity;
+import com.BlizzardArmory.connection.ConnectionService;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -98,9 +103,20 @@ public class MainActivity extends AppCompatActivity {
                 if(selectedRegion.equals("Select Region")){
                     Toast.makeText(getApplicationContext(),"Please select a region", Toast.LENGTH_SHORT).show();
                 }else{
-                    CreateToken(bnOAuth2Params);
-                    setContentView(R.layout.activity_games);
+                    try{
+                        if(ConnectionService.isConnected()){
+                            CreateToken(bnOAuth2Params);
+                            setContentView(R.layout.activity_games);
+                        }else{
+                            ConstraintLayout constraintLayout = findViewById(R.id.background);
+                            ConnectionService.showNoConnectionMessage(MainActivity.this, constraintLayout);
+                        }
+                    }catch (Exception e){
+                        ConstraintLayout constraintLayout = findViewById(R.id.background);
+                        ConnectionService.showNoConnectionMessage(MainActivity.this, constraintLayout);
+                    }
                 }
+
             }
         });
 

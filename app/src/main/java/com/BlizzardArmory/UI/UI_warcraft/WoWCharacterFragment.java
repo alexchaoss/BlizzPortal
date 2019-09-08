@@ -30,8 +30,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.UI.UI_diablo.D3Activity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.connection.ImageDownload;
@@ -153,6 +155,7 @@ public class WoWCharacterFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
+
         Bundle bundle = getArguments();
         assert bundle != null;
         characterRealm = bundle.getString("realm");
@@ -201,7 +204,7 @@ public class WoWCharacterFragment extends Fragment {
         Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        new PrepareDataWoWCharacter(this).execute();
+
 
         LinearLayout.LayoutParams layoutParamsName = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -261,7 +264,7 @@ public class WoWCharacterFragment extends Fragment {
         gear.add(mainHand);
         gear.add(offHand);
 
-
+        new PrepareDataWoWCharacter(this).execute();
     }
 
     @Override
