@@ -1,15 +1,12 @@
 package com.BlizzardArmory.UI;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -28,7 +25,6 @@ import com.BlizzardArmory.connection.ConnectionService;
 
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 public class GamesActivity extends AppCompatActivity {
@@ -85,7 +81,7 @@ public class GamesActivity extends AppCompatActivity {
                         callNextActivity(WoWActivity.class);
                     }else{
                         ConstraintLayout constraintLayout = findViewById(R.id.background);
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){
                     Log.e("Error", e.toString());
@@ -102,7 +98,7 @@ public class GamesActivity extends AppCompatActivity {
                         callNextActivity(D3Activity.class);
                     }else{
                         ConstraintLayout constraintLayout = findViewById(R.id.background);
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){
                     Log.e("Error", e.toString());
@@ -119,7 +115,7 @@ public class GamesActivity extends AppCompatActivity {
                         callNextActivity(SC2Activity.class);
                     }else{
                         ConstraintLayout constraintLayout = findViewById(R.id.background);
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){
                     Log.e("Error", e.toString());
@@ -137,7 +133,7 @@ public class GamesActivity extends AppCompatActivity {
                         callNextActivity(OWActivity.class);
                     }else{
                         ConstraintLayout constraintLayout = findViewById(R.id.background);
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this, constraintLayout);
+                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){
                     Log.e("Error", e.toString());
