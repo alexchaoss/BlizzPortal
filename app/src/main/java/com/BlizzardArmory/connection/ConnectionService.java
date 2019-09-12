@@ -1,21 +1,14 @@
 package com.BlizzardArmory.connection;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
@@ -164,8 +157,8 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
         return Runtime.getRuntime().exec(command).waitFor() == 0;
     }
 
-    public static void showNoConnectionMessage(Context context, ConstraintLayout parent){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public static void showNoConnectionMessage(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogInternetCustom);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         TextView titleText = new TextView(context);

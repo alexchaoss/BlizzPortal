@@ -1,6 +1,5 @@
 package com.BlizzardArmory.UI.UI_warcraft;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -80,7 +78,7 @@ public class WoWActivity extends AppCompatActivity {
                 new PrepareDataWoWActivity(this).execute();
             }else{
                 ConstraintLayout constraintLayout = findViewById(R.id.background);
-                ConnectionService.showNoConnectionMessage(WoWActivity.this, constraintLayout);
+                ConnectionService.showNoConnectionMessage(WoWActivity.this);
                 finish();
             }
         }catch (Exception e){

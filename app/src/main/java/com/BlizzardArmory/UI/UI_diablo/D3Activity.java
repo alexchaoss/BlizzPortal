@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
@@ -40,8 +39,19 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import lecho.lib.hellocharts.formatter.ColumnChartValueFormatter;
+import lecho.lib.hellocharts.model.Column;
+import lecho.lib.hellocharts.model.ColumnChartData;
+import lecho.lib.hellocharts.model.SubcolumnValue;
+import lecho.lib.hellocharts.util.ChartUtils;
+import lecho.lib.hellocharts.view.ColumnChartView;
+import lecho.lib.hellocharts.view.LineChartView;
 
 public class D3Activity extends AppCompatActivity {
 
@@ -86,7 +96,7 @@ public class D3Activity extends AppCompatActivity {
                 new PrepareDataD3Activity(this).execute();
             }else{
                 ConstraintLayout constraintLayout = findViewById(R.id.background);
-                ConnectionService.showNoConnectionMessage(D3Activity.this, constraintLayout);
+                ConnectionService.showNoConnectionMessage(D3Activity.this);
                 finish();
             }
         }catch (Exception e){
@@ -228,6 +238,41 @@ public class D3Activity extends AppCompatActivity {
                 activity.linearLayoutCharacters.addView(linearLayoutCharacter);
             }
 
+            double barbTime = activity.accountInformation.getTimePlayed().getBarbarian();
+            double wizTime = activity.accountInformation.getTimePlayed().getWizard();
+            double wdTime = activity.accountInformation.getTimePlayed().getWitchDoctor();
+            double necroTime = activity.accountInformation.getTimePlayed().getNecromancer();
+            double crusaderTime = activity.accountInformation.getTimePlayed().getCrusader();
+            double monkTime = activity.accountInformation.getTimePlayed().getMonk();
+            double dhTime = activity.accountInformation.getTimePlayed().getDemonHunter();
+
+            List<Double> timePlayed = new ArrayList<>(Arrays.asList(barbTime, wdTime, wizTime, necroTime, crusaderTime, monkTime, dhTime));
+            List<Double> timePlayedPercent = new ArrayList<>();
+
+            double total = 0;
+
+            for(int i = 0; i < timePlayed.size(); i++){
+                total += timePlayed.get(i);
+            }
+
+            for(int i = 0; i<timePlayed.size(); i++){
+                timePlayedPercent.add((100*timePlayed.get(i)/total));
+            }
+
+            ColumnChartView chartTime = activity.findViewById(R.id.time_played_chart);
+
+            ColumnChartData chartData = new ColumnChartData();
+            List<Column> columns  = new ArrayList<>();
+            for(int i = 0; i < timePlayed.size(); i++){
+                columns.add(new Column((List<SubcolumnValue>) new SubcolumnValue(timePlayedPercent.get(i).floatValue(), ChartUtils.COLOR_GREEN)));
+            }
+
+            chartData.setColumns(columns);
+
+            chartTime.setInteractive(false);
+            chartTime.setZoomEnabled(false);
+            chartTime.setScrollEnabled(false);
+
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             activity.loadingCircle.setVisibility(View.GONE);
         }
@@ -249,7 +294,7 @@ public class D3Activity extends AppCompatActivity {
         List<Drawable> portraits = new ArrayList<>();
 
         for(int i = 0; i < heroes.size(); i++){
-            Drawable characterImage = null;
+            Drawable characterImage;
             switch(heroes.get(i).getClassSlug()) {
                 case "barbarian":
                     if(accountInformation.getHeroes().get(i).getGender() == 0){
