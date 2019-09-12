@@ -40,18 +40,14 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import lecho.lib.hellocharts.formatter.ColumnChartValueFormatter;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
-import lecho.lib.hellocharts.view.LineChartView;
 
 public class D3Activity extends AppCompatActivity {
 
@@ -95,7 +91,6 @@ public class D3Activity extends AppCompatActivity {
             if (ConnectionService.isConnected()) {
                 new PrepareDataD3Activity(this).execute();
             }else{
-                ConstraintLayout constraintLayout = findViewById(R.id.background);
                 ConnectionService.showNoConnectionMessage(D3Activity.this);
                 finish();
             }
@@ -264,7 +259,9 @@ public class D3Activity extends AppCompatActivity {
             ColumnChartData chartData = new ColumnChartData();
             List<Column> columns  = new ArrayList<>();
             for(int i = 0; i < timePlayed.size(); i++){
-                columns.add(new Column((List<SubcolumnValue>) new SubcolumnValue(timePlayedPercent.get(i).floatValue(), ChartUtils.COLOR_GREEN)));
+                List<SubcolumnValue> values = new ArrayList<>();
+                values.add(new SubcolumnValue(timePlayedPercent.get(i).floatValue(), ChartUtils.COLOR_GREEN));
+                columns.add(new Column(values));
             }
 
             chartData.setColumns(columns);
