@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
@@ -257,7 +256,7 @@ public class D3Activity extends AppCompatActivity {
                             if (ConnectionService.isConnected()) {
                                 activity.displayFragment();
                             } else {
-                                Toast.makeText(activity.getApplicationContext(), "No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
+                                ConnectionService.showNoConnectionMessage(activity.getApplicationContext());
                             }
                         } catch (Exception e) {
                             Log.e("Error", e.toString());
