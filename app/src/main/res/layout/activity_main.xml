@@ -82,6 +82,4 @@
         app:srcCompat="@drawable/bnet_logo" />
 
 
-
-
 </android.support.constraint.ConstraintLayout>

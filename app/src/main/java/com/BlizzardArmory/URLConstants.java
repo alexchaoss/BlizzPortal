@@ -37,11 +37,11 @@ public class URLConstants {
     public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
     public final static String SPELL_ID_QUERY = "/wow/spell/";
 
-    public static String getD3URLBtagProfile(){
+    public static String getD3URLBtagProfile() {
         return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
     }
 
-    public static String getD3HeroURL(int id){
+    public static String getD3HeroURL(int id) {
         return D3_CHARACTER.replace("id", String.valueOf(id));
     }
 
@@ -61,7 +61,7 @@ public class URLConstants {
         }
     }
 
-    public static String getRenderZoneURL(){
+    public static String getRenderZoneURL() {
         return WOW_CHARACTER_THUMNAIL_URL.replace("zone", MainActivity.selectedRegion.toLowerCase());
     }
 }

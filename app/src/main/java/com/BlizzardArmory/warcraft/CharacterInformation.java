@@ -1,11 +1,12 @@
 package com.BlizzardArmory.warcraft;
 
-import java.util.List;
-
 import com.BlizzardArmory.warcraft.Spells.Talent;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.List;
 
 public class CharacterInformation {
 

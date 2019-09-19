@@ -1,11 +1,12 @@
 package com.BlizzardArmory.warcraft.Items;
 
-import java.util.List;
-
 import com.BlizzardArmory.warcraft.Spells.ItemSpell;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.List;
 
 public class ItemInformation {
 

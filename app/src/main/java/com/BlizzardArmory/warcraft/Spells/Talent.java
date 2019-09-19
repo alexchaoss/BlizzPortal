@@ -1,11 +1,12 @@
 package com.BlizzardArmory.warcraft.Spells;
 
-import java.util.List;
-
 import com.BlizzardArmory.warcraft.Spec;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.List;
 
 public class Talent {
 
@@ -26,7 +27,7 @@ public class Talent {
     private String calcSpec;
 
     public Boolean getSelected() {
-        if(selected == null) {
+        if (selected == null) {
             selected = false;
         }
         return selected;

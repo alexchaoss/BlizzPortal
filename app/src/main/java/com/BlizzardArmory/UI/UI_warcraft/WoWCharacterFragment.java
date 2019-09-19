@@ -30,21 +30,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.UI.UI_diablo.D3Activity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.connection.ImageDownload;
-import com.BlizzardArmory.warcraft.Spells.AzeritePower;
 import com.BlizzardArmory.warcraft.CharacterInformation;
 import com.BlizzardArmory.warcraft.Items.Gear;
 import com.BlizzardArmory.warcraft.Items.Item;
 import com.BlizzardArmory.warcraft.Items.ItemInformation;
-import com.BlizzardArmory.warcraft.Spells.ItemSpell;
 import com.BlizzardArmory.warcraft.Items.Stat;
 import com.BlizzardArmory.warcraft.Items.StatsEnum;
+import com.BlizzardArmory.warcraft.Spells.AzeritePower;
+import com.BlizzardArmory.warcraft.Spells.ItemSpell;
 import com.BlizzardArmory.warcraft.Spells.Talents;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -111,21 +109,21 @@ public class WoWCharacterFragment extends Fragment {
     private List<Talents> talents = new ArrayList<>();
     private TabLayout specs;
     private TextView spec;
-    private TextView  noTalent;
-    private TextView  fifteen;
-    private TextView  thirty;
-    private TextView  forty_five;
-    private TextView  sixty;
-    private TextView  seventy_five;
-    private TextView  ninety;
-    private TextView  hundred;
-    private TextView  fifteenTalent;
-    private TextView  thirtyTalent;
-    private TextView  forty_fiveTalent;
-    private TextView  sixtyTalent;
-    private TextView  seventy_fiveTalent;
-    private TextView  ninetyTalent;
-    private TextView  hundredTalent;
+    private TextView noTalent;
+    private TextView fifteen;
+    private TextView thirty;
+    private TextView forty_five;
+    private TextView sixty;
+    private TextView seventy_five;
+    private TextView ninety;
+    private TextView hundred;
+    private TextView fifteenTalent;
+    private TextView thirtyTalent;
+    private TextView forty_fiveTalent;
+    private TextView sixtyTalent;
+    private TextView seventy_fiveTalent;
+    private TextView ninetyTalent;
+    private TextView hundredTalent;
 
     private RelativeLayout loadingCircle;
 
@@ -167,7 +165,7 @@ public class WoWCharacterFragment extends Fragment {
         itemLVL = view.findViewById(R.id.item_lvl);
         background = view.findViewById(R.id.background);
         cardView = view.findViewById(R.id.item_stats);
-        cardView.setContentPadding(10,10,10,10);
+        cardView.setContentPadding(10, 10, 10, 10);
         LinearLayout linearLayoutItemStats = new LinearLayout(view.getContext());
         linearLayoutItemStats.setOrientation(LinearLayout.VERTICAL);
         linearLayoutItemStats.setGravity(Gravity.CENTER);
@@ -205,12 +203,11 @@ public class WoWCharacterFragment extends Fragment {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
 
-
         LinearLayout.LayoutParams layoutParamsName = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParamsName.setMargins(20,20,20,0);
+        layoutParamsName.setMargins(20, 20, 20, 0);
         nameView.setLayoutParams(layoutParamsName);
-        layoutParamsStats.setMargins(20,0,20,0);
+        layoutParamsStats.setMargins(20, 0, 20, 0);
         statsView.setLayoutParams(layoutParamsStats);
 
         ImageView head = view.findViewById(R.id.head);
@@ -276,14 +273,14 @@ public class WoWCharacterFragment extends Fragment {
 
     private String getTrigger(int index) {
         StringBuilder trigger = new StringBuilder();
-        for(int i = 0; i < itemInformations.get(index).getItemSpells().size();i++){
+        for (int i = 0; i < itemInformations.get(index).getItemSpells().size(); i++) {
             ItemSpell itemSpell = itemInformations.get(index).getItemSpells().get(i);
-            if(itemSpell.getTrigger().equals("ON_EQUIP") && !itemSpell.getScaledDescription().equals("")){
+            if (itemSpell.getTrigger().equals("ON_EQUIP") && !itemSpell.getScaledDescription().equals("")) {
                 trigger.append("<font color=#00cc00>Equip: ").append(itemSpell.getScaledDescription()).append("</font>");
-            }else if(itemSpell.getTrigger().equals("ON_USE") && !itemSpell.getScaledDescription().equals("")){
-                if(trigger.toString().equals("")){
+            } else if (itemSpell.getTrigger().equals("ON_USE") && !itemSpell.getScaledDescription().equals("")) {
+                if (trigger.toString().equals("")) {
                     trigger.append("<font color=#00cc00>Use: ").append(itemSpell.getScaledDescription()).append("</font>");
-                }else{
+                } else {
                     trigger.append("<br><br><font color=#00cc00>Use: ").append(itemSpell.getScaledDescription()).append("</font>");
                 }
 
@@ -296,10 +293,10 @@ public class WoWCharacterFragment extends Fragment {
         StringBuilder tempStatsBuilder = new StringBuilder(tempStats);
         for (Stat stat : statList) {
             String currentStat;
-            if(stat.getStat() > 7 && stat.getStat() < 71){
-                currentStat = "<font color=#00cc00>" + "+" + StatsEnum.fromOrdinal(stat.getStat())  + " " + stat.getAmount() + "</font>";
-            }else{
-                currentStat = "+" +  StatsEnum.fromOrdinal(stat.getStat()).toString() + " " + stat.getAmount();
+            if (stat.getStat() > 7 && stat.getStat() < 71) {
+                currentStat = "<font color=#00cc00>" + "+" + StatsEnum.fromOrdinal(stat.getStat()) + " " + stat.getAmount() + "</font>";
+            } else {
+                currentStat = "+" + StatsEnum.fromOrdinal(stat.getStat()).toString() + " " + stat.getAmount();
             }
             tempStatsBuilder.append(currentStat).append("<br>");
         }
@@ -308,7 +305,7 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private String getDamageInformation(String itemSlot, String damageInfo) {
-        if(itemSlot.equals("Off-Hand") && itemsInfoList.get(index).getWeaponInfo() != null|| itemSlot.equals("Main-Hand")){
+        if (itemSlot.equals("Off-Hand") && itemsInfoList.get(index).getWeaponInfo() != null || itemSlot.equals("Main-Hand")) {
             int min = itemsInfoList.get(index).getWeaponInfo().getDamage().getMin();
             int max = itemsInfoList.get(index).getWeaponInfo().getDamage().getMax();
             double speed = itemsInfoList.get(index).getWeaponInfo().getWeaponSpeed();
@@ -322,9 +319,9 @@ public class WoWCharacterFragment extends Fragment {
         Collections.sort(statList, new Comparator<Stat>() {
             @Override
             public int compare(Stat o1, Stat o2) {
-                if(o2.getStat() > 70){
+                if (o2.getStat() > 70) {
                     return 1;
-                }else if(o1.getStat() > 70){
+                } else if (o1.getStat() > 70) {
                     return -1;
                 }
                 return o1.getStat().compareTo(o2.getStat());
@@ -333,10 +330,10 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private String formatItemSlotName(String itemSlot) {
-        itemSlot = itemSlot.substring(0,1).toUpperCase() + itemSlot.substring(1);
+        itemSlot = itemSlot.substring(0, 1).toUpperCase() + itemSlot.substring(1);
         itemSlot = itemSlot.replace("_", "-");
-        if(itemSlot.contains("-")) {
-            char before = itemSlot.charAt(itemSlot.indexOf("-")+1);
+        if (itemSlot.contains("-")) {
+            char before = itemSlot.charAt(itemSlot.indexOf("-") + 1);
             itemSlot = itemSlot.replace(before, Character.toUpperCase(before));
         }
         itemSlot = itemSlot.replaceAll("[0-9]", "");
@@ -347,19 +344,19 @@ public class WoWCharacterFragment extends Fragment {
         StringBuilder bonusIds = new StringBuilder();
         String idURL;
         int size = itemsInfoList.get(i).getBonusLists().size();
-        if(size > 0){
+        if (size > 0) {
 
-            for(int j = 0; j < size; j++) {
+            for (int j = 0; j < size; j++) {
                 for (int k = 0; k < size; k++) {
                     bonusIds.append(itemsInfoList.get(i).getBonusLists().get(k)).append(",");
                 }
             }
-            idURL = itemsInfoList.get(i).getId().toString() + "?b1=" + bonusIds.substring(0,bonusIds.length()-1);
-        }else{
+            idURL = itemsInfoList.get(i).getId().toString() + "?b1=" + bonusIds.substring(0, bonusIds.length() - 1);
+        } else {
             idURL = itemsInfoList.get(i).getId().toString() + "?b1=";
         }
 
-        return URLConstants.BONUSID_QUERY.replace("id?b1=bonusList",  idURL );
+        return URLConstants.BONUSID_QUERY.replace("id?b1=bonusList", idURL);
     }
 
     private void getIcons(View view) {
@@ -385,7 +382,7 @@ public class WoWCharacterFragment extends Fragment {
         gearList.add(equipment.getMainHand());
         gearList.add(equipment.getOffHand());
 
-        for(int i = 0; i < gearList.size(); i++){
+        for (int i = 0; i < gearList.size(); i++) {
             if (gearList.get(i) == null) {
                 itemsInfoList.add(new Item());
                 Drawable noItem = getEmptySlotIcon(i, view.getContext());
@@ -393,48 +390,48 @@ public class WoWCharacterFragment extends Fragment {
             } else {
                 Item currentItem = gson.fromJson(gearList.get(i).toString(), Item.class);
                 itemsInfoList.add(currentItem);
-                Drawable item = new ImageDownload(currentItem.getIcon()+ ".jpg", URLConstants.WOW_ICONS_URL + "56/", view.getContext(), characterInformation).getImageFromURL().get(0);
+                Drawable item = new ImageDownload(currentItem.getIcon() + ".jpg", URLConstants.WOW_ICONS_URL + "56/", view.getContext(), characterInformation).getImageFromURL().get(0);
                 icons.add(item);
             }
         }
     }
 
     private Drawable getEmptySlotIcon(int index, Context context) {
-        if(index == 0){
+        if (index == 0) {
             return ContextCompat.getDrawable(context, R.drawable.empty_head);
-        }else if(index == 1){
+        } else if (index == 1) {
             return ContextCompat.getDrawable(context, R.drawable.empty_neck);
-        }else if(index == 2){
+        } else if (index == 2) {
             return ContextCompat.getDrawable(context, R.drawable.empty_shoulders);
-        }else if(index == 3){
+        } else if (index == 3) {
             return ContextCompat.getDrawable(context, R.drawable.empty_back);
-        }else if(index == 4){
+        } else if (index == 4) {
             return ContextCompat.getDrawable(context, R.drawable.empty_chest);
-        }else if(index == 5){
+        } else if (index == 5) {
             return ContextCompat.getDrawable(context, R.drawable.empty_shirt);
-        }else if(index == 6){
+        } else if (index == 6) {
             return ContextCompat.getDrawable(context, R.drawable.empty_tabard);
-        }else if(index == 7){
+        } else if (index == 7) {
             return ContextCompat.getDrawable(context, R.drawable.empty_wrist);
-        }else if(index == 8){
+        } else if (index == 8) {
             return ContextCompat.getDrawable(context, R.drawable.empty_hands);
-        }else if(index == 9){
+        } else if (index == 9) {
             return ContextCompat.getDrawable(context, R.drawable.empty_waist);
-        }else if(index == 10){
+        } else if (index == 10) {
             return ContextCompat.getDrawable(context, R.drawable.empty_legs);
-        }else if(index == 11){
+        } else if (index == 11) {
             return ContextCompat.getDrawable(context, R.drawable.empty_feet);
-        }else if(index == 12){
+        } else if (index == 12) {
             return ContextCompat.getDrawable(context, R.drawable.empty_ring);
-        }else if(index == 13){
+        } else if (index == 13) {
             return ContextCompat.getDrawable(context, R.drawable.empty_ring);
-        }else if(index == 14){
+        } else if (index == 14) {
             return ContextCompat.getDrawable(context, R.drawable.empty_trinket);
-        }else if(index == 15){
+        } else if (index == 15) {
             return ContextCompat.getDrawable(context, R.drawable.empty_trinket);
-        }else if(index == 16){
+        } else if (index == 16) {
             return ContextCompat.getDrawable(context, R.drawable.empty_main_hand);
-        }else if(index == 17){
+        } else if (index == 17) {
             return ContextCompat.getDrawable(context, R.drawable.empty_shield);
         }
 
@@ -445,30 +442,30 @@ public class WoWCharacterFragment extends Fragment {
         return URLConstants.WOW_ITEM_QUERY.replace("realm/character", characterRealm + "/" + characterClicked);
     }
 
-    private Drawable itemColor(Item item, GradientDrawable drawable){
+    private Drawable itemColor(Item item, GradientDrawable drawable) {
         drawable.setCornerRadius(3);
         drawable.setColor(Color.parseColor("#000000"));
-        drawable.setStroke(3,getItemColor(item));
+        drawable.setStroke(3, getItemColor(item));
 
         return drawable;
     }
 
-    private int getItemColor(Item item){
-        if(item.getQuality() == 0){
+    private int getItemColor(Item item) {
+        if (item.getQuality() == 0) {
             return Color.GRAY;
-        }else if(item.getQuality() == 1){
+        } else if (item.getQuality() == 1) {
             return Color.WHITE;
-        }else if(item.getQuality() == 2){
+        } else if (item.getQuality() == 2) {
             return Color.parseColor("#00cc00");
-        }else if(item.getQuality() == 3){
+        } else if (item.getQuality() == 3) {
             return Color.parseColor("#0070ff");
-        }else if(item.getQuality() == 4){
+        } else if (item.getQuality() == 4) {
             return Color.parseColor("#663288");
-        }else if(item.getQuality() == 5){
+        } else if (item.getQuality() == 5) {
             return Color.parseColor("#ff8000");
-        }else if(item.getQuality() == 6){
+        } else if (item.getQuality() == 6) {
             return Color.parseColor("#b2a06c");
-        }else if(item.getQuality() == 7){
+        } else if (item.getQuality() == 7) {
             return Color.parseColor("#01c5f7");
         }
         return 0;
@@ -483,7 +480,7 @@ public class WoWCharacterFragment extends Fragment {
         }
 
 
-        protected void onPreExecute () {
+        protected void onPreExecute() {
             super.onPreExecute();
             WoWCharacterFragment activity = activityReference.get();
             activity.loadingCircle.setVisibility(View.VISIBLE);
@@ -539,8 +536,6 @@ public class WoWCharacterFragment extends Fragment {
                     }
 
 
-
-
                     for (int i = 0; i < activity.bonusIDList.size(); i++) {
                         if (activity.bonusIDList.get(i) != null) {
                             ItemInformation itemInformation = gson.fromJson(activity.bonusIDList.get(i).toString(), ItemInformation.class);
@@ -550,58 +545,57 @@ public class WoWCharacterFragment extends Fragment {
                         }
                     }
 
-                        ArrayList<String> tempSpell= new ArrayList<>();
-                    if(activity.itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
+                    ArrayList<String> tempSpell = new ArrayList<>();
+                    if (activity.itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
                         activity.powerHead = activity.itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
                     }
-                    if(activity.itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
+                    if (activity.itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
                         activity.powerShoulder = activity.itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers();
                     }
-                    if(activity.itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
+                    if (activity.itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
                         activity.powerChest = activity.itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers();
                     }
 
-                        for (AzeritePower azeritePower : activity.powerHead) {
-                            if (azeritePower.getSpellId() != 0) {
-                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
-                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                            }
+                    for (AzeritePower azeritePower : activity.powerHead) {
+                        if (azeritePower.getSpellId() != 0) {
+                            tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                    URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                         }
+                    }
 
-                        ArrayList<String> tempSpellHead = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
-                        tempSpell.clear();
+                    ArrayList<String> tempSpellHead = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
+                    tempSpell.clear();
 
-                        for (AzeritePower azeritePower : activity.powerShoulder) {
-                            if (azeritePower.getSpellId() != 0) {
-                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
-                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                            }
+                    for (AzeritePower azeritePower : activity.powerShoulder) {
+                        if (azeritePower.getSpellId() != 0) {
+                            tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                    URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                         }
+                    }
 
-                        ArrayList<String> tempSpellShoulder = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
-                        tempSpell.clear();
+                    ArrayList<String> tempSpellShoulder = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
+                    tempSpell.clear();
 
-                        for (AzeritePower azeritePower : activity.powerChest) {
-                            if (azeritePower.getSpellId() != 0) {
-                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
-                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                            }
+                    for (AzeritePower azeritePower : activity.powerChest) {
+                        if (azeritePower.getSpellId() != 0) {
+                            tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                    URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                         }
+                    }
 
-                        ArrayList<String> tempSpellChest = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
-                        tempSpell.clear();
-                        Log.i("test", tempSpellHead.toString());
+                    ArrayList<String> tempSpellChest = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
+                    tempSpell.clear();
+                    Log.i("test", tempSpellHead.toString());
 
-                        for (int i = 0; i < tempSpellHead.size(); i++) {
-                            activity.azeriteSpellsHead.add(new JSONObject(tempSpellHead.get(i)));
-                        }
-                        for (int i = 0; i < tempSpellShoulder.size(); i++) {
-                            activity.azeriteSpellsShoulder.add(new JSONObject(tempSpellShoulder.get(i)));
-                        }
-                        for (int i = 0; i < tempSpellChest.size(); i++) {
-                            activity.azeriteSpellsChest.add(new JSONObject(tempSpellChest.get(i)));
-                        }
-
+                    for (int i = 0; i < tempSpellHead.size(); i++) {
+                        activity.azeriteSpellsHead.add(new JSONObject(tempSpellHead.get(i)));
+                    }
+                    for (int i = 0; i < tempSpellShoulder.size(); i++) {
+                        activity.azeriteSpellsShoulder.add(new JSONObject(tempSpellShoulder.get(i)));
+                    }
+                    for (int i = 0; i < tempSpellChest.size(); i++) {
+                        activity.azeriteSpellsChest.add(new JSONObject(tempSpellChest.get(i)));
+                    }
 
 
                 }
@@ -611,7 +605,7 @@ public class WoWCharacterFragment extends Fragment {
             }
 
             long endTime = System.nanoTime();
-            long duration = (endTime - startTime)/1000000000;
+            long duration = (endTime - startTime) / 1000000000;
             Log.i("time", String.valueOf(duration));
             return null;
         }
@@ -633,9 +627,9 @@ public class WoWCharacterFragment extends Fragment {
 
                     setTalentInformation(activity);
 
-                    for(final ImageView imageView: activity.gear){
+                    for (final ImageView imageView : activity.gear) {
 
-                        if(activity.itemsInfoList.get(activity.index).getName() != null){
+                        if (activity.itemsInfoList.get(activity.index).getName() != null) {
                             setCharacterItemsInformation(activity, imageView);
                         }
 
@@ -653,7 +647,7 @@ public class WoWCharacterFragment extends Fragment {
         private void setOnPressItemInformation(WoWCharacterFragment activity, final ImageView imageView) {
             imageView.setId(activity.index);
             imageView.setImageDrawable(activity.icons.get(activity.index));
-            imageView.setPadding(3,3,3,3);
+            imageView.setPadding(3, 3, 3, 3);
             imageView.setClipToOutline(true);
 
             imageView.setOnTouchListener(new View.OnTouchListener() {
@@ -664,21 +658,20 @@ public class WoWCharacterFragment extends Fragment {
                 @SuppressWarnings("deprecation")
                 public boolean onTouch(View v, MotionEvent event) {
 
-                    switch (event.getAction()){
-                        case MotionEvent.ACTION_DOWN:
-                        {
-                            if(activity.stats.get(imageView.getId()) != null){
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            if (activity.stats.get(imageView.getId()) != null) {
                                 activity.nameView.setText(activity.nameList.get(imageView.getId()));
                                 activity.nameView.setTextColor(activity.getItemColor(activity.itemsInfoList.get(imageView.getId())));
                                 activity.nameView.setTextSize(17);
-                                if(Build.VERSION.SDK_INT >= 24){
+                                if (Build.VERSION.SDK_INT >= 24) {
                                     activity.statsView.setText(Html.fromHtml(activity.stats.get(imageView.getId()), Html.FROM_HTML_MODE_LEGACY));
-                                }else {
+                                } else {
                                     activity.statsView.setText(Html.fromHtml(activity.stats.get(imageView.getId())));
                                 }
                                 activity.statsView.setTextColor(Color.WHITE);
                                 activity.statsView.setTextSize(13);
-                                activity.cardView.setContentPadding(10,10,10,10);
+                                activity.cardView.setContentPadding(10, 10, 10, 10);
                                 activity.cardView.setBackground(imageView.getBackground());
                                 activity.cardView.setVisibility(View.VISIBLE);
                             }
@@ -698,7 +691,7 @@ public class WoWCharacterFragment extends Fragment {
 
                 @Override
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    if(oldScrollY != scrollY){
+                    if (oldScrollY != scrollY) {
                         activity.cardView.setVisibility(View.GONE);
                     }
                 }
@@ -707,9 +700,9 @@ public class WoWCharacterFragment extends Fragment {
         }
 
         private void setTalentInformation(WoWCharacterFragment activity) {
-            for(int i = 0; i < activity.characterInfo.getTalents().size(); i++) {
+            for (int i = 0; i < activity.characterInfo.getTalents().size(); i++) {
 
-                if(activity.characterInfo.getTalents().get(i).getSelected()) {
+                if (activity.characterInfo.getTalents().get(i).getSelected()) {
                     activity.talents.addAll(activity.characterInfo.getTalents().get(i).getTalents());
                     activity.spec.setText(String.format("Specialization: %s", activity.characterInfo.getTalents().get(i).getSpec().getName()));
                 }
@@ -718,17 +711,17 @@ public class WoWCharacterFragment extends Fragment {
             try {
                 activity.specs.addTab(activity.specs.newTab());
                 activity.specs.getTabAt(3).setText(activity.characterInfo.getTalents().get(3).getSpec().getName());
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 Log.e("Error", e.toString());
                 activity.specs.removeTab(activity.specs.getTabAt(3));
             }
 
-            for(int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 TabLayout.Tab tab = activity.specs.getTabAt(i);
                 try {
                     assert tab != null;
                     tab.setText(activity.characterInfo.getTalents().get(i).getSpec().getName());
-                }catch (NullPointerException e) {
+                } catch (NullPointerException e) {
                     Log.e("Error", e.toString());
                     tab.setText("Unavailable");
                 }
@@ -740,22 +733,22 @@ public class WoWCharacterFragment extends Fragment {
                     activity.sixtyTalent, activity.seventy_fiveTalent, activity.ninetyTalent, activity.hundredTalent));
             activity.talentsTier = new ArrayList<>(Arrays.asList("15", "30", "45", "60", "75", "90", "100"));
 
-            try{
+            try {
                 sortTalents(activity);
 
-                if(activity.talents.size() > 0) {
-                    for(int i = 0; i < activity.talents.size(); i++){
+                if (activity.talents.size() > 0) {
+                    for (int i = 0; i < activity.talents.size(); i++) {
                         activity.noTalent.setVisibility(View.INVISIBLE);
                         activity.talentsTierContainer.get(i).setGravity(Gravity.CENTER);
                         activity.talentsTierContainer.get(i).setText(activity.talentsTier.get(i));
                         activity.talentsContainer.get(i).setText(activity.talents.get(i).getSpell().getName());
                     }
-                }else {
+                } else {
                     removeTalents(activity);
                     activity.noTalent.setVisibility(View.VISIBLE);
 
                 }
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 Log.e("Error", e.toString());
                 activity.noTalent.setVisibility(View.VISIBLE);
             }
@@ -766,7 +759,7 @@ public class WoWCharacterFragment extends Fragment {
 
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    switch(tab.getPosition()){
+                    switch (tab.getPosition()) {
                         case 0:
                             getTalentsForSpecificSpec(0);
                             break;
@@ -785,22 +778,22 @@ public class WoWCharacterFragment extends Fragment {
                 }
 
                 private void getTalentsForSpecificSpec(int position) {
-                    try{
+                    try {
                         activity.talents.clear();
                         activity.talents.addAll(activity.characterInfo.getTalents().get(position).getTalents());
-                        if(activity.talents.size() == 0){
+                        if (activity.talents.size() == 0) {
                             activity.noTalent.setVisibility(View.VISIBLE);
                             removeTalents(activity);
-                        }else {
+                        } else {
                             activity.noTalent.setVisibility(View.INVISIBLE);
                         }
                         sortTalents(activity);
-                        for(int i = 0; i < activity.talents.size(); i++){
+                        for (int i = 0; i < activity.talents.size(); i++) {
                             activity.talentsTierContainer.get(i).setGravity(Gravity.CENTER);
                             activity.talentsTierContainer.get(i).setText(activity.talentsTier.get(i));
                             activity.talentsContainer.get(i).setText(activity.talents.get(i).getSpell().getName());
                         }
-                    }catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         removeTalents(activity);
                         activity.noTalent.setVisibility(View.VISIBLE);
                         Log.e("Error", e.toString());
@@ -831,7 +824,7 @@ public class WoWCharacterFragment extends Fragment {
         String itemName = activity.itemsInfoList.get(activity.index).getName();
         String itemLvl = "<font color=#edc201>Items Level " + activity.itemsInfoList.get(activity.index).getItemLevel().toString() + "</font>";
         String armor = activity.itemsInfoList.get(activity.index).getArmor().toString();
-        if(activity.itemInformations.get(activity.index).getName() != null){
+        if (activity.itemInformations.get(activity.index).getName() != null) {
             description = "<font color=#edc201>" + activity.itemInformations.get(activity.index).getDescription() + "</font>";
             nameDescription = "<font color=#00cc00>" + activity.itemInformations.get(activity.index).getNameDescription() + "</font><br>";
             trigger = activity.getTrigger(activity.index);
@@ -850,38 +843,38 @@ public class WoWCharacterFragment extends Fragment {
 
         activity.nameList.put(activity.index, itemName);
 
-        if(Integer.valueOf(armor) > 0){
-            activity.stats.put(activity.index, String.format("%s<br>%s%s<br>%s Armor<br>%s",itemLvl, itemSlot, damageInfo, armor, tempStats));
-        }else {
-            activity.stats.put(activity.index, String.format("%s<br>%s%s<br>%s",itemLvl, itemSlot, damageInfo,tempStats));
+        if (Integer.valueOf(armor) > 0) {
+            activity.stats.put(activity.index, String.format("%s<br>%s%s<br>%s Armor<br>%s", itemLvl, itemSlot, damageInfo, armor, tempStats));
+        } else {
+            activity.stats.put(activity.index, String.format("%s<br>%s%s<br>%s", itemLvl, itemSlot, damageInfo, tempStats));
         }
 
-        if(itemSlot.equals("Head") && activity.azeriteSpellsHead.size() > 0){
+        if (itemSlot.equals("Head") && activity.azeriteSpellsHead.size() > 0) {
             activity.stats.put(activity.index, activity.stats.get(activity.index) + String.format("%s", activity.getAzeritePowers(activity.azeriteSpellsHead)));
         }
 
-        if(itemSlot.equals("Shoulder") && activity.azeriteSpellsShoulder.size() > 0){
+        if (itemSlot.equals("Shoulder") && activity.azeriteSpellsShoulder.size() > 0) {
             activity.stats.put(activity.index, activity.stats.get(activity.index) + String.format("%s", activity.getAzeritePowers(activity.azeriteSpellsShoulder)));
         }
 
-        if(itemSlot.equals("Chest") && activity.azeriteSpellsChest.size() > 0){
+        if (itemSlot.equals("Chest") && activity.azeriteSpellsChest.size() > 0) {
             activity.stats.put(activity.index, activity.stats.get(activity.index) + String.format("%s", activity.getAzeritePowers(activity.azeriteSpellsChest)));
         }
 
-        if(!nameDescription.equals("<font color=#00cc00></font><br>")){
+        if (!nameDescription.equals("<font color=#00cc00></font><br>")) {
             activity.stats.put(activity.index, nameDescription + activity.stats.get(activity.index));
         }
 
-        if (!trigger.equals("")){
+        if (!trigger.equals("")) {
             activity.stats.put(activity.index, activity.stats.get(activity.index) + String.format("<br>%s<br>", trigger));
         }
 
-        if(!activity.itemInformations.get(activity.index).getDescription().equals("")){
+        if (!activity.itemInformations.get(activity.index).getDescription().equals("")) {
             activity.stats.put(activity.index, activity.stats.get(activity.index) + String.format("<br>%s<br>", description));
         }
-        if(activity.itemInformations.get(activity.index).getMaxDurability() != 0){
+        if (activity.itemInformations.get(activity.index).getMaxDurability() != 0) {
             activity.stats.put(activity.index, activity.stats.get(activity.index) + String.format("<br>%s<br>%s", durability, requiredLevel));
-        }else{
+        } else {
             activity.stats.put(activity.index, activity.stats.get(activity.index) + String.format("<br>%s", requiredLevel));
         }
 
@@ -929,9 +922,9 @@ public class WoWCharacterFragment extends Fragment {
         });
     }
 
-    private String getAzeritePowers(ArrayList<JSONObject> azeriteSpells) throws JSONException{
+    private String getAzeritePowers(ArrayList<JSONObject> azeriteSpells) throws JSONException {
         StringBuilder azeriteText = new StringBuilder("<br><font color=#edc201> Active Azerite Powers: </font><br>");
-        for(int i = 0; i <azeriteSpells.size(); i++){
+        for (int i = 0; i < azeriteSpells.size(); i++) {
             azeriteText.append(azeriteSpells.get(i).get("name")).append("<br>");
             azeriteText.append("<font color=#00cc00>").append(azeriteSpells.get(i).get("description")).append("</font><br>");
         }
@@ -946,9 +939,9 @@ public class WoWCharacterFragment extends Fragment {
                     .getMethod("install", File.class, long.class)
                     .invoke(null, httpCacheDir, httpCacheSize);
         } catch (Exception httpResponseCacheNotAvailable) {
-            try{
+            try {
                 HttpResponseCache.install(httpCacheDir, httpCacheSize); // Library that implements HttpResponseCache for pre-ICS phones
-            } catch(Exception e){
+            } catch (Exception e) {
                 Log.e("Error: ", e.toString());
             }
         }

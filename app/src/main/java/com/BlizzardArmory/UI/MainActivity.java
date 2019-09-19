@@ -4,11 +4,10 @@ package com.BlizzardArmory.UI;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +18,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
-
+import com.BlizzardArmory.R;
+import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
+import com.BlizzardArmory.connection.Servers;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
-import com.BlizzardArmory.R;
-import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.connection.Servers;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         Spinner regions = findViewById(R.id.spinner);
         Button login = findViewById(R.id.buttonLogin);
         Button clearCredentials = findViewById(R.id.clear_credentials);
-        String [] REGION_LIST={"Select Region", "CN", "US", "EU", "KR", "TW"};
+        String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
         getRandomServer();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -58,15 +57,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent){
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
                 tv.setBackgroundColor(Color.BLACK);
                 tv.setTextSize(20);
                 tv.setGravity(Gravity.CENTER);
-                if(position == 0){
+                if (position == 0) {
                     tv.setTextColor(Color.GRAY);
-                }else{
+                } else {
                     tv.setTextColor(Color.WHITE);
                 }
                 return view;
@@ -76,14 +75,14 @@ public class MainActivity extends AppCompatActivity {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         regions.setAdapter(arrayAdapter);
 
-         regions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        regions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedRegion = (String) parent.getItemAtPosition(position);
                 ((TextView) view).setTextColor(Color.WHITE);
                 ((TextView) view).setTextSize(20);
                 ((TextView) view).setGravity(Gravity.CENTER);
-                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER2.getClientKey(),Servers.SERVER2.getSecretKey(), selectedRegion.toLowerCase(),
+                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER2.getClientKey(), Servers.SERVER2.getSecretKey(), selectedRegion.toLowerCase(),
                         URLConstants.CALLBACK_URL, "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
             }
 
@@ -97,17 +96,17 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(selectedRegion.equals("Select Region")){
-                    Toast.makeText(getApplicationContext(),"Please select a region", Toast.LENGTH_SHORT).show();
-                }else{
-                    try{
-                        if(ConnectionService.isConnected()){
+                if (selectedRegion.equals("Select Region")) {
+                    Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        if (ConnectionService.isConnected()) {
                             CreateToken(bnOAuth2Params);
                             setContentView(R.layout.activity_games);
-                        }else{
+                        } else {
                             ConnectionService.showNoConnectionMessage(MainActivity.this);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         ConnectionService.showNoConnectionMessage(MainActivity.this);
                     }
                 }
@@ -116,14 +115,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         clearCredentials.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectedRegion.equals("Select Region")){
-                    Toast.makeText(getApplicationContext(),"Please select a region", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getApplicationContext(),"Login information cleared", Toast.LENGTH_SHORT).show();
+                if (selectedRegion.equals("Select Region")) {
+                    Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Login information cleared", Toast.LENGTH_SHORT).show();
                     clearCredentials(bnOAuth2Params);
                 }
             }
@@ -143,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //For future usage
-    private void getRandomServer(){
+    private void getRandomServer() {
         Random random = new Random();
         int serverNumber = random.nextInt(4);
         Servers getServers = Servers.fromOrdinal(serverNumber);
@@ -151,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         servers.add(getServers.getSecretKey());
     }
 
-    private void clearCredentials(final BnOAuth2Params bnOAuth2Params)  {
+    private void clearCredentials(final BnOAuth2Params bnOAuth2Params) {
         try {
             new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
             sharedPreferences.getAll().clear();
