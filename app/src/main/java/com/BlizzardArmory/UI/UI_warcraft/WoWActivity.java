@@ -267,7 +267,7 @@ public class WoWActivity extends AppCompatActivity {
                             if (ConnectionService.isConnected()) {
                                 activity.displayFragment();
                             } else {
-                                Toast.makeText(activity.getApplicationContext(), "No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
+                                ConnectionService.showNoConnectionMessage(activity.getApplicationContext());
                             }
                         } catch (Exception e) {
                             Log.e("Error", e.toString());

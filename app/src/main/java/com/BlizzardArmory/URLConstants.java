@@ -37,6 +37,9 @@ public class URLConstants {
     public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
     public final static String SPELL_ID_QUERY = "/wow/spell/";
 
+    //No connection message
+    public final static String NO_CONNECTION = "No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.";
+
     public static String getD3URLBtagProfile() {
         return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
     }
