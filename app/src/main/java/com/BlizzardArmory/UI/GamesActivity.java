@@ -80,7 +80,6 @@ public class GamesActivity extends AppCompatActivity {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(WoWActivity.class);
                     }else{
-                        ConstraintLayout constraintLayout = findViewById(R.id.background);
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){
@@ -97,7 +96,6 @@ public class GamesActivity extends AppCompatActivity {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(D3Activity.class);
                     }else{
-                        ConstraintLayout constraintLayout = findViewById(R.id.background);
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){
@@ -114,7 +112,6 @@ public class GamesActivity extends AppCompatActivity {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(SC2Activity.class);
                     }else{
-                        ConstraintLayout constraintLayout = findViewById(R.id.background);
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){
@@ -132,7 +129,6 @@ public class GamesActivity extends AppCompatActivity {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(OWActivity.class);
                     }else{
-                        ConstraintLayout constraintLayout = findViewById(R.id.background);
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
                 }catch (Exception e){

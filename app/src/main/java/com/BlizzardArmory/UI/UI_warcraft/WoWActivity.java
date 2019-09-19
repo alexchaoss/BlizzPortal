@@ -77,7 +77,6 @@ public class WoWActivity extends AppCompatActivity {
             if (ConnectionService.isConnected()) {
                 new PrepareDataWoWActivity(this).execute();
             }else{
-                ConstraintLayout constraintLayout = findViewById(R.id.background);
                 ConnectionService.showNoConnectionMessage(WoWActivity.this);
                 finish();
             }

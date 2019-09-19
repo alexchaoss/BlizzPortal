@@ -105,11 +105,9 @@ public class MainActivity extends AppCompatActivity {
                             CreateToken(bnOAuth2Params);
                             setContentView(R.layout.activity_games);
                         }else{
-                            ConstraintLayout constraintLayout = findViewById(R.id.background);
                             ConnectionService.showNoConnectionMessage(MainActivity.this);
                         }
                     }catch (Exception e){
-                        ConstraintLayout constraintLayout = findViewById(R.id.background);
                         ConnectionService.showNoConnectionMessage(MainActivity.this);
                     }
                 }
