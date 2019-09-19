@@ -4,24 +4,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.dementh.lib.battlenet_oauth2.BnConstants;
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.UI.UI_diablo.D3Activity;
 import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
 import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
 import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
+import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
+import com.dementh.lib.battlenet_oauth2.BnConstants;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
 import org.json.JSONObject;
 
@@ -66,72 +65,72 @@ public class GamesActivity extends AppCompatActivity {
                     URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), GamesActivity.this).getStringJSONFromRequest().get(0));
             UserInformation.setBattleTag(userInfo.getString("battletag"));
             UserInformation.setUserID(userInfo.getString("id"));
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Error", e.toString());
         }
 
         btag.setText(UserInformation.getBattleTag());
 
-        wowButton.setOnClickListener(new View.OnClickListener(){
+        wowButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 try {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(WoWActivity.class);
-                    }else{
+                    } else {
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Error", e.toString());
                 }
             }
         });
 
-        d3Button.setOnClickListener(new View.OnClickListener(){
+        d3Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 try {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(D3Activity.class);
-                    }else{
+                    } else {
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Error", e.toString());
                 }
             }
         });
 
-        sc2Button.setOnClickListener(new View.OnClickListener(){
+        sc2Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 try {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(SC2Activity.class);
-                    }else{
+                    } else {
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Error", e.toString());
                 }
 
             }
         });
 
-        owButton.setOnClickListener(new View.OnClickListener(){
+        owButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 try {
                     if (ConnectionService.isConnected()) {
                         callNextActivity(OWActivity.class);
-                    }else{
+                    } else {
                         ConnectionService.showNoConnectionMessage(GamesActivity.this);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Error", e.toString());
                 }
 
@@ -140,13 +139,13 @@ public class GamesActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-            super.onBackPressed();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
-    private void callNextActivity(Class activity){
+    private void callNextActivity(Class activity) {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);

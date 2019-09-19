@@ -33,14 +33,14 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
     private JSONObject characterInformation;
 
 
-    public ImageDownload(ArrayList<String> urls, String baseURL, Context context, JSONObject characterInformation){
+    public ImageDownload(ArrayList<String> urls, String baseURL, Context context, JSONObject characterInformation) {
         this.urls = urls;
         this.context = context;
         this.baseURL = baseURL;
         this.characterInformation = characterInformation;
     }
 
-    public ImageDownload(String url, String baseURL, Context context, JSONObject characterInformation){
+    public ImageDownload(String url, String baseURL, Context context, JSONObject characterInformation) {
         this.characterInformation = characterInformation;
         this.urls = new ArrayList<>();
         this.urls.add(url);
@@ -48,7 +48,7 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
         this.baseURL = baseURL;
     }
 
-    public ArrayList<Drawable> getImageFromURL(){
+    public ArrayList<Drawable> getImageFromURL() {
         return doInBackground();
     }
 
@@ -81,27 +81,27 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
         };
         HttpsURLConnection.setDefaultHostnameVerifier(validHostname);
 
-        if(characterInformation != null){
+        if (characterInformation != null) {
             wowCharacters = new WowCharacters(characterInformation);
 
         }
 
-        for(int i = 0; i<urls.size();i++){
+        for (int i = 0; i < urls.size(); i++) {
             InputStream in;
             Bitmap bmp;
-            try{
+            try {
                 URL url = new URL(baseURL + urls.get(i) + URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
                 Log.i("json", url.toString());
-                con = (HttpURLConnection)url.openConnection();
+                con = (HttpURLConnection) url.openConnection();
                 con.setRequestProperty("Accept-Encoding", "identity");
                 con.setDoInput(true);
                 int responseCode = con.getResponseCode();
                 Log.i("Response code", String.valueOf(responseCode));
-                if(responseCode != HttpsURLConnection.HTTP_OK){
+                if (responseCode != HttpsURLConnection.HTTP_OK) {
                     Log.i("test", url.toString());
                     url = new URL(URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
                     Log.i("json", url.toString());
-                    con = (HttpURLConnection)url.openConnection();
+                    con = (HttpURLConnection) url.openConnection();
                     con.setRequestProperty("Accept-Encoding", "identity");
                     con.setDoInput(true);
                     responseCode = con.getResponseCode();
@@ -113,16 +113,15 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
                 bmp = BitmapFactory.decodeStream(in);
                 in.close();
                 Drawable drawable = new BitmapDrawable(context.getResources(), bmp);
-                if(responseCode == 403) {
+                if (responseCode == 403) {
                     drawable = context.getDrawable(R.drawable.no_avatar);
                     thumbnails.add(drawable);
                 }
                 thumbnails.add(drawable);
-            }
-            catch(Exception ex){
-                Log.e("Exception",ex.toString());
+            } catch (Exception ex) {
+                Log.e("Exception", ex.toString());
             }
         }
-        return  thumbnails;
+        return thumbnails;
     }
 }

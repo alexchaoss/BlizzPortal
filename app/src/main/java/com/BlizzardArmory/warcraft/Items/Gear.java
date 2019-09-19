@@ -26,115 +26,115 @@ public class Gear {
     private JSONObject mainHand;
     private JSONObject offHand;
 
-    public Gear(JSONObject items){
+    public Gear(JSONObject items) {
 
-        try{
+        try {
             head = (JSONObject) items.get("head");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             head = null;
             Log.e("Error", e.toString());
         }
-        try{
+        try {
             neck = (JSONObject) items.get("neck");
-        }catch (JSONException e){
-            neck  = null;
-        Log.e("Error", e.toString());
-         }
-        try{
+        } catch (JSONException e) {
+            neck = null;
+            Log.e("Error", e.toString());
+        }
+        try {
             shoulder = (JSONObject) items.get("shoulder");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             shoulder = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             back = (JSONObject) items.get("back");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             back = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             chest = (JSONObject) items.get("chest");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             chest = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             shirt = (JSONObject) items.get("shirt");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             shirt = null;
-        Log.e("Error", e.toString() + ", " +  shirt);
+            Log.e("Error", e.toString() + ", " + shirt);
         }
-        try{
+        try {
             tabard = (JSONObject) items.get("tabard");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             tabard = null;
-        Log.e("Error", e.toString() + ", " + tabard);
+            Log.e("Error", e.toString() + ", " + tabard);
         }
-        try{
+        try {
             wrist = (JSONObject) items.get("wrist");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             wrist = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             hands = (JSONObject) items.get("hands");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             hands = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             waist = (JSONObject) items.get("waist");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             waist = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             legs = (JSONObject) items.get("legs");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             legs = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             feet = (JSONObject) items.get("feet");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             feet = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             finger1 = (JSONObject) items.get("finger1");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             finger1 = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             finger2 = (JSONObject) items.get("finger2");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             finger2 = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             trinket1 = (JSONObject) items.get("trinket1");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             trinket1 = null;
-        Log.e("Error", e.toString());
+            Log.e("Error", e.toString());
         }
-        try{
+        try {
             trinket2 = (JSONObject) items.get("trinket2");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             trinket2 = null;
-        Log.e("Error", e.toString() + ", " + trinket2);
+            Log.e("Error", e.toString() + ", " + trinket2);
         }
-        try{
+        try {
             mainHand = (JSONObject) items.get("mainHand");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             mainHand = null;
-        Log.e("Error", e.toString() + ", " +  mainHand);
+            Log.e("Error", e.toString() + ", " + mainHand);
         }
-        try{
+        try {
             offHand = (JSONObject) items.get("offHand");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             offHand = null;
-        Log.e("Error", e.toString() + ", " + offHand);
+            Log.e("Error", e.toString() + ", " + offHand);
         }
     }
 

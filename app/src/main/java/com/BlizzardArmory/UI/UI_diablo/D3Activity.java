@@ -22,19 +22,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.BlizzardArmory.UI.UI_warcraft.WoWCharacterFragment;
+import com.BlizzardArmory.R;
+import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
+import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
+import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.BlizzardArmory.diablo.account.Hero;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
-import com.BlizzardArmory.R;
-import com.BlizzardArmory.UserInformation;
-import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
-import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
-import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -105,17 +104,17 @@ public class D3Activity extends AppCompatActivity {
         try {
             if (ConnectionService.isConnected()) {
                 new PrepareDataD3Activity(this).execute();
-            }else{
+            } else {
                 ConnectionService.showNoConnectionMessage(D3Activity.this);
                 finish();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Error", e.toString());
         }
 
 
         //Button calls
-        wowButton.setOnClickListener(new View.OnClickListener(){
+        wowButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -123,7 +122,7 @@ public class D3Activity extends AppCompatActivity {
             }
         });
 
-        sc2Button.setOnClickListener(new View.OnClickListener(){
+        sc2Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -131,7 +130,7 @@ public class D3Activity extends AppCompatActivity {
             }
         });
 
-        owButton.setOnClickListener(new View.OnClickListener(){
+        owButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -140,7 +139,7 @@ public class D3Activity extends AppCompatActivity {
         });
     }
 
-    private void callNextActivity(Class activity){
+    private void callNextActivity(Class activity) {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);
@@ -157,13 +156,13 @@ public class D3Activity extends AppCompatActivity {
 
         protected void onPreExecute() {
             super.onPreExecute();
-            D3Activity  activity = activityReference.get();
+            D3Activity activity = activityReference.get();
             activity.loadingCircle.setVisibility(View.VISIBLE);
 
         }
 
         protected Void doInBackground(Void... param) {
-            D3Activity  activity = activityReference.get();
+            D3Activity activity = activityReference.get();
             activity.prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
             activity.bnOAuth2Params = Objects.requireNonNull(activity.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
             assert activity.bnOAuth2Params != null;
@@ -175,7 +174,7 @@ public class D3Activity extends AppCompatActivity {
 
         protected void onPostExecute(Void param) {
             super.onPostExecute(param);
-            D3Activity  activity = activityReference.get();
+            D3Activity activity = activityReference.get();
 
             activity.portraits = activity.getCharacterImage(activity.accountInformation.getHeroes());
 
@@ -190,21 +189,21 @@ public class D3Activity extends AppCompatActivity {
             activity.lifetimeKills.setText(String.valueOf(activity.accountInformation.getKills().getMonsters()));
 
             LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(420, 325);
-            layoutParamsImage.setMargins(0,0,30,0);
+            layoutParamsImage.setMargins(0, 0, 30, 0);
 
             LinearLayout.LayoutParams layoutParamsCharacters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParamsImage.setMargins(20,0,0,0);
+            layoutParamsImage.setMargins(20, 0, 0, 0);
 
-            for(int i = 0; i < activity.accountInformation.getHeroes().size(); i++){
+            for (int i = 0; i < activity.accountInformation.getHeroes().size(); i++) {
                 ImageView portrait = new ImageView(activity.getApplicationContext());
                 portrait.setImageDrawable(activity.portraits.get(i));
                 portrait.setLayoutParams(layoutParamsImage);
 
                 TextView name = new TextView(activity.getApplicationContext());
                 name.setText(activity.accountInformation.getHeroes().get(i).getName());
-                if(activity.accountInformation.getHeroes().get(i).getHardcore()){
+                if (activity.accountInformation.getHeroes().get(i).getHardcore()) {
                     name.setTextColor(Color.RED);
-                }else {
+                } else {
                     name.setTextColor(Color.WHITE);
                 }
                 name.setTextSize(15);
@@ -233,7 +232,7 @@ public class D3Activity extends AppCompatActivity {
 
                 linearLayoutCharacter.addView(portrait);
                 linearLayoutSeasonal.addView(name);
-                if(activity.accountInformation.getHeroes().get(i).getSeasonal()){
+                if (activity.accountInformation.getHeroes().get(i).getSeasonal()) {
                     ImageView leaf = new ImageView(activity.getApplicationContext());
                     leaf.setImageDrawable(activity.getResources().getDrawable(R.drawable.leaf_seasonal, activity.getTheme()));
                     linearLayoutSeasonal.addView(leaf);
@@ -249,18 +248,18 @@ public class D3Activity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         D3Activity activity = activityReference.get();
-                        for(int i = 0; i < activity.accountInformation.getHeroes().size();i++){
-                            if(i == linearLayoutCharacter.getId()){
+                        for (int i = 0; i < activity.accountInformation.getHeroes().size(); i++) {
+                            if (i == linearLayoutCharacter.getId()) {
                                 activity.characterID = activity.accountInformation.getHeroes().get(i).getId();
                             }
                         }
                         try {
                             if (ConnectionService.isConnected()) {
                                 activity.displayFragment();
-                            }else{
-                                Toast.makeText(activity.getApplicationContext(),"No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(activity.getApplicationContext(), "No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Log.e("Error", e.toString());
                         }
 
@@ -312,12 +311,12 @@ public class D3Activity extends AppCompatActivity {
 
             double total = 0;
 
-            for(int i = 0; i < timePlayed.size(); i++){
+            for (int i = 0; i < timePlayed.size(); i++) {
                 total += timePlayed.get(i);
             }
 
-            for(int i = 0; i < timePlayed.size(); i++){
-                timePlayedPercent.add((100*timePlayed.get(i)/total));
+            for (int i = 0; i < timePlayed.size(); i++) {
+                timePlayedPercent.add((100 * timePlayed.get(i) / total));
             }
 
 
@@ -332,77 +331,77 @@ public class D3Activity extends AppCompatActivity {
                     + URLConstants.ACCESS_TOKEN_QUERY + activity.bnOAuth2Helper.getAccessToken(), activity.getApplicationContext()).getStringJSONFromRequest().get(0));
             activity.accountInformation = gson.fromJson(activity.D3AccountInfo.toString(), AccountInformation.class);
             Log.i("json", activity.D3AccountInfo.toString());
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Error", e.toString());
         }
     }
 
-    public List<Drawable> getCharacterImage(List<Hero> heroes){
+    public List<Drawable> getCharacterImage(List<Hero> heroes) {
 
         List<Drawable> portraits = new ArrayList<>();
 
-        for(int i = 0; i < heroes.size(); i++){
+        for (int i = 0; i < heroes.size(); i++) {
             Drawable characterImage;
-            switch(heroes.get(i).getClassSlug()) {
+            switch (heroes.get(i).getClassSlug()) {
                 case "barbarian":
-                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                    if (accountInformation.getHeroes().get(i).getGender() == 0) {
                         characterImage = getResources().getDrawable(R.drawable.barb_male, this.getTheme());
                         portraits.add(characterImage);
-                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                    } else if (accountInformation.getHeroes().get(i).getGender() == 1) {
                         characterImage = getResources().getDrawable(R.drawable.barb_female, this.getTheme());
                         portraits.add(characterImage);
                     }
                     break;
                 case "wizard":
-                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                    if (accountInformation.getHeroes().get(i).getGender() == 0) {
                         characterImage = getResources().getDrawable(R.drawable.wizard_male, this.getTheme());
                         portraits.add(characterImage);
-                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                    } else if (accountInformation.getHeroes().get(i).getGender() == 1) {
                         characterImage = getResources().getDrawable(R.drawable.wizard_female, this.getTheme());
                         portraits.add(characterImage);
                     }
                     break;
                 case "demon-hunter":
-                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                    if (accountInformation.getHeroes().get(i).getGender() == 0) {
                         characterImage = getResources().getDrawable(R.drawable.dh_male, this.getTheme());
                         portraits.add(characterImage);
-                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                    } else if (accountInformation.getHeroes().get(i).getGender() == 1) {
                         characterImage = getResources().getDrawable(R.drawable.dh_female, this.getTheme());
                         portraits.add(characterImage);
                     }
                     break;
                 case "witch-doctor":
-                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                    if (accountInformation.getHeroes().get(i).getGender() == 0) {
                         characterImage = getResources().getDrawable(R.drawable.wd_male, this.getTheme());
                         portraits.add(characterImage);
-                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                    } else if (accountInformation.getHeroes().get(i).getGender() == 1) {
                         characterImage = getResources().getDrawable(R.drawable.wd_female, this.getTheme());
                         portraits.add(characterImage);
                     }
                     break;
                 case "necromancer":
-                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                    if (accountInformation.getHeroes().get(i).getGender() == 0) {
                         characterImage = getResources().getDrawable(R.drawable.necro_male, this.getTheme());
                         portraits.add(characterImage);
-                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                    } else if (accountInformation.getHeroes().get(i).getGender() == 1) {
                         characterImage = getResources().getDrawable(R.drawable.necro_female, this.getTheme());
                         portraits.add(characterImage);
                     }
                     break;
                 case "monk":
-                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                    if (accountInformation.getHeroes().get(i).getGender() == 0) {
                         characterImage = getResources().getDrawable(R.drawable.monk_male, this.getTheme());
                         portraits.add(characterImage);
-                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                    } else if (accountInformation.getHeroes().get(i).getGender() == 1) {
                         characterImage = getResources().getDrawable(R.drawable.monk_female, this.getTheme());
                         portraits.add(characterImage);
                     }
                     break;
                 case "crusader":
-                    if(accountInformation.getHeroes().get(i).getGender() == 0){
+                    if (accountInformation.getHeroes().get(i).getGender() == 0) {
                         characterImage = getResources().getDrawable(R.drawable.crusader_male, this.getTheme());
                         portraits.add(characterImage);
-                    }else if (accountInformation.getHeroes().get(i).getGender() == 1){
+                    } else if (accountInformation.getHeroes().get(i).getGender() == 1) {
                         characterImage = getResources().getDrawable(R.drawable.crusader_female, this.getTheme());
                         portraits.add(characterImage);
                     }
@@ -412,7 +411,7 @@ public class D3Activity extends AppCompatActivity {
         return portraits;
     }
 
-    private void displayFragment(){
+    private void displayFragment() {
         Bundle bundle = new Bundle();
         bundle.putInt("id", characterID);
         D3CharacterFragment d3CharacterFragment = new D3CharacterFragment();

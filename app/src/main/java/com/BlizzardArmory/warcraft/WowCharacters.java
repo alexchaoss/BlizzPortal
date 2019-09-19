@@ -27,14 +27,14 @@ public class WowCharacters {
 
     private ArrayList<String> raceList = new ArrayList<>();
 
-    public WowCharacters(JSONObject characterList){
+    public WowCharacters(JSONObject characterList) {
         this.characterList = characterList;
         getCharacterInfo();
     }
 
     private void getCharacterInfo() {
-        try{
-            if(characterList.has("characters")) {
+        try {
+            if (characterList.has("characters")) {
                 characterInfo = (JSONArray) characterList.get("characters");
 
                 characterInfo = sortInfo(characterInfo);
@@ -50,7 +50,7 @@ public class WowCharacters {
                     genderList.add(characters.get("gender").toString());
                     raceList.add(characters.get("race").toString());
                 }
-            }else{
+            } else {
                 characterNamesList.add(characterList.get("name").toString());
                 realmList.add(characterList.get("realm").toString());
                 levelList.add(characterList.get("level").toString());
@@ -59,20 +59,20 @@ public class WowCharacters {
                 genderList.add(characterList.get("gender").toString());
                 raceList.add(characterList.get("race").toString());
             }
-            }catch (Exception e){
-                Log.e("Error WowCharacters", e.toString());
-            }
+        } catch (Exception e) {
+            Log.e("Error WowCharacters", e.toString());
+        }
     }
 
     public ArrayList<String> getCharacterNamesList() {
         return characterNamesList;
     }
 
-    public ArrayList<String> getRealmsList(){
+    public ArrayList<String> getRealmsList() {
         return realmList;
     }
 
-    public ArrayList<String> getLevelList(){
+    public ArrayList<String> getLevelList() {
         return levelList;
     }
 
@@ -81,13 +81,13 @@ public class WowCharacters {
     }
 
     public ArrayList<String> getClassList() {
-        for(String number: classListNumber){
-            classList.add(WowClassEnum.fromOrdinal(Integer.parseInt(number)-1).toString());
+        for (String number : classListNumber) {
+            classList.add(WowClassEnum.fromOrdinal(Integer.parseInt(number) - 1).toString());
         }
         return classList;
     }
 
-    public ArrayList<String> getGenderList(){
+    public ArrayList<String> getGenderList() {
         return genderList;
     }
 
@@ -95,17 +95,17 @@ public class WowCharacters {
         return raceList;
     }
 
-    public JSONArray sortInfo(JSONArray characterInfo){
+    public JSONArray sortInfo(JSONArray characterInfo) {
         JSONArray sortedJsonArray = new JSONArray();
         List<JSONObject> jsonValues = new ArrayList<>();
         try {
             for (int i = 0; i < characterInfo.length(); i++) {
                 jsonValues.add(characterInfo.getJSONObject(i));
             }
-        }catch (JSONException e){
+        } catch (JSONException e) {
             Log.e("Error", e.toString());
         }
-        Collections.sort( jsonValues, new Comparator<JSONObject>() {
+        Collections.sort(jsonValues, new Comparator<JSONObject>() {
             private static final String LEVEL = "level";
 
             @Override
@@ -116,12 +116,11 @@ public class WowCharacters {
                 try {
                     valA = (int) a.get(LEVEL);
                     valB = (int) b.get(LEVEL);
-                }
-                catch (JSONException e) {
+                } catch (JSONException e) {
                     Log.e("Error", e.toString());
                 }
 
-                if(valA > valB){
+                if (valA > valB) {
                     return -1;
                 }
 

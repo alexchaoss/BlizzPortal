@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -22,18 +21,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dementh.lib.battlenet_oauth2.BnConstants;
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
-import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.R;
 import com.BlizzardArmory.UI.UI_diablo.D3Activity;
 import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
 import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
-import com.BlizzardArmory.connection.ConnectionService;
-import com.BlizzardArmory.R;
+import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
-import com.BlizzardArmory.warcraft.WowCharacters;
+import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.connection.ImageDownload;
+import com.BlizzardArmory.warcraft.WowCharacters;
+import com.dementh.lib.battlenet_oauth2.BnConstants;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
 import org.json.JSONObject;
 
@@ -76,17 +75,17 @@ public class WoWActivity extends AppCompatActivity {
         try {
             if (ConnectionService.isConnected()) {
                 new PrepareDataWoWActivity(this).execute();
-            }else{
+            } else {
                 ConnectionService.showNoConnectionMessage(WoWActivity.this);
                 finish();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Error", e.toString());
         }
 
         //Button calls
 
-        d3Button.setOnClickListener(new View.OnClickListener(){
+        d3Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -94,7 +93,7 @@ public class WoWActivity extends AppCompatActivity {
             }
         });
 
-        sc2Button.setOnClickListener(new View.OnClickListener(){
+        sc2Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -102,7 +101,7 @@ public class WoWActivity extends AppCompatActivity {
             }
         });
 
-        owButton.setOnClickListener(new View.OnClickListener(){
+        owButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -111,13 +110,13 @@ public class WoWActivity extends AppCompatActivity {
         });
     }
 
-    private void callNextActivity(Class activity){
+    private void callNextActivity(Class activity) {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);
     }
 
-    private void displayFragment(){
+    private void displayFragment() {
         Bundle bundle = new Bundle();
         bundle.putString("name", characterClicked);
         bundle.putString("realm", characterRealm);
@@ -139,9 +138,9 @@ public class WoWActivity extends AppCompatActivity {
             activityReference = new WeakReference<>(context);
         }
 
-        protected void onPreExecute () {
+        protected void onPreExecute() {
             super.onPreExecute();
-            WoWActivity  activity = activityReference.get();
+            WoWActivity activity = activityReference.get();
             activity.loadingCircle.setVisibility(View.VISIBLE);
 
         }
@@ -156,7 +155,7 @@ public class WoWActivity extends AppCompatActivity {
             try {
                 activity.wowCharacters = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() +
                         URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), activity.getApplicationContext()).getStringJSONFromRequest().get(0));
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Error", e.toString());
             }
 
@@ -173,16 +172,16 @@ public class WoWActivity extends AppCompatActivity {
             activity.linearLayoutCharacterList = new ArrayList<>();
 
             LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
-            layoutParamsImage.setMargins(15,0,0,0);
+            layoutParamsImage.setMargins(15, 0, 0, 0);
 
             LinearLayout.LayoutParams layoutParamsInfo = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParamsInfo.setMargins(25,0,0,0);
+            layoutParamsInfo.setMargins(25, 0, 0, 0);
 
             LinearLayout.LayoutParams layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParamsClass.setMargins(15,0,0,0);
+            layoutParamsClass.setMargins(15, 0, 0, 0);
 
 
-            for(int i = 0; i < activity.characterNames.size();i++) {
+            for (int i = 0; i < activity.characterNames.size(); i++) {
 
                 LinearLayout linearLayoutCharacters = new LinearLayout(activity.getApplicationContext());
                 LinearLayout linearLayoutText = new LinearLayout(activity.getApplicationContext());
@@ -244,10 +243,10 @@ public class WoWActivity extends AppCompatActivity {
             super.onPostExecute(param);
             WoWActivity activity = activityReference.get();
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(100,0,100,75);
+            layoutParams.setMargins(100, 0, 100, 75);
 
             int i = 0;
-            for(final LinearLayout linear: activity.linearLayoutCharacterList) {
+            for (final LinearLayout linear : activity.linearLayoutCharacterList) {
                 linear.setId(i);
                 activity.linearLayout.addView(linear);
                 linear.setLayoutParams(layoutParams);
@@ -257,8 +256,8 @@ public class WoWActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         WoWActivity activity = activityReference.get();
-                        for(int i = 0; i < activity.characterNames.size();i++){
-                            if(i == linear.getId()){
+                        for (int i = 0; i < activity.characterNames.size(); i++) {
+                            if (i == linear.getId()) {
                                 activity.characterClicked = activity.characterNames.get(i);
                                 activity.characterRealm = activity.realms.get(i);
                                 activity.url = activity.characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
@@ -267,10 +266,10 @@ public class WoWActivity extends AppCompatActivity {
                         try {
                             if (ConnectionService.isConnected()) {
                                 activity.displayFragment();
-                            }else{
-                                Toast.makeText(activity.getApplicationContext(),"No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(activity.getApplicationContext(), "No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Log.e("Error", e.toString());
                         }
 

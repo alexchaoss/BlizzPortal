@@ -12,14 +12,14 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.BlizzardArmory.R;
+import com.BlizzardArmory.UI.UI_diablo.D3Activity;
+import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
+import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
+import com.BlizzardArmory.UserInformation;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
-import com.BlizzardArmory.R;
-import com.BlizzardArmory.UserInformation;
-import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
-import com.BlizzardArmory.UI.UI_diablo.D3Activity;
-import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 
 public class OWActivity extends AppCompatActivity {
 
@@ -54,7 +54,7 @@ public class OWActivity extends AppCompatActivity {
         new PrepareData().execute();
 
         //Button calls
-        wowButton.setOnClickListener(new View.OnClickListener(){
+        wowButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -62,7 +62,7 @@ public class OWActivity extends AppCompatActivity {
             }
         });
 
-        d3Button.setOnClickListener(new View.OnClickListener(){
+        d3Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -70,7 +70,7 @@ public class OWActivity extends AppCompatActivity {
             }
         });
 
-        sc2Button.setOnClickListener(new View.OnClickListener(){
+        sc2Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -79,7 +79,7 @@ public class OWActivity extends AppCompatActivity {
         });
     }
 
-    private void callNextActivity(Class activity){
+    private void callNextActivity(Class activity) {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);

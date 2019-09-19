@@ -33,12 +33,12 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
     private long lastUpdateTime = 0;
     private Context context;
 
-    public ConnectionService(String url, Context context){
+    public ConnectionService(String url, Context context) {
         urls.add(url);
         this.context = context;
     }
 
-    public ConnectionService(ArrayList<String> urls, Context context){
+    public ConnectionService(ArrayList<String> urls, Context context) {
         this.urls = urls;
         this.context = context;
     }
@@ -74,13 +74,13 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
             }
         };
         HttpsURLConnection.setDefaultHostnameVerifier(validHostname);
-        for(int i = 0; i<urls.size(); i++){
+        for (int i = 0; i < urls.size(); i++) {
             try {
-                if(urls.get(i) != null){
+                if (urls.get(i) != null) {
                     URL fullURL = new URL(urls.get(i));
                     urlConnection = (HttpsURLConnection) fullURL.openConnection();
-                    urlConnection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
-                    urlConnection.setRequestProperty("Accept","application/json");
+                    urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                    urlConnection.setRequestProperty("Accept", "application/json");
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setDefaultUseCaches(true);
                     urlConnection.setUseCaches(true);
@@ -103,7 +103,7 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
                     int responseCode = urlConnection.getResponseCode();
                     Log.i("Response code", String.valueOf(responseCode));
 
-                    if(responseCode != HttpsURLConnection.HTTP_OK) {
+                    if (responseCode != HttpsURLConnection.HTTP_OK) {
                         reader = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
                         Log.i("Error", reader.toString());
                     } else /*if(cachedFiles.isFile()){*/
@@ -118,15 +118,14 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
 
                     returnJson = stringBuilder.toString();
                     jsonList.add(returnJson);
-                }else{
+                } else {
                     jsonList.add(null);
                 }
 
 
             } catch (IOException e) {
                 Log.e("Error", e.toString());
-            }
-            finally {
+            } finally {
                 if (reader != null) try {
                     reader.close();
                 } catch (IOException ignored) {
@@ -157,7 +156,7 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
         return Runtime.getRuntime().exec(command).waitFor() == 0;
     }
 
-    public static void showNoConnectionMessage(Context context){
+    public static void showNoConnectionMessage(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogInternetCustom);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -165,13 +164,13 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
         titleText.setText("No Internet Connection");
         titleText.setTextSize(20);
         titleText.setGravity(Gravity.CENTER_HORIZONTAL);
-        titleText.setPadding(0,0,0,20);
+        titleText.setPadding(0, 0, 0, 20);
         titleText.setLayoutParams(layoutParams);
 
         TextView messageText = new TextView(context);
         messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
         messageText.setGravity(Gravity.CENTER_HORIZONTAL);
-        messageText.setPadding(0,0,0,20);
+        messageText.setPadding(0, 0, 0, 20);
         messageText.setLayoutParams(layoutParams);
 
         Button button = new Button(context);
@@ -184,7 +183,7 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
-        linearLayout.setPadding(20,20,20,20);
+        linearLayout.setPadding(20, 20, 20, 20);
 
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
