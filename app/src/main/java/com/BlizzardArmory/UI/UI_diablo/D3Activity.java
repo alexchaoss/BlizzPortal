@@ -43,11 +43,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.ColumnChartView;
 
 public class D3Activity extends AppCompatActivity {
 
@@ -209,8 +204,6 @@ public class D3Activity extends AppCompatActivity {
                 level.setTextSize(15);
                 level.setGravity(Gravity.CENTER);
 
-                Log.i("Test", name.getText().toString() + " " + eliteKills.getText().toString() + " " + level.getText().toString());
-
                 LinearLayout linearLayoutCharacter = new LinearLayout(activity.getApplicationContext());
                 linearLayoutCharacter.setOrientation(LinearLayout.VERTICAL);
 
@@ -250,25 +243,10 @@ public class D3Activity extends AppCompatActivity {
                 total += timePlayed.get(i);
             }
 
-            for(int i = 0; i<timePlayed.size(); i++){
+            for(int i = 0; i < timePlayed.size(); i++){
                 timePlayedPercent.add((100*timePlayed.get(i)/total));
             }
 
-            ColumnChartView chartTime = activity.findViewById(R.id.time_played_chart);
-
-            ColumnChartData chartData = new ColumnChartData();
-            List<Column> columns  = new ArrayList<>();
-            for(int i = 0; i < timePlayed.size(); i++){
-                List<SubcolumnValue> values = new ArrayList<>();
-                values.add(new SubcolumnValue(timePlayedPercent.get(i).floatValue(), ChartUtils.COLOR_GREEN));
-                columns.add(new Column(values));
-            }
-
-            chartData.setColumns(columns);
-
-            chartTime.setInteractive(false);
-            chartTime.setZoomEnabled(false);
-            chartTime.setScrollEnabled(false);
 
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             activity.loadingCircle.setVisibility(View.GONE);

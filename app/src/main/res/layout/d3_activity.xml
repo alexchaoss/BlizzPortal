@@ -77,9 +77,9 @@
 
         <View
             android:layout_width="2dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@color/wowBackgroundColor" />
 
         <ImageButton
@@ -93,8 +93,8 @@
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@color/wowBackgroundColor" />
 
         <ImageButton
@@ -108,8 +108,8 @@
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@color/wowBackgroundColor" />
 
         <ImageButton
@@ -120,157 +120,157 @@
 
             android:background="@drawable/overwatch_icon"
             android:contentDescription="@string/overwatch_button" />
+
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
+    <ScrollView
+        android:id="@+id/scrollView5"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-
-        <TextView
-            android:id="@+id/Career"
+        <LinearLayout
+            android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:gravity="center"
-            android:text="@string/career"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp" />
+            android:orientation="vertical">
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="*">
 
-            <TableRow
+            <TextView
+                android:id="@+id/Career"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:gravity="center"
+                android:text="@string/career"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp" />
 
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/lifetime_kills"
-                    app:srcCompat="@drawable/lifetime_kills" />
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/elite_kills"
-                    app:srcCompat="@drawable/elite_kills_image" />
-
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/paragon"
-                    app:srcCompat="@drawable/paragon_image" />
-            </TableRow>
-
-            <TableRow
+            <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:stretchColumns="*">
 
-                <TextView
-                    android:id="@+id/lifetime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/lifetime_kills"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/elite"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/elite_kills"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/paragon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/paragon"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/lifetime_kills"
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/elite_kills"
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/lifetime_kills"
+                        app:srcCompat="@drawable/lifetime_kills" />
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/elite_kills"
+                        app:srcCompat="@drawable/elite_kills_image" />
+
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/paragon"
+                        app:srcCompat="@drawable/paragon_image" />
+                </TableRow>
+
+                <TableRow
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/lifetime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/lifetime_kills"
+                        android:textColor="@color/owBackgroundColor"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/elite"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/elite_kills"
+                        android:textColor="@color/owBackgroundColor"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/paragon"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/paragon"
+                        android:textColor="@color/owBackgroundColor"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/lifetime_kills"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/owBackgroundColor"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/elite_kills"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:textColor="@color/owBackgroundColor"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/paragonLevel"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:textColor="@color/owBackgroundColor"
+                        android:textSize="15sp" />
+
+                </TableRow>
+
+            </TableLayout>
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:gravity="center"
+                android:text="@string/wow_characters"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/character_layout"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/paragonLevel"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp" />
+    </ScrollView>
 
-            </TableRow>
-
-        </TableLayout>
-
-        <lecho.lib.hellocharts.view.ColumnChartView
-            android:id="@+id/time_played_chart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/inputstyle" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:gravity="center"
-            android:text="@string/wow_characters"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp" />
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/character_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"></LinearLayout>
-        </HorizontalScrollView>
-
-    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/loadingCircle"
