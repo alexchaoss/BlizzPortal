@@ -1,6 +1,5 @@
 package com.BlizzardArmory;
 
-import com.BlizzardArmory.UI.GamesActivity;
 import com.BlizzardArmory.UI.MainActivity;
 
 public class URLConstants {
@@ -29,7 +28,8 @@ public class URLConstants {
     public final static String D3_ICONS_SKILLS_URL = "http://media.blizzard.com/d3/icons/skills/64/";
 
     //URLS for D3 characters and queries
-    public final static String D3_CHARACTERS = "/d3/profile/btag/?locale=en_US&";
+    public final static String D3_PROFILE = "/d3/profile/btag/?locale=en_US&";
+    public final static String D3_CHARACTER = "/d3/profile/btag/hero/id?locale=en_US&";
 
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
@@ -37,8 +37,12 @@ public class URLConstants {
     public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
     public final static String SPELL_ID_QUERY = "/wow/spell/";
 
-    public static String getD3URLBtag(){
-        return URLConstants.D3_CHARACTERS.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+    public static String getD3URLBtagProfile(){
+        return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+    }
+
+    public static String getD3HeroURL(int id){
+        return D3_CHARACTER.replace("id", String.valueOf(id));
     }
 
     public static String getBaseURLforUserInformation() {

@@ -7,7 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -19,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.BlizzardArmory.UI.UI_warcraft.WoWCharacterFragment;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.diablo.account.AccountInformation;
@@ -72,6 +75,8 @@ public class D3Activity extends AppCompatActivity {
     private ImageView act3;
     private ImageView act4;
     private ImageView act5;
+
+    private int characterID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,7 +224,7 @@ public class D3Activity extends AppCompatActivity {
                 level.setTextSize(15);
                 level.setGravity(Gravity.CENTER);
 
-                LinearLayout linearLayoutCharacter = new LinearLayout(activity.getApplicationContext());
+                final LinearLayout linearLayoutCharacter = new LinearLayout(activity.getApplicationContext());
                 linearLayoutCharacter.setOrientation(LinearLayout.VERTICAL);
 
                 LinearLayout linearLayoutSeasonal = new LinearLayout(activity.getApplicationContext());
@@ -239,7 +244,30 @@ public class D3Activity extends AppCompatActivity {
 
                 linearLayoutCharacter.setLayoutParams(layoutParamsCharacters);
                 activity.linearLayoutCharacters.addView(linearLayoutCharacter);
+
+                linearLayoutCharacter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        D3Activity activity = activityReference.get();
+                        for(int i = 0; i < activity.accountInformation.getHeroes().size();i++){
+                            if(i == linearLayoutCharacter.getId()){
+                                activity.characterID = activity.accountInformation.getHeroes().get(i).getId();
+                            }
+                        }
+                        try {
+                            if (ConnectionService.isConnected()) {
+                                activity.displayFragment();
+                            }else{
+                                Toast.makeText(activity.getApplicationContext(),"No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.", Toast.LENGTH_SHORT).show();
+                            }
+                        }catch (Exception e){
+                            Log.e("Error", e.toString());
+                        }
+
+                    }
+                });
             }
+
 
             /*if(activity.accountInformation.getProgression().getAct1()){
                 activity.act1.setImageDrawable(activity.getResources().getDrawable(R.drawable.act1_done ,activity.getTheme()));
@@ -300,7 +328,7 @@ public class D3Activity extends AppCompatActivity {
 
     private static void getAccountInfo(D3Activity activity, Gson gson) {
         try {
-            activity.D3AccountInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtag()
+            activity.D3AccountInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtagProfile()
                     + URLConstants.ACCESS_TOKEN_QUERY + activity.bnOAuth2Helper.getAccessToken(), activity.getApplicationContext()).getStringJSONFromRequest().get(0));
             activity.accountInformation = gson.fromJson(activity.D3AccountInfo.toString(), AccountInformation.class);
             Log.i("json", activity.D3AccountInfo.toString());
@@ -382,5 +410,17 @@ public class D3Activity extends AppCompatActivity {
             }
         }
         return portraits;
+    }
+
+    private void displayFragment(){
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", characterID);
+        D3CharacterFragment d3CharacterFragment = new D3CharacterFragment();
+        d3CharacterFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment, d3CharacterFragment);
+        fragmentTransaction.addToBackStack(null).commit();
+        getSupportFragmentManager().executePendingTransactions();
     }
 }

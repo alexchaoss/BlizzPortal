@@ -316,6 +316,19 @@
 
     </ScrollView>
 
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:name="com.example.blizzardprofiles.activities.D3CharacterFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView5"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout="@layout/character_fragment" />
+
 
     <RelativeLayout
         android:id="@+id/loadingCircle"
