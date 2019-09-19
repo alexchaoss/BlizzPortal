@@ -48,4 +48,9 @@
     <string name="paragon">Paragon</string>
     <string name="lifetime_kills">Lifetime Kills</string>
     <string name="elite_kills">Elite Kills</string>
+    <string name="image_act3">image act3</string>
+    <string name="image_act1">image act1</string>
+    <string name="image_act2">image act2</string>
+    <string name="image_act4">image act4</string>
+    <string name="image_act5">image act5</string>
 </resources>

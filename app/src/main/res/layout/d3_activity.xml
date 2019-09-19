@@ -247,6 +247,51 @@
 
             </TableLayout>
 
+            <LinearLayout
+                android:id="@+id/progression"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/prog_act1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/image_act1" />
+
+                <ImageView
+                    android:id="@+id/prog_act2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/image_act2" />
+
+                <ImageView
+                    android:id="@+id/prog_act3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/image_act3" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/progression2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/prog_act4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/image_act4" />
+
+                <ImageView
+                    android:id="@+id/prog_act5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/image_act5" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"

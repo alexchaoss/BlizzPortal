@@ -55,13 +55,23 @@ public class D3Activity extends AppCompatActivity {
     private ImageButton wowButton;
     private ImageButton sc2Button;
     private ImageButton owButton;
-    private LinearLayout linearLayoutCharacters;
+
+
     private RelativeLayout loadingCircle;
     private JSONObject D3AccountInfo;
+    private AccountInformation accountInformation;
+
     private TextView paragonLevel;
     private TextView lifetimeKills;
     private TextView eliteKills;
-    private AccountInformation accountInformation;
+
+    private LinearLayout linearLayoutCharacters;
+
+    private ImageView act1;
+    private ImageView act2;
+    private ImageView act3;
+    private ImageView act4;
+    private ImageView act5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +87,11 @@ public class D3Activity extends AppCompatActivity {
         lifetimeKills = findViewById(R.id.lifetime_kills);
         eliteKills = findViewById(R.id.elite_kills);
         linearLayoutCharacters = findViewById(R.id.character_layout);
+        act1 = findViewById(R.id.prog_act1);
+        act2 = findViewById(R.id.prog_act2);
+        act3 = findViewById(R.id.prog_act3);
+        act4 = findViewById(R.id.prog_act4);
+        act5 = findViewById(R.id.prog_act5);
         btag.setText(UserInformation.getBattleTag());
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -225,6 +240,36 @@ public class D3Activity extends AppCompatActivity {
                 linearLayoutCharacter.setLayoutParams(layoutParamsCharacters);
                 activity.linearLayoutCharacters.addView(linearLayoutCharacter);
             }
+
+            /*if(activity.accountInformation.getProgression().getAct1()){
+                activity.act1.setImageDrawable(activity.getResources().getDrawable(R.drawable.act1_done ,activity.getTheme()));
+            }else{
+                activity.act1.setImageDrawable(activity.getResources().getDrawable(R.drawable.act1_not_done ,activity.getTheme()));
+            }
+
+            if(activity.accountInformation.getProgression().getAct2()){
+                activity.act2.setImageDrawable(activity.getResources().getDrawable(R.drawable.act2_done ,activity.getTheme()));
+            }else{
+                activity.act2.setImageDrawable(activity.getResources().getDrawable(R.drawable.act2_not_done ,activity.getTheme()));
+            }
+
+            if(activity.accountInformation.getProgression().getAct3()){
+                activity.act3.setImageDrawable(activity.getResources().getDrawable(R.drawable.act3_done ,activity.getTheme()));
+            }else{
+                activity.act3.setImageDrawable(activity.getResources().getDrawable(R.drawable.act3_not_done ,activity.getTheme()));
+            }
+
+            if(activity.accountInformation.getProgression().getAct4()){
+                activity.act4.setImageDrawable(activity.getResources().getDrawable(R.drawable.act4_done ,activity.getTheme()));
+            }else{
+                activity.act4.setImageDrawable(activity.getResources().getDrawable(R.drawable.act4_not_done ,activity.getTheme()));
+            }
+
+            if(activity.accountInformation.getProgression().getAct5()){
+                activity.act5.setImageDrawable(activity.getResources().getDrawable(R.drawable.act5_done ,activity.getTheme()));
+            }else{
+                activity.act5.setImageDrawable(activity.getResources().getDrawable(R.drawable.act5_not_done ,activity.getTheme()));
+            }*/
 
             double barbTime = activity.accountInformation.getTimePlayed().getBarbarian();
             double wizTime = activity.accountInformation.getTimePlayed().getWizard();
