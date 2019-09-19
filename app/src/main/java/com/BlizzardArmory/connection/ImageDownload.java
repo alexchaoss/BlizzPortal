@@ -48,6 +48,11 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
         this.baseURL = baseURL;
     }
 
+    public ImageDownload(ArrayList<String> fullURLs, Context context){
+        urls = fullURLs;
+        this.context = context;
+    }
+
     public ArrayList<Drawable> getImageFromURL() {
         return doInBackground();
     }
@@ -84,44 +89,80 @@ public class ImageDownload extends AsyncTask<String, Void, ArrayList<Drawable>> 
         if (characterInformation != null) {
             wowCharacters = new WowCharacters(characterInformation);
 
-        }
-
-        for (int i = 0; i < urls.size(); i++) {
-            InputStream in;
-            Bitmap bmp;
-            try {
-                URL url = new URL(baseURL + urls.get(i) + URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
-                Log.i("json", url.toString());
-                con = (HttpURLConnection) url.openConnection();
-                con.setRequestProperty("Accept-Encoding", "identity");
-                con.setDoInput(true);
-                int responseCode = con.getResponseCode();
-                Log.i("Response code", String.valueOf(responseCode));
-                if (responseCode != HttpsURLConnection.HTTP_OK) {
-                    Log.i("test", url.toString());
-                    url = new URL(URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
+            for (int i = 0; i < urls.size(); i++) {
+                InputStream in;
+                Bitmap bmp;
+                try {
+                    URL url = new URL(baseURL + urls.get(i) + URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
                     Log.i("json", url.toString());
                     con = (HttpURLConnection) url.openConnection();
                     con.setRequestProperty("Accept-Encoding", "identity");
                     con.setDoInput(true);
-                    responseCode = con.getResponseCode();
+                    int responseCode = con.getResponseCode();
                     Log.i("Response code", String.valueOf(responseCode));
+                    if (responseCode != HttpsURLConnection.HTTP_OK) {
+                        Log.i("test", url.toString());
+                        url = new URL(URLConstants.NOT_FOUND_URL_AVATAR + wowCharacters.getRaceList().get(i) + "-" + wowCharacters.getGenderList().get(i) + ".jpg");
+                        Log.i("json", url.toString());
+                        con = (HttpURLConnection) url.openConnection();
+                        con.setRequestProperty("Accept-Encoding", "identity");
+                        con.setDoInput(true);
+                        responseCode = con.getResponseCode();
+                        Log.i("Response code", String.valueOf(responseCode));
 
-                }
-                con.connect();
-                in = con.getInputStream();
-                bmp = BitmapFactory.decodeStream(in);
-                in.close();
-                Drawable drawable = new BitmapDrawable(context.getResources(), bmp);
-                if (responseCode == 403) {
-                    drawable = context.getDrawable(R.drawable.no_avatar);
+                    }
+                    con.connect();
+                    in = con.getInputStream();
+                    bmp = BitmapFactory.decodeStream(in);
+                    in.close();
+                    Drawable drawable = new BitmapDrawable(context.getResources(), bmp);
+                    if (responseCode == 403) {
+                        drawable = context.getDrawable(R.drawable.no_avatar);
+                        thumbnails.add(drawable);
+                    }
                     thumbnails.add(drawable);
+                } catch (Exception ex) {
+                    Log.e("Exception", ex.toString());
                 }
-                thumbnails.add(drawable);
-            } catch (Exception ex) {
-                Log.e("Exception", ex.toString());
+            }
+
+        }else {
+
+            for (int i = 0; i < urls.size(); i++) {
+                InputStream in;
+                Bitmap bmp;
+                try {
+                    URL url = new URL(urls.get(i));
+                    Log.i("json", url.toString());
+                    con = (HttpURLConnection) url.openConnection();
+                    con.setRequestProperty("Accept-Encoding", "identity");
+                    con.setDoInput(true);
+                    int responseCode = con.getResponseCode();
+                    Log.i("Response code", String.valueOf(responseCode));
+                    if (responseCode != HttpsURLConnection.HTTP_OK) {
+                        con = (HttpURLConnection) url.openConnection();
+                        con.setRequestProperty("Accept-Encoding", "identity");
+                        con.setDoInput(true);
+                        responseCode = con.getResponseCode();
+                        Log.i("Response code", String.valueOf(responseCode));
+
+                    }
+                    con.connect();
+                    in = con.getInputStream();
+                    bmp = BitmapFactory.decodeStream(in);
+                    in.close();
+                    Drawable drawable = new BitmapDrawable(context.getResources(), bmp);
+                    if (responseCode == 403) {
+                        drawable = context.getDrawable(R.drawable.no_avatar);
+                        thumbnails.add(drawable);
+                    }
+                    thumbnails.add(drawable);
+                } catch (Exception ex) {
+                    Log.e("Exception", ex.toString());
+                }
             }
         }
+
         return thumbnails;
     }
 }

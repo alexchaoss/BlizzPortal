@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.UI.UI_diablo.D3Activity;

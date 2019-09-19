@@ -1,7 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_d3_character"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
     android:background="@drawable/diablo3_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginEnd="50dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/shoulder"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/shoulders" />
+
+            <ImageView
+                android:id="@+id/gloves"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/gloves" />
+
+            <ImageView
+                android:id="@+id/ring1"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/ring1" />
+
+            <ImageView
+                android:id="@+id/main_hand"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/main_hand" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginEnd="50dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/head"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/head" />
+
+            <ImageView
+                android:id="@+id/chest"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/chest" />
+
+            <ImageView
+                android:id="@+id/belt"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/belt" />
+
+            <ImageView
+                android:id="@+id/legs"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/legs" />
+
+            <ImageView
+                android:id="@+id/boots"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/boots" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/amulet"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="20dp"
+                android:contentDescription="@string/amulet" />
+
+            <ImageView
+                android:id="@+id/bracers"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/bracers" />
+
+            <ImageView
+                android:id="@+id/ring2"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/ring2" />
+
+            <ImageView
+                android:id="@+id/off_hand"
+                android:layout_width="64dp"
+                android:layout_height="128dp"
+                android:contentDescription="@string/off_hand" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/loadingCircle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:indeterminate="true"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:indeterminateDrawable="@drawable/progress_bar" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

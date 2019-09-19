@@ -30,6 +30,9 @@ public class URLConstants {
     //URLS for D3 characters and queries
     public final static String D3_PROFILE = "/d3/profile/btag/?locale=en_US&";
     public final static String D3_CHARACTER = "/d3/profile/btag/hero/id?locale=en_US&";
+    public final static String D3_CHARACTER_ITEMS = "/d3/profile/btag/hero/id/items?locale=en_US&";
+    public final static String D3_ICON_ITEMS = "http://media.blizzard.com/d3/icons/items/large/icon.png";
+    public final static String D3_ICON_SKILLS = "http://media.blizzard.com/d3/icons/skills/64/icon.png";
 
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
@@ -37,15 +40,19 @@ public class URLConstants {
     public final static String BONUSID_QUERY = "/wow/item/id?b1=bonusList&locale=en_US&";
     public final static String SPELL_ID_QUERY = "/wow/spell/";
 
-    //No connection message
-    public final static String NO_CONNECTION = "No Internet Connection\nMake sure that Wi-Fi or mobile data is turned on, then try again.";
-
     public static String getD3URLBtagProfile() {
         return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
     }
 
+
     public static String getD3HeroURL(int id) {
-        return D3_CHARACTER.replace("id", String.valueOf(id));
+        String url = D3_CHARACTER.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+        return url.replace("id", String.valueOf(id));
+    }
+
+    public static String getD3HeroItemsURL(int id) {
+        String url = D3_CHARACTER_ITEMS.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+        return url.replace("id", String.valueOf(id));
     }
 
     public static String getBaseURLforUserInformation() {

@@ -43,6 +43,9 @@ public class Items {
     @SerializedName("mainHand")
     @Expose
     private MainHand mainHand;
+    @SerializedName("offHand")
+    @Expose
+    private OffHand offHand;
 
     public Head getHead() {
         return head;
@@ -138,6 +141,15 @@ public class Items {
 
     public void setMainHand(MainHand mainHand) {
         this.mainHand = mainHand;
+    }
+
+
+    public OffHand getOffHand() {
+        return offHand;
+    }
+
+    public void setOffHand(OffHand offHand) {
+        this.offHand = offHand;
     }
 
     @Override
