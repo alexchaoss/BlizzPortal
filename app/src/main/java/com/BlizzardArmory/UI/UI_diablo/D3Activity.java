@@ -224,6 +224,7 @@ public class D3Activity extends AppCompatActivity {
 
                 final LinearLayout linearLayoutCharacter = new LinearLayout(activity.getApplicationContext());
                 linearLayoutCharacter.setOrientation(LinearLayout.VERTICAL);
+                linearLayoutCharacter.setId(i);
 
                 LinearLayout linearLayoutSeasonal = new LinearLayout(activity.getApplicationContext());
                 linearLayoutSeasonal.setOrientation(LinearLayout.HORIZONTAL);
@@ -259,7 +260,7 @@ public class D3Activity extends AppCompatActivity {
                                 ConnectionService.showNoConnectionMessage(activity.getApplicationContext());
                             }
                         } catch (Exception e) {
-                            Log.e("Error", e.toString());
+                            Log.e("Error-test", e.toString());
                         }
 
                     }
