@@ -24,13 +24,13 @@ public class Hands {
     private String tooltipParams;
     @SerializedName("requiredLevel")
     @Expose
-    private Integer requiredLevel;
+    private Double requiredLevel;
     @SerializedName("itemLevel")
     @Expose
-    private Integer itemLevel;
+    private Double itemLevel;
     @SerializedName("stackSizeMax")
     @Expose
-    private Integer stackSizeMax;
+    private Double stackSizeMax;
     @SerializedName("accountBound")
     @Expose
     private Boolean accountBound;
@@ -45,16 +45,16 @@ public class Hands {
     private Type type;
     @SerializedName("armor")
     @Expose
-    private Integer armor;
+    private Double armor;
     @SerializedName("attacksPerSecond")
     @Expose
-    private Integer attacksPerSecond;
+    private Double attacksPerSecond;
     @SerializedName("minDamage")
     @Expose
-    private Integer minDamage;
+    private Double minDamage;
     @SerializedName("maxDamage")
     @Expose
-    private Integer maxDamage;
+    private Double maxDamage;
     @SerializedName("slots")
     @Expose
     private String slots;
@@ -66,10 +66,10 @@ public class Hands {
     private AttributesHtml attributesHtml;
     @SerializedName("openSockets")
     @Expose
-    private Integer openSockets;
+    private Double openSockets;
     @SerializedName("seasonRequiredToDrop")
     @Expose
-    private Integer seasonRequiredToDrop;
+    private Double seasonRequiredToDrop;
     @SerializedName("isSeasonRequiredToDrop")
     @Expose
     private Boolean isSeasonRequiredToDrop;
@@ -114,27 +114,27 @@ public class Hands {
         this.tooltipParams = tooltipParams;
     }
 
-    public Integer getRequiredLevel() {
+    public Double getRequiredLevel() {
         return requiredLevel;
     }
 
-    public void setRequiredLevel(Integer requiredLevel) {
+    public void setRequiredLevel(Double requiredLevel) {
         this.requiredLevel = requiredLevel;
     }
 
-    public Integer getItemLevel() {
+    public Double getItemLevel() {
         return itemLevel;
     }
 
-    public void setItemLevel(Integer itemLevel) {
+    public void setItemLevel(Double itemLevel) {
         this.itemLevel = itemLevel;
     }
 
-    public Integer getStackSizeMax() {
+    public Double getStackSizeMax() {
         return stackSizeMax;
     }
 
-    public void setStackSizeMax(Integer stackSizeMax) {
+    public void setStackSizeMax(Double stackSizeMax) {
         this.stackSizeMax = stackSizeMax;
     }
 
@@ -170,35 +170,35 @@ public class Hands {
         this.type = type;
     }
 
-    public Integer getArmor() {
+    public Double getArmor() {
         return armor;
     }
 
-    public void setArmor(Integer armor) {
+    public void setArmor(Double armor) {
         this.armor = armor;
     }
 
-    public Integer getAttacksPerSecond() {
+    public Double getAttacksPerSecond() {
         return attacksPerSecond;
     }
 
-    public void setAttacksPerSecond(Integer attacksPerSecond) {
+    public void setAttacksPerSecond(Double attacksPerSecond) {
         this.attacksPerSecond = attacksPerSecond;
     }
 
-    public Integer getMinDamage() {
+    public Double getMinDamage() {
         return minDamage;
     }
 
-    public void setMinDamage(Integer minDamage) {
+    public void setMinDamage(Double minDamage) {
         this.minDamage = minDamage;
     }
 
-    public Integer getMaxDamage() {
+    public Double getMaxDamage() {
         return maxDamage;
     }
 
-    public void setMaxDamage(Integer maxDamage) {
+    public void setMaxDamage(Double maxDamage) {
         this.maxDamage = maxDamage;
     }
 
@@ -226,19 +226,19 @@ public class Hands {
         this.attributesHtml = attributesHtml;
     }
 
-    public Integer getOpenSockets() {
+    public Double getOpenSockets() {
         return openSockets;
     }
 
-    public void setOpenSockets(Integer openSockets) {
+    public void setOpenSockets(Double openSockets) {
         this.openSockets = openSockets;
     }
 
-    public Integer getSeasonRequiredToDrop() {
+    public Double getSeasonRequiredToDrop() {
         return seasonRequiredToDrop;
     }
 
-    public void setSeasonRequiredToDrop(Integer seasonRequiredToDrop) {
+    public void setSeasonRequiredToDrop(Double seasonRequiredToDrop) {
         this.seasonRequiredToDrop = seasonRequiredToDrop;
     }
 

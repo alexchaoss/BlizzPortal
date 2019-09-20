@@ -822,7 +822,7 @@ public class WoWCharacterFragment extends Fragment {
         String requiredLevel = "Requires Level " + activity.itemInformations.get(activity.index).getRequiredLevel();
         Drawable backgroundStroke = activity.itemColor(activity.itemsInfoList.get(activity.index), new GradientDrawable());
         String itemName = activity.itemsInfoList.get(activity.index).getName();
-        String itemLvl = "<font color=#edc201>Items Level " + activity.itemsInfoList.get(activity.index).getItemLevel().toString() + "</font>";
+        String itemLvl = "<font color=#edc201>ItemsCharacter Level " + activity.itemsInfoList.get(activity.index).getItemLevel().toString() + "</font>";
         String armor = activity.itemsInfoList.get(activity.index).getArmor().toString();
         if (activity.itemInformations.get(activity.index).getName() != null) {
             description = "<font color=#edc201>" + activity.itemInformations.get(activity.index).getDescription() + "</font>";
@@ -885,7 +885,7 @@ public class WoWCharacterFragment extends Fragment {
     private static void setCharacterInformationTextviews(WoWCharacterFragment activity) throws JSONException {
         activity.background.setImageDrawable(activity.backgroundMain);
         activity.characterName.setText(activity.characterInfo.getName());
-        activity.itemLVL.setText(String.format("Items Level: %s", activity.itemObject.get("averageItemLevel")));
+        activity.itemLVL.setText(String.format("ItemsCharacter Level: %s", activity.itemObject.get("averageItemLevel")));
 
         activity.health.setText(String.format("Health: %s", activity.statsObject.get("health")));
         activity.power.setText(String.format("%s: %s", activity.formatItemSlotName(activity.statsObject.get("powerType").toString().replace("-", " ")), activity.statsObject.get("power")));

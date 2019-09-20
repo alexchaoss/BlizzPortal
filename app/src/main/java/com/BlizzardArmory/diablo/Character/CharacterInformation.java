@@ -42,9 +42,9 @@ public class CharacterInformation {
     @SerializedName("skills")
     @Expose
     private Skills skills;
-    @SerializedName("items")
+    @SerializedName("itemsCharacter")
     @Expose
-    private Items items;
+    private ItemsCharacter itemsCharacter;
     @SerializedName("followers")
     @Expose
     private Followers followers;
@@ -155,12 +155,12 @@ public class CharacterInformation {
         this.skills = skills;
     }
 
-    public Items getItems() {
-        return items;
+    public ItemsCharacter getItemsCharacter() {
+        return itemsCharacter;
     }
 
-    public void setItems(Items items) {
-        this.items = items;
+    public void setItemsCharacter(ItemsCharacter itemsCharacter) {
+        this.itemsCharacter = itemsCharacter;
     }
 
     public Followers getFollowers() {
@@ -221,7 +221,7 @@ public class CharacterInformation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("name", name).append("_class", _class).append("gender", gender).append("level", level).append("paragonLevel", paragonLevel).append("kills", kills).append("hardcore", hardcore).append("seasonal", seasonal).append("seasonCreated", seasonCreated).append("skills", skills).append("items", items).append("followers", followers).append("legendaryPowers", legendaryPowers).append("progression", progression).append("alive", alive).append("lastUpdated", lastUpdated).append("highestSoloRiftCompleted", highestSoloRiftCompleted).append("stats", stats).toString();
+        return new ToStringBuilder(this).append("id", id).append("name", name).append("_class", _class).append("gender", gender).append("level", level).append("paragonLevel", paragonLevel).append("kills", kills).append("hardcore", hardcore).append("seasonal", seasonal).append("seasonCreated", seasonCreated).append("skills", skills).append("itemsCharacter", itemsCharacter).append("followers", followers).append("legendaryPowers", legendaryPowers).append("progression", progression).append("alive", alive).append("lastUpdated", lastUpdated).append("highestSoloRiftCompleted", highestSoloRiftCompleted).append("stats", stats).toString();
     }
 
 }
