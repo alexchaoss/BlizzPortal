@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class Items {
+public class ItemsCharacter {
 
     @SerializedName("head")
     @Expose

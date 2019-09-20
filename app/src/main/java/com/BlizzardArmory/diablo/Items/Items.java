@@ -28,6 +28,24 @@ public class Items {
     @SerializedName("hands")
     @Expose
     private Hands hands;
+    @SerializedName("bracers")
+    @Expose
+    private Bracers bracers;
+    @SerializedName("feet")
+    @Expose
+    private Feet feet;
+    @SerializedName("leftFinger")
+    @Expose
+    private LeftFinger leftFinger;
+    @SerializedName("rightFinger")
+    @Expose
+    private RightFinger rightFinger;
+    @SerializedName("mainHand")
+    @Expose
+    private MainHand mainHand;
+    @SerializedName("offHand")
+    @Expose
+    private OffHand offHand;
 
     public Head getHead() {
         return head;
@@ -85,9 +103,57 @@ public class Items {
         this.hands = hands;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("head", head).append("neck", neck).append("torso", torso).append("shoulders", shoulders).append("legs", legs).append("waist", waist).append("hands", hands).toString();
+    public Bracers getBracers() {
+        return bracers;
     }
 
+    public void setBracers(Bracers bracers) {
+        this.bracers = bracers;
+    }
+
+    public Feet getFeet() {
+        return feet;
+    }
+
+    public void setFeet(Feet feet) {
+        this.feet = feet;
+    }
+
+    public LeftFinger getLeftFinger() {
+        return leftFinger;
+    }
+
+    public void setLeftFinger(LeftFinger leftFinger) {
+        this.leftFinger = leftFinger;
+    }
+
+    public RightFinger getRightFinger() {
+        return rightFinger;
+    }
+
+    public void setRightFinger(RightFinger rightFinger) {
+        this.rightFinger = rightFinger;
+    }
+
+    public MainHand getMainHand() {
+        return mainHand;
+    }
+
+    public void setMainHand(MainHand mainHand) {
+        this.mainHand = mainHand;
+    }
+
+
+    public OffHand getOffHand() {
+        return offHand;
+    }
+
+    public void setOffHand(OffHand offHand) {
+        this.offHand = offHand;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("head", head).append("neck", neck).append("torso", torso).append("shoulders", shoulders).append("legs", legs).append("waist", waist).append("hands", hands).append("bracers", bracers).append("feet", feet).append("leftFinger", leftFinger).append("rightFinger", rightFinger).append("mainHand", mainHand).toString();
+    }
 }

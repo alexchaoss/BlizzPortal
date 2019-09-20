@@ -71,7 +71,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -79,7 +79,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -87,7 +87,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -95,7 +95,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -103,7 +103,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -111,7 +111,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -119,14 +119,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
                         android:id="@+id/wrist"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                 </LinearLayout>
@@ -142,7 +142,7 @@
                         android:id="@+id/main_hand"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                 </LinearLayout>
@@ -158,7 +158,7 @@
                         android:id="@+id/off_hand"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                 </LinearLayout>
@@ -175,7 +175,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -183,7 +183,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -191,7 +191,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -199,7 +199,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -207,7 +207,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -215,7 +215,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -223,14 +223,14 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
                         android:id="@+id/trinket2"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:contentDescription="@string/items"
+                        android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                 </LinearLayout>

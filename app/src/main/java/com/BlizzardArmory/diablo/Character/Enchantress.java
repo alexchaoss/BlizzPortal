@@ -15,9 +15,9 @@ public class Enchantress {
     @SerializedName("level")
     @Expose
     private Integer level;
-    @SerializedName("items")
+    @SerializedName("itemsCharacter")
     @Expose
-    private Items items;
+    private ItemsCharacter itemsCharacter;
     @SerializedName("stats")
     @Expose
     private Stats stats;
@@ -41,12 +41,12 @@ public class Enchantress {
         this.level = level;
     }
 
-    public Items getItems() {
-        return items;
+    public ItemsCharacter getItemsCharacter() {
+        return itemsCharacter;
     }
 
-    public void setItems(Items items) {
-        this.items = items;
+    public void setItemsCharacter(ItemsCharacter itemsCharacter) {
+        this.itemsCharacter = itemsCharacter;
     }
 
     public Stats getStats() {
@@ -67,7 +67,7 @@ public class Enchantress {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("slug", slug).append("level", level).append("items", items).append("stats", stats).append("skills", skills).toString();
+        return new ToStringBuilder(this).append("slug", slug).append("level", level).append("itemsCharacter", itemsCharacter).append("stats", stats).append("skills", skills).toString();
     }
 
 }

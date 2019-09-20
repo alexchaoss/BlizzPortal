@@ -20,7 +20,9 @@ import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.connection.ImageDownload;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
-import com.BlizzardArmory.diablo.Character.Items;
+import com.BlizzardArmory.diablo.Character.ItemsCharacter;
+import com.BlizzardArmory.diablo.Items.Item;
+import com.BlizzardArmory.diablo.Items.Items;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
@@ -42,6 +44,7 @@ public class D3CharacterFragment extends Fragment {
     private JSONObject characterInfo;
     private Items itemsInformation;
     private JSONObject itemInfo;
+    private ArrayList<Item> items = new ArrayList<>();
 
     private RelativeLayout loadingCircle;
 
@@ -168,10 +171,14 @@ public class D3CharacterFragment extends Fragment {
                 Log.e("Error", e.toString());
             }
 
+            activity.setItemBackgroundColor();
+
 
             Objects.requireNonNull(activity.getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             activity.loadingCircle.setVisibility(View.GONE);
         }
+
+
     }
 
     private void addImageViewItemsToList() {
@@ -190,21 +197,61 @@ public class D3CharacterFragment extends Fragment {
         imageViewItem.add(off_hand);
     }
 
+    private void setItemBackgroundColor() {
+            selectColor(itemsInformation.getShoulders().getDisplayColor(), shoulders);
+            selectColor(itemsInformation.getHands().getDisplayColor(), hands);
+            selectColor(itemsInformation.getLeftFinger().getDisplayColor(), ring1);
+            selectColor(itemsInformation.getMainHand().getDisplayColor(), main_hand);
+            selectColor(itemsInformation.getHead().getDisplayColor(), head);
+            selectColor(itemsInformation.getTorso().getDisplayColor(), chest);
+            selectColor(itemsInformation.getWaist().getDisplayColor(), belt);
+            selectColor(itemsInformation.getLegs().getDisplayColor(), legs);
+            selectColor(itemsInformation.getFeet().getDisplayColor(), boots);
+            selectColor(itemsInformation.getNeck().getDisplayColor(), amulet);
+            selectColor(itemsInformation.getBracers().getDisplayColor(), bracers);
+            selectColor(itemsInformation.getRightFinger().getDisplayColor(), ring2);
+            selectColor(itemsInformation.getOffHand().getDisplayColor(), off_hand);
+    }
+
+    private void isValidItem(){
+
+    }
+
+    private void selectColor(String color, ImageView imageView){
+        switch(color){
+            case "blue":
+                imageView.setBackground(getResources().getDrawable(R.drawable.blue_bg_item_d3, getContext().getTheme()));
+                break;
+            case "yellow":
+                imageView.setBackground(getResources().getDrawable(R.drawable.yellow_bg_item_d3, getContext().getTheme()));
+                break;
+            case "orange":
+                imageView.setBackground(getResources().getDrawable(R.drawable.orange_bg_item_d3, getContext().getTheme()));
+                break;
+            case "green":
+                imageView.setBackground(getResources().getDrawable(R.drawable.green_bg_item_d3, getContext().getTheme()));
+                break;
+            case "brown":
+                imageView.setBackground(getResources().getDrawable(R.drawable.brown_bg_item_d3, getContext().getTheme()));
+                break;
+        }
+    }
+
     private static void getItemIconURL(D3CharacterFragment activity, List<String> itemIconURL) {
         try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getShoulders().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getHands().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getLeftFinger().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getMainHand().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getHead().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getTorso().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getWaist().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getLegs().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getFeet().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getNeck().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getBracers().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getRightFinger().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItems().getOffHand().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getShoulders().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getHands().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getLeftFinger().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getMainHand().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getHead().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getTorso().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getWaist().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getLegs().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getFeet().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getNeck().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getBracers().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getRightFinger().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", activity.characterInformation.getItemsCharacter().getOffHand().getIcon()) + ".png");
         }catch (Exception e){
             Log.e("Error", e.toString());
         }

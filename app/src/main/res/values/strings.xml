@@ -32,7 +32,7 @@
     <string name="diablo_button">diablo button</string>
     <string name="clear_credentials">Clear Credentials</string>
     <string name="wow_characters">Characters</string>
-    <string name="items">item</string>
+    <string name="itemsCharacter">item</string>
     <string name="name">name</string>
     <string name="background_character">TODO</string>
     <string name="item_level">item level</string>
