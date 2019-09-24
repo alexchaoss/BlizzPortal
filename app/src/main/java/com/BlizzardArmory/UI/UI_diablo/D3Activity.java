@@ -224,7 +224,7 @@ public class D3Activity extends AppCompatActivity {
                                 });
                             }
 
-                            if (accountInformation.getProgression().getAct1()) {
+                            /*if (accountInformation.getProgression().getAct1()) {
                                 act1.setImageDrawable(getResources().getDrawable(R.drawable.act1_done, getTheme()));
                             } else {
                                 act1.setImageDrawable(getResources().getDrawable(R.drawable.act1_not_done, getTheme()));
@@ -252,7 +252,7 @@ public class D3Activity extends AppCompatActivity {
                                 act5.setImageDrawable(getResources().getDrawable(R.drawable.act5_done, getTheme()));
                             } else {
                                 act5.setImageDrawable(getResources().getDrawable(R.drawable.act5_not_done, getTheme()));
-                            }
+                            }*/
 
                             double barbTime = accountInformation.getTimePlayed().getBarbarian();
                             double wizTime = accountInformation.getTimePlayed().getWizard();
