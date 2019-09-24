@@ -18,6 +18,17 @@ import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
+import com.BlizzardArmory.diablo.account.AccountInformation;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
@@ -37,6 +48,8 @@ public class GamesActivity extends AppCompatActivity {
     private ImageButton d3Button;
     private ImageButton owButton;
     private TextView btag;
+
+    private JSONObject userInfo = new JSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,82 +73,110 @@ public class GamesActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5); // 1MB cap
+        Network network = new BasicNetwork(new HurlStack());
+        RequestQueue requestQueue = new RequestQueue(cache, network);
+        requestQueue.start();
+
+
         try {
-            JSONObject userInfo = new JSONObject(new ConnectionService(URLConstants.getBaseURLforUserInformation() +
-                    URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), GamesActivity.this).getStringJSONFromRequest().get(0));
-            UserInformation.setBattleTag(userInfo.getString("battletag"));
-            UserInformation.setUserID(userInfo.getString("id"));
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforUserInformation() +
+                    URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            userInfo = response;
+                            try {
+                                UserInformation.setBattleTag(userInfo.getString("battletag"));
+                                UserInformation.setUserID(userInfo.getString("id"));
+
+                            } catch (Exception e) {
+                                Log.e("Error-test", e.toString());
+                            }
+
+                            btag.setText(UserInformation.getBattleTag());
+
+                            wowButton.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        if (ConnectionService.isConnected()) {
+                                            callNextActivity(WoWActivity.class);
+                                        } else {
+                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("Error", e.toString());
+                                    }
+                                }
+                            });
+
+                            d3Button.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        if (ConnectionService.isConnected()) {
+                                            callNextActivity(D3Activity.class);
+                                        } else {
+                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("Error", e.toString());
+                                    }
+                                }
+                            });
+
+                            sc2Button.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        if (ConnectionService.isConnected()) {
+                                            callNextActivity(SC2Activity.class);
+                                        } else {
+                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("Error", e.toString());
+                                    }
+
+                                }
+                            });
+
+                            owButton.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        if (ConnectionService.isConnected()) {
+                                            callNextActivity(OWActivity.class);
+                                        } else {
+                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("Error", e.toString());
+                                    }
+
+                                }
+                            });
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i("test", error.toString());
+                        }
+                    });
+
+            requestQueue.add(jsonRequest);
+
         } catch (Exception e) {
-            Log.e("Error", e.toString());
+            Log.e("Error-test", e.toString());
         }
 
-        btag.setText(UserInformation.getBattleTag());
 
-        wowButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (ConnectionService.isConnected()) {
-                        callNextActivity(WoWActivity.class);
-                    } else {
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                    }
-                } catch (Exception e) {
-                    Log.e("Error", e.toString());
-                }
-            }
-        });
-
-        d3Button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (ConnectionService.isConnected()) {
-                        callNextActivity(D3Activity.class);
-                    } else {
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                    }
-                } catch (Exception e) {
-                    Log.e("Error", e.toString());
-                }
-            }
-        });
-
-        sc2Button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (ConnectionService.isConnected()) {
-                        callNextActivity(SC2Activity.class);
-                    } else {
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                    }
-                } catch (Exception e) {
-                    Log.e("Error", e.toString());
-                }
-
-            }
-        });
-
-        owButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (ConnectionService.isConnected()) {
-                        callNextActivity(OWActivity.class);
-                    } else {
-                        ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                    }
-                } catch (Exception e) {
-                    Log.e("Error", e.toString());
-                }
-
-            }
-        });
     }
 
     @Override

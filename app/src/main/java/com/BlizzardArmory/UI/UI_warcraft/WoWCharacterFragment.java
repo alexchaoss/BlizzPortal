@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.connection.ImageDownload;
 import com.BlizzardArmory.warcraft.CharacterInformation;
@@ -44,6 +45,16 @@ import com.BlizzardArmory.warcraft.Items.StatsEnum;
 import com.BlizzardArmory.warcraft.Spells.AzeritePower;
 import com.BlizzardArmory.warcraft.Spells.ItemSpell;
 import com.BlizzardArmory.warcraft.Spells.Talents;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
@@ -140,11 +151,17 @@ public class WoWCharacterFragment extends Fragment {
     private List<AzeritePower> powerHead;
     private List<AzeritePower> powerShoulder;
     private List<AzeritePower> powerChest;
+    private static ArrayList<String> tempSpell = new ArrayList<>();
 
     private SparseArray<String> stats = new SparseArray<>();
     private SparseArray<String> nameList = new SparseArray<>();
 
     private int index = 0;
+
+    private static ArrayList<JSONObject> tempJSON = new ArrayList<>();
+    ArrayList<JSONObject> tempSpellHead = new ArrayList<>();
+    ArrayList<JSONObject> tempSpellShoulder = new ArrayList<>();
+    ArrayList<JSONObject> tempSpellChest = new ArrayList<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -489,118 +506,220 @@ public class WoWCharacterFragment extends Fragment {
         protected Void doInBackground(Void... param) {
             long startTime = System.nanoTime();
 
-            WoWCharacterFragment activity = activityReference.get();
+            final WoWCharacterFragment activity = activityReference.get();
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getContext());
             BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(activity.getActivity()).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
             assert bnOAuth2Params != null;
-            BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+            final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+
+            Cache cache = new DiskBasedCache(activity.getContext().getCacheDir(), 1024 * 1024 * 5); // 1MB cap
+            Network network = new BasicNetwork(new HurlStack());
+            RequestQueue requestQueue = new RequestQueue(cache, network);
+            requestQueue.start();
+
+            final Gson gson = new GsonBuilder().create();
 
             try {
-                activity.characterInformation = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() +
-                        activity.swapRealmCharacterFromURL() + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), activity.getContext()).getStringJSONFromRequest().get(0));
+
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+                        activity.swapRealmCharacterFromURL() + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                activity.characterInformation = response;
+
+                                if (activity.characterInformation.isNull("items")) {
+                                    Log.i("Character too old", "Havn't logged in in a long time.");
+                                } else {
+
+                                    try {
+                                        activity.characterInfo = gson.fromJson(activity.characterInformation.toString(), CharacterInformation.class);
+                                        activity.itemObject = activity.characterInformation.getJSONObject("items");
+                                        activity.statsObject = activity.characterInformation.getJSONObject("stats");
+                                        activity.backgroundMain = new ImageDownload(activity.urlMain, URLConstants.getRenderZoneURL(), activity.getContext(), activity.characterInformation).getImageFromURL().get(0);
+
+                                        activity.equipment = new Gear(activity.itemObject);
+                                        activity.getIcons(activity.getView());
+                                        activity.urlItemInfo = new ArrayList<>();
+
+                                        for (int i = 0; i < activity.gear.size(); i++) {
+                                            if (activity.itemsInfoList.get(i).getName() != null) {
+                                                activity.urlItemInfo.add(URLConstants.getBaseURLforAPI() +
+                                                        activity.swapItemIDBonusID(i) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                                            } else {
+                                                activity.urlItemInfo.add(null);
+                                            }
+                                        }
+
+                                    }catch (Exception e){
+                                        Log.e("Error", e.toString());
+                                    }
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.i("test", error.toString());
+                            }
+                        });
+
+                requestQueue.add(jsonRequest);
+
             } catch (Exception e) {
                 Log.e("Error", e.toString());
             }
 
             try {
-                if (activity.characterInformation.isNull("items")) {
-                    Log.i("Character too old", "Havn't logged in in a long time.");
-                } else {
-                    Gson gson = new GsonBuilder().create();
-                    activity.characterInfo = gson.fromJson(activity.characterInformation.toString(), CharacterInformation.class);
-                    activity.itemObject = activity.characterInformation.getJSONObject("items");
-                    activity.statsObject = activity.characterInformation.getJSONObject("stats");
-                    activity.backgroundMain = new ImageDownload(activity.urlMain, URLConstants.getRenderZoneURL(), activity.getContext(), activity.characterInformation).getImageFromURL().get(0);
 
-                    activity.equipment = new Gear(activity.itemObject);
-                    activity.getIcons(activity.getView());
-                    activity.urlItemInfo = new ArrayList<>();
+                for(int i = 0; i < activity.urlItemInfo.size(); i++) {
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, activity.urlItemInfo.get(i), null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    tempJSON.add(response);
 
-                    for (int i = 0; i < activity.gear.size(); i++) {
-                        if (activity.itemsInfoList.get(i).getName() != null) {
-                            activity.urlItemInfo.add(URLConstants.getBaseURLforAPI() +
-                                    activity.swapItemIDBonusID(i) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                        } else {
-                            activity.urlItemInfo.add(null);
-                        }
-                    }
-                    ArrayList<String> tempJSON = new ConnectionService(activity.urlItemInfo, activity.getContext()).getStringJSONFromRequest();
-
-                    for (int i = 0; i < activity.urlItemInfo.size(); i++) {
-                        if (tempJSON.get(i) != null) {
-                            activity.bonusIDList.add(new JSONObject(tempJSON.get(i)));
-                        } else {
-                            activity.bonusIDList.add(null);
-                        }
-                    }
+                                    for (int i = 0; i < activity.urlItemInfo.size(); i++) {
+                                        if (activity.tempJSON.get(i) != null) {
+                                            activity.bonusIDList.add(activity.tempJSON.get(i));
+                                        } else {
+                                            activity.bonusIDList.add(null);
+                                        }
+                                    }
 
 
-                    for (int i = 0; i < activity.bonusIDList.size(); i++) {
-                        if (activity.bonusIDList.get(i) != null) {
-                            ItemInformation itemInformation = gson.fromJson(activity.bonusIDList.get(i).toString(), ItemInformation.class);
-                            activity.itemInformations.add(itemInformation);
-                        } else {
-                            activity.itemInformations.add(new ItemInformation());
-                        }
-                    }
+                                    for (int i = 0; i < activity.bonusIDList.size(); i++) {
+                                        if (activity.bonusIDList.get(i) != null) {
+                                            ItemInformation itemInformation = gson.fromJson(activity.bonusIDList.get(i).toString(), ItemInformation.class);
+                                            activity.itemInformations.add(itemInformation);
+                                        } else {
+                                            activity.itemInformations.add(new ItemInformation());
+                                        }
+                                    }
 
-                    ArrayList<String> tempSpell = new ArrayList<>();
-                    if (activity.itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
-                        activity.powerHead = activity.itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
-                    }
-                    if (activity.itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
-                        activity.powerShoulder = activity.itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers();
-                    }
-                    if (activity.itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
-                        activity.powerChest = activity.itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers();
-                    }
+                                    if (activity.itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
+                                        activity.powerHead = activity.itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
+                                    }
+                                    if (activity.itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
+                                        activity.powerShoulder = activity.itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers();
+                                    }
+                                    if (activity.itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
+                                        activity.powerChest = activity.itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.i("test", error.toString());
+                                }
+                            });
 
+                    requestQueue.add(jsonRequest);
+                }
+
+
+                try {
                     for (AzeritePower azeritePower : activity.powerHead) {
                         if (azeritePower.getSpellId() != 0) {
                             tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
                                     URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
                         }
                     }
-
-                    ArrayList<String> tempSpellHead = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
-                    tempSpell.clear();
-
-                    for (AzeritePower azeritePower : activity.powerShoulder) {
-                        if (azeritePower.getSpellId() != 0) {
-                            tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
-                                    URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                        }
-                    }
-
-                    ArrayList<String> tempSpellShoulder = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
-                    tempSpell.clear();
-
-                    for (AzeritePower azeritePower : activity.powerChest) {
-                        if (azeritePower.getSpellId() != 0) {
-                            tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
-                                    URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                        }
-                    }
-
-                    ArrayList<String> tempSpellChest = new ConnectionService(tempSpell, activity.getContext()).getStringJSONFromRequest();
-                    tempSpell.clear();
-                    Log.i("test", tempSpellHead.toString());
-
-                    for (int i = 0; i < tempSpellHead.size(); i++) {
-                        activity.azeriteSpellsHead.add(new JSONObject(tempSpellHead.get(i)));
-                    }
-                    for (int i = 0; i < tempSpellShoulder.size(); i++) {
-                        activity.azeriteSpellsShoulder.add(new JSONObject(tempSpellShoulder.get(i)));
-                    }
-                    for (int i = 0; i < tempSpellChest.size(); i++) {
-                        activity.azeriteSpellsChest.add(new JSONObject(tempSpellChest.get(i)));
-                    }
-
-
+                }catch (Exception e) {
+                    Log.e("Error", e.toString());
                 }
 
-            } catch (JSONException | NullPointerException | IOException e) {
+                for(int i = 0; i < activity.urlItemInfo.size(); i++) {
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, tempSpell.get(i), null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    activity.tempSpellHead.add(response);
+                                    activity.azeriteSpellsHead.addAll(activity.tempSpellHead);
+
+                                    tempSpell.clear();
+
+                                    try {
+                                        for (AzeritePower azeritePower : activity.powerShoulder) {
+                                            if (azeritePower.getSpellId() != 0) {
+                                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                                            }
+                                        }
+                                    }catch (Exception e) {
+                                        Log.e("Error", e.toString());
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.i("test", error.toString());
+                                }
+                            });
+
+                    requestQueue.add(jsonRequest);
+                }
+
+                for(int i = 0; i < activity.urlItemInfo.size(); i++) {
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, tempSpell.get(i), null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    activity.tempSpellShoulder.add(response);
+                                    activity.azeriteSpellsShoulder.addAll(activity.tempSpellShoulder);
+
+                                    tempSpell.clear();
+
+                                    try {
+                                        for (AzeritePower azeritePower : activity.powerChest) {
+                                            if (azeritePower.getSpellId() != 0) {
+                                                tempSpell.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + azeritePower.getSpellId() + "?" +
+                                                        URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                                            }
+                                        }
+                                    }catch (Exception e) {
+                                        Log.e("Error", e.toString());
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.i("test", error.toString());
+                                }
+                            });
+
+                    requestQueue.add(jsonRequest);
+                }
+
+
+
+
+
+                for(int i = 0; i < activity.urlItemInfo.size(); i++) {
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, tempSpell.get(i), null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    activity.tempSpellChest.add(response);
+                                    activity.azeriteSpellsChest.addAll(activity.tempSpellChest);
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.i("test", error.toString());
+                                }
+                            });
+
+                    requestQueue.add(jsonRequest);
+                }
+
+
+            } catch (Exception e) {
                 Log.e("Error", e.toString());
             }
 

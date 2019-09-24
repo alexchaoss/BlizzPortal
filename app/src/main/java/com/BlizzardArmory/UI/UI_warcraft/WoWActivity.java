@@ -2,11 +2,17 @@ package com.BlizzardArmory.UI.UI_warcraft;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +35,17 @@ import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.connection.ImageDownload;
 import com.BlizzardArmory.warcraft.WowCharacters;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
@@ -56,6 +73,15 @@ public class WoWActivity extends AppCompatActivity {
     private ArrayList<String> characterNames;
     private ArrayList<String> realms;
     private ArrayList<LinearLayout> linearLayoutCharacterList;
+    private ArrayList<String> levels;
+    private ArrayList<String> className;
+    private ArrayList<Drawable> thumbnails = new ArrayList<>();
+    private RequestQueue requestQueue;
+    private LinearLayout.LayoutParams layoutParamsImage;
+    private LinearLayout.LayoutParams layoutParamsInfo;
+    private LinearLayout.LayoutParams layoutParamsClass;
+
+    private int index = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +96,177 @@ public class WoWActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        loadingCircle.setVisibility(View.VISIBLE);
 
         try {
             if (ConnectionService.isConnected()) {
-                new PrepareDataWoWActivity(this).execute();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                bnOAuth2Params = Objects.requireNonNull(getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+                assert bnOAuth2Params != null;
+                BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+
+                Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5); // 1MB cap
+                Network network = new BasicNetwork(new HurlStack());
+                requestQueue = new RequestQueue(cache, network);
+                requestQueue.start();
+
+                try {
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+                            URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    wowCharacters = response;
+
+                                    Log.i("json", wowCharacters.toString());
+                                    linearLayout = findViewById(R.id.linear_wow_characters);
+
+                                    characterList = new WowCharacters(wowCharacters);
+                                    characterNames = characterList.getCharacterNamesList();
+                                    realms = characterList.getRealmsList();
+                                    levels = characterList.getLevelList();
+                                    className = characterList.getClassList();
+
+                                    linearLayoutCharacterList = new ArrayList<>();
+
+                                    layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
+                                    layoutParamsImage.setMargins(15, 0, 0, 0);
+
+                                    layoutParamsInfo = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                    layoutParamsInfo.setMargins(25, 0, 0, 0);
+
+                                    layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                    layoutParamsClass.setMargins(15, 0, 0, 0);
+
+                                    for (int i = 0; i < characterList.getUrlThumbnail().size(); i++) {
+                                        ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + characterList.getUrlThumbnail().get(i) +
+                                                URLConstants.NOT_FOUND_URL_AVATAR + characterList.getRaceList().get(i) + "-" + characterList.getGenderList().get(i) + ".jpg", new Response.Listener<Bitmap>() {
+                                            @Override
+                                            public void onResponse(Bitmap bitmap) {
+                                                Drawable portrait = new BitmapDrawable(getResources(), bitmap);
+                                                thumbnails.add(portrait);
+
+                                                final LinearLayout linearLayoutCharacters = new LinearLayout(getApplicationContext());
+                                                LinearLayout linearLayoutText = new LinearLayout(getApplicationContext());
+                                                LinearLayout linearLayoutLevelClass = new LinearLayout(getApplicationContext());
+                                                linearLayoutCharacters.setOrientation(LinearLayout.HORIZONTAL);
+                                                linearLayoutText.setOrientation(LinearLayout.VERTICAL);
+                                                linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
+
+                                                //Add character name to view
+                                                TextView textViewName = new TextView(getApplicationContext());
+                                                textViewName.setText(characterNames.get(index));
+                                                textViewName.setTextColor(Color.WHITE);
+                                                textViewName.setTextSize(17);
+
+                                                //Add level to view
+                                                TextView textViewLevel = new TextView(getApplicationContext());
+                                                textViewLevel.setText(levels.get(index));
+                                                textViewLevel.setTextColor(Color.WHITE);
+                                                textViewLevel.setTextSize(15);
+
+                                                //Add class to view
+                                                TextView textViewClass = new TextView(getApplicationContext());
+                                                textViewClass.setText(className.get(index));
+                                                textViewClass.setTextColor(Color.WHITE);
+                                                textViewClass.setTextSize(15);
+
+
+                                                //Add realm to view
+                                                TextView textViewRealm = new TextView(getApplicationContext());
+                                                textViewRealm.setText(realms.get(index));
+                                                textViewRealm.setTextColor(Color.WHITE);
+                                                textViewRealm.setTextSize(15);
+
+                                                //Add character thumbnail to view
+                                                ImageView imageView = new ImageView(getApplicationContext());
+                                                imageView.setImageDrawable(thumbnails.get(index));
+                                                imageView.setLayoutParams(layoutParamsImage);
+
+                                                //Add level and class to parent layout
+                                                linearLayoutLevelClass.addView(textViewLevel);
+                                                linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
+
+                                                //Add layouts of texts to parent layout
+                                                linearLayoutText.addView(textViewName, layoutParamsInfo);
+                                                linearLayoutText.addView(linearLayoutLevelClass, layoutParamsInfo);
+                                                linearLayoutText.addView(textViewRealm, layoutParamsInfo);
+
+                                                //Add views to layout
+                                                linearLayoutCharacters.addView(imageView);
+                                                linearLayoutCharacters.addView(linearLayoutText);
+                                                linearLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
+                                                linearLayoutCharacterList.add(linearLayoutCharacters);
+
+
+                                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                                layoutParams.setMargins(100, 0, 100, 75);
+
+
+                                                linearLayoutCharacters.setId(index);
+                                                linearLayout.addView(linearLayoutCharacters);
+                                                linearLayoutCharacters.setLayoutParams(layoutParams);
+                                                linearLayoutCharacters.setBackground(getResources().getDrawable(R.drawable.inputstyle, getTheme()));
+                                                linearLayoutCharacters.setClickable(true);
+                                                linearLayoutCharacters.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        for (int i = 0; i < characterNames.size(); i++) {
+                                                            if (i == linearLayoutCharacters.getId()) {
+                                                                characterClicked = characterNames.get(i);
+                                                                characterRealm = realms.get(i);
+                                                                url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
+                                                            }
+                                                        }
+                                                        try {
+                                                            if (ConnectionService.isConnected()) {
+                                                                displayFragment();
+                                                            } else {
+                                                                ConnectionService.showNoConnectionMessage(getApplicationContext());
+                                                            }
+                                                        } catch (Exception e) {
+                                                            Log.e("Error", e.toString());
+                                                        }
+
+                                                    }
+                                                });
+                                                index++;
+
+                                            }
+                                        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                                new Response.ErrorListener() {
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        ConnectionService.showNoConnectionMessage(getApplicationContext());
+                                                        Log.e("Error", error.toString());
+                                                        finish();
+                                                    }
+                                                });
+                                        requestQueue.add(imageRequest);
+                                    }
+
+                                    for (int i = 0; i < characterNames.size(); i++) {
+
+                                    }
+
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    loadingCircle.setVisibility(View.GONE);
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    ConnectionService.showNoConnectionMessage(getApplicationContext());
+                                    Log.e("Error", error.toString());
+                                    finish();
+                                }
+                            });
+                    requestQueue.add(jsonRequest);
+
+                } catch (Exception e) {
+                    Log.e("Error", e.toString());
+                }
+
+
             } else {
                 ConnectionService.showNoConnectionMessage(WoWActivity.this);
                 finish();
@@ -127,158 +320,5 @@ public class WoWActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
         fragmentTransaction.addToBackStack(null).commit();
         getSupportFragmentManager().executePendingTransactions();
-    }
-
-    private static class PrepareDataWoWActivity extends AsyncTask<Void, Void, Void> {
-
-        private WeakReference<WoWActivity> activityReference;
-
-        PrepareDataWoWActivity(WoWActivity context) {
-            activityReference = new WeakReference<>(context);
-        }
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-            WoWActivity activity = activityReference.get();
-            activity.loadingCircle.setVisibility(View.VISIBLE);
-
-        }
-
-        protected Void doInBackground(Void... param) {
-            WoWActivity activity = activityReference.get();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
-            activity.bnOAuth2Params = Objects.requireNonNull(activity.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
-            assert activity.bnOAuth2Params != null;
-            BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, activity.bnOAuth2Params);
-
-            try {
-                activity.wowCharacters = new JSONObject(new ConnectionService(URLConstants.getBaseURLforAPI() +
-                        URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), activity.getApplicationContext()).getStringJSONFromRequest().get(0));
-            } catch (Exception e) {
-                Log.e("Error", e.toString());
-            }
-
-            Log.i("json", activity.wowCharacters.toString());
-            activity.linearLayout = activity.findViewById(R.id.linear_wow_characters);
-
-            activity.characterList = new WowCharacters(activity.wowCharacters);
-            activity.characterNames = activity.characterList.getCharacterNamesList();
-            activity.realms = activity.characterList.getRealmsList();
-            ArrayList<String> levels = activity.characterList.getLevelList();
-            ArrayList<Drawable> thumbnails = new ImageDownload(activity.characterList.getUrlThumbnail(), URLConstants.getRenderZoneURL(), activity.getApplicationContext(), activity.wowCharacters).getImageFromURL();
-            ArrayList<String> className = activity.characterList.getClassList();
-
-            activity.linearLayoutCharacterList = new ArrayList<>();
-
-            LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
-            layoutParamsImage.setMargins(15, 0, 0, 0);
-
-            LinearLayout.LayoutParams layoutParamsInfo = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParamsInfo.setMargins(25, 0, 0, 0);
-
-            LinearLayout.LayoutParams layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParamsClass.setMargins(15, 0, 0, 0);
-
-
-            for (int i = 0; i < activity.characterNames.size(); i++) {
-
-                LinearLayout linearLayoutCharacters = new LinearLayout(activity.getApplicationContext());
-                LinearLayout linearLayoutText = new LinearLayout(activity.getApplicationContext());
-                LinearLayout linearLayoutLevelClass = new LinearLayout(activity.getApplicationContext());
-                linearLayoutCharacters.setOrientation(LinearLayout.HORIZONTAL);
-                linearLayoutText.setOrientation(LinearLayout.VERTICAL);
-                linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
-
-                //Add character thumbnail to view
-                ImageView imageView = new ImageView(activity.getApplicationContext());
-                imageView.setImageDrawable(thumbnails.get(i));
-
-                imageView.setLayoutParams(layoutParamsImage);
-
-                //Add character name to view
-                TextView textViewName = new TextView(activity.getApplicationContext());
-                textViewName.setText(activity.characterNames.get(i));
-                textViewName.setTextColor(Color.WHITE);
-                textViewName.setTextSize(17);
-
-                //Add level to view
-                TextView textViewLevel = new TextView(activity.getApplicationContext());
-                textViewLevel.setText(levels.get(i));
-                textViewLevel.setTextColor(Color.WHITE);
-                textViewLevel.setTextSize(15);
-
-                //Add class to view
-                TextView textViewClass = new TextView(activity.getApplicationContext());
-                textViewClass.setText(className.get(i));
-                textViewClass.setTextColor(Color.WHITE);
-                textViewClass.setTextSize(15);
-
-
-                //Add realm to view
-                TextView textViewRealm = new TextView(activity.getApplicationContext());
-                textViewRealm.setText(activity.realms.get(i));
-                textViewRealm.setTextColor(Color.WHITE);
-                textViewRealm.setTextSize(15);
-
-                //Add level and class to parent layout
-                linearLayoutLevelClass.addView(textViewLevel);
-                linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
-
-                //Add layouts of texts to parent layout
-                linearLayoutText.addView(textViewName, layoutParamsInfo);
-                linearLayoutText.addView(linearLayoutLevelClass, layoutParamsInfo);
-                linearLayoutText.addView(textViewRealm, layoutParamsInfo);
-
-                //Add views to layout
-                linearLayoutCharacters.addView(imageView);
-                linearLayoutCharacters.addView(linearLayoutText);
-                linearLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
-                activity.linearLayoutCharacterList.add(linearLayoutCharacters);
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Void param) {
-            super.onPostExecute(param);
-            WoWActivity activity = activityReference.get();
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(100, 0, 100, 75);
-
-            int i = 0;
-            for (final LinearLayout linear : activity.linearLayoutCharacterList) {
-                linear.setId(i);
-                activity.linearLayout.addView(linear);
-                linear.setLayoutParams(layoutParams);
-                linear.setBackground(activity.getResources().getDrawable(R.drawable.inputstyle, activity.getTheme()));
-                linear.setClickable(true);
-                linear.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WoWActivity activity = activityReference.get();
-                        for (int i = 0; i < activity.characterNames.size(); i++) {
-                            if (i == linear.getId()) {
-                                activity.characterClicked = activity.characterNames.get(i);
-                                activity.characterRealm = activity.realms.get(i);
-                                activity.url = activity.characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
-                            }
-                        }
-                        try {
-                            if (ConnectionService.isConnected()) {
-                                activity.displayFragment();
-                            } else {
-                                ConnectionService.showNoConnectionMessage(activity.getApplicationContext());
-                            }
-                        } catch (Exception e) {
-                            Log.e("Error", e.toString());
-                        }
-
-                    }
-                });
-                i++;
-            }
-
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            activity.loadingCircle.setVisibility(View.GONE);
-        }
     }
 }
