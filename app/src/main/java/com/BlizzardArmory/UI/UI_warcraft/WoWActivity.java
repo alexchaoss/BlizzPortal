@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.UI.GamesActivity;
 import com.BlizzardArmory.UI.UI_diablo.D3Activity;
 import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
 import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
@@ -46,6 +47,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
@@ -77,6 +79,7 @@ public class WoWActivity extends AppCompatActivity {
     private ArrayList<String> className;
     private ArrayList<Drawable> thumbnails = new ArrayList<>();
     private RequestQueue requestQueue;
+    private RequestQueue requestQueueImage;
     private LinearLayout.LayoutParams layoutParamsImage;
     private LinearLayout.LayoutParams layoutParamsInfo;
     private LinearLayout.LayoutParams layoutParamsClass;
@@ -110,6 +113,9 @@ public class WoWActivity extends AppCompatActivity {
                 requestQueue = new RequestQueue(cache, network);
                 requestQueue.start();
 
+                requestQueueImage = new RequestQueue(cache, network, 1);
+                requestQueueImage.start();
+
                 try {
                     JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
                             URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
@@ -139,12 +145,13 @@ public class WoWActivity extends AppCompatActivity {
                                     layoutParamsClass.setMargins(15, 0, 0, 0);
 
                                     for (int i = 0; i < characterList.getUrlThumbnail().size(); i++) {
+
                                         ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + characterList.getUrlThumbnail().get(i) +
-                                                URLConstants.NOT_FOUND_URL_AVATAR + characterList.getRaceList().get(i) + "-" + characterList.getGenderList().get(i) + ".jpg", new Response.Listener<Bitmap>() {
+                                                URLConstants.NOT_FOUND_URL_AVATAR + characterList.getRaceList().get(i) + "-"
+                                                + characterList.getGenderList().get(i) + ".jpg", new Response.Listener<Bitmap>() {
                                             @Override
                                             public void onResponse(Bitmap bitmap) {
                                                 Drawable portrait = new BitmapDrawable(getResources(), bitmap);
-                                                thumbnails.add(portrait);
 
                                                 final LinearLayout linearLayoutCharacters = new LinearLayout(getApplicationContext());
                                                 LinearLayout linearLayoutText = new LinearLayout(getApplicationContext());
@@ -180,7 +187,7 @@ public class WoWActivity extends AppCompatActivity {
 
                                                 //Add character thumbnail to view
                                                 ImageView imageView = new ImageView(getApplicationContext());
-                                                imageView.setImageDrawable(thumbnails.get(index));
+                                                imageView.setImageDrawable(portrait);
                                                 imageView.setLayoutParams(layoutParamsImage);
 
                                                 //Add level and class to parent layout
@@ -236,12 +243,12 @@ public class WoWActivity extends AppCompatActivity {
                                         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                                                 new Response.ErrorListener() {
                                                     public void onErrorResponse(VolleyError error) {
-                                                        ConnectionService.showNoConnectionMessage(getApplicationContext());
+                                                        ConnectionService.showNoConnectionMessage(new GamesActivity());
                                                         Log.e("Error", error.toString());
                                                         finish();
                                                     }
                                                 });
-                                        requestQueue.add(imageRequest);
+                                        requestQueueImage.add(imageRequest);
                                     }
 
                                     for (int i = 0; i < characterNames.size(); i++) {
@@ -255,7 +262,7 @@ public class WoWActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    ConnectionService.showNoConnectionMessage(getApplicationContext());
+                                    ConnectionService.showNoConnectionMessage(new GamesActivity());
                                     Log.e("Error", error.toString());
                                     finish();
                                 }
@@ -269,7 +276,6 @@ public class WoWActivity extends AppCompatActivity {
 
             } else {
                 ConnectionService.showNoConnectionMessage(WoWActivity.this);
-                finish();
             }
         } catch (Exception e) {
             Log.e("Error", e.toString());
