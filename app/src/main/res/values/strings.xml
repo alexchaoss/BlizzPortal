@@ -54,7 +54,6 @@
     <string name="image_act4">image act4</string>
     <string name="image_act5">image act5</string>
     <string name="shoulders">shoulders</string>
-    <string name="gloves">gloves</string>
     <string name="chest">chest</string>
     <string name="off_hand">off_hand</string>
     <string name="boots">boots</string>
@@ -66,4 +65,5 @@
     <string name="main_hand">main_hand</string>
     <string name="ring1">ring1</string>
     <string name="head">head</string>
+    <string name="gloves">gloves</string>
 </resources>

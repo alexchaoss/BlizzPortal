@@ -12,6 +12,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,14 +37,15 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 
-public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>> {
+public class ConnectionService /*extends AsyncTask<String, Void, ArrayList<String>>*/ {
 
     private String returnJson;
     private BufferedReader reader = null;
-    private ArrayList<String> jsonList = new ArrayList<>();
+    private ArrayList<JSONObject> jsonList = new ArrayList<>();
     private ArrayList<String> urls = new ArrayList<>();
     private long lastUpdateTime = 0;
     private Context context;
+    private RequestQueue requestQueue;
 
     public ConnectionService(String url, Context context) {
         urls.add(url);
@@ -43,11 +57,34 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
         this.context = context;
     }
 
-    public ArrayList<String> getStringJSONFromRequest() {
-        return doInBackground();
+    public ArrayList<JSONObject> getStringJSONFromRequest() {
+
+        Cache cache = new DiskBasedCache(context.getCacheDir(), 1024 * 1024 * 5); // 1MB cap
+        Network network = new BasicNetwork(new HurlStack());
+        requestQueue = new RequestQueue(cache, network);
+        requestQueue.start();
+
+        for(int i = 0; i < urls.size(); i++){
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, urls.get(i), null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i("test", error.toString());
+                        }
+                    });
+
+            requestQueue.add(jsonRequest);
+        }
+        return jsonList;
     }
 
-    @Override
+    /*@Override
     protected ArrayList<String> doInBackground(String... strings) {
         HttpsURLConnection urlConnection;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -107,11 +144,11 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
                         reader = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
                         Log.i("Error", reader.toString());
                     } else /*if(cachedFiles.isFile()){*/
-                        reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        //reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     /*}else {
                         FileOutputStream out = new FileOutputStream(cachedFiles);
                         out.write(urlConnection.getInputStream().read());
-                    }*/
+                    }*//*
                     while ((line = reader.readLine()) != null) {
                         stringBuilder.append(line).append('\n');
                     }
@@ -149,7 +186,7 @@ public class ConnectionService extends AsyncTask<String, Void, ArrayList<String>
         }
 
         return jsonList;
-    }
+    }*/
 
     public static boolean isConnected() throws InterruptedException, IOException {
         final String command = "ping -c 1 us.battle.net";
