@@ -544,6 +544,8 @@ public class WoWCharacterFragment extends Fragment {
                     }
                 }
             }
+            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            loadingCircle.setVisibility(View.GONE);
         }
 
         try {
