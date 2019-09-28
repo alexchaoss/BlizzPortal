@@ -15,7 +15,7 @@ public class Item {
     private Integer id;
     @SerializedName("name")
     @Expose
-    private String name;
+    private String name = "";
     @SerializedName("icon")
     @Expose
     private String icon;
