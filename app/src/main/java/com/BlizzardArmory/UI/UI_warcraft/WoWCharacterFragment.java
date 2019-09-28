@@ -31,9 +31,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.UI.GamesActivity;
 import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.warcraft.CharacterInformation;
 import com.BlizzardArmory.warcraft.Items.Gear;
 import com.BlizzardArmory.warcraft.Items.Item;
@@ -63,14 +61,13 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -140,30 +137,28 @@ public class WoWCharacterFragment extends Fragment {
     private RelativeLayout loadingCircle;
 
     //Containers
-    private ArrayList<Drawable> icons = new ArrayList<>();
+    private List<String> slotName;
     private ArrayList<ImageView> gearImageView = new ArrayList<>();
     private ArrayList<Item> itemsInfoList = new ArrayList<>();
     private ArrayList<JSONObject> bonusIDList = new ArrayList<>();
     private ArrayList<ItemInformation> itemInformations = new ArrayList<>();
-    private ArrayList<String> urlItemInfo;
+    private ArrayList<String> urlItemInfo = new ArrayList<>();;
     private ArrayList<JSONObject> azeriteSpellsHead = new ArrayList<>();
     private ArrayList<JSONObject> azeriteSpellsShoulder = new ArrayList<>();
     private ArrayList<JSONObject> azeriteSpellsChest = new ArrayList<>();
     private List<AzeritePower> powerHead;
     private List<AzeritePower> powerShoulder;
     private List<AzeritePower> powerChest;
-    private ArrayList<String> tempSpell = new ArrayList<>();
+    private ArrayList<String> azeriteSpellURL = new ArrayList<>();
+    private int headSpellNumber = 0;
+    private int shoulderSpellNumber = 0;
+    private int chestSpellNumber = 0;
 
     private SparseArray<String> stats = new SparseArray<>();
     private SparseArray<String> nameList = new SparseArray<>();
 
     private int index = 0;
-
-    private ArrayList<JSONObject> tempJSON = new ArrayList<>();
-    private ArrayList<JSONObject> tempSpellHead = new ArrayList<>();
-    private ArrayList<JSONObject> tempSpellShoulder = new ArrayList<>();
-    private ArrayList<JSONObject> tempSpellChest = new ArrayList<>();
-    private HashMap<String, String> azeriteSpellURL = new HashMap<>();
+    private int indexBonus = 0;
     private int indexMap = 0;
 
     private Cache cache;
@@ -233,6 +228,9 @@ public class WoWCharacterFragment extends Fragment {
         nameView.setLayoutParams(layoutParamsName);
         layoutParamsStats.setMargins(20, 0, 20, 0);
         statsView.setLayoutParams(layoutParamsStats);
+
+        slotName = Arrays.asList("Head", "Neck", "Shoulder", "Back", "Chest", "Shirt", "Tabard", "Wrist", "Hands",
+                "Waist", "Legs", "Feet", "Finger", "Finger", "Trinket", "Trinket", "Main Hand", "Off Hand");
 
         ImageView head = view.findViewById(R.id.head);
         ImageView neck = view.findViewById(R.id.neck);
@@ -309,80 +307,71 @@ public class WoWCharacterFragment extends Fragment {
                             characterInformation = response;
 
                             try {
-                                if (characterInformation.isNull("items")) {
-                                    characterName.setText(characterInformation.get("reason").toString());
-                                    background.setBackgroundColor(getResources().getColor(R.color.wowBackgroundColor, Objects.requireNonNull(getContext()).getTheme()));
-                                    itemLVL.setText("");
-                                } else {
+                                characterInfo = gson.fromJson(characterInformation.toString(), CharacterInformation.class);
+                                itemObject = characterInformation.getJSONObject("items");
+                                statsObject = characterInformation.getJSONObject("stats");
 
+                                ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, new Response.Listener<Bitmap>() {
+                                    @Override
+                                    public void onResponse(Bitmap bitmap) {
+                                        backgroundMain = new BitmapDrawable(getResources(), bitmap);
+                                        background.setImageDrawable(backgroundMain);
+                                    }
+                                }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                        new Response.ErrorListener() {
+                                            public void onErrorResponse(VolleyError e) {
+                                                for (int i = 0; i < e.getStackTrace().length; i++) {
+                                                    Log.e("Error-Background", e.getStackTrace()[i].getLineNumber() + "\n");
+                                                }
+                                            }
+                                        });
+
+                                requestQueue.add(imageRequest);
+
+                                equipment = new Gear(itemObject);
+                                initItems();
+                                getIcons();
+
+                                for (int i = 0; i < gearImageView.size(); i++) {
                                     try {
-                                        characterInfo = gson.fromJson(characterInformation.toString(), CharacterInformation.class);
-                                        itemObject = characterInformation.getJSONObject("items");
-                                        statsObject = characterInformation.getJSONObject("stats");
-
-                                        ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, new Response.Listener<Bitmap>() {
-                                            @Override
-                                            public void onResponse(Bitmap bitmap) {
-                                                backgroundMain = new BitmapDrawable(getResources(), bitmap);
-                                            }
-                                        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                                new Response.ErrorListener() {
-                                                    public void onErrorResponse(VolleyError e) {
-                                                        ConnectionService.showNoConnectionMessage(new GamesActivity());
-                                                        for (int i = 0; i < e.getStackTrace().length; i++) {
-                                                            Log.e("Error", e.getStackTrace()[i].getLineNumber() + "\n");
-                                                        }
-                                                    }
-                                                });
-
-                                        requestQueue.add(imageRequest);
-
-                                        equipment = new Gear(itemObject);
-                                        urlItemInfo = new ArrayList<>();
-                                        initItems();
-                                        getIcons(view);
-
-                                        for (int i = 0; i < itemsInfoList.size(); i++) {
-                                            try {
-                                                if (itemsInfoList.get(i).getName() != null) {
-                                                    urlItemInfo.add(URLConstants.getBaseURLforAPI() +
-                                                            swapItemIDBonusID(index) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                                                } else {
-                                                    urlItemInfo.add(null);
-                                                }
-                                            } catch (Exception e) {
-                                                Log.e("Error", e.toString() + "\n");
-                                                for (int j = 0; j < e.getStackTrace().length; j++) {
-                                                    Log.e("Error", e.getStackTrace()[j].toString() + "\n");
-                                                }
-                                            }
+                                        if (!itemsInfoList.get(i).getName().equalsIgnoreCase("")) {
+                                            urlItemInfo.add(URLConstants.getBaseURLforAPI() + swapItemIDBonusID(i) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                                        } else {
+                                            urlItemInfo.add(null);
                                         }
+                                    } catch (IOException e) {
 
-                                        getItemInformation(index, gson, bnOAuth2Helper);
-
-                                    } catch (Exception e) {
                                         Log.e("Error", e.toString() + "\n");
-                                        for (int i = 0; i < e.getStackTrace().length; i++) {
-                                            Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+                                        for (int j = 0; j < e.getStackTrace().length; j++) {
+                                            Log.e("Error", e.getStackTrace()[j].toString() + "\n");
                                         }
                                     }
-
                                 }
+                                getItemInformation(gson, bnOAuth2Helper);
 
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
                                 Log.e("Error", e.toString() + "\n");
                                 for (int i = 0; i < e.getStackTrace().length; i++) {
                                     Log.e("Error", e.getStackTrace()[i].toString() + "\n");
                                 }
                             }
 
-
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError e) {
-                            Log.i("test", e.toString());
+                            try {
+                                String response = new String(e.networkResponse.data);
+                                characterInformation = new JSONObject(response);
+                                characterName.setText(characterInformation.get("reason").toString());
+                                itemLVL.setText("");
+                            } catch (Exception b) {
+                                Log.e("Error", b.toString() + "\n");
+                                for (int i = 0; i < b.getStackTrace().length; i++) {
+                                    Log.e("Error", b.getStackTrace()[i].toString() + "\n");
+                                }
+                            }
                         }
                     });
 
@@ -400,145 +389,172 @@ public class WoWCharacterFragment extends Fragment {
         Log.i("time", String.valueOf(duration));
     }
 
-    private void getItemInformation(int i, final Gson gson, final BnOAuth2Helper bnOAuth2Helper) {
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, urlItemInfo.get(i), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        for (int i = 0; i < urlItemInfo.size(); i++) {
-                            if (response != null) {
+    private void getItemInformation(final Gson gson, final BnOAuth2Helper bnOAuth2Helper) {
+        for (int i = 0; i < urlItemInfo.size(); i++) {
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, urlItemInfo.get(i), null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
                                 bonusIDList.add(response);
-                            } else {
-                                bonusIDList.add(null);
-                            }
-                        }
 
-                        for (int i = 0; i < bonusIDList.size(); i++) {
-                            if (bonusIDList.get(i) != null) {
-                                ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
-                                itemInformations.add(itemInformation);
-                            } else {
-                                itemInformations.add(new ItemInformation());
-                            }
-                        }
-
-                        if (itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
-                            powerHead = itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
-                        }
-
-                        if (itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
-                            powerShoulder = itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers();
-                        }
-                        if (itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers() != null) {
-                            powerChest = itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers();
-                        }
-
-                        for (int i = 1; i < powerHead.size(); i++) {
-                            try {
-                                azeriteSpellURL.put("head" + indexMap, URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + powerHead.get(i).getSpellId()
-                                        + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                            } catch (Exception e) {
-                                for (int j = 0; j < e.getStackTrace().length; j++) {
-                                    Log.e("Error", e.getStackTrace()[j].toString() + "\n");
-                                }
-                            }
-                            indexMap += i;
-                        }
-
-                        for (int i = 1; i < powerShoulder.size(); i++) {
-                            try {
-                                azeriteSpellURL.put("shoulder" + indexMap, URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + powerShoulder.get(i).getSpellId()
-                                        + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                            } catch (Exception e) {
-                                for (int j = 0; j < e.getStackTrace().length; j++) {
-                                    Log.e("Error", e.getStackTrace()[j].toString() + "\n");
-                                }
-                            }
-                            indexMap += i;
-                        }
-
-                        for (int i = 1; i < powerChest.size(); i++) {
-                            try {
-                                azeriteSpellURL.put("chest" + indexMap, URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + powerChest.get(i).getSpellId()
-                                        + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-                            } catch (Exception e) {
-                                for (int j = 0; j < e.getStackTrace().length; j++) {
-                                    Log.e("Error", e.getStackTrace()[j].toString() + "\n");
-                                }
-                            }
-                            indexMap += i;
-                        }
-
-                        indexMap = 0;
-
-                        for (Map.Entry<String, String> entry : azeriteSpellURL.entrySet()) {
-                            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, entry.getValue(), null,
-                                    new Response.Listener<JSONObject>() {
-                                        @Override
-                                        public void onResponse(JSONObject response) {
-                                            if (azeriteSpellURL.containsKey("head" + indexMap)) {
-                                                azeriteSpellsHead.add(response);
-                                            } else if (azeriteSpellURL.containsKey("shoulder" + indexMap)) {
-                                                azeriteSpellsShoulder.add(response);
-                                            } else if (azeriteSpellURL.containsKey("chest" + indexMap)) {
-                                                azeriteSpellsChest.add(response);
-                                            }
+                                if (bonusIDList.size() == urlItemInfo.size()) {
+                                    for (int i = 0; i < bonusIDList.size(); i++) {
+                                        if (bonusIDList.get(i) != null) {
+                                            ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
+                                            itemInformations.add(itemInformation);
+                                        } else {
+                                            itemInformations.add(new ItemInformation());
                                         }
-                                    },
-                                    new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError e) {
-                                            Log.e("Error", e.toString() + "\n");
-                                            for (int i = 0; i < e.getStackTrace().length; i++) {
-                                                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
-                                            }
-                                        }
-                                    });
-
-                            requestQueueImage.add(jsonRequest);
-                        }
-
-                        try {
-                            setCharacterInformationTextviews();
-                        } catch (Exception e) {
-                            Log.e("Error", e.toString() + "\n");
-                            for (int i = 0; i < e.getStackTrace().length; i++) {
-                                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
-                            }
-                        }
-                        setTalentInformation();
-                        for (int i = 0; i < gearImageView.size(); i++) {
-
-                            if (itemsInfoList.get(i).getName() != null) {
-                                try {
-                                    setCharacterItemsInformation(i);
-                                } catch (Exception e) {
-                                    Log.e("Error", e.toString() + "\n");
-                                    for (int j = 0; j < e.getStackTrace().length; j++) {
-                                        Log.e("Error", e.getStackTrace()[j].toString() + "\n");
                                     }
+                                    getAzeritePowers(bnOAuth2Helper);
                                 }
                             }
-                        }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError e) {
+                                bonusIDList.add(null);
+                                Log.e("Error", e.toString() + "\n");
+                                for (int i = 0; i < e.getStackTrace().length; i++) {
+                                    Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+                                }
+                            }
+                        });
+                requestQueueImage.add(jsonRequest);
 
+            indexBonus++;
+        }
+    }
 
-                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        loadingCircle.setVisibility(View.GONE);
+    private void getAzeritePowers(BnOAuth2Helper bnOAuth2Helper) {
 
+        try {
+            powerHead = itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
+
+            headSpellNumber = powerHead.size() - 1;
+            for (int i = 0; i < powerHead.size(); i++) {
+                try {
+                    azeriteSpellURL.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + powerHead.get(i).getSpellId()
+                            + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                } catch (Exception e) {
+                    Log.e("Error", e.toString() + "\n");
+                    for (int j = 0; j < e.getStackTrace().length; j++) {
+                        Log.e("Error", e.getStackTrace()[j].toString() + "\n");
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError e) {
+                }
+            }
+        } catch (Exception e) {
+            headSpellNumber = 0;
+        }
+
+        try {
+            powerShoulder = itemsInfoList.get(2).getAzeriteEmpoweredItem().getAzeritePowers();
+
+            shoulderSpellNumber = powerShoulder.size() + headSpellNumber;
+            for (int i = 0; i < powerShoulder.size(); i++) {
+                try {
+                    azeriteSpellURL.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + powerShoulder.get(i).getSpellId()
+                            + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                } catch (Exception e) {
+                    for (int j = 0; j < e.getStackTrace().length; j++) {
+                        Log.e("Error", e.getStackTrace()[j].toString() + "\n");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            shoulderSpellNumber = 0;
+        }
+
+        try {
+            powerChest = itemsInfoList.get(4).getAzeriteEmpoweredItem().getAzeritePowers();
+
+            chestSpellNumber = powerChest.size() + shoulderSpellNumber;
+            for (int i = 0; i < powerChest.size(); i++) {
+                try {
+                    azeriteSpellURL.add(URLConstants.getBaseURLforAPI() + URLConstants.SPELL_ID_QUERY + powerChest.get(i).getSpellId()
+                            + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+                } catch (Exception e) {
+                    for (int j = 0; j < e.getStackTrace().length; j++) {
+                        Log.e("Error", e.getStackTrace()[j].toString() + "\n");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            chestSpellNumber = 0;
+        }
+
+        if (azeriteSpellURL.size() > 0) {
+            for (int i = 0; i < azeriteSpellURL.size(); i++) {
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, azeriteSpellURL.get(i), null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                if (indexMap <= headSpellNumber && headSpellNumber > 0) {
+                                    azeriteSpellsHead.add(response);
+                                } else if (indexMap <= shoulderSpellNumber && shoulderSpellNumber > 0) {
+                                    azeriteSpellsShoulder.add(response);
+                                } else if (indexMap <= chestSpellNumber && chestSpellNumber > 0) {
+                                    azeriteSpellsChest.add(response);
+                                }
+
+                                if (indexMap == azeriteSpellURL.size() - 1) {
+                                    //Set item information for all items once the last azerite spell has been downloaded.
+                                    for (int i = 0; i < gearImageView.size(); i++) {
+
+                                        if (itemsInfoList.get(i).getName() != null) {
+                                            try {
+                                                setCharacterItemsInformation(i);
+                                            } catch (Exception e) {
+                                                Log.e("Error", e.toString() + "\n");
+                                                for (int j = 0; j < e.getStackTrace().length; j++) {
+                                                    Log.e("Error", e.getStackTrace()[j].toString() + "\n");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    loadingCircle.setVisibility(View.GONE);
+                                }
+                                indexMap++;
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError e) {
+                                Log.e("Error", e.toString() + "\n");
+                                for (int i = 0; i < e.getStackTrace().length; i++) {
+                                    Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+                                }
+                            }
+                        });
+
+                requestQueueImage.add(jsonRequest);
+            }
+        } else {
+            for (int i = 0; i < gearImageView.size(); i++) {
+
+                if (itemsInfoList.get(i).getName() != null) {
+                    try {
+                        setCharacterItemsInformation(i);
+                    } catch (Exception e) {
                         Log.e("Error", e.toString() + "\n");
-                        for (int i = 0; i < e.getStackTrace().length; i++) {
-                            Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+                        for (int j = 0; j < e.getStackTrace().length; j++) {
+                            Log.e("Error", e.getStackTrace()[j].toString() + "\n");
                         }
                     }
-                });
+                }
+            }
+        }
 
-        requestQueue.add(jsonRequest);
+        try {
+            setCharacterInformationTextviews();
+        } catch (Exception e) {
+            Log.e("Error", e.toString() + "\n");
+            for (int i = 0; i < e.getStackTrace().length; i++) {
+                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+            }
+        }
+        setTalentInformation();
     }
 
     @Override
@@ -580,7 +596,6 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private String getDamageInformation(String itemSlot, String damageInfo) {
-        Log.i("ITEMSLOT", itemSlot);
         if (itemSlot.equals("Off-Hand") && itemsInfoList.get(index).getWeaponInfo() != null || itemSlot.equals("Main-Hand")) {
             int min = itemsInfoList.get(index).getWeaponInfo().getDamage().getMin();
             int max = itemsInfoList.get(index).getWeaponInfo().getDamage().getMax();
@@ -635,28 +650,27 @@ public class WoWCharacterFragment extends Fragment {
         return URLConstants.BONUSID_QUERY.replace("id?b1=bonusList", idURL);
     }
 
-    private void getIcons(View view) {
+    private void getIcons() {
 
         requestQueueImage = new RequestQueue(cache, network, 1);
         requestQueueImage.start();
         for (int i = 0; i < itemsInfoList.size(); i++) {
-            if (itemsInfoList.get(i).getIcon() != null) {
-                ImageRequest imageRequest = new ImageRequest(URLConstants.WOW_ICONS_URL + "56/" + itemsInfoList.get(i).getIcon() + ".jpg", new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap bitmap) {
-                        item = new BitmapDrawable(getResources(), bitmap);
-                        icons.add(item);
-                        setOnPressItemInformation(gearImageView.get(index), item);
-                    }
-                }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                        new Response.ErrorListener() {
-                            public void onErrorResponse(VolleyError e) {
-                                setOnPressItemInformation(gearImageView.get(index), getEmptySlotIcon(index, getContext()));
+            ImageRequest imageRequest = new ImageRequest(URLConstants.WOW_ICONS_URL + "56/" + itemsInfoList.get(i).getIcon() + ".jpg", new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap bitmap) {
+                    item = new BitmapDrawable(getResources(), bitmap);
+                    setOnPressItemInformation(gearImageView.get(index), item);
+                }
+            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                    new Response.ErrorListener() {
+                        public void onErrorResponse(VolleyError e) {
+                            gearImageView.get(index).setImageDrawable(getEmptySlotIcon(index, getContext()));
+                            index++;
+                            Log.e("Error-Image", e.toString());
 
-                            }
-                        });
-                requestQueueImage.add(imageRequest);
-            }
+                        }
+                    });
+            requestQueueImage.add(imageRequest);
         }
     }
 
@@ -803,6 +817,7 @@ public class WoWCharacterFragment extends Fragment {
                             cardView.setContentPadding(10, 10, 10, 10);
                             cardView.setBackground(imageView.getBackground());
                             cardView.setVisibility(View.VISIBLE);
+                            cardView.setVerticalScrollBarEnabled(true);
                         }
                         break;
                     }
@@ -966,9 +981,7 @@ public class WoWCharacterFragment extends Fragment {
             trigger = getTrigger(index);
         }
 
-        String itemSlot = getResources().getResourceEntryName(gearImageView.get(index).getId());
-        itemSlot = formatItemSlotName(itemSlot);
-
+        String itemSlot = slotName.get(index);
 
         damageInfo = getDamageInformation(itemSlot, damageInfo);
 
@@ -986,15 +999,15 @@ public class WoWCharacterFragment extends Fragment {
         }
 
         if (itemSlot.equals("Head") && azeriteSpellsHead.size() > 0) {
-            stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsHead)));
+            stats.put(index, stats.get(index) + String.format("<font size=5>%s</font>", getAzeritePowers(azeriteSpellsHead)));
         }
 
         if (itemSlot.equals("Shoulder") && azeriteSpellsShoulder.size() > 0) {
-            stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsShoulder)));
+            stats.put(index, stats.get(index) + String.format("<font size=5>%s</font>", getAzeritePowers(azeriteSpellsShoulder)));
         }
 
         if (itemSlot.equals("Chest") && azeriteSpellsChest.size() > 0) {
-            stats.put(index, stats.get(index) + String.format("%s", getAzeritePowers(azeriteSpellsChest)));
+            stats.put(index, stats.get(index) + String.format("<font size=5>%s</font>", getAzeritePowers(azeriteSpellsChest)));
         }
 
         if (!nameDescription.equals("<font color=#00cc00></font><br>")) {
@@ -1016,9 +1029,8 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private void setCharacterInformationTextviews() throws JSONException {
-        background.setImageDrawable(backgroundMain);
         characterName.setText(characterInfo.getName());
-        itemLVL.setText(String.format("Item Level Level: %s", itemObject.get("averageItemLevel")));
+        itemLVL.setText(String.format("Item Level : %s", itemObject.get("averageItemLevel")));
 
         health.setText(String.format("Health: %s", statsObject.get("health")));
         power.setText(String.format("%s: %s", formatItemSlotName(statsObject.get("powerType").toString().replace("-", " ")), statsObject.get("power")));
