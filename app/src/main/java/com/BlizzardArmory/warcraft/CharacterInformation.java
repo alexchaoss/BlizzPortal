@@ -85,16 +85,16 @@ public class CharacterInformation {
         this.battlegroup = battlegroup;
     }
 
-    public Integer getClass_() {
-        return _class;
+    public String getClass_() {
+        return ClassEnum.fromOrdinal(_class - 1).toString() ;
     }
 
     public void setClass_(Integer _class) {
         this._class = _class;
     }
 
-    public Integer getRace() {
-        return race;
+    public String getRace() {
+        return RaceEnum.fromOrdinal(race - 1).toString();
     }
 
     public void setRace(Integer race) {

@@ -24,8 +24,9 @@ public class WowCharacters {
     private ArrayList<String> classListNumber = new ArrayList<>();
     private ArrayList<String> classList = new ArrayList<>();
     private ArrayList<String> genderList = new ArrayList<>();
-
+    private ArrayList<String> raceListNumber = new ArrayList<>();
     private ArrayList<String> raceList = new ArrayList<>();
+    private ArrayList<String> factionList = new ArrayList<>();
 
     public WowCharacters(JSONObject characterList) {
         this.characterList = characterList;
@@ -48,7 +49,7 @@ public class WowCharacters {
                     urlThumbnail.add(characters.get("thumbnail").toString());
                     classListNumber.add(characters.get("class").toString());
                     genderList.add(characters.get("gender").toString());
-                    raceList.add(characters.get("race").toString());
+                    raceListNumber.add(characters.get("race").toString());
                 }
             } else {
                 characterNamesList.add(characterList.get("name").toString());
@@ -57,7 +58,7 @@ public class WowCharacters {
                 urlThumbnail.add(characterList.get("thumbnail").toString());
                 classListNumber.add(characterList.get("class").toString());
                 genderList.add(characterList.get("gender").toString());
-                raceList.add(characterList.get("race").toString());
+                raceListNumber.add(characterList.get("race").toString());
             }
         } catch (Exception e) {
             Log.e("Error WowCharacters", e.toString());
@@ -82,7 +83,7 @@ public class WowCharacters {
 
     public ArrayList<String> getClassList() {
         for (String number : classListNumber) {
-            classList.add(WowClassEnum.fromOrdinal(Integer.parseInt(number) - 1).toString());
+            classList.add(ClassEnum.fromOrdinal(Integer.parseInt(number) - 1).toString());
         }
         return classList;
     }
@@ -91,8 +92,31 @@ public class WowCharacters {
         return genderList;
     }
 
-    public ArrayList<String> getRaceList() {
+    public ArrayList<String> getRaceListString() {
+
+        for (String number : raceListNumber) {
+            raceList.add(RaceEnum.fromOrdinal(Integer.parseInt(number) - 1));
+        }
         return raceList;
+    }
+
+    public ArrayList<String> getRaceList() {
+        return raceListNumber;
+    }
+
+    public ArrayList<String> getFactionList() {
+        for (String number : raceListNumber) {
+            int tempNum = RaceEnum.fromOrdinalFaction(Integer.parseInt(number) - 1);
+            if(tempNum == 0){
+                factionList.add("Alliance");
+            }else if(tempNum == 1){
+                factionList.add("Horde");
+            }else{
+                factionList.add("Neutral");
+            }
+            Log.i("Test", factionList.size() + "");
+        }
+        return factionList;
     }
 
     public JSONArray sortInfo(JSONArray characterInfo) {

@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.print.PrintAttributes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -74,14 +76,15 @@ public class WoWActivity extends AppCompatActivity {
     private WowCharacters characterList;
     private ArrayList<String> characterNames;
     private ArrayList<String> realms;
-    private ArrayList<LinearLayout> linearLayoutCharacterList;
+    private ArrayList<RelativeLayout> linearLayoutCharacterList;
     private ArrayList<String> levels;
     private ArrayList<String> className;
-    private ArrayList<Drawable> thumbnails = new ArrayList<>();
     private RequestQueue requestQueue;
     private RequestQueue requestQueueImage;
-    private LinearLayout.LayoutParams layoutParamsImage;
-    private LinearLayout.LayoutParams layoutParamsInfo;
+    private ArrayList<String> faction;
+    private RelativeLayout.LayoutParams layoutParamsImage;
+    private RelativeLayout.LayoutParams layoutParamsLogo;
+    private RelativeLayout.LayoutParams layoutParamsInfo;
     private LinearLayout.LayoutParams layoutParamsClass;
 
     private int index = 0;
@@ -132,14 +135,19 @@ public class WoWActivity extends AppCompatActivity {
                                     realms = characterList.getRealmsList();
                                     levels = characterList.getLevelList();
                                     className = characterList.getClassList();
+                                    faction = characterList.getFactionList();
 
                                     linearLayoutCharacterList = new ArrayList<>();
 
-                                    layoutParamsImage = new LinearLayout.LayoutParams(150, 150);
+                                    layoutParamsImage = new RelativeLayout.LayoutParams(150, 150);
                                     layoutParamsImage.setMargins(15, 0, 0, 0);
+                                    layoutParamsImage.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+                                    layoutParamsImage.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
 
-                                    layoutParamsInfo = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                    layoutParamsInfo.setMargins(25, 0, 0, 0);
+                                    layoutParamsLogo = new RelativeLayout.LayoutParams(150, 150);
+                                    layoutParamsLogo.setMargins(15, 0, 0, 0);
+                                    layoutParamsLogo.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                                    layoutParamsLogo.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
 
                                     layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                     layoutParamsClass.setMargins(15, 0, 0, 0);
@@ -153,10 +161,9 @@ public class WoWActivity extends AppCompatActivity {
                                             public void onResponse(Bitmap bitmap) {
                                                 Drawable portrait = new BitmapDrawable(getResources(), bitmap);
 
-                                                final LinearLayout linearLayoutCharacters = new LinearLayout(getApplicationContext());
+                                                final RelativeLayout relativeLayoutCharacters = new RelativeLayout(getApplicationContext());
                                                 LinearLayout linearLayoutText = new LinearLayout(getApplicationContext());
                                                 LinearLayout linearLayoutLevelClass = new LinearLayout(getApplicationContext());
-                                                linearLayoutCharacters.setOrientation(LinearLayout.HORIZONTAL);
                                                 linearLayoutText.setOrientation(LinearLayout.VERTICAL);
                                                 linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -186,40 +193,56 @@ public class WoWActivity extends AppCompatActivity {
                                                 textViewRealm.setTextSize(15);
 
                                                 //Add character thumbnail to view
-                                                ImageView imageView = new ImageView(getApplicationContext());
-                                                imageView.setImageDrawable(portrait);
-                                                imageView.setLayoutParams(layoutParamsImage);
+                                                ImageView portraitImage = new ImageView(getApplicationContext());
+                                                portraitImage.setId(index + 1);
+                                                portraitImage.setImageDrawable(portrait);
+                                                portraitImage.setLayoutParams(layoutParamsImage);
 
                                                 //Add level and class to parent layout
                                                 linearLayoutLevelClass.addView(textViewLevel);
                                                 linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
 
+                                                layoutParamsInfo = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                                layoutParamsInfo.addRule(RelativeLayout.RIGHT_OF, index+1);
+                                                layoutParamsInfo.setMargins(30, 0, 0, 0);
+
                                                 //Add layouts of texts to parent layout
-                                                linearLayoutText.addView(textViewName, layoutParamsInfo);
-                                                linearLayoutText.addView(linearLayoutLevelClass, layoutParamsInfo);
-                                                linearLayoutText.addView(textViewRealm, layoutParamsInfo);
+                                                linearLayoutText.addView(textViewName);
+                                                linearLayoutText.addView(linearLayoutLevelClass);
+                                                linearLayoutText.addView(textViewRealm);
+                                                linearLayoutText.setLayoutParams(layoutParamsInfo);
+
+                                                //Add faction logo
+                                                ImageView factionImage = new ImageView(getApplicationContext());
+                                                if(faction.get(index).equals("Horde")){
+                                                    factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.horde_logo, getTheme()));
+                                                }else if(faction.get(index).equals("Alliance")){
+                                                    factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.alliance_logo, getTheme()));
+                                                }
+                                                factionImage.setLayoutParams(layoutParamsLogo);
 
                                                 //Add views to layout
-                                                linearLayoutCharacters.addView(imageView);
-                                                linearLayoutCharacters.addView(linearLayoutText);
-                                                linearLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
-                                                linearLayoutCharacterList.add(linearLayoutCharacters);
+                                                relativeLayoutCharacters.addView(portraitImage);
+                                                relativeLayoutCharacters.addView(linearLayoutText);
+                                                relativeLayoutCharacters.addView(factionImage);
+                                                relativeLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
+                                                linearLayoutCharacterList.add(relativeLayoutCharacters);
 
 
                                                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                                 layoutParams.setMargins(100, 0, 100, 75);
 
 
-                                                linearLayoutCharacters.setId(index);
-                                                linearLayout.addView(linearLayoutCharacters);
-                                                linearLayoutCharacters.setLayoutParams(layoutParams);
-                                                linearLayoutCharacters.setBackground(getResources().getDrawable(R.drawable.inputstyle, getTheme()));
-                                                linearLayoutCharacters.setClickable(true);
-                                                linearLayoutCharacters.setOnClickListener(new View.OnClickListener() {
+                                                relativeLayoutCharacters.setId(index);
+                                                linearLayout.addView(relativeLayoutCharacters);
+                                                relativeLayoutCharacters.setLayoutParams(layoutParams);
+                                                relativeLayoutCharacters.setBackground(getResources().getDrawable(R.drawable.inputstyle, getTheme()));
+                                                relativeLayoutCharacters.setClickable(true);
+                                                relativeLayoutCharacters.setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
                                                         for (int i = 0; i < characterNames.size(); i++) {
-                                                            if (i == linearLayoutCharacters.getId()) {
+                                                            if (i == relativeLayoutCharacters.getId()) {
                                                                 characterClicked = characterNames.get(i);
                                                                 characterRealm = realms.get(i);
                                                                 url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
@@ -250,11 +273,6 @@ public class WoWActivity extends AppCompatActivity {
                                                 });
                                         requestQueueImage.add(imageRequest);
                                     }
-
-                                    for (int i = 0; i < characterNames.size(); i++) {
-
-                                    }
-
                                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     loadingCircle.setVisibility(View.GONE);
                                 }

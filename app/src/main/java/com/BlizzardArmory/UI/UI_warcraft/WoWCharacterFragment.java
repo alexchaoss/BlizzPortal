@@ -89,6 +89,7 @@ public class WoWCharacterFragment extends Fragment {
     //Character information
     private TextView characterName;
     private TextView itemLVL;
+    private TextView levelRaceClass;
     private ImageView background;
     private CardView cardView;
     private TextView statsView;
@@ -158,7 +159,6 @@ public class WoWCharacterFragment extends Fragment {
     private SparseArray<String> nameList = new SparseArray<>();
 
     private int index = 0;
-    private int indexBonus = 0;
     private int indexMap = 0;
 
     private Cache cache;
@@ -168,7 +168,7 @@ public class WoWCharacterFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.character_fragment, container, false);
+        return inflater.inflate(R.layout.wow_character_fragment, container, false);
     }
 
     @Override
@@ -183,6 +183,7 @@ public class WoWCharacterFragment extends Fragment {
         scrollView = view.findViewById(R.id.scrollView3);
         characterName = view.findViewById(R.id.character_name);
         itemLVL = view.findViewById(R.id.item_lvl);
+        levelRaceClass = view.findViewById(R.id.level_race_class);
         background = view.findViewById(R.id.background);
         cardView = view.findViewById(R.id.item_stats);
         cardView.setContentPadding(10, 10, 10, 10);
@@ -366,6 +367,8 @@ public class WoWCharacterFragment extends Fragment {
                                 characterInformation = new JSONObject(response);
                                 characterName.setText(characterInformation.get("reason").toString());
                                 itemLVL.setText("");
+                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
                             } catch (Exception b) {
                                 Log.e("Error", b.toString() + "\n");
                                 for (int i = 0; i < b.getStackTrace().length; i++) {
@@ -396,7 +399,6 @@ public class WoWCharacterFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject response) {
                                 bonusIDList.add(response);
-
                                 if (bonusIDList.size() == urlItemInfo.size()) {
                                     for (int i = 0; i < bonusIDList.size(); i++) {
                                         if (bonusIDList.get(i) != null) {
@@ -414,20 +416,24 @@ public class WoWCharacterFragment extends Fragment {
                             @Override
                             public void onErrorResponse(VolleyError e) {
                                 bonusIDList.add(null);
-                                Log.e("Error", e.toString() + "\n");
-                                for (int i = 0; i < e.getStackTrace().length; i++) {
-                                    Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+                                if (bonusIDList.size() == urlItemInfo.size()) {
+                                    for (int i = 0; i < bonusIDList.size(); i++) {
+                                        if (bonusIDList.get(i) != null) {
+                                            ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
+                                            itemInformations.add(itemInformation);
+                                        } else {
+                                            itemInformations.add(new ItemInformation());
+                                        }
+                                    }
+                                    getAzeritePowers(bnOAuth2Helper);
                                 }
                             }
                         });
                 requestQueueImage.add(jsonRequest);
-
-            indexBonus++;
         }
     }
 
     private void getAzeritePowers(BnOAuth2Helper bnOAuth2Helper) {
-
         try {
             powerHead = itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
 
@@ -1033,6 +1039,8 @@ public class WoWCharacterFragment extends Fragment {
     private void setCharacterInformationTextviews() throws JSONException {
         characterName.setText(characterInfo.getName());
         itemLVL.setText(String.format("Item Level : %s", itemObject.get("averageItemLevel")));
+        String levelRaceClassString = characterInfo.getLevel() + " " + characterInfo.getRace() + " " + characterInfo.getClass_();
+        levelRaceClass.setText(levelRaceClassString);
 
         health.setText(String.format("Health: %s", statsObject.get("health")));
         power.setText(String.format("%s: %s", formatItemSlotName(statsObject.get("powerType").toString().replace("-", " ")), statsObject.get("power")));
