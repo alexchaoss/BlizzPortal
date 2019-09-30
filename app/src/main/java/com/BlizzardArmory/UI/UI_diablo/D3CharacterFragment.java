@@ -2,7 +2,11 @@ package com.BlizzardArmory.UI.UI_diablo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,8 +19,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
+import android.widget.ImageView;
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.UI.GamesActivity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
@@ -33,6 +38,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -54,8 +60,8 @@ public class D3CharacterFragment extends Fragment {
     private static CharacterInformation characterInformation;
     private JSONObject characterInfo;
     private Items itemsInformation;
-    private JSONObject itemInfo;
-    private ArrayList<Item> items = new ArrayList<>();
+
+    private int imageIndex= 0;
 
     private RelativeLayout loadingCircle;
 
@@ -74,8 +80,10 @@ public class D3CharacterFragment extends Fragment {
     private ImageView bracers;
     private ImageView ring2;
     private ImageView off_hand;
+    ArrayList<String> itemIconURL = new ArrayList<>();
 
-    private static ArrayList<JSONObject> jsonInfo = new ArrayList<>();
+    RequestQueue requestQueue;
+    RequestQueue requestQueueImage;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,16 +124,14 @@ public class D3CharacterFragment extends Fragment {
         assert bnOAuth2Params != null;
         BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-        final ArrayList<String> urls = new ArrayList<>();
-
         Cache cache = new DiskBasedCache(getContext().getCacheDir(), 1024 * 1024 * 5); // 1MB cap
         Network network = new BasicNetwork(new HurlStack());
-        RequestQueue requestQueue = new RequestQueue(cache, network);
+        requestQueue = new RequestQueue(cache, network);
+        requestQueueImage = new RequestQueue(cache, network, 1);
+        requestQueueImage.start();
         requestQueue.start();
 
         try {
-            urls.add(URLConstants.getBaseURLforAPI() + URLConstants.getD3HeroURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
-            urls.add(URLConstants.getBaseURLforAPI() + URLConstants.getD3HeroItemsURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
                     URLConstants.getD3HeroURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
@@ -149,22 +155,30 @@ public class D3CharacterFragment extends Fragment {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            itemInfo = response;
-                            itemsInformation = gson.fromJson(itemInfo.toString(), Items.class);
-                            ArrayList<String> itemIconURL = new ArrayList<>();
-                            getItemIconURL(itemIconURL);
-                            itemIcon = new ImageDownload(itemIconURL, getContext()).getImageFromURL();
-
-                            try{
-                                for(int i = 0; i< imageViewItem.size(); i++){
-                                    imageViewItem.get(i).setImageDrawable(itemIcon.get(i));
-                                }
-                            }catch (Exception e){
-                                Log.e("Error", e.toString());
-                            }
-
+                            itemsInformation = gson.fromJson(response.toString(), Items.class);
                             setItemBackgroundColor();
+                            getItemIconURL(itemIconURL);
+                            for(int i = 0; i < itemIconURL.size() ; i++){
+                                Log.i("TEST", i + "");
+                                ImageRequest imageRequest = new ImageRequest(itemIconURL.get(i), new Response.Listener<Bitmap>(){
+                                    @Override
+                                    public void onResponse(Bitmap bitmap) {
+                                        Drawable item = new BitmapDrawable(getResources(), bitmap);
+                                        Log.i("Download", "Icon" + imageIndex);
+                                        imageViewItem.get(imageIndex).setImageDrawable(item);
+                                        imageIndex++;
+                                    }
+                                },0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                        new Response.ErrorListener() {
+                                            public void onErrorResponse(VolleyError error) {
+                                                Log.i("Download", "Icon" + imageIndex);
+                                                ConnectionService.showNoConnectionMessage(new GamesActivity());
+                                                Log.e("Error", error.toString());
+                                            }
+                                        });
+                                requestQueueImage.add(imageRequest);
 
+                            }
 
                             Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
@@ -208,60 +222,120 @@ public class D3CharacterFragment extends Fragment {
     }
 
     private void setItemBackgroundColor() {
-            selectColor(itemsInformation.getShoulders().getDisplayColor(), shoulders);
-            selectColor(itemsInformation.getHands().getDisplayColor(), hands);
-            selectColor(itemsInformation.getLeftFinger().getDisplayColor(), ring1);
-            selectColor(itemsInformation.getMainHand().getDisplayColor(), main_hand);
-            selectColor(itemsInformation.getHead().getDisplayColor(), head);
-            selectColor(itemsInformation.getTorso().getDisplayColor(), chest);
-            selectColor(itemsInformation.getWaist().getDisplayColor(), belt);
-            selectColor(itemsInformation.getLegs().getDisplayColor(), legs);
-            selectColor(itemsInformation.getFeet().getDisplayColor(), boots);
-            selectColor(itemsInformation.getNeck().getDisplayColor(), amulet);
-            selectColor(itemsInformation.getBracers().getDisplayColor(), bracers);
-            selectColor(itemsInformation.getRightFinger().getDisplayColor(), ring2);
-            selectColor(itemsInformation.getOffHand().getDisplayColor(), off_hand);
+        selectColor(itemsInformation.getShoulders().getDisplayColor(), shoulders);
+        selectColor(itemsInformation.getHands().getDisplayColor(), hands);
+        selectColor(itemsInformation.getLeftFinger().getDisplayColor(), ring1);
+        selectColor(itemsInformation.getMainHand().getDisplayColor(), main_hand);
+        selectColor(itemsInformation.getHead().getDisplayColor(), head);
+        selectColor(itemsInformation.getTorso().getDisplayColor(), chest);
+        selectColor(itemsInformation.getWaist().getDisplayColor(), belt);
+        selectColor(itemsInformation.getLegs().getDisplayColor(), legs);
+        selectColor(itemsInformation.getFeet().getDisplayColor(), boots);
+        selectColor(itemsInformation.getNeck().getDisplayColor(), amulet);
+        selectColor(itemsInformation.getBracers().getDisplayColor(), bracers);
+        selectColor(itemsInformation.getRightFinger().getDisplayColor(), ring2);
+        selectColor(itemsInformation.getOffHand().getDisplayColor(), off_hand);
     }
 
     private void selectColor(String color, ImageView imageView){
         switch(color){
             case "blue":
-                imageView.setBackground(getResources().getDrawable(R.drawable.blue_bg_item_d3, getContext().getTheme()));
+                imageView.setBackgroundResource(R.drawable.blue_bg_item_d3);
                 break;
             case "yellow":
-                imageView.setBackground(getResources().getDrawable(R.drawable.yellow_bg_item_d3, getContext().getTheme()));
+                imageView.setBackgroundResource(R.drawable.yellow_bg_item_d3);
                 break;
             case "orange":
-                imageView.setBackground(getResources().getDrawable(R.drawable.orange_bg_item_d3, getContext().getTheme()));
+                imageView.setBackgroundResource(R.drawable.orange_bg_item_d3);
                 break;
             case "green":
-                imageView.setBackground(getResources().getDrawable(R.drawable.green_bg_item_d3, getContext().getTheme()));
+                imageView.setBackgroundResource(R.drawable.green_bg_item_d3);
                 break;
             case "brown":
-                imageView.setBackground(getResources().getDrawable(R.drawable.brown_bg_item_d3, getContext().getTheme()));
+                imageView.setBackgroundResource(R.drawable.brown_bg_item_d3);
                 break;
         }
     }
 
-    private static void getItemIconURL(List<String> itemIconURL) {
+    private void getItemIconURL(List<String> itemIconURL) {
         try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getShoulders().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getHands().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getLeftFinger().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getMainHand().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getHead().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getTorso().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getWaist().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getLegs().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getFeet().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getNeck().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getBracers().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getRightFinger().getIcon()) + ".png");
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getItemsCharacter().getOffHand().getIcon()) + ".png");
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getShoulders().getIcon()) + ".png");
         }catch (Exception e){
             Log.e("Error", e.toString());
+            itemIconURL.add(null);
         }
-
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getHands().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getLeftFinger().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getMainHand().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getHead().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getTorso().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getWaist().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getLegs().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getFeet().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getNeck().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getBracers().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getRightFinger().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
+        try{
+            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getOffHand().getIcon()) + ".png");
+        }catch (Exception e){
+            Log.e("Error", e.toString());
+            itemIconURL.add(null);
+        }
     }
 
 }

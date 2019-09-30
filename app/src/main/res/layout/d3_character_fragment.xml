@@ -28,25 +28,29 @@
             <ImageView
                 android:id="@+id/shoulder"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/shoulders" />
 
             <ImageView
                 android:id="@+id/gloves"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/gloves" />
 
             <ImageView
                 android:id="@+id/ring1"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/ring1" />
 
             <ImageView
                 android:id="@+id/main_hand"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
                 android:contentDescription="@string/main_hand" />
         </LinearLayout>
 
@@ -60,31 +64,35 @@
             <ImageView
                 android:id="@+id/head"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/head" />
 
             <ImageView
                 android:id="@+id/chest"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/chest" />
 
             <ImageView
                 android:id="@+id/belt"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/belt" />
 
             <ImageView
                 android:id="@+id/legs"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/legs" />
 
             <ImageView
                 android:id="@+id/boots"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
                 android:contentDescription="@string/boots" />
         </LinearLayout>
 
@@ -105,19 +113,21 @@
             <ImageView
                 android:id="@+id/bracers"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/bracers" />
 
             <ImageView
                 android:id="@+id/ring2"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/ring2" />
 
             <ImageView
                 android:id="@+id/off_hand"
                 android:layout_width="64dp"
-                android:layout_height="128dp"
+                android:layout_height="98dp"
                 android:contentDescription="@string/off_hand" />
         </LinearLayout>
     </LinearLayout>
