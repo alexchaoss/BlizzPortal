@@ -104,7 +104,7 @@ public class GamesActivity extends AppCompatActivity {
                                         if (ConnectionService.isConnected()) {
                                             callNextActivity(WoWActivity.class);
                                         } else {
-                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                            //ConnectionService.showNoConnectionMessage(GamesActivity.this);
                                         }
                                     } catch (Exception e) {
                                         Log.e("Error", e.toString());
@@ -120,7 +120,7 @@ public class GamesActivity extends AppCompatActivity {
                                         if (ConnectionService.isConnected()) {
                                             callNextActivity(D3Activity.class);
                                         } else {
-                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                            //ConnectionService.showNoConnectionMessage(GamesActivity.this);
                                         }
                                     } catch (Exception e) {
                                         Log.e("Error", e.toString());
@@ -136,7 +136,7 @@ public class GamesActivity extends AppCompatActivity {
                                         if (ConnectionService.isConnected()) {
                                             callNextActivity(SC2Activity.class);
                                         } else {
-                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                            //ConnectionService.showNoConnectionMessage(GamesActivity.this);
                                         }
                                     } catch (Exception e) {
                                         Log.e("Error", e.toString());
@@ -153,7 +153,7 @@ public class GamesActivity extends AppCompatActivity {
                                         if (ConnectionService.isConnected()) {
                                             callNextActivity(OWActivity.class);
                                         } else {
-                                            ConnectionService.showNoConnectionMessage(GamesActivity.this);
+                                            //ConnectionService.showNoConnectionMessage(GamesActivity.this);
                                         }
                                     } catch (Exception e) {
                                         Log.e("Error", e.toString());

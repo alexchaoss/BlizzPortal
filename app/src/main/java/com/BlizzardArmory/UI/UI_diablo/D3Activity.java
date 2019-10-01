@@ -145,114 +145,7 @@ public class D3Activity extends AppCompatActivity {
                             eliteKills.setText(String.valueOf(accountInformation.getKills().getElites()));
                             lifetimeKills.setText(String.valueOf(accountInformation.getKills().getMonsters()));
 
-                            LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(420, 325);
-                            layoutParamsImage.setMargins(0, 0, 30, 0);
-
-                            LinearLayout.LayoutParams layoutParamsCharacters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            layoutParamsImage.setMargins(20, 0, 0, 0);
-
-                            for (int i = 0; i < accountInformation.getHeroes().size(); i++) {
-                                ImageView portrait = new ImageView(getApplicationContext());
-                                portrait.setImageDrawable(portraits.get(i));
-                                portrait.setLayoutParams(layoutParamsImage);
-
-                                TextView name = new TextView(getApplicationContext());
-                                name.setText(accountInformation.getHeroes().get(i).getName());
-                                if (accountInformation.getHeroes().get(i).getHardcore()) {
-                                    name.setTextColor(Color.RED);
-                                } else {
-                                    name.setTextColor(Color.WHITE);
-                                }
-                                name.setTextSize(15);
-                                name.setGravity(Gravity.CENTER);
-
-                                TextView eliteKills = new TextView(getApplicationContext());
-                                String eliteKillsText = "Elite Kills: " + accountInformation.getHeroes().get(i).getKills().getElites();
-                                eliteKills.setText(eliteKillsText);
-                                eliteKills.setTextColor(Color.WHITE);
-                                eliteKills.setTextSize(15);
-                                eliteKills.setGravity(Gravity.CENTER);
-
-                                TextView level = new TextView(getApplicationContext());
-                                String levelText = "Level: " + accountInformation.getHeroes().get(i).getLevel();
-                                level.setText(levelText);
-                                level.setTextColor(Color.WHITE);
-                                level.setTextSize(15);
-                                level.setGravity(Gravity.CENTER);
-
-                                final LinearLayout linearLayoutCharacter = new LinearLayout(getApplicationContext());
-                                linearLayoutCharacter.setOrientation(LinearLayout.VERTICAL);
-                                linearLayoutCharacter.setId(i);
-
-                                LinearLayout linearLayoutSeasonal = new LinearLayout(getApplicationContext());
-                                linearLayoutSeasonal.setOrientation(LinearLayout.HORIZONTAL);
-                                linearLayoutSeasonal.setGravity(Gravity.CENTER);
-
-                                linearLayoutCharacter.addView(portrait);
-                                linearLayoutSeasonal.addView(name);
-                                if (accountInformation.getHeroes().get(i).getSeasonal()) {
-                                    ImageView leaf = new ImageView(getApplicationContext());
-                                    leaf.setImageDrawable(getResources().getDrawable(R.drawable.leaf_seasonal, getTheme()));
-                                    linearLayoutSeasonal.addView(leaf);
-                                }
-                                linearLayoutCharacter.addView(linearLayoutSeasonal);
-                                linearLayoutCharacter.addView(eliteKills);
-                                linearLayoutCharacter.addView(level);
-
-                                linearLayoutCharacter.setLayoutParams(layoutParamsCharacters);
-                                linearLayoutCharacters.addView(linearLayoutCharacter);
-
-                                linearLayoutCharacter.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        for (int i = 0; i < accountInformation.getHeroes().size(); i++) {
-                                            if (i == linearLayoutCharacter.getId()) {
-                                                characterID = accountInformation.getHeroes().get(i).getId();
-                                            }
-                                        }
-                                        try {
-                                            if (ConnectionService.isConnected()) {
-                                                displayFragment(getApplicationContext());
-                                            } else {
-                                                ConnectionService.showNoConnectionMessage(getApplicationContext());
-                                            }
-                                        } catch (Exception e) {
-                                            Log.e("Error-test", e.toString());
-                                        }
-
-                                    }
-                                });
-                            }
-
-                            /*if (accountInformation.getProgression().getAct1()) {
-                                act1.setImageDrawable(getResources().getDrawable(R.drawable.act1_done, getTheme()));
-                            } else {
-                                act1.setImageDrawable(getResources().getDrawable(R.drawable.act1_not_done, getTheme()));
-                            }
-
-                            if (accountInformation.getProgression().getAct2()) {
-                                act2.setImageDrawable(getResources().getDrawable(R.drawable.act2_done, getTheme()));
-                            } else {
-                                act2.setImageDrawable(getResources().getDrawable(R.drawable.act2_not_done, getTheme()));
-                            }
-
-                            if (accountInformation.getProgression().getAct3()) {
-                                act3.setImageDrawable(getResources().getDrawable(R.drawable.act3_done, getTheme()));
-                            } else {
-                                act3.setImageDrawable(getResources().getDrawable(R.drawable.act3_not_done, getTheme()));
-                            }
-
-                            if (accountInformation.getProgression().getAct4()) {
-                                act4.setImageDrawable(getResources().getDrawable(R.drawable.act4_done, getTheme()));
-                            } else {
-                                act4.setImageDrawable(getResources().getDrawable(R.drawable.act4_not_done, getTheme()));
-                            }
-
-                            if (accountInformation.getProgression().getAct5()) {
-                                act5.setImageDrawable(getResources().getDrawable(R.drawable.act5_done, getTheme()));
-                            } else {
-                                act5.setImageDrawable(getResources().getDrawable(R.drawable.act5_not_done, getTheme()));
-                            }*/
+                            setCharacterFrames();
 
                             double barbTime = accountInformation.getTimePlayed().getBarbarian();
                             double wizTime = accountInformation.getTimePlayed().getWizard();
@@ -285,7 +178,7 @@ public class D3Activity extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.i("test", error.toString());
-                            ConnectionService.showNoConnectionMessage(D3Activity.this);
+                            //ConnectionService.showNoConnectionMessage(D3Activity.this);
                             finish();
                         }
                     });
@@ -323,6 +216,129 @@ public class D3Activity extends AppCompatActivity {
                 callNextActivity(OWActivity.class);
             }
         });
+    }
+
+    private void setCharacterFrames() {
+
+        setProgression();
+
+        for (int i = 0; i < accountInformation.getHeroes().size(); i++) {
+
+            LinearLayout.LayoutParams layoutParamsImage = new LinearLayout.LayoutParams(357, 276);
+
+
+            LinearLayout.LayoutParams layoutParamsCharacters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            layoutParamsCharacters.setMargins(0, 0, 20, 0);
+
+            ImageView portrait = new ImageView(getApplicationContext());
+            portrait.setImageDrawable(portraits.get(i));
+            portrait.setLayoutParams(layoutParamsImage);
+
+            TextView name = new TextView(getApplicationContext());
+            name.setText(accountInformation.getHeroes().get(i).getName());
+            if (accountInformation.getHeroes().get(i).getHardcore()) {
+                name.setTextColor(Color.RED);
+            } else {
+                name.setTextColor(Color.WHITE);
+            }
+            name.setTextSize(15);
+            name.setGravity(Gravity.CENTER);
+
+            TextView eliteKills = new TextView(getApplicationContext());
+            String eliteKillsText = "Elite Kills: " + accountInformation.getHeroes().get(i).getKills().getElites();
+            eliteKills.setText(eliteKillsText);
+            eliteKills.setTextColor(Color.WHITE);
+            eliteKills.setTextSize(15);
+            eliteKills.setGravity(Gravity.CENTER);
+
+            TextView level = new TextView(getApplicationContext());
+            String levelText = "Level: " + accountInformation.getHeroes().get(i).getLevel();
+            level.setText(levelText);
+            level.setTextColor(Color.WHITE);
+            level.setTextSize(15);
+            level.setGravity(Gravity.CENTER);
+
+            final LinearLayout linearLayoutCharacter = new LinearLayout(getApplicationContext());
+            linearLayoutCharacter.setOrientation(LinearLayout.VERTICAL);
+            linearLayoutCharacter.setId(i);
+
+            LinearLayout linearLayoutSeasonal = new LinearLayout(getApplicationContext());
+            linearLayoutSeasonal.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayoutSeasonal.setGravity(Gravity.CENTER);
+
+            linearLayoutSeasonal.addView(name);
+            if (accountInformation.getHeroes().get(i).getSeasonal()) {
+                ImageView leaf = new ImageView(getApplicationContext());
+                leaf.setImageDrawable(getResources().getDrawable(R.drawable.leaf_seasonal, getTheme()));
+                linearLayoutSeasonal.addView(leaf);
+            }
+
+            linearLayoutCharacter.addView(portrait);
+            linearLayoutCharacter.addView(linearLayoutSeasonal);
+            linearLayoutCharacter.addView(eliteKills);
+            linearLayoutCharacter.addView(level);
+
+            linearLayoutCharacter.setLayoutParams(layoutParamsCharacters);
+            linearLayoutCharacters.addView(linearLayoutCharacter);
+
+            linearLayoutCharacter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for (int i = 0; i < accountInformation.getHeroes().size(); i++) {
+                        if (i == linearLayoutCharacter.getId()) {
+                            characterID = accountInformation.getHeroes().get(i).getId();
+                        }
+                    }
+                    try {
+                        if (ConnectionService.isConnected()) {
+                            displayFragment();
+                        } else {
+                            //ConnectionService.showNoConnectionMessage(getApplicationContext());
+                        }
+                    } catch (Exception e) {
+                        Log.e("Error-test", e.toString());
+                    }
+
+                }
+            });
+        }
+    }
+
+    private void setProgression() {
+        if (accountInformation.getProgression().getAct1()) {
+            act1.setImageDrawable(getResources().getDrawable(R.drawable.act1_done, getTheme()));
+        } else {
+            act1.setImageDrawable(getResources().getDrawable(R.drawable.act1_not_done, getTheme()));
+        }
+
+        if (accountInformation.getProgression().getAct2()) {
+            act2.setImageDrawable(getResources().getDrawable(R.drawable.act2_done, getTheme()));
+        } else {
+            act2.setImageDrawable(getResources().getDrawable(R.drawable.act2_not_done, getTheme()));
+        }
+
+        if (accountInformation.getProgression().getAct3()) {
+            act3.setImageDrawable(getResources().getDrawable(R.drawable.act3_done, getTheme()));
+        } else {
+            act3.setImageDrawable(getResources().getDrawable(R.drawable.act3_not_done, getTheme()));
+        }
+
+        if (accountInformation.getProgression().getAct4()) {
+            act4.setImageDrawable(getResources().getDrawable(R.drawable.act4_done, getTheme()));
+        } else {
+            act4.setImageDrawable(getResources().getDrawable(R.drawable.act4_not_done, getTheme()));
+        }
+
+        if (accountInformation.getProgression().getAct5()) {
+            act5.setImageDrawable(getResources().getDrawable(R.drawable.act5_done, getTheme()));
+        } else {
+            act5.setImageDrawable(getResources().getDrawable(R.drawable.act5_not_done, getTheme()));
+        }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     private void callNextActivity(Class activity) {
@@ -406,7 +422,7 @@ public class D3Activity extends AppCompatActivity {
         return portraits;
     }
 
-    private void displayFragment(Context context) {
+    private void displayFragment() {
         Bundle bundle = new Bundle();
         bundle.putInt("id", characterID);
         D3CharacterFragment d3CharacterFragment = new D3CharacterFragment();

@@ -1,13 +1,9 @@
 package com.BlizzardArmory.UI.UI_diablo;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -19,15 +15,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ImageView;
+
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.UI.GamesActivity;
 import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
-import com.BlizzardArmory.connection.ImageDownload;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
-import com.BlizzardArmory.diablo.Items.Item;
 import com.BlizzardArmory.diablo.Items.Items;
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -48,7 +40,6 @@ import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -66,7 +57,6 @@ public class D3CharacterFragment extends Fragment {
     private RelativeLayout loadingCircle;
 
     private List<ImageView> imageViewItem = new ArrayList<>();
-    List<Drawable> itemIcon;
     private ImageView shoulders;
     private ImageView hands;
     private ImageView ring1;
@@ -81,6 +71,8 @@ public class D3CharacterFragment extends Fragment {
     private ImageView ring2;
     private ImageView off_hand;
     ArrayList<String> itemIconURL = new ArrayList<>();
+
+    private  ImageView paperdoll;
 
     RequestQueue requestQueue;
     RequestQueue requestQueueImage;
@@ -109,10 +101,11 @@ public class D3CharacterFragment extends Fragment {
         ring2 = view.findViewById(R.id.ring2);
         off_hand = view.findViewById(R.id.off_hand);
         loadingCircle = view.findViewById(R.id.loadingCircle);
+        paperdoll = view.findViewById(R.id.paperdoll);
 
         addImageViewItemsToList();
 
-
+        loadingCircle.setVisibility(View.VISIBLE);
         Objects.requireNonNull(D3CharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
@@ -138,8 +131,10 @@ public class D3CharacterFragment extends Fragment {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            Log.i("Response", response.toString());
                             characterInfo = response;
                             characterInformation = gson.fromJson(characterInfo.toString(), CharacterInformation.class);
+                            setPaperdoll();
 
                         }
                     }, new Response.ErrorListener() {
@@ -158,35 +153,14 @@ public class D3CharacterFragment extends Fragment {
                             itemsInformation = gson.fromJson(response.toString(), Items.class);
                             setItemBackgroundColor();
                             getItemIconURL(itemIconURL);
-                            for(int i = 0; i < itemIconURL.size() ; i++){
-                                Log.i("TEST", i + "");
-                                ImageRequest imageRequest = new ImageRequest(itemIconURL.get(i), new Response.Listener<Bitmap>(){
-                                    @Override
-                                    public void onResponse(Bitmap bitmap) {
-                                        Drawable item = new BitmapDrawable(getResources(), bitmap);
-                                        Log.i("Download", "Icon" + imageIndex);
-                                        imageViewItem.get(imageIndex).setImageDrawable(item);
-                                        imageIndex++;
-                                    }
-                                },0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                        new Response.ErrorListener() {
-                                            public void onErrorResponse(VolleyError error) {
-                                                Log.i("Download", "Icon" + imageIndex);
-                                                ConnectionService.showNoConnectionMessage(new GamesActivity());
-                                                Log.e("Error", error.toString());
-                                            }
-                                        });
-                                requestQueueImage.add(imageRequest);
+                            getItemIcons();
 
-                            }
 
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.i("test", error.toString());
+                    Log.i("Error", error.toString());
                 }
             });
             requestQueue.add(jsonRequest2);
@@ -197,6 +171,95 @@ public class D3CharacterFragment extends Fragment {
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         Log.i("time", String.valueOf(duration));
+    }
+
+    private void setPaperdoll() {
+        switch (characterInformation.getClass_()) {
+            case "barbarian":
+                if (characterInformation.getGender() == 0) {
+                    paperdoll.setImageResource(R.drawable.barbarian_male_background);
+                } else if (characterInformation.getGender() == 1) {
+                    paperdoll.setImageResource(R.drawable.barbarian_female_background);
+                }
+                break;
+            case "wizard":
+                if (characterInformation.getGender() == 0) {
+                    paperdoll.setImageResource(R.drawable.wizard_male_background);
+                } else if (characterInformation.getGender() == 1) {
+                    paperdoll.setImageResource(R.drawable.wizard_female_background);
+                }
+                break;
+            case "demon-hunter":
+                if (characterInformation.getGender() == 0) {
+                    paperdoll.setImageResource(R.drawable.demon_hunter_male_background);
+                } else if (characterInformation.getGender() == 1) {
+                    paperdoll.setImageResource(R.drawable.demon_hunter_female_background);
+                }
+                break;
+            case "witch-doctor":
+                if (characterInformation.getGender() == 0) {
+                    paperdoll.setImageResource(R.drawable.witch_doctor_male_background);
+                } else if (characterInformation.getGender() == 1) {
+                    paperdoll.setImageResource(R.drawable.witch_doctor_female_background);
+                }
+                break;
+            case "necromancer":
+                if (characterInformation.getGender() == 0) {
+                    paperdoll.setImageResource(R.drawable.barbarian_male_background);
+                } else if (characterInformation.getGender() == 1) {
+                    paperdoll.setImageResource(R.drawable.barbarian_female_background);
+                }
+                break;
+            case "monk":
+                if (characterInformation.getGender() == 0) {
+                    paperdoll.setImageResource(R.drawable.monk_male_background);
+                } else if (characterInformation.getGender() == 1) {
+                    paperdoll.setImageResource(R.drawable.monk_female_background);
+                }
+                break;
+            case "crusader":
+                if (characterInformation.getGender() == 0) {
+                    paperdoll.setImageResource(R.drawable.barbarian_male_background);
+                } else if (characterInformation.getGender() == 1) {
+                    paperdoll.setImageResource(R.drawable.barbarian_female_background);
+                }
+                break;
+        }
+    }
+
+    private void getItemIcons() {
+        for(int i = 0; i < itemIconURL.size() ; i++){
+            ImageRequest imageRequest = new ImageRequest(itemIconURL.get(i), new Response.Listener<Bitmap>(){
+                @Override
+                public void onResponse(Bitmap bitmap) {
+                    Drawable item = new BitmapDrawable(getResources(), bitmap);
+                    imageViewItem.get(imageIndex).setImageDrawable(item);
+                    imageIndex++;
+
+                    if(imageIndex == itemIconURL.size()){
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    }
+                }
+            },0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                    new Response.ErrorListener() {
+                        public void onErrorResponse(VolleyError error) {
+                            try {
+                                if (!ConnectionService.isConnected()){
+                                    ConnectionService.showNoConnectionMessage(getActivity().getApplicationContext(),D3CharacterFragment.this);
+                                }
+                            }catch (Exception e){
+                            }
+                            imageIndex++;
+                            if(imageIndex == itemIconURL.size()){
+                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
+                            }
+                            Log.e("Error", error.toString());
+                        }
+                    });
+            requestQueueImage.add(imageRequest);
+        }
     }
 
     @Override
@@ -222,19 +285,84 @@ public class D3CharacterFragment extends Fragment {
     }
 
     private void setItemBackgroundColor() {
-        selectColor(itemsInformation.getShoulders().getDisplayColor(), shoulders);
-        selectColor(itemsInformation.getHands().getDisplayColor(), hands);
-        selectColor(itemsInformation.getLeftFinger().getDisplayColor(), ring1);
-        selectColor(itemsInformation.getMainHand().getDisplayColor(), main_hand);
-        selectColor(itemsInformation.getHead().getDisplayColor(), head);
-        selectColor(itemsInformation.getTorso().getDisplayColor(), chest);
-        selectColor(itemsInformation.getWaist().getDisplayColor(), belt);
-        selectColor(itemsInformation.getLegs().getDisplayColor(), legs);
-        selectColor(itemsInformation.getFeet().getDisplayColor(), boots);
-        selectColor(itemsInformation.getNeck().getDisplayColor(), amulet);
-        selectColor(itemsInformation.getBracers().getDisplayColor(), bracers);
-        selectColor(itemsInformation.getRightFinger().getDisplayColor(), ring2);
-        selectColor(itemsInformation.getOffHand().getDisplayColor(), off_hand);
+        try {
+            selectColor(itemsInformation.getShoulders().getDisplayColor(), shoulders);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", shoulders);
+        }
+        try {
+            selectColor(itemsInformation.getHands().getDisplayColor(), hands);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", hands);
+        }
+        try {
+            selectColor(itemsInformation.getLeftFinger().getDisplayColor(), ring1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", ring1);
+        }
+        try {
+            selectColor(itemsInformation.getMainHand().getDisplayColor(), main_hand);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", main_hand);
+        }
+        try {
+            selectColor(itemsInformation.getHead().getDisplayColor(), head);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", head);
+        }
+        try {
+            selectColor(itemsInformation.getTorso().getDisplayColor(), chest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", chest);
+        }
+        try {
+            selectColor(itemsInformation.getWaist().getDisplayColor(), belt);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", belt);
+        }
+        try {
+            selectColor(itemsInformation.getLegs().getDisplayColor(), legs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", legs);
+        }
+        try {
+            selectColor(itemsInformation.getFeet().getDisplayColor(), boots);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", boots);
+        }
+        try {
+            selectColor(itemsInformation.getNeck().getDisplayColor(), amulet);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", amulet);
+        }
+        try {
+            selectColor(itemsInformation.getBracers().getDisplayColor(), bracers);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", bracers);
+        }
+        try {
+            selectColor(itemsInformation.getRightFinger().getDisplayColor(), ring2);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", ring2);
+        }
+        try {
+            selectColor(itemsInformation.getOffHand().getDisplayColor(), off_hand);
+        } catch (Exception e) {
+            e.printStackTrace();
+            selectColor("", off_hand);
+        }
     }
 
     private void selectColor(String color, ImageView imageView){
@@ -251,7 +379,7 @@ public class D3CharacterFragment extends Fragment {
             case "green":
                 imageView.setBackgroundResource(R.drawable.green_bg_item_d3);
                 break;
-            case "brown":
+            default:
                 imageView.setBackgroundResource(R.drawable.brown_bg_item_d3);
                 break;
         }

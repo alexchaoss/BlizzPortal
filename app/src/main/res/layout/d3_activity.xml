@@ -127,6 +127,7 @@
         android:id="@+id/scrollView5"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,24 +161,24 @@
 
                     <ImageView
                         android:id="@+id/imageView3"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_weight="1"
                         android:contentDescription="@string/lifetime_kills"
                         app:srcCompat="@drawable/lifetime_kills" />
 
                     <ImageView
                         android:id="@+id/imageView4"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_weight="1"
                         android:contentDescription="@string/elite_kills"
                         app:srcCompat="@drawable/elite_kills_image" />
 
                     <ImageView
                         android:id="@+id/imageView5"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_weight="1"
                         android:contentDescription="@string/paragon"
                         app:srcCompat="@drawable/paragon_image" />
@@ -256,20 +257,20 @@
 
                 <ImageView
                     android:id="@+id/prog_act1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:contentDescription="@string/image_act1" />
 
                 <ImageView
                     android:id="@+id/prog_act2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:contentDescription="@string/image_act2" />
 
                 <ImageView
                     android:id="@+id/prog_act3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:contentDescription="@string/image_act3" />
 
             </LinearLayout>
@@ -283,14 +284,14 @@
 
                 <ImageView
                     android:id="@+id/prog_act4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:contentDescription="@string/image_act4" />
 
                 <ImageView
                     android:id="@+id/prog_act5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:contentDescription="@string/image_act5" />
             </LinearLayout>
 
@@ -306,7 +307,9 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp">
 
                 <LinearLayout
                     android:id="@+id/character_layout"
