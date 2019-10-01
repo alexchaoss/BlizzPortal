@@ -104,10 +104,10 @@ public class MainActivity extends AppCompatActivity {
                             CreateToken(bnOAuth2Params);
                             setContentView(R.layout.activity_games);
                         } else {
-                            ConnectionService.showNoConnectionMessage(MainActivity.this);
+                            //ConnectionService.showNoConnectionMessage(MainActivity.this);
                         }
                     } catch (Exception e) {
-                        ConnectionService.showNoConnectionMessage(MainActivity.this);
+                        //ConnectionService.showNoConnectionMessage(MainActivity.this);
                     }
                 }
 

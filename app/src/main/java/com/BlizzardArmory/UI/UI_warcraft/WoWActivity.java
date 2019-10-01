@@ -3,24 +3,17 @@ package com.BlizzardArmory.UI.UI_warcraft;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.print.PrintAttributes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,14 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.UI.GamesActivity;
 import com.BlizzardArmory.UI.UI_diablo.D3Activity;
 import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
 import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
-import com.BlizzardArmory.connection.ImageDownload;
 import com.BlizzardArmory.warcraft.WowCharacters;
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -49,14 +40,12 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -252,7 +241,7 @@ public class WoWActivity extends AppCompatActivity {
                                                             if (ConnectionService.isConnected()) {
                                                                 displayFragment();
                                                             } else {
-                                                                ConnectionService.showNoConnectionMessage(getApplicationContext());
+                                                                //ConnectionService.showNoConnectionMessage(getApplicationContext());
                                                             }
                                                         } catch (Exception e) {
                                                             Log.e("Error", e.toString());
@@ -266,7 +255,7 @@ public class WoWActivity extends AppCompatActivity {
                                         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                                                 new Response.ErrorListener() {
                                                     public void onErrorResponse(VolleyError error) {
-                                                        ConnectionService.showNoConnectionMessage(new GamesActivity());
+                                                        //ConnectionService.showNoConnectionMessage(new GamesActivity());
                                                         Log.e("Error", error.toString());
                                                         finish();
                                                     }
@@ -280,7 +269,7 @@ public class WoWActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    ConnectionService.showNoConnectionMessage(new GamesActivity());
+                                    //ConnectionService.showNoConnectionMessage(new GamesActivity());
                                     Log.e("Error", error.toString());
                                     finish();
                                 }
@@ -293,7 +282,7 @@ public class WoWActivity extends AppCompatActivity {
 
 
             } else {
-                ConnectionService.showNoConnectionMessage(WoWActivity.this);
+                //ConnectionService.showNoConnectionMessage(WoWActivity.this);
             }
         } catch (Exception e) {
             Log.e("Error", e.toString());
