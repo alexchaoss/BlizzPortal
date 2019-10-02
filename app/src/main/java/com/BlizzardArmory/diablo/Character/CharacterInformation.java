@@ -11,7 +11,7 @@ public class CharacterInformation {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -20,13 +20,13 @@ public class CharacterInformation {
     private String _class;
     @SerializedName("gender")
     @Expose
-    private Integer gender;
+    private int gender;
     @SerializedName("level")
     @Expose
-    private Integer level;
+    private int level;
     @SerializedName("paragonLevel")
     @Expose
-    private Integer paragonLevel;
+    private int paragonLevel;
     @SerializedName("kills")
     @Expose
     private Kills kills;
@@ -38,7 +38,7 @@ public class CharacterInformation {
     private Boolean seasonal;
     @SerializedName("seasonCreated")
     @Expose
-    private Integer seasonCreated;
+    private int seasonCreated;
     @SerializedName("skills")
     @Expose
     private Skills skills;
@@ -59,19 +59,19 @@ public class CharacterInformation {
     private Boolean alive;
     @SerializedName("lastUpdated")
     @Expose
-    private Integer lastUpdated;
+    private int lastUpdated;
     @SerializedName("highestSoloRiftCompleted")
     @Expose
-    private Integer highestSoloRiftCompleted;
+    private int highestSoloRiftCompleted;
     @SerializedName("stats")
     @Expose
     private Stats stats;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -91,27 +91,27 @@ public class CharacterInformation {
         this._class = _class;
     }
 
-    public Integer getGender() {
+    public int getGender() {
         return gender;
     }
 
-    public void setGender(Integer gender) {
+    public void setGender(int gender) {
         this.gender = gender;
     }
 
-    public Integer getLevel() {
+    public int getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(int level) {
         this.level = level;
     }
 
-    public Integer getParagonLevel() {
+    public int getParagonLevel() {
         return paragonLevel;
     }
 
-    public void setParagonLevel(Integer paragonLevel) {
+    public void setParagonLevel(int paragonLevel) {
         this.paragonLevel = paragonLevel;
     }
 
@@ -139,11 +139,11 @@ public class CharacterInformation {
         this.seasonal = seasonal;
     }
 
-    public Integer getSeasonCreated() {
+    public int getSeasonCreated() {
         return seasonCreated;
     }
 
-    public void setSeasonCreated(Integer seasonCreated) {
+    public void setSeasonCreated(int seasonCreated) {
         this.seasonCreated = seasonCreated;
     }
 
@@ -195,19 +195,19 @@ public class CharacterInformation {
         this.alive = alive;
     }
 
-    public Integer getLastUpdated() {
+    public int getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(Integer lastUpdated) {
+    public void setLastUpdated(int lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
-    public Integer getHighestSoloRiftCompleted() {
+    public int getHighestSoloRiftCompleted() {
         return highestSoloRiftCompleted;
     }
 
-    public void setHighestSoloRiftCompleted(Integer highestSoloRiftCompleted) {
+    public void setHighestSoloRiftCompleted(int highestSoloRiftCompleted) {
         this.highestSoloRiftCompleted = highestSoloRiftCompleted;
     }
 
