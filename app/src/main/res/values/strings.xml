@@ -66,4 +66,5 @@
     <string name="ring1">ring1</string>
     <string name="head">head</string>
     <string name="gloves">gloves</string>
+    <string name="class_level">class_level</string>
 </resources>

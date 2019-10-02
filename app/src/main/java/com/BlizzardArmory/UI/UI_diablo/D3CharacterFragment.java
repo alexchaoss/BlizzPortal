@@ -4,17 +4,21 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
@@ -41,6 +45,7 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,9 +78,24 @@ public class D3CharacterFragment extends Fragment {
     ArrayList<String> itemIconURL = new ArrayList<>();
 
     private  ImageView paperdoll;
+    private TextView name;
+    private TextView lvl_class;
 
-    RequestQueue requestQueue;
-    RequestQueue requestQueueImage;
+    private TextView top_stat;
+    private TextView vitality;
+    private TextView crit_chance;
+    private TextView crit_damage;
+    private TextView attack_speed;
+    private TextView area_damage;
+    private TextView cooldown_reduction;
+    private double critDamage = 0;
+    private double attackSpeed = 0;
+    private double critChance = 0;
+    private double areaDamage = 0;
+    private double cooldownReduction = 0;
+
+    private RequestQueue requestQueue;
+    private RequestQueue requestQueueImage;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -102,6 +122,15 @@ public class D3CharacterFragment extends Fragment {
         off_hand = view.findViewById(R.id.off_hand);
         loadingCircle = view.findViewById(R.id.loadingCircle);
         paperdoll = view.findViewById(R.id.paperdoll);
+        name = view.findViewById(R.id.character_name);
+        lvl_class = view.findViewById(R.id.level_class);
+        top_stat = view.findViewById(R.id.top_stat);
+        vitality = view.findViewById(R.id.vitality);
+        crit_chance = view.findViewById(R.id.crit);
+        crit_damage = view.findViewById(R.id.crit_chance);
+        attack_speed = view.findViewById(R.id.attack_speed);
+        area_damage = view.findViewById(R.id.area_damage);
+        cooldown_reduction = view.findViewById(R.id.cooldown_reduction);
 
         addImageViewItemsToList();
 
@@ -135,6 +164,19 @@ public class D3CharacterFragment extends Fragment {
                             characterInfo = response;
                             characterInformation = gson.fromJson(characterInfo.toString(), CharacterInformation.class);
                             setPaperdoll();
+                            setName();
+
+                            String topStatString = "+" + characterInformation.getStats().getStrength() + " Strength";
+                            if(characterInformation.getStats().getStrength() < characterInformation.getStats().getIntelligence()){
+                                topStatString = "+" + characterInformation.getStats().getIntelligence() + " Intelligence";
+                            }else if (characterInformation.getStats().getIntelligence() < characterInformation.getStats().getDexterity()){
+                                topStatString = "+" + characterInformation.getStats().getDexterity() + " Dexterity";
+                            }
+
+                            String vitalityString = "+" + characterInformation.getStats().getVitality() + " Vitality";
+
+                            top_stat.setText(topStatString);
+                            vitality.setText(vitalityString);
 
                         }
                     }, new Response.ErrorListener() {
@@ -154,6 +196,17 @@ public class D3CharacterFragment extends Fragment {
                             setItemBackgroundColor();
                             getItemIconURL(itemIconURL);
                             getItemIcons();
+                            getAttackStats();
+                            String critChanceString = "Critical Hit Chance Increased by " + critChance + "%";
+                            String critDamageString = "Critical Hit Damage Increased by " + critDamage + "%";
+                            String attackSpeedString = "Increases Attack Speed by " + attackSpeed + "%";
+                            String areaDamageString = "Chance to Deal " + areaDamage + "%" + " Area Damage on Hit";
+                            String cdReductString = "Reduces cooldown of all skills by " + cooldownReduction + "%";
+                            crit_chance.setText(critChanceString);
+                            crit_damage.setText(critDamageString);
+                            attack_speed.setText(attackSpeedString);
+                            area_damage.setText(areaDamageString);
+                            cooldown_reduction.setText(cdReductString);
 
 
                         }
@@ -171,6 +224,24 @@ public class D3CharacterFragment extends Fragment {
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         Log.i("time", String.valueOf(duration));
+    }
+
+    private void setName() {
+        String levelClass = "<font color=#d4a94e>" + characterInformation.getLevel() + "</font>" + "<font color=#555da5> (" + characterInformation.getParagonLevel()
+                + ")</font> <font color=#d4a94e>" + characterInformation.getClass_();
+
+        if (Build.VERSION.SDK_INT >= 24) {
+            lvl_class.setText(Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            lvl_class.setText(Html.fromHtml(levelClass));
+        }
+        if(characterInformation.getName().length() > 7 && characterInformation.getName().length() < 10){
+            name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
+        }else if(characterInformation.getName().length() > 9){
+            name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            name.setPadding(0,10,0,0);
+        }
+        name.setText(characterInformation.getName());
     }
 
     private void setPaperdoll() {
@@ -365,6 +436,117 @@ public class D3CharacterFragment extends Fragment {
         }
     }
 
+    private void getAttackStats(){
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getShoulders().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getShoulders().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getHands().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getHands().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getLeftFinger().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getLeftFinger().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getMainHand().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getMainHand().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getHead().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getHead().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getTorso().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getTorso().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getWaist().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getWaist().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getLegs().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getLegs().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getFeet().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getFeet().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getNeck().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getNeck().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getBracers().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getBracers().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getRightFinger().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getRightFinger().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.i("TEST", Arrays.toString(itemsInformation.getOffHand().getAttributes().getPrimary().toArray()));
+            getAttackSpeedCritDamageCritChance(itemsInformation.getOffHand().getAttributes().getPrimary());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getAttackSpeedCritDamageCritChance(List<String> attributes) {
+        for(int i = 0; i < attributes.size(); i++){
+            if(attributes.get(i).toLowerCase().contains("Attack Speed".toLowerCase())){
+                String temp = attributes.get(i);
+                temp = temp.replaceAll("[^\\.0123456789]","");
+                attackSpeed += Double.valueOf(temp);
+            }
+            if(attributes.get(i).toLowerCase().contains("Critical Hit Damage".toLowerCase())){
+                String temp = attributes.get(i);
+                temp = temp.replaceAll("[^\\.0123456789]","");
+                critDamage += Double.valueOf(temp);
+            }
+            if(attributes.get(i).toLowerCase().contains("Critical Hit Chance".toLowerCase())){
+                String temp = attributes.get(i);
+                temp = temp.replaceAll("[^\\.0123456789]","");
+                critChance += Double.valueOf(temp);
+            }
+            if(attributes.get(i).toLowerCase().contains("Area Damage".toLowerCase())){
+                String temp = attributes.get(i);
+                temp = temp.replaceAll("[^\\.0123456789]","");
+                areaDamage += Double.valueOf(temp);
+            }
+            if(attributes.get(i).toLowerCase().contains("cooldown of all skills".toLowerCase())){
+                String temp = attributes.get(i);
+                temp = temp.replaceAll("[^\\.0123456789]","");
+                cooldownReduction += Double.valueOf(temp);
+            }
+        }
+    }
+
     private void selectColor(String color, ImageView imageView){
         switch(color){
             case "blue":
@@ -379,9 +561,10 @@ public class D3CharacterFragment extends Fragment {
             case "green":
                 imageView.setBackgroundResource(R.drawable.green_bg_item_d3);
                 break;
-            default:
+            case "white":
                 imageView.setBackgroundResource(R.drawable.brown_bg_item_d3);
                 break;
+            default:
         }
     }
 

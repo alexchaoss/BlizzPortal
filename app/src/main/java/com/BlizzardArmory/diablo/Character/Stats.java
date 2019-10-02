@@ -9,299 +9,299 @@ public class Stats {
 
     @SerializedName("life")
     @Expose
-    private Double life;
+    private double life;
     @SerializedName("damage")
     @Expose
-    private Double damage;
+    private double damage;
     @SerializedName("toughness")
     @Expose
-    private Double toughness;
+    private double toughness;
     @SerializedName("healing")
     @Expose
-    private Double healing;
+    private double healing;
     @SerializedName("attackSpeed")
     @Expose
-    private Double attackSpeed;
+    private double attackSpeed;
     @SerializedName("armor")
     @Expose
-    private Double armor;
+    private double armor;
     @SerializedName("strength")
     @Expose
-    private Double strength;
+    private double strength;
     @SerializedName("dexterity")
     @Expose
-    private Double dexterity;
+    private double dexterity;
     @SerializedName("vitality")
     @Expose
-    private Double vitality;
+    private double vitality;
     @SerializedName("intelligence")
     @Expose
-    private Double intelligence;
+    private double intelligence;
     @SerializedName("physicalResist")
     @Expose
-    private Double physicalResist;
+    private double physicalResist;
     @SerializedName("fireResist")
     @Expose
-    private Double fireResist;
+    private double fireResist;
     @SerializedName("coldResist")
     @Expose
-    private Double coldResist;
+    private double coldResist;
     @SerializedName("lightningResist")
     @Expose
-    private Double lightningResist;
+    private double lightningResist;
     @SerializedName("poisonResist")
     @Expose
-    private Double poisonResist;
+    private double poisonResist;
     @SerializedName("arcaneResist")
     @Expose
-    private Double arcaneResist;
+    private double arcaneResist;
     @SerializedName("blockChance")
     @Expose
-    private Double blockChance;
+    private double blockChance;
     @SerializedName("blockAmountMin")
     @Expose
-    private Double blockAmountMin;
+    private double blockAmountMin;
     @SerializedName("blockAmountMax")
     @Expose
-    private Double blockAmountMax;
+    private double blockAmountMax;
     @SerializedName("goldFind")
     @Expose
-    private Double goldFind;
+    private double goldFind;
     @SerializedName("critChance")
     @Expose
-    private Double critChance;
+    private double critChance;
     @SerializedName("thorns")
     @Expose
-    private Double thorns;
+    private double thorns;
     @SerializedName("lifeSteal")
     @Expose
-    private Double lifeSteal;
+    private double lifeSteal;
     @SerializedName("lifePerKill")
     @Expose
-    private Double lifePerKill;
+    private double lifePerKill;
     @SerializedName("lifeOnHit")
     @Expose
-    private Double lifeOnHit;
+    private double lifeOnHit;
     @SerializedName("primaryResource")
     @Expose
-    private Double primaryResource;
+    private double primaryResource;
     @SerializedName("secondaryResource")
     @Expose
-    private Double secondaryResource;
+    private double secondaryResource;
 
-    public Double getLife() {
+    public double getLife() {
         return life;
     }
 
-    public void setLife(Double life) {
+    public void setLife(double life) {
         this.life = life;
     }
 
-    public Double getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(Double damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 
-    public Double getToughness() {
+    public double getToughness() {
         return toughness;
     }
 
-    public void setToughness(Double toughness) {
+    public void setToughness(double toughness) {
         this.toughness = toughness;
     }
 
-    public Double getHealing() {
+    public double getHealing() {
         return healing;
     }
 
-    public void setHealing(Double healing) {
+    public void setHealing(double healing) {
         this.healing = healing;
     }
 
-    public Double getAttackSpeed() {
+    public double getAttackSpeed() {
         return attackSpeed;
     }
 
-    public void setAttackSpeed(Double attackSpeed) {
+    public void setAttackSpeed(double attackSpeed) {
         this.attackSpeed = attackSpeed;
     }
 
-    public Double getArmor() {
+    public double getArmor() {
         return armor;
     }
 
-    public void setArmor(Double armor) {
+    public void setArmor(double armor) {
         this.armor = armor;
     }
 
-    public Double getStrength() {
+    public double getStrength() {
         return strength;
     }
 
-    public void setStrength(Double strength) {
+    public void setStrength(double strength) {
         this.strength = strength;
     }
 
-    public Double getDexterity() {
+    public double getDexterity() {
         return dexterity;
     }
 
-    public void setDexterity(Double dexterity) {
+    public void setDexterity(double dexterity) {
         this.dexterity = dexterity;
     }
 
-    public Double getVitality() {
+    public double getVitality() {
         return vitality;
     }
 
-    public void setVitality(Double vitality) {
+    public void setVitality(double vitality) {
         this.vitality = vitality;
     }
 
-    public Double getIntelligence() {
+    public double getIntelligence() {
         return intelligence;
     }
 
-    public void setIntelligence(Double intelligence) {
+    public void setIntelligence(double intelligence) {
         this.intelligence = intelligence;
     }
 
-    public Double getPhysicalResist() {
+    public double getPhysicalResist() {
         return physicalResist;
     }
 
-    public void setPhysicalResist(Double physicalResist) {
+    public void setPhysicalResist(double physicalResist) {
         this.physicalResist = physicalResist;
     }
 
-    public Double getFireResist() {
+    public double getFireResist() {
         return fireResist;
     }
 
-    public void setFireResist(Double fireResist) {
+    public void setFireResist(double fireResist) {
         this.fireResist = fireResist;
     }
 
-    public Double getColdResist() {
+    public double getColdResist() {
         return coldResist;
     }
 
-    public void setColdResist(Double coldResist) {
+    public void setColdResist(double coldResist) {
         this.coldResist = coldResist;
     }
 
-    public Double getLightningResist() {
+    public double getLightningResist() {
         return lightningResist;
     }
 
-    public void setLightningResist(Double lightningResist) {
+    public void setLightningResist(double lightningResist) {
         this.lightningResist = lightningResist;
     }
 
-    public Double getPoisonResist() {
+    public double getPoisonResist() {
         return poisonResist;
     }
 
-    public void setPoisonResist(Double poisonResist) {
+    public void setPoisonResist(double poisonResist) {
         this.poisonResist = poisonResist;
     }
 
-    public Double getArcaneResist() {
+    public double getArcaneResist() {
         return arcaneResist;
     }
 
-    public void setArcaneResist(Double arcaneResist) {
+    public void setArcaneResist(double arcaneResist) {
         this.arcaneResist = arcaneResist;
     }
 
-    public Double getBlockChance() {
+    public double getBlockChance() {
         return blockChance;
     }
 
-    public void setBlockChance(Double blockChance) {
+    public void setBlockChance(double blockChance) {
         this.blockChance = blockChance;
     }
 
-    public Double getBlockAmountMin() {
+    public double getBlockAmountMin() {
         return blockAmountMin;
     }
 
-    public void setBlockAmountMin(Double blockAmountMin) {
+    public void setBlockAmountMin(double blockAmountMin) {
         this.blockAmountMin = blockAmountMin;
     }
 
-    public Double getBlockAmountMax() {
+    public double getBlockAmountMax() {
         return blockAmountMax;
     }
 
-    public void setBlockAmountMax(Double blockAmountMax) {
+    public void setBlockAmountMax(double blockAmountMax) {
         this.blockAmountMax = blockAmountMax;
     }
 
-    public Double getGoldFind() {
+    public double getGoldFind() {
         return goldFind;
     }
 
-    public void setGoldFind(Double goldFind) {
+    public void setGoldFind(double goldFind) {
         this.goldFind = goldFind;
     }
 
-    public Double getCritChance() {
+    public double getCritChance() {
         return critChance;
     }
 
-    public void setCritChance(Double critChance) {
+    public void setCritChance(double critChance) {
         this.critChance = critChance;
     }
 
-    public Double getThorns() {
+    public double getThorns() {
         return thorns;
     }
 
-    public void setThorns(Double thorns) {
+    public void setThorns(double thorns) {
         this.thorns = thorns;
     }
 
-    public Double getLifeSteal() {
+    public double getLifeSteal() {
         return lifeSteal;
     }
 
-    public void setLifeSteal(Double lifeSteal) {
+    public void setLifeSteal(double lifeSteal) {
         this.lifeSteal = lifeSteal;
     }
 
-    public Double getLifePerKill() {
+    public double getLifePerKill() {
         return lifePerKill;
     }
 
-    public void setLifePerKill(Double lifePerKill) {
+    public void setLifePerKill(double lifePerKill) {
         this.lifePerKill = lifePerKill;
     }
 
-    public Double getLifeOnHit() {
+    public double getLifeOnHit() {
         return lifeOnHit;
     }
 
-    public void setLifeOnHit(Double lifeOnHit) {
+    public void setLifeOnHit(double lifeOnHit) {
         this.lifeOnHit = lifeOnHit;
     }
 
-    public Double getPrimaryResource() {
+    public double getPrimaryResource() {
         return primaryResource;
     }
 
-    public void setPrimaryResource(Double primaryResource) {
+    public void setPrimaryResource(double primaryResource) {
         this.primaryResource = primaryResource;
     }
 
-    public Double getSecondaryResource() {
+    public double getSecondaryResource() {
         return secondaryResource;
     }
 
-    public void setSecondaryResource(Double secondaryResource) {
+    public void setSecondaryResource(double secondaryResource) {
         this.secondaryResource = secondaryResource;
     }
 
