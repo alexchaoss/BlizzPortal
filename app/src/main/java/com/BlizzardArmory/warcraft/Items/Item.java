@@ -19,6 +19,9 @@ public class Item {
     @SerializedName("icon")
     @Expose
     private String icon;
+    @SerializedName("gemInfo")
+    @Expose
+    private GemInfo gemInfo;
     @SerializedName("quality")
     @Expose
     private Integer quality;
@@ -111,6 +114,14 @@ public class Item {
 
     public void setTooltipParams(TooltipParams tooltipParams) {
         this.tooltipParams = tooltipParams;
+    }
+
+    public GemInfo getGemInfo() {
+        return gemInfo;
+    }
+
+    public void setGemInfo(GemInfo gemInfo) {
+        this.gemInfo = gemInfo;
     }
 
     public List<Stat> getStats() {

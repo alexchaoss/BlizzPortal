@@ -5,8 +5,25 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.util.List;
+
 public class TooltipParams {
 
+    @SerializedName("gem0")
+    @Expose
+    private Integer gem0;
+    @SerializedName("gem1")
+    @Expose
+    private Integer gem1;
+    @SerializedName("gem2")
+    @Expose
+    private Integer gem2;
+    @SerializedName("enchant")
+    @Expose
+    private Integer enchant;
+    @SerializedName("set")
+    @Expose
+    private List<Integer> set = null;
     @SerializedName("transmogItem")
     @Expose
     private Integer transmogItem;
@@ -31,6 +48,46 @@ public class TooltipParams {
     @SerializedName("azeritePower4")
     @Expose
     private Integer azeritePower4;
+
+    public Integer getGem0() {
+        return gem0;
+    }
+
+    public void setGem0(Integer gem0) {
+        this.gem0 = gem0;
+    }
+
+    public Integer getGem1() {
+        return gem1;
+    }
+
+    public void setGem1(Integer gem1) {
+        this.gem1 = gem1;
+    }
+
+    public Integer getGem2() {
+        return gem2;
+    }
+
+    public void setGem2(Integer gem2) {
+        this.gem2 = gem2;
+    }
+
+    public Integer getEnchant() {
+        return enchant;
+    }
+
+    public void setEnchant(Integer enchant) {
+        this.enchant = enchant;
+    }
+
+    public List<Integer> getSet() {
+        return set;
+    }
+
+    public void setSet(List<Integer> set) {
+        this.set = set;
+    }
 
     public Integer getTimewalkerLevel() {
         return timewalkerLevel;
