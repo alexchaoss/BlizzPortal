@@ -70,7 +70,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-
 public class WoWCharacterFragment extends Fragment {
 
     private Gson gson = new GsonBuilder().create();
@@ -154,6 +153,11 @@ public class WoWCharacterFragment extends Fragment {
     private int headSpellNumber = 0;
     private int shoulderSpellNumber = 0;
     private int chestSpellNumber = 0;
+    private String socketString = "";
+    private int socketIndex = 0;
+    private int socketListIndex = 0;
+    private ArrayList<String> socketList = new ArrayList<>();
+    private ArrayList<String> enchantList = new ArrayList<>();
 
     private SparseArray<String> stats = new SparseArray<>();
     private SparseArray<String> nameList = new SparseArray<>();
@@ -187,10 +191,12 @@ public class WoWCharacterFragment extends Fragment {
         background = view.findViewById(R.id.background);
         cardView = view.findViewById(R.id.item_stats);
         cardView.setContentPadding(10, 10, 10, 10);
+        ScrollView itemInfoScroll = new ScrollView(view.getContext());
         LinearLayout linearLayoutItemStats = new LinearLayout(view.getContext());
         linearLayoutItemStats.setOrientation(LinearLayout.VERTICAL);
         linearLayoutItemStats.setGravity(Gravity.CENTER);
-        cardView.addView(linearLayoutItemStats);
+        itemInfoScroll.addView(linearLayoutItemStats);
+        cardView.addView(itemInfoScroll);
         statsView = new TextView(view.getContext());
         nameView = new TextView(view.getContext());
         linearLayoutItemStats.addView(nameView);
@@ -305,6 +311,13 @@ public class WoWCharacterFragment extends Fragment {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            int maxLogSize = 4052;
+                            for(int i = 0; i <= response.toString().length() / maxLogSize; i++) {
+                                int start = i * maxLogSize;
+                                int end = (i+1) * maxLogSize;
+                                end = end > response.toString().length() ? response.toString().length() : end;
+                                Log.v("CHARACTER_INFO", response.toString().substring(start, end));
+                            }
                             characterInformation = response;
 
                             try {
@@ -393,47 +406,125 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private void getItemInformation(final Gson gson, final BnOAuth2Helper bnOAuth2Helper) {
+        getEnchantInformation();
+
+        for(int i = 0; i < urlItemInfo.size(); i++){
+            socketList.add("");
+        }
+
         for (int i = 0; i < urlItemInfo.size(); i++) {
-                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, urlItemInfo.get(i), null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                bonusIDList.add(response);
-                                if (bonusIDList.size() == urlItemInfo.size()) {
-                                    for (int i = 0; i < bonusIDList.size(); i++) {
-                                        if (bonusIDList.get(i) != null) {
-                                            ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
-                                            itemInformations.add(itemInformation);
-                                        } else {
-                                            itemInformations.add(new ItemInformation());
-                                        }
+
+            getSocketInformation(gson, bnOAuth2Helper, i);
+
+
+            try{
+                Log.i("ITEM-URL", urlItemInfo.get(i));
+            }catch (Exception e){
+
+            }
+
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, urlItemInfo.get(i), null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.i("ITEM-INFO", response.toString());
+                            bonusIDList.add(response);
+                            if (bonusIDList.size() == urlItemInfo.size()) {
+                                for (int i = 0; i < bonusIDList.size(); i++) {
+                                    if (bonusIDList.get(i) != null) {
+                                        ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
+                                        itemInformations.add(itemInformation);
+                                    } else {
+                                        itemInformations.add(new ItemInformation());
                                     }
-                                    getAzeritePowers(bnOAuth2Helper);
                                 }
+                                getAzeritePowers(bnOAuth2Helper);
                             }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError e) {
-                                bonusIDList.add(null);
-                                if (bonusIDList.size() == urlItemInfo.size()) {
-                                    for (int i = 0; i < bonusIDList.size(); i++) {
-                                        if (bonusIDList.get(i) != null) {
-                                            ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
-                                            itemInformations.add(itemInformation);
-                                        } else {
-                                            itemInformations.add(new ItemInformation());
-                                        }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError e) {
+                            bonusIDList.add(null);
+                            if (bonusIDList.size() == urlItemInfo.size()) {
+                                for (int i = 0; i < bonusIDList.size(); i++) {
+                                    if (bonusIDList.get(i) != null) {
+                                        ItemInformation itemInformation = gson.fromJson(bonusIDList.get(i).toString(), ItemInformation.class);
+                                        itemInformations.add(itemInformation);
+                                    } else {
+                                        itemInformations.add(new ItemInformation());
                                     }
-                                    getAzeritePowers(bnOAuth2Helper);
                                 }
+                                getAzeritePowers(bnOAuth2Helper);
                             }
-                        });
-                requestQueueImage.add(jsonRequest);
+                        }
+                    });
+            requestQueueImage.add(jsonRequest);
         }
     }
 
-    private void getAzeritePowers(BnOAuth2Helper bnOAuth2Helper) {
+    private void getSocketInformation(final Gson gson, BnOAuth2Helper bnOAuth2Helper, int i) {
+        final ArrayList<String> urlSocket = new ArrayList<>();
+
+        try{
+            urlSocket.add(URLConstants.getBaseURLforAPI() + URLConstants.BONUSID_QUERY.replace("id?b1=bonusList&", itemsInfoList.get(i).getTooltipParams().getGem0().toString() + "?") + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+        }catch (Exception e){
+            urlSocket.add("");
+            Log.e("URL_SOCKET", "BAD URL");
+        }
+        try{
+            urlSocket.add(URLConstants.getBaseURLforAPI() + URLConstants.BONUSID_QUERY.replace("id?b1=bonusList&", itemsInfoList.get(i).getTooltipParams().getGem1().toString() + "?") + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+        }catch (Exception e){
+            Log.e("URL_SOCKET", "BAD URL");
+        }
+        try{
+            urlSocket.add(URLConstants.getBaseURLforAPI() + URLConstants.BONUSID_QUERY.replace("id?b1=bonusList&", itemsInfoList.get(i).getTooltipParams().getGem2().toString() + "?") + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+        }catch (Exception e){
+            Log.e("URL_SOCKET", "BAD URL");
+        }
+
+        for (int j = 0; j < urlSocket.size(); j++) {
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, urlSocket.get(j), null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            socketIndex++;
+                            Item socket = gson.fromJson(response.toString(), Item.class);
+                            Log.i("test", socket.getGemInfo().getBonus().getName());
+                            if (!socket.getGemInfo().getBonus().getName().equals("Relic Enhancement")) {
+                                socketString += "(s) " + socket.getGemInfo().getBonus().getName() + "<br>";
+                            }
+
+                            if(socketIndex == urlSocket.size()){
+                                socketIndex = 0;
+                                socketList.set(socketListIndex,socketString);
+                                socketString = "";
+                                socketListIndex++;
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError e) {
+                            socketIndex = 0;
+                            socketString = "";
+                            socketListIndex++;
+                        }
+                    });
+            requestQueueImage.add(jsonRequest);
+        }
+    }
+
+    private void getEnchantInformation() {
+
+        for(int i = 0; i < urlItemInfo.size(); i++) {
+            //String urlEnchant = itemsInfoList.get(i).getTooltipParams().getEnchant().toString();
+        }
+
+
+    }
+
+    private void getAzeritePowers(final BnOAuth2Helper bnOAuth2Helper) {
         try {
             powerHead = itemsInfoList.get(0).getAzeriteEmpoweredItem().getAzeritePowers();
 
@@ -645,10 +736,8 @@ public class WoWCharacterFragment extends Fragment {
         int size = itemsInfoList.get(i).getBonusLists().size();
         if (size > 0) {
 
-            for (int j = 0; j < size; j++) {
-                for (int k = 0; k < size; k++) {
-                    bonusIds.append(itemsInfoList.get(i).getBonusLists().get(k)).append(",");
-                }
+            for (int k = 0; k < size; k++) {
+                bonusIds.append(itemsInfoList.get(i).getBonusLists().get(k)).append(",");
             }
             idURL = itemsInfoList.get(i).getId().toString() + "?b1=" + bonusIds.substring(0, bonusIds.length() - 1);
         } else {
@@ -829,9 +918,6 @@ public class WoWCharacterFragment extends Fragment {
                         }
                         break;
                     }
-                    case MotionEvent.ACTION_UP: {
-                        cardView.setVisibility(View.GONE);
-                    }
                 }
                 return true;
             }
@@ -973,7 +1059,7 @@ public class WoWCharacterFragment extends Fragment {
     }
 
 
-    private void setCharacterItemsInformation(int index) throws JSONException {
+    private void setCharacterItemsInformation(final int index) throws JSONException {
         String description = "";
         String nameDescription = "";
         String trigger = "";
@@ -987,6 +1073,10 @@ public class WoWCharacterFragment extends Fragment {
             description = "<font color=#edc201>" + itemInformations.get(index).getDescription() + "</font>";
             nameDescription = "<font color=#00cc00>" + itemInformations.get(index).getNameDescription() + "</font><br>";
             trigger = getTrigger(index);
+        }
+        String HoALevel = "";
+        if(itemsInfoList.get(1).getName().equals("Heart of Azeroth") && index == 1){
+            HoALevel = "<font color=#edc201>Azerite Power Level " + itemsInfoList.get(1).getAzeriteItem().getAzeriteLevel().toString() + "</font><br>";
         }
 
         String itemSlot = slotName.get(index);
@@ -1003,7 +1093,7 @@ public class WoWCharacterFragment extends Fragment {
         if (Integer.valueOf(armor) > 0) {
             stats.put(index, String.format("%s<br>%s%s<br>%s Armor<br>%s", itemLvl, itemSlot, damageInfo, armor, tempStats));
         } else {
-            stats.put(index, String.format("%s<br>%s%s<br>%s", itemLvl, itemSlot, damageInfo, tempStats));
+            stats.put(index, String.format("%s<br>%s%s%s<br>%s", itemLvl, HoALevel, itemSlot, damageInfo, tempStats));
         }
 
         if (itemSlot.equals("Head") && azeriteSpellsHead.size() > 0) {
@@ -1024,6 +1114,10 @@ public class WoWCharacterFragment extends Fragment {
 
         if (!trigger.equals("")) {
             stats.put(index, stats.get(index) + String.format("<br>%s<br>", trigger));
+        }
+
+        if(!socketList.get(index).equals("")){
+            stats.put(index, stats.get(index) + String.format("<br>%s", socketList.get(index)));
         }
 
         if (!itemInformations.get(index).getDescription().equals("")) {

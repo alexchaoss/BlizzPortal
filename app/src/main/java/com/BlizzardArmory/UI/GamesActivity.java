@@ -90,6 +90,9 @@ public class GamesActivity extends AppCompatActivity {
                                 UserInformation.setBattleTag(userInfo.getString("battletag"));
                                 UserInformation.setUserID(userInfo.getString("id"));
 
+                                Log.i("Btag", UserInformation.getBattleTag());
+                                Log.i("USER_ID", UserInformation.getUserID());
+
                             } catch (Exception e) {
                                 Log.e("Error-test", e.toString());
                             }
