@@ -2,28 +2,35 @@ package com.BlizzardArmory.UI.UI_diablo;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
+import com.BlizzardArmory.diablo.Items.Item;
 import com.BlizzardArmory.diablo.Items.Items;
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -75,11 +82,23 @@ public class D3CharacterFragment extends Fragment {
     private ImageView bracers;
     private ImageView ring2;
     private ImageView off_hand;
-    ArrayList<String> itemIconURL = new ArrayList<>();
+    private ArrayList<String> itemIconURL = new ArrayList<>();
+
 
     private  ImageView paperdoll;
     private TextView name;
     private TextView lvl_class;
+
+    private ArrayList<Item> items = new ArrayList<>();
+    private TextView itemName;
+    private TextView weapontype;
+    private TextView dps;
+    private TextView primarystats;
+    private TextView secondarystats;
+    private TextView gems;
+    private TextView transmog;
+    private TextView flavortext;
+    private TextView misctext;
 
     private TextView top_stat;
     private TextView vitality;
@@ -93,6 +112,9 @@ public class D3CharacterFragment extends Fragment {
     private double critChance = 0;
     private double areaDamage = 0;
     private double cooldownReduction = 0;
+
+    private CardView cardView;
+    private HorizontalScrollView scrollView;
 
     private RequestQueue requestQueue;
     private RequestQueue requestQueueImage;
@@ -131,7 +153,17 @@ public class D3CharacterFragment extends Fragment {
         attack_speed = view.findViewById(R.id.attack_speed);
         area_damage = view.findViewById(R.id.area_damage);
         cooldown_reduction = view.findViewById(R.id.cooldown_reduction);
-
+        cardView = view.findViewById(R.id.item_stats);
+        scrollView = view.findViewById(R.id.scrollviewhoriz);
+        itemName = view.findViewById(R.id.name);
+        weapontype = view.findViewById(R.id.weapontype);
+        dps = view.findViewById(R.id.dps);
+        primarystats = view.findViewById(R.id.primarystats);
+        secondarystats = view.findViewById(R.id.secondarystats);
+        gems = view.findViewById(R.id.gems);
+        transmog = view.findViewById(R.id.transmog);
+        flavortext = view.findViewById(R.id.flavortext);
+        misctext = view.findViewById(R.id.miscinfo);
         addImageViewItemsToList();
 
         loadingCircle.setVisibility(View.VISIBLE);
@@ -207,7 +239,8 @@ public class D3CharacterFragment extends Fragment {
                             attack_speed.setText(attackSpeedString);
                             area_damage.setText(areaDamageString);
                             cooldown_reduction.setText(cdReductString);
-
+                            getItemInformation();
+                            setItemInformation();
 
                         }
                     }, new Response.ErrorListener() {
@@ -224,6 +257,94 @@ public class D3CharacterFragment extends Fragment {
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         Log.i("time", String.valueOf(duration));
+    }
+
+    private void setItemInformation() {
+        int i = 0;
+        //for(int i = 0; i < items.size(); i++){
+            itemName.setText(Html.fromHtml(items.get(i).getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+            try {
+                if (items.get(i).getType().getOneHanded()) {
+                    weapontype.setText(Html.fromHtml("1-Hand" + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    weapontype.setText(Html.fromHtml("2-Hand" + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                }
+            }catch (Exception e){
+                weapontype.setText("");
+            }
+            try {
+                dps.setText(Html.fromHtml(items.get(i).getMinDamage() + "-" + items.get(i).getMaxDamage() + "<br>" + items.get(i).getAttacksPerSecond() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+            }catch (Exception e){
+
+            }
+            String primary = "";
+            try {
+                for(int j = 0; j < items.get(i).getAttributesHtml().getPrimary().size(); j++){
+                    primary += items.get(i).getAttributesHtml().getPrimary().get(j) + "<br>";
+                }
+            }catch (Exception e){
+
+            }
+            primarystats.setText(Html.fromHtml(primary, Html.FROM_HTML_MODE_LEGACY));
+            String secondary = "";
+            try {
+                for(int j = 0; j < items.get(j).getAttributesHtml().getSecondary().size(); j++){
+                    secondary += items.get(i).getAttributesHtml().getSecondary().get(j) + "<br>";
+                }
+            }catch (Exception e){
+
+            }
+            secondarystats.setText(Html.fromHtml(secondary, Html.FROM_HTML_MODE_LEGACY));
+            String gem = "";
+            try {
+                for(int j = 0; j < items.get(i).getGems().size(); j++){
+                    String gemAttributes = "";
+                    for(int k = 0; k < items.get(i).getAttributesHtml().getSecondary().size(); j++){
+                        gemAttributes += items.get(i).getAttributesHtml().getSecondary().get(k) + "<br>";
+                    }
+                    gem += gemAttributes +  "<br>";
+                }
+            }catch (Exception e){
+
+            }
+            gems.setText(Html.fromHtml(gem, Html.FROM_HTML_MODE_LEGACY));
+            try {
+                transmog.setText(Html.fromHtml(items.get(i).getTransmog().getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+            }catch (Exception e){
+
+            }
+            try {
+                flavortext.setText(Html.fromHtml(items.get(i).getFlavorText() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+            }catch (Exception e){
+
+            }
+            String accountBound = "";
+            try {
+                if(items.get(i).getAccountBound()){
+                    accountBound = "Account Bound";
+                }
+            }catch (Exception e){
+
+            }
+            misctext.setText(Html.fromHtml(items.get(i).getRequiredLevel() + accountBound, Html.FROM_HTML_MODE_LEGACY));
+            setOnPressItemInformation(imageViewItem.get(0));
+        //}
+    }
+
+    private void getItemInformation() {
+        items.add(itemsInformation.getShoulders());
+        items.add(itemsInformation.getHands());
+        items.add(itemsInformation.getLeftFinger());
+        items.add(itemsInformation.getMainHand());
+        items.add(itemsInformation.getHead());
+        items.add(itemsInformation.getTorso());
+        items.add(itemsInformation.getWaist());
+        items.add(itemsInformation.getLegs());
+        items.add(itemsInformation.getFeet());
+        items.add(itemsInformation.getNeck());
+        items.add(itemsInformation.getBracers());
+        items.add(itemsInformation.getRightFinger());
+        items.add(itemsInformation.getOffHand());
     }
 
     private void setName() {
@@ -296,6 +417,35 @@ public class D3CharacterFragment extends Fragment {
                 }
                 break;
         }
+    }
+
+    private void setOnPressItemInformation(ImageView imageView) {
+
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            @SuppressWarnings("deprecation")
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        cardView.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                }
+                return true;
+            }
+        });
+
+        scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (oldScrollX != scrollX) {
+                    cardView.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void getItemIcons() {
