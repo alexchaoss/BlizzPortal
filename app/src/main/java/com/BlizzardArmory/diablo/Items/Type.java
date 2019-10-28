@@ -10,6 +10,9 @@ public class Type {
     @SerializedName("twoHanded")
     @Expose
     private Boolean twoHanded;
+    @SerializedName("oneHanded")
+    @Expose
+    private Boolean oneHanded;
     @SerializedName("id")
     @Expose
     private String id;
@@ -20,6 +23,14 @@ public class Type {
 
     public void setTwoHanded(Boolean twoHanded) {
         this.twoHanded = twoHanded;
+    }
+
+    public Boolean getOneHanded() {
+        return oneHanded;
+    }
+
+    public void setOneHanded(Boolean oneHanded) {
+        this.oneHanded = oneHanded;
     }
 
     public String getId() {

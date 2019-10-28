@@ -114,7 +114,6 @@ public class WowCharacters {
             }else{
                 factionList.add("Neutral");
             }
-            Log.i("Test", factionList.size() + "");
         }
         return factionList;
     }
