@@ -602,10 +602,11 @@ public class WoWCharacterFragment extends Fragment {
                                             try {
                                                 setCharacterItemsInformation(i);
                                             } catch (Exception e) {
-                                                Log.e("Error", e.toString() + "\n");
-                                                for (int j = 0; j < e.getStackTrace().length; j++) {
-                                                    Log.e("Error", e.getStackTrace()[j].toString() + "\n");
-                                                }
+                                                gearImageView.get(i).setPadding(3, 3, 3, 3);
+                                                gearImageView.get(i).setClipToOutline(true);
+                                                Drawable backgroundStroke = itemColor(itemsInfoList.get(i), new GradientDrawable());
+                                                gearImageView.get(i).setBackground(backgroundStroke);
+
                                             }
                                         }
                                     }
@@ -634,10 +635,10 @@ public class WoWCharacterFragment extends Fragment {
                     try {
                         setCharacterItemsInformation(i);
                     } catch (Exception e) {
-                        Log.e("Error", e.toString() + "\n");
-                        for (int j = 0; j < e.getStackTrace().length; j++) {
-                            Log.e("Error", e.getStackTrace()[j].toString() + "\n");
-                        }
+                        gearImageView.get(i).setPadding(3, 3, 3, 3);
+                        gearImageView.get(i).setClipToOutline(true);
+                        Drawable backgroundStroke = itemColor(itemsInfoList.get(i), new GradientDrawable());
+                        gearImageView.get(i).setBackground(backgroundStroke);
                     }
                 }
             }
@@ -812,7 +813,7 @@ public class WoWCharacterFragment extends Fragment {
         } else if (index == 2) {
             return ContextCompat.getDrawable(context, R.drawable.empty_shoulders);
         } else if (index == 3) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_back);
+            return ContextCompat.getDrawable(context, R.drawable.empty_chest);
         } else if (index == 4) {
             return ContextCompat.getDrawable(context, R.drawable.empty_chest);
         } else if (index == 5) {
@@ -842,7 +843,6 @@ public class WoWCharacterFragment extends Fragment {
         } else if (index == 17) {
             return ContextCompat.getDrawable(context, R.drawable.empty_shield);
         }
-
         return null;
     }
 
@@ -878,7 +878,7 @@ public class WoWCharacterFragment extends Fragment {
                 return Color.parseColor("#01c5f7");
             }
         } catch (Exception e) {
-            return Color.parseColor("#01c5f7");
+            return Color.GRAY;
         }
 
         return 0;
