@@ -36,9 +36,10 @@ public class URLConstants {
 
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
-    public final static String WOW_ITEM_QUERY = "/profile/wow/character/realm/name/equipment?namespace=profile-us&locale=en_US&access_token=TOKEN";
-    public final static String WOW_TALENT_QUERY = "/profile/wow/character/auchindoun/ortall/specializations?namespace=profile-us&locale=en_US&access_token=TOKEN";
-    public final static String WOW_CHARACTER_QUERY = "/profile/wow/character/realm/name?namespace=profile-us&locale=en_US&access_token=TOKEN";
+    public final static String WOW_ITEM_QUERY = "/profile/wow/character/realm/characterName/equipment?namespace=profile-zone&locale=en_US&access_token=TOKEN";
+    public final static String WOW_STATS_QUERY = "/profile/wow/character/realm/characterName/statistics?namespace=profile-zone&locale=en_US&access_token=TOKEN";
+    public final static String WOW_TALENT_QUERY = "/profile/wow/character/realm/characterName/specializations?namespace=profile-zone&locale=en_US&access_token=TOKEN";
+    public final static String WOW_CHARACTER_QUERY = "/profile/wow/character/realm/characterName?namespace=profile-zone&locale=en_US&access_token=TOKEN";
     public final static String BONUSID_QUERY = "/data/wow/item/id?b1=bonusList&locale=en_US&";
     public final static String SPELL_ID_QUERY = "/wow/spell/";
 
@@ -75,5 +76,9 @@ public class URLConstants {
 
     public static String getRenderZoneURL() {
         return WOW_CHARACTER_THUMNAIL_URL.replace("zone", MainActivity.selectedRegion.toLowerCase());
+    }
+
+    public static String getRegion(){
+        return MainActivity.selectedRegion.toLowerCase();
     }
 }

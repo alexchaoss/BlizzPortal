@@ -33,14 +33,19 @@ import android.widget.TextView;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.warcraft.CharacterInformation;
+import com.BlizzardArmory.warcraft.CharacterSummary.CharacterSummary;
+import com.BlizzardArmory.warcraft.Equipment.Equipment;
 import com.BlizzardArmory.warcraft.Items.Gear;
 import com.BlizzardArmory.warcraft.Items.Item;
 import com.BlizzardArmory.warcraft.Items.ItemInformation;
 import com.BlizzardArmory.warcraft.Items.Stat;
 import com.BlizzardArmory.warcraft.Items.StatsEnum;
+import com.BlizzardArmory.warcraft.Media.Media;
 import com.BlizzardArmory.warcraft.Spells.AzeritePower;
 import com.BlizzardArmory.warcraft.Spells.ItemSpell;
-import com.BlizzardArmory.warcraft.Spells.Talents;
+import com.BlizzardArmory.warcraft.Talents.Talent;
+import com.BlizzardArmory.warcraft.Talents.Talents;
+import com.BlizzardArmory.warcraft.Statistic.Statistic;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -66,6 +71,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -82,10 +88,17 @@ public class WoWCharacterFragment extends Fragment {
     private JSONObject itemObject = null;
     private JSONObject statsObject = null;
 
-    private Gear equipment;
+    //private Gear equipment;
     private CharacterInformation characterInfo;
 
     //Character information
+    CharacterSummary characterSummary;
+    Statistic statistic;
+    Talents talentsInfo;
+    Equipment equipment;
+
+    private HashMap<String, String> imageURLs = new HashMap<>();
+
     private TextView characterName;
     private TextView itemLVL;
     private TextView levelRaceClass;
@@ -115,7 +128,7 @@ public class WoWCharacterFragment extends Fragment {
     private List<TextView> talentsTierContainer;
     private List<TextView> talentsContainer;
     private List<String> talentsTier;
-    private List<Talents> talents = new ArrayList<>();
+    private List<Talent> talents = new ArrayList<>();
     private TabLayout specs;
     private TextView spec;
     private TextView noTalent;
@@ -137,8 +150,9 @@ public class WoWCharacterFragment extends Fragment {
     private RelativeLayout loadingCircle;
 
     //Containers
+    private ArrayList<String> itemSlotList = new ArrayList();
     private List<String> slotName;
-    private ArrayList<ImageView> gearImageView = new ArrayList<>();
+    private HashMap<String, ImageView> gearImageView = new HashMap<>();
     private ArrayList<Item> itemsInfoList = new ArrayList<>();
     private ArrayList<JSONObject> bonusIDList = new ArrayList<>();
     private ArrayList<ItemInformation> itemInformations = new ArrayList<>();
@@ -271,24 +285,24 @@ public class WoWCharacterFragment extends Fragment {
         mastery = view.findViewById(R.id.mastery);
         versatility = view.findViewById(R.id.versatility);
 
-        gearImageView.add(head);
-        gearImageView.add(neck);
-        gearImageView.add(shoulder);
-        gearImageView.add(back);
-        gearImageView.add(chest);
-        gearImageView.add(shirt);
-        gearImageView.add(tabard);
-        gearImageView.add(wrist);
-        gearImageView.add(hands);
-        gearImageView.add(waist);
-        gearImageView.add(legs);
-        gearImageView.add(feet);
-        gearImageView.add(finger1);
-        gearImageView.add(finger2);
-        gearImageView.add(trinket1);
-        gearImageView.add(trinket2);
-        gearImageView.add(mainHand);
-        gearImageView.add(offHand);
+        gearImageView.put("HEAD", head);
+        gearImageView.put("NECK", neck);
+        gearImageView.put("SHOULDERS", shoulder);
+        gearImageView.put("BACK", back);
+        gearImageView.put("CHEST", chest);
+        gearImageView.put("SHIRT", shirt);
+        gearImageView.put("TABARD", tabard);
+        gearImageView.put("WRIST", wrist);
+        gearImageView.put("HANDS", hands);
+        gearImageView.put("WAIST", waist);
+        gearImageView.put("LEGS", legs);
+        gearImageView.put("FEET", feet);
+        gearImageView.put("FINGER_1", finger1);
+        gearImageView.put("FINGER_2", finger2);
+        gearImageView.put("TRINKET_1", trinket1);
+        gearImageView.put("TRINKET_2", trinket2);
+        gearImageView.put("MAIN_HAND", mainHand);
+        gearImageView.put("OFF_HAND", offHand);
 
         long startTime = System.nanoTime();
 
@@ -304,6 +318,170 @@ public class WoWCharacterFragment extends Fragment {
 
         final Gson gson = new GsonBuilder().create();
 
+        ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                backgroundMain = new BitmapDrawable(getResources(), bitmap);
+                background.setImageDrawable(backgroundMain);
+            }
+        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                new Response.ErrorListener() {
+                    public void onErrorResponse(VolleyError e) {
+                        for (int i = 0; i < e.getStackTrace().length; i++) {
+                            Log.e("Error-Background", e.getStackTrace()[i].getLineNumber() + "\n");
+                        }
+                    }
+                });
+
+        requestQueue.add(imageRequest);
+
+        try {
+            String characterURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_CHARACTER_QUERY);
+            characterURL = characterURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
+
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + characterURL, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            CharacterSummary characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
+                            characterName.setText(characterSummary.getName());
+                            itemLVL.setText(String.format("Item Level : %s", characterSummary.getEquippedItemLevel()));
+                            String levelRaceClassString = characterSummary.getLevel() + " " + characterSummary.getRace().getName() + " " + characterSummary.getCharacterClass().getName();
+                            levelRaceClass.setText(levelRaceClassString);
+
+                            try{
+                                String equipmentURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_ITEM_QUERY);
+                                equipmentURL = equipmentURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
+                                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + equipmentURL, null,
+                                        new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                equipment = gson.fromJson(response.toString(), Equipment.class);
+
+                                                for(int i = 0; i < equipment.getEquippedItems().size(); i++){
+                                                    equipment.getEquippedItems().get(i).getMedia().getKey().getHref();
+
+                                                    getImageURLs(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(),bnOAuth2Helper, gson);
+                                                }
+                                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                loadingCircle.setVisibility(View.GONE);
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError e) {
+
+                                            }
+                                        });
+
+                                requestQueue.add(jsonRequest);
+                            }catch (Exception e){
+                                Log.e("Error Equipment Download", e.toString());
+                            }
+
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError e) {
+                            try {
+                                String response = new String(e.networkResponse.data);
+                                characterInformation = new JSONObject(response);
+                                characterName.setText(characterInformation.get("reason").toString());
+                                itemLVL.setText("");
+                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
+                            } catch (Exception b) {
+                                Log.e("Error", b.toString() + "\n");
+                                for (int i = 0; i < b.getStackTrace().length; i++) {
+                                    Log.e("Error", b.getStackTrace()[i].toString() + "\n");
+                                }
+                            }
+                        }
+                    });
+
+            requestQueue.add(jsonRequest);
+        } catch (Exception e) {
+            Log.e("Error", e.toString() + "\n");
+            for (int i = 0; i < e.getStackTrace().length; i++) {
+                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+            }
+        }
+
+        try{
+            String statsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_STATS_QUERY);
+            statsURL = statsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + statsURL, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            statistic = gson.fromJson(response.toString(), Statistic.class);
+                            setCharacterInformationTextviews();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError e) {
+
+                        }
+                    });
+
+            requestQueue.add(jsonRequest);
+        }catch (Exception e){
+            Log.e("Error Stats Download", e.toString());
+        }
+
+        try{
+            String talentsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_TALENT_QUERY);
+            talentsURL = talentsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + talentsURL, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            talentsInfo = gson.fromJson(response.toString(), Talents.class);
+                            setTalentInformation();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError e) {
+
+                        }
+                    });
+
+            requestQueue.add(jsonRequest);
+        }catch (Exception e){
+            Log.e("Error Talents Download", e.toString());
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
         try {
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
@@ -398,11 +576,77 @@ public class WoWCharacterFragment extends Fragment {
             for (int i = 0; i < e.getStackTrace().length; i++) {
                 Log.e("Error", e.getStackTrace()[i].toString() + "\n");
             }
-        }
+        }*/
 
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         Log.i("time", String.valueOf(duration));
+    }
+
+    private void getImageURLs(final Equipment equipment, final int i, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
+        cache = new DiskBasedCache(getContext().getCacheDir(), 1024 * 1024 * 5); // 1MB cap
+        network = new BasicNetwork(new HurlStack());
+        requestQueueImage = new RequestQueue(cache, network);
+        requestQueueImage.start();
+        try{
+
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, equipment.getEquippedItems().get(i).getMedia().getKey().getHref()
+                    + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Media media = gson.fromJson(response.toString(), Media.class);
+                            imageURLs.put(itemSlot, media.getAssets().get(0).getValue());
+                            itemSlotList.add(itemSlot);
+                            Log.i("Icon URL", media.getAssets().get(0).getValue());
+
+                            if(i == equipment.getEquippedItems().size()) {
+                                for (int j = 0; j < imageURLs.size(); j++) {
+                                    ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlotList.get(j)), new Response.Listener<Bitmap>() {
+                                        @Override
+                                        public void onResponse(Bitmap bitmap) {
+                                            item = new BitmapDrawable(getResources(), bitmap);
+                                            gearImageView.get(itemSlot).setImageDrawable(item);
+                                            //setOnPressItemInformation(gearImageView.get(index), item);
+                                        }
+                                    }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                            new Response.ErrorListener() {
+                                                public void onErrorResponse(VolleyError e) {
+                                                    gearImageView.get(index).setImageDrawable(getEmptySlotIcon(index, getContext()));
+                                                    index++;
+                                                    Log.e("Error-Image", e.toString());
+
+                                                }
+                                            });
+                                    requestQueueImage.add(imageRequest);
+                                }
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError e) {
+
+                        }
+                    });
+
+            requestQueueImage.add(jsonRequest);
+        }catch (Exception e){
+            try {
+                Log.e("Error Image URL Download", e.toString() + "\n" + equipment.getEquippedItems().get(i).getMedia().getKey().getHref()
+                        + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
+            }catch (Exception f){
+
+            }
+        }
+    }
+
+    private String replaceZoneRealmCharacterNameURL(String url){
+        String newURL = url;
+        newURL = newURL.replace("zone", URLConstants.getRegion());
+        newURL = newURL.replace("realm", characterRealm.toLowerCase());
+        newURL = newURL.replace("characterName", characterClicked.toLowerCase());
+        return newURL;
     }
 
     private void getItemInformation(final Gson gson, final BnOAuth2Helper bnOAuth2Helper) {
@@ -738,31 +982,7 @@ public class WoWCharacterFragment extends Fragment {
         return URLConstants.BONUSID_QUERY.replace("id?b1=bonusList", idURL);
     }
 
-    private void getIcons() {
-
-        requestQueueImage = new RequestQueue(cache, network, 1);
-        requestQueueImage.start();
-        for (int i = 0; i < itemsInfoList.size(); i++) {
-            ImageRequest imageRequest = new ImageRequest(URLConstants.WOW_ICONS_URL + "56/" + itemsInfoList.get(i).getIcon() + ".jpg", new Response.Listener<Bitmap>() {
-                @Override
-                public void onResponse(Bitmap bitmap) {
-                    item = new BitmapDrawable(getResources(), bitmap);
-                    setOnPressItemInformation(gearImageView.get(index), item);
-                }
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    new Response.ErrorListener() {
-                        public void onErrorResponse(VolleyError e) {
-                            gearImageView.get(index).setImageDrawable(getEmptySlotIcon(index, getContext()));
-                            index++;
-                            Log.e("Error-Image", e.toString());
-
-                        }
-                    });
-            requestQueueImage.add(imageRequest);
-        }
-    }
-
-    private void initItems() {
+    /*private void initItems() {
         final ArrayList<JSONObject> gearList = new ArrayList<>();
 
         gearList.add(equipment.getHead());
@@ -793,7 +1013,7 @@ public class WoWCharacterFragment extends Fragment {
             }
         }
 
-    }
+    }*/
 
     private Drawable getEmptySlotIcon(int index, Context context) {
         if (index == 0) {
@@ -926,22 +1146,18 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private void setTalentInformation() {
-        for (int i = 0; i < characterInfo.getTalents().size(); i++) {
-
-            if (characterInfo.getTalents().get(i).getSelected()) {
-                talents.addAll(characterInfo.getTalents().get(i).getTalents());
-                spec.setText(String.format("Specialization: %s", characterInfo.getTalents().get(i).getSpec().getName()));
+        for (int i = 0; i < talentsInfo.getSpecializations().size(); i++) {
+            if (talentsInfo.getActiveSpecialization().getName().equals(talentsInfo.getSpecializations().get(i).getSpecialization().getName())) {
+                talents.addAll(talentsInfo.getSpecializations().get(i).getTalents());
+                spec.setText(String.format("Specialization: %s", talentsInfo.getActiveSpecialization().getName()));
             }
         }
 
         try {
             specs.addTab(specs.newTab());
-            specs.getTabAt(3).setText(characterInfo.getTalents().get(3).getSpec().getName());
-        } catch (NullPointerException e) {
-            Log.e("Error", e.toString() + "\n");
-            for (int i = 0; i < e.getStackTrace().length; i++) {
-                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
-            }
+            specs.getTabAt(3).setText(talentsInfo.getSpecializations().get(3).getSpecialization().getName());
+        } catch (Exception e) {
+            Log.e("Talents", "No fourth spec");
             specs.removeTab(specs.getTabAt(3));
         }
 
@@ -949,7 +1165,7 @@ public class WoWCharacterFragment extends Fragment {
             TabLayout.Tab tab = specs.getTabAt(i);
             try {
                 assert tab != null;
-                tab.setText(characterInfo.getTalents().get(i).getSpec().getName());
+                tab.setText(talentsInfo.getSpecializations().get(i).getSpecialization().getName());
             } catch (NullPointerException e) {
                 for (int j = 0; j < e.getStackTrace().length; j++) {
                     Log.e("Error", e.getStackTrace()[j].toString() + "\n");
@@ -965,14 +1181,14 @@ public class WoWCharacterFragment extends Fragment {
         talentsTier = new ArrayList<>(Arrays.asList("15", "30", "45", "60", "75", "90", "100"));
 
         try {
-            sortTalents();
+            //sortTalents();
 
             if (talents.size() > 0) {
                 for (int i = 0; i < talents.size(); i++) {
                     noTalent.setVisibility(View.INVISIBLE);
                     talentsTierContainer.get(i).setGravity(Gravity.CENTER);
                     talentsTierContainer.get(i).setText(talentsTier.get(i));
-                    talentsContainer.get(i).setText(talents.get(i).getSpell().getName());
+                    talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
                 }
             } else {
                 removeTalents();
@@ -980,10 +1196,7 @@ public class WoWCharacterFragment extends Fragment {
 
             }
         } catch (NullPointerException e) {
-            Log.e("Error", e.toString() + "\n");
-            for (int i = 0; i < e.getStackTrace().length; i++) {
-                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
-            }
+            Log.e("Talent-Error", e.toString());
             noTalent.setVisibility(View.VISIBLE);
         }
 
@@ -1012,18 +1225,18 @@ public class WoWCharacterFragment extends Fragment {
             private void getTalentsForSpecificSpec(int position) {
                 try {
                     talents.clear();
-                    talents.addAll(characterInfo.getTalents().get(position).getTalents());
+                    talents.addAll(talentsInfo.getSpecializations().get(position).getTalents());
                     if (talents.size() == 0) {
                         noTalent.setVisibility(View.VISIBLE);
                         removeTalents();
                     } else {
                         noTalent.setVisibility(View.INVISIBLE);
                     }
-                    sortTalents();
+                    //sortTalents();
                     for (int i = 0; i < talents.size(); i++) {
                         talentsTierContainer.get(i).setGravity(Gravity.CENTER);
                         talentsTierContainer.get(i).setText(talentsTier.get(i));
-                        talentsContainer.get(i).setText(talents.get(i).getSpell().getName());
+                        talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
                     }
                 } catch (NullPointerException e) {
                     removeTalents();
@@ -1120,24 +1333,19 @@ public class WoWCharacterFragment extends Fragment {
         }
     }
 
-    private void setCharacterInformationTextviews() throws JSONException {
-        characterName.setText(characterInfo.getName());
-        itemLVL.setText(String.format("Item Level : %s", itemObject.get("averageItemLevel")));
-        String levelRaceClassString = characterInfo.getLevel() + " " + characterInfo.getRace() + " " + characterInfo.getClass_();
-        levelRaceClass.setText(levelRaceClassString);
+    private void setCharacterInformationTextviews() {
+        health.setText(String.format("Health: %s", statistic.getHealth()));
+        power.setText(String.format("%s: %s", statistic.getPowerType().getName(), statistic.getPower()));
 
-        health.setText(String.format("Health: %s", statsObject.get("health")));
-        power.setText(String.format("%s: %s", formatItemSlotName(statsObject.get("powerType").toString().replace("-", " ")), statsObject.get("power")));
+        strength.setText(String.format("Strength: %s", statistic.getStrength().getEffective()));
+        agility.setText(String.format("Agility: %s",  statistic.getAgility().getEffective()));
+        intellect.setText(String.format("Intellect: %s",  statistic.getIntellect().getEffective()));
+        stamina.setText(String.format("Stamina: %s",  statistic.getStamina().getEffective()));
 
-        strength.setText(String.format("Strength: %s", statsObject.get("str")));
-        agility.setText(String.format("Agility: %s", statsObject.get("agi")));
-        intellect.setText(String.format("Intellect: %s", statsObject.get("int")));
-        stamina.setText(String.format("Stamina: %s", statsObject.get("sta")));
-
-        crit.setText(String.format(Locale.ENGLISH, "Critical Strike: %.2f%%", (double) statsObject.get("crit")));
-        haste.setText(String.format(Locale.ENGLISH, "Haste: %.2f%%", (double) statsObject.get("haste")));
-        mastery.setText(String.format(Locale.ENGLISH, "Mastery: %.2f%%", (double) statsObject.get("mastery")));
-        versatility.setText(String.format(Locale.ENGLISH, "Versatility: %.2f%%", (double) statsObject.get("versatilityDamageDoneBonus")));
+        crit.setText(String.format(Locale.ENGLISH, "Critical Strike: %.2f%%",  statistic.getMeleeCrit().getValue()));
+        haste.setText(String.format(Locale.ENGLISH, "Haste: %.2f%%", (double)  statistic.getMeleeHaste().getValue()));
+        mastery.setText(String.format(Locale.ENGLISH, "Mastery: %.2f%%", (double)  statistic.getMastery().getValue()));
+        versatility.setText(String.format(Locale.ENGLISH, "Versatility: %.2f%%", (double)  statistic.getVersatilityDamageDoneBonus()));
     }
 
     private void removeTalents() {
@@ -1147,7 +1355,7 @@ public class WoWCharacterFragment extends Fragment {
         }
     }
 
-    private void sortTalents() {
+    /*private void sortTalents() {
         talents.sort(new Comparator<Talents>() {
             @Override
             public int compare(Talents o1, Talents o2) {
@@ -1159,7 +1367,7 @@ public class WoWCharacterFragment extends Fragment {
                 return 0;
             }
         });
-    }
+    }*/
 
     private String getAzeritePowers(ArrayList<JSONObject> azeriteSpells) throws JSONException {
         StringBuilder azeriteText = new StringBuilder("<br><font color=#edc201> Active Azerite Powers: </font><br>");
