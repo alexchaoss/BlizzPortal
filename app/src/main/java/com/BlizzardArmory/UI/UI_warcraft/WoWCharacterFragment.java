@@ -157,7 +157,7 @@ public class WoWCharacterFragment extends Fragment {
     private int socketIndex = 0;
     private int socketListIndex = 0;
     private ArrayList<String> socketList = new ArrayList<>();
-    private ArrayList<String> enchantList = new ArrayList<>();
+    private ArrayList<String> transmogList = new ArrayList<>();
 
     private SparseArray<String> stats = new SparseArray<>();
     private SparseArray<String> nameList = new SparseArray<>();
@@ -406,7 +406,6 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private void getItemInformation(final Gson gson, final BnOAuth2Helper bnOAuth2Helper) {
-        getEnchantInformation();
 
         for(int i = 0; i < urlItemInfo.size(); i++){
             socketList.add("");
@@ -513,15 +512,6 @@ public class WoWCharacterFragment extends Fragment {
                     });
             requestQueueImage.add(jsonRequest);
         }
-    }
-
-    private void getEnchantInformation() {
-
-        for(int i = 0; i < urlItemInfo.size(); i++) {
-            //String urlEnchant = itemsInfoList.get(i).getTooltipParams().getEnchant().toString();
-        }
-
-
     }
 
     private void getAzeritePowers(final BnOAuth2Helper bnOAuth2Helper) {
