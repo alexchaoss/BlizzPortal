@@ -2,7 +2,6 @@ package com.BlizzardArmory.UI.UI_diablo;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -15,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -90,15 +91,7 @@ public class D3CharacterFragment extends Fragment {
     private TextView lvl_class;
 
     private ArrayList<Item> items = new ArrayList<>();
-    private TextView itemName;
-    private TextView weapontype;
-    private TextView dps;
-    private TextView primarystats;
-    private TextView secondarystats;
-    private TextView gems;
-    private TextView transmog;
-    private TextView flavortext;
-    private TextView misctext;
+
 
     private TextView top_stat;
     private TextView vitality;
@@ -115,6 +108,16 @@ public class D3CharacterFragment extends Fragment {
 
     private CardView cardView;
     private HorizontalScrollView scrollView;
+
+    private TextView itemName;
+    private TextView weapontype;
+    private TextView dps;
+    private TextView primarystats;
+    private TextView secondarystats;
+    private TextView gems;
+    private TextView transmog;
+    private TextView flavortext;
+    private TextView misctext;
 
     private RequestQueue requestQueue;
     private RequestQueue requestQueueImage;
@@ -154,16 +157,37 @@ public class D3CharacterFragment extends Fragment {
         area_damage = view.findViewById(R.id.area_damage);
         cooldown_reduction = view.findViewById(R.id.cooldown_reduction);
         cardView = view.findViewById(R.id.item_stats);
+        cardView.setContentPadding(10, 10, 10, 10);
+        ScrollView itemInfoScroll = new ScrollView(view.getContext());
+        LinearLayout linearLayoutItemStats = new LinearLayout(view.getContext());
+        linearLayoutItemStats.setOrientation(LinearLayout.VERTICAL);
+        linearLayoutItemStats.setGravity(Gravity.CENTER);
+        itemInfoScroll.addView(linearLayoutItemStats);
+        cardView.addView(itemInfoScroll);
         scrollView = view.findViewById(R.id.scrollviewhoriz);
-        itemName = view.findViewById(R.id.name);
-        weapontype = view.findViewById(R.id.weapontype);
-        dps = view.findViewById(R.id.dps);
-        primarystats = view.findViewById(R.id.primarystats);
-        secondarystats = view.findViewById(R.id.secondarystats);
-        gems = view.findViewById(R.id.gems);
-        transmog = view.findViewById(R.id.transmog);
-        flavortext = view.findViewById(R.id.flavortext);
-        misctext = view.findViewById(R.id.miscinfo);
+         TextView itemName = new TextView(view.getContext());
+         TextView weapontype = new TextView(view.getContext());
+         TextView dps = new TextView(view.getContext());
+         TextView primarystats = new TextView(view.getContext());
+         TextView secondarystats = new TextView(view.getContext());
+         TextView gems = new TextView(view.getContext());
+         TextView transmog = new TextView(view.getContext());
+         TextView flavortext = new TextView(view.getContext());
+         TextView misctext = new TextView(view.getContext());
+        LinearLayout.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParamsStats.setMargins(20, 0, 20, 0);
+        linearLayoutItemStats.addView(itemName, layoutParamsStats);
+        linearLayoutItemStats.addView(weapontype, layoutParamsStats);
+        linearLayoutItemStats.addView(dps, layoutParamsStats);
+        linearLayoutItemStats.addView(primarystats, layoutParamsStats);
+        linearLayoutItemStats.addView(secondarystats, layoutParamsStats);
+        linearLayoutItemStats.addView(gems, layoutParamsStats);
+        linearLayoutItemStats.addView(transmog, layoutParamsStats);
+        linearLayoutItemStats.addView(flavortext, layoutParamsStats);
+        linearLayoutItemStats.addView(misctext, layoutParamsStats);
+
+
+
         addImageViewItemsToList();
 
         loadingCircle.setVisibility(View.VISIBLE);
@@ -225,6 +249,7 @@ public class D3CharacterFragment extends Fragment {
                         @Override
                         public void onResponse(JSONObject response) {
                             itemsInformation = gson.fromJson(response.toString(), Items.class);
+                            getItemInformation();
                             setItemBackgroundColor();
                             getItemIconURL(itemIconURL);
                             getItemIcons();
@@ -239,7 +264,6 @@ public class D3CharacterFragment extends Fragment {
                             attack_speed.setText(attackSpeedString);
                             area_damage.setText(areaDamageString);
                             cooldown_reduction.setText(cdReductString);
-                            getItemInformation();
                             setItemInformation();
 
                         }
@@ -260,42 +284,54 @@ public class D3CharacterFragment extends Fragment {
     }
 
     private void setItemInformation() {
-        int i = 0;
-        //for(int i = 0; i < items.size(); i++){
-            itemName.setText(Html.fromHtml(items.get(i).getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+        for(int i = 0; i < items.size(); i++){
+
+            String primary = "";
+            String secondary = "";
+            String gem = "";
+            String accountBound = "";
+
+            try {
+                itemName.setText(Html.fromHtml(items.get(i).getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+            }catch (Exception e){
+            }
+
             try {
                 if (items.get(i).getType().getOneHanded()) {
                     weapontype.setText(Html.fromHtml("1-Hand" + "<br>", Html.FROM_HTML_MODE_LEGACY));
-                } else {
+                } else if(items.get(i).getType().getTwoHanded()) {
                     weapontype.setText(Html.fromHtml("2-Hand" + "<br>", Html.FROM_HTML_MODE_LEGACY));
                 }
             }catch (Exception e){
-                weapontype.setText("");
             }
             try {
-                dps.setText(Html.fromHtml(items.get(i).getMinDamage() + "-" + items.get(i).getMaxDamage() + "<br>" + items.get(i).getAttacksPerSecond() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                if(items.get(i).getMinDamage() == 0 && items.get(i).getMaxDamage() != 0) {
+                    dps.setText(Html.fromHtml(items.get(i).getMinDamage() + "-" + items.get(i).getMaxDamage() + "<br>" + items.get(i).getAttacksPerSecond() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                }
             }catch (Exception e){
-
+                dps.setText("");
             }
-            String primary = "";
+
             try {
                 for(int j = 0; j < items.get(i).getAttributesHtml().getPrimary().size(); j++){
                     primary += items.get(i).getAttributesHtml().getPrimary().get(j) + "<br>";
                 }
+                primarystats.setText(Html.fromHtml(primary, Html.FROM_HTML_MODE_LEGACY));
             }catch (Exception e){
-
+                primary = "";
             }
-            primarystats.setText(Html.fromHtml(primary, Html.FROM_HTML_MODE_LEGACY));
-            String secondary = "";
+
+
             try {
                 for(int j = 0; j < items.get(j).getAttributesHtml().getSecondary().size(); j++){
                     secondary += items.get(i).getAttributesHtml().getSecondary().get(j) + "<br>";
                 }
+                secondarystats.setText(Html.fromHtml(secondary, Html.FROM_HTML_MODE_LEGACY));
             }catch (Exception e){
-
+                secondary = "";
             }
-            secondarystats.setText(Html.fromHtml(secondary, Html.FROM_HTML_MODE_LEGACY));
-            String gem = "";
+
+
             try {
                 for(int j = 0; j < items.get(i).getGems().size(); j++){
                     String gemAttributes = "";
@@ -304,31 +340,30 @@ public class D3CharacterFragment extends Fragment {
                     }
                     gem += gemAttributes +  "<br>";
                 }
+                gems.setText(Html.fromHtml(gem, Html.FROM_HTML_MODE_LEGACY));
             }catch (Exception e){
-
             }
-            gems.setText(Html.fromHtml(gem, Html.FROM_HTML_MODE_LEGACY));
+
             try {
                 transmog.setText(Html.fromHtml(items.get(i).getTransmog().getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
             }catch (Exception e){
-
             }
             try {
                 flavortext.setText(Html.fromHtml(items.get(i).getFlavorText() + "<br>", Html.FROM_HTML_MODE_LEGACY));
             }catch (Exception e){
-
             }
-            String accountBound = "";
+
             try {
                 if(items.get(i).getAccountBound()){
                     accountBound = "Account Bound";
                 }
+                misctext.setText(Html.fromHtml(items.get(i).getRequiredLevel() + accountBound, Html.FROM_HTML_MODE_LEGACY));
             }catch (Exception e){
-
             }
-            misctext.setText(Html.fromHtml(items.get(i).getRequiredLevel() + accountBound, Html.FROM_HTML_MODE_LEGACY));
-            setOnPressItemInformation(imageViewItem.get(0));
-        //}
+
+            Log.i("TEST", "TEST");
+            setOnPressItemInformation(imageViewItem.get(i));
+        }
     }
 
     private void getItemInformation() {
@@ -506,164 +541,23 @@ public class D3CharacterFragment extends Fragment {
     }
 
     private void setItemBackgroundColor() {
-        try {
-            selectColor(itemsInformation.getShoulders().getDisplayColor(), shoulders);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", shoulders);
-        }
-        try {
-            selectColor(itemsInformation.getHands().getDisplayColor(), hands);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", hands);
-        }
-        try {
-            selectColor(itemsInformation.getLeftFinger().getDisplayColor(), ring1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", ring1);
-        }
-        try {
-            selectColor(itemsInformation.getMainHand().getDisplayColor(), main_hand);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", main_hand);
-        }
-        try {
-            selectColor(itemsInformation.getHead().getDisplayColor(), head);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", head);
-        }
-        try {
-            selectColor(itemsInformation.getTorso().getDisplayColor(), chest);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", chest);
-        }
-        try {
-            selectColor(itemsInformation.getWaist().getDisplayColor(), belt);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", belt);
-        }
-        try {
-            selectColor(itemsInformation.getLegs().getDisplayColor(), legs);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", legs);
-        }
-        try {
-            selectColor(itemsInformation.getFeet().getDisplayColor(), boots);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", boots);
-        }
-        try {
-            selectColor(itemsInformation.getNeck().getDisplayColor(), amulet);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", amulet);
-        }
-        try {
-            selectColor(itemsInformation.getBracers().getDisplayColor(), bracers);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", bracers);
-        }
-        try {
-            selectColor(itemsInformation.getRightFinger().getDisplayColor(), ring2);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", ring2);
-        }
-        try {
-            selectColor(itemsInformation.getOffHand().getDisplayColor(), off_hand);
-        } catch (Exception e) {
-            e.printStackTrace();
-            selectColor("", off_hand);
+        for(int i = 0; i < imageViewItem.size(); i++){
+            try {
+                selectColor(items.get(i).getDisplayColor(), imageViewItem.get(i));
+            } catch (Exception e) {
+                e.printStackTrace();
+                selectColor("", imageViewItem.get(i));
+            }
         }
     }
 
     private void getAttackStats(){
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getShoulders().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getShoulders().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getHands().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getHands().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getLeftFinger().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getLeftFinger().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getMainHand().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getMainHand().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getHead().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getHead().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getTorso().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getTorso().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getWaist().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getWaist().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getLegs().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getLegs().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getFeet().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getFeet().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getNeck().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getNeck().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getBracers().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getBracers().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getRightFinger().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getRightFinger().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.i("TEST", Arrays.toString(itemsInformation.getOffHand().getAttributes().getPrimary().toArray()));
-            getAttackSpeedCritDamageCritChance(itemsInformation.getOffHand().getAttributes().getPrimary());
-        } catch (Exception e) {
-            e.printStackTrace();
+        for(int i = 0; i < imageViewItem.size(); i++){
+            try {
+                getAttackSpeedCritDamageCritChance(items.get(i).getAttributes().getPrimary());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -719,83 +613,13 @@ public class D3CharacterFragment extends Fragment {
     }
 
     private void getItemIconURL(List<String> itemIconURL) {
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getShoulders().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getHands().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getLeftFinger().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getMainHand().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getHead().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getTorso().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getWaist().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getLegs().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getFeet().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getNeck().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getBracers().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getRightFinger().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
-        }
-        try{
-            itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", itemsInformation.getOffHand().getIcon()) + ".png");
-        }catch (Exception e){
-            Log.e("Error", e.toString());
-            itemIconURL.add(null);
+        for(int i = 0; i < items.size(); i++){
+            try{
+                itemIconURL.add(URLConstants.D3_ICON_ITEMS.replace("icon.png", items.get(i).getIcon()) + ".png");
+            }catch (Exception e){
+                Log.e("Error", e.toString());
+                itemIconURL.add(null);
+            }
         }
     }
 
