@@ -1,9 +1,19 @@
 
 package com.BlizzardArmory.warcraft.Equipment;
 
+import android.text.TextUtils;
+
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
 public class EquippedItem {
 
@@ -82,9 +92,8 @@ public class EquippedItem {
     @SerializedName("set")
     @Expose
     private Set set;
-    @SerializedName("name_description")
-    @Expose
-    private String nameDescription;
+    private String nameDescription = "";
+    private NameDescription nameDescriptionObject;
     @SerializedName("sell_price")
     @Expose
     private SellPrice sellPrice;
@@ -282,6 +291,14 @@ public class EquippedItem {
         this.description = description;
     }
 
+    public NameDescription getNameDescriptionObject() {
+        return nameDescriptionObject;
+    }
+
+    public void setNameDescription(NameDescription nameDescription) {
+        this.nameDescriptionObject = nameDescription;
+    }
+
     public boolean isIsSubclassHidden() {
         return isSubclassHidden;
     }
@@ -338,4 +355,29 @@ public class EquippedItem {
         this.weapon = weapon;
     }
 
+
+    public static class NameDescriptionDeserializer implements JsonDeserializer<EquippedItem> {
+
+        @Override
+        public EquippedItem deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            EquippedItem equippedItem = new Gson().fromJson(json, EquippedItem.class);
+            JsonObject jsonObject = json.getAsJsonObject();
+
+            if (jsonObject.has("rated")) {
+                JsonElement elem = jsonObject.get("rated");
+                if (elem != null && !elem.isJsonNull()) {
+                    if(elem.getAsString() != null){
+                        equippedItem.setNameDescription(elem.getAsString());
+                    }else{
+                        equippedItem.setNameDescription(new NameDescription(elem.getAsJsonObject().get("display_string").getAsString(),
+                                new Color(elem.getAsJsonObject().get("color").getAsJsonObject().get("r").getAsInt(),
+                                        elem.getAsJsonObject().get("color").getAsJsonObject().get("g").getAsInt(),
+                                        elem.getAsJsonObject().get("color").getAsJsonObject().get("b").getAsInt(),
+                                        elem.getAsJsonObject().get("color").getAsJsonObject().get("a").getAsFloat())));
+                    }
+                }
+            }
+            return equippedItem ;
+        }
+    }
 }
