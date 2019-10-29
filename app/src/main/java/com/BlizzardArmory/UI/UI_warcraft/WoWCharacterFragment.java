@@ -35,7 +35,7 @@ import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.warcraft.CharacterInformation;
 import com.BlizzardArmory.warcraft.CharacterSummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.Equipment.Equipment;
-import com.BlizzardArmory.warcraft.Items.Gear;
+import com.BlizzardArmory.warcraft.Equipment.EquippedItem;
 import com.BlizzardArmory.warcraft.Items.Item;
 import com.BlizzardArmory.warcraft.Items.ItemInformation;
 import com.BlizzardArmory.warcraft.Items.Stat;
@@ -66,7 +66,6 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -98,6 +97,7 @@ public class WoWCharacterFragment extends Fragment {
     Equipment equipment;
 
     private HashMap<String, String> imageURLs = new HashMap<>();
+    private int iconIndex = 0;
 
     private TextView characterName;
     private TextView itemLVL;
@@ -287,7 +287,7 @@ public class WoWCharacterFragment extends Fragment {
 
         gearImageView.put("HEAD", head);
         gearImageView.put("NECK", neck);
-        gearImageView.put("SHOULDERS", shoulder);
+        gearImageView.put("SHOULDER", shoulder);
         gearImageView.put("BACK", back);
         gearImageView.put("CHEST", chest);
         gearImageView.put("SHIRT", shirt);
@@ -343,7 +343,7 @@ public class WoWCharacterFragment extends Fragment {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            CharacterSummary characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
+                            characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
                             characterName.setText(characterSummary.getName());
                             itemLVL.setText(String.format("Item Level : %s", characterSummary.getEquippedItemLevel()));
                             String levelRaceClassString = characterSummary.getLevel() + " " + characterSummary.getRace().getName() + " " + characterSummary.getCharacterClass().getName();
@@ -351,18 +351,41 @@ public class WoWCharacterFragment extends Fragment {
 
                             try{
                                 String equipmentURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_ITEM_QUERY);
+
                                 equipmentURL = equipmentURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
                                 JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + equipmentURL, null,
                                         new Response.Listener<JSONObject>() {
                                             @Override
                                             public void onResponse(JSONObject response) {
-                                                equipment = gson.fromJson(response.toString(), Equipment.class);
+                                                final Gson gsonEquipment = new GsonBuilder().registerTypeAdapter(EquippedItem.class, new EquippedItem.NameDescriptionDeserializer()).create();
+                                                equipment = gsonEquipment.fromJson(response.toString(), Equipment.class);
 
                                                 for(int i = 0; i < equipment.getEquippedItems().size(); i++){
                                                     equipment.getEquippedItems().get(i).getMedia().getKey().getHref();
-
                                                     getImageURLs(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(),bnOAuth2Helper, gson);
+
+                                                    try {
+                                                            setCharacterItemsInformation(i);
+                                                    }catch (Exception e){
+
+                                                    }
                                                 }
+
+                                                for(String slot: gearImageView.keySet()){
+                                                    boolean slotEquipped = false;
+                                                    for(int i = 0; i < equipment.getEquippedItems().size(); i++) {
+                                                        if(slot.equals(equipment.getEquippedItems().get(i).getSlot().getType())){
+                                                            slotEquipped = true;
+                                                        }
+                                                    }
+                                                    if(!slotEquipped){
+                                                        getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
+                                                    }
+                                                }
+
+
+
+
                                                 Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                                 loadingCircle.setVisibility(View.GONE);
                                             }
@@ -583,14 +606,14 @@ public class WoWCharacterFragment extends Fragment {
         Log.i("time", String.valueOf(duration));
     }
 
-    private void getImageURLs(final Equipment equipment, final int i, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
+    private void getImageURLs(final Equipment equipment, final int index, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
         cache = new DiskBasedCache(getContext().getCacheDir(), 1024 * 1024 * 5); // 1MB cap
         network = new BasicNetwork(new HurlStack());
         requestQueueImage = new RequestQueue(cache, network);
         requestQueueImage.start();
         try{
 
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, equipment.getEquippedItems().get(i).getMedia().getKey().getHref()
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
                     + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -600,27 +623,19 @@ public class WoWCharacterFragment extends Fragment {
                             itemSlotList.add(itemSlot);
                             Log.i("Icon URL", media.getAssets().get(0).getValue());
 
-                            if(i == equipment.getEquippedItems().size()) {
-                                for (int j = 0; j < imageURLs.size(); j++) {
-                                    ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlotList.get(j)), new Response.Listener<Bitmap>() {
+                                    ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), new Response.Listener<Bitmap>() {
                                         @Override
                                         public void onResponse(Bitmap bitmap) {
                                             item = new BitmapDrawable(getResources(), bitmap);
-                                            gearImageView.get(itemSlot).setImageDrawable(item);
-                                            //setOnPressItemInformation(gearImageView.get(index), item);
+                                            setIcons(itemSlot, equipment, item);
                                         }
                                     }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                                             new Response.ErrorListener() {
                                                 public void onErrorResponse(VolleyError e) {
-                                                    gearImageView.get(index).setImageDrawable(getEmptySlotIcon(index, getContext()));
-                                                    index++;
                                                     Log.e("Error-Image", e.toString());
-
                                                 }
                                             });
                                     requestQueueImage.add(imageRequest);
-                                }
-                            }
                         }
                     },
                     new Response.ErrorListener() {
@@ -633,12 +648,25 @@ public class WoWCharacterFragment extends Fragment {
             requestQueueImage.add(jsonRequest);
         }catch (Exception e){
             try {
-                Log.e("Error Image URL Download", e.toString() + "\n" + equipment.getEquippedItems().get(i).getMedia().getKey().getHref()
+                Log.e("Error Image URL Download", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
                         + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
             }catch (Exception f){
 
             }
         }
+    }
+
+    private void setIcons(String itemSlot, Equipment equipment, Drawable item) {
+        gearImageView.get(itemSlot).setImageDrawable(item);
+        gearImageView.get(itemSlot).setPadding(3, 3, 3, 3);
+        gearImageView.get(itemSlot).setClipToOutline(true);
+        Drawable backgroundStroke = null;
+        for (int i = 0; i < equipment.getEquippedItems().size(); i++) {
+            if (equipment.getEquippedItems().get(i).getSlot().getType().equals(itemSlot)) {
+                backgroundStroke = itemColor(equipment.getEquippedItems().get(i), new GradientDrawable());
+            }
+        }
+        gearImageView.get(itemSlot).setBackground(backgroundStroke);
     }
 
     private String replaceZoneRealmCharacterNameURL(String url){
@@ -838,8 +866,8 @@ public class WoWCharacterFragment extends Fragment {
                                             } catch (Exception e) {
                                                 gearImageView.get(i).setPadding(3, 3, 3, 3);
                                                 gearImageView.get(i).setClipToOutline(true);
-                                                Drawable backgroundStroke = itemColor(itemsInfoList.get(i), new GradientDrawable());
-                                                gearImageView.get(i).setBackground(backgroundStroke);
+                                                //Drawable backgroundStroke = itemColor(itemsInfoList.get(i), new GradientDrawable());
+                                                //gearImageView.get(i).setBackground(backgroundStroke);
 
                                             }
                                         }
@@ -870,9 +898,9 @@ public class WoWCharacterFragment extends Fragment {
                         setCharacterItemsInformation(i);
                     } catch (Exception e) {
                         gearImageView.get(i).setPadding(3, 3, 3, 3);
-                        gearImageView.get(i).setClipToOutline(true);
-                        Drawable backgroundStroke = itemColor(itemsInfoList.get(i), new GradientDrawable());
-                        gearImageView.get(i).setBackground(backgroundStroke);
+                        //gearImageView.get(i).setClipToOutline(true);
+                        //Drawable backgroundStroke = itemColor(itemsInfoList.get(i), new GradientDrawable());
+                        //gearImageView.get(i).setBackground(backgroundStroke);
                     }
                 }
             }
@@ -1015,76 +1043,96 @@ public class WoWCharacterFragment extends Fragment {
 
     }*/
 
-    private Drawable getEmptySlotIcon(int index, Context context) {
-        if (index == 0) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_head);
-        } else if (index == 1) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_neck);
-        } else if (index == 2) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_shoulders);
-        } else if (index == 3) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_chest);
-        } else if (index == 4) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_chest);
-        } else if (index == 5) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_shirt);
-        } else if (index == 6) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_tabard);
-        } else if (index == 7) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_wrist);
-        } else if (index == 8) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_hands);
-        } else if (index == 9) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_waist);
-        } else if (index == 10) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_legs);
-        } else if (index == 11) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_feet);
-        } else if (index == 12) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_ring);
-        } else if (index == 13) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_ring);
-        } else if (index == 14) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_trinket);
-        } else if (index == 15) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_trinket);
-        } else if (index == 16) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_main_hand);
-        } else if (index == 17) {
-            return ContextCompat.getDrawable(context, R.drawable.empty_shield);
+    private void getEmptySlotIcon(String itemSlot, Context context) {
+        gearImageView.get(itemSlot).setPadding(3, 3, 3, 3);
+        gearImageView.get(itemSlot).setClipToOutline(true);
+        GradientDrawable backgroundStroke = new GradientDrawable();
+        backgroundStroke.setCornerRadius(3);
+        backgroundStroke.setColor(Color.parseColor("#000000"));
+        backgroundStroke.setStroke(3,  Color.GRAY);
+        gearImageView.get(itemSlot).setBackground(backgroundStroke);
+
+        switch (itemSlot){
+            case "HEAD":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_head));
+                break;
+            case "NECK":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_neck));
+                break;
+            case "SHOULDER":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_shoulders));
+                break;
+            case "CHEST":
+            case "BACK":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_chest));
+                break;
+            case "SHIRT":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_shirt));
+                break;
+            case "TABARD":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_tabard));
+                break;
+            case "WRIST":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_wrist));
+                break;
+            case "HANDS":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_hands));
+                break;
+            case "WAIST":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_waist));
+                break;
+            case "LEGS":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_legs));
+                break;
+            case "FEET":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_feet));
+                break;
+            case "RING_1":
+            case "RING_2":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_ring));
+                break;
+            case "TRINKET_1":
+            case "TRINKET_2":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_trinket));
+                break;
+            case "MAIN_HAND":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_main_hand));
+                break;
+            case "OFF_HAND":
+                gearImageView.get(itemSlot).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_shield));
+                break;
         }
-        return null;
     }
 
     private String swapRealmCharacterFromURL() {
         return URLConstants.WOW_ITEM_QUERY.replace("realm/character", characterRealm + "/" + characterClicked);
     }
 
-    private Drawable itemColor(Item item, GradientDrawable drawable) {
+    private Drawable itemColor(EquippedItem equippedItem, GradientDrawable drawable) {
         drawable.setCornerRadius(3);
         drawable.setColor(Color.parseColor("#000000"));
-        drawable.setStroke(3, getItemColor(item));
+        drawable.setStroke(3, getItemColor(equippedItem));
 
         return drawable;
     }
 
-    private int getItemColor(Item item) {
+    private int getItemColor(EquippedItem item) {
         try {
-            if (item.getQuality() == 0) {
+            if (item.getQuality().getType().equals("POOR")) {
                 return Color.GRAY;
-            } else if (item.getQuality() == 1) {
+            } else if (item.getQuality().getType().equals("COMMON")) {
                 return Color.WHITE;
-            } else if (item.getQuality() == 2) {
+            } else if (item.getQuality().getType().equals("UNCOMMON")) {
                 return Color.parseColor("#00cc00");
-            } else if (item.getQuality() == 3) {
+            } else if (item.getQuality().getType().equals("RARE")) {
                 return Color.parseColor("#0070ff");
-            } else if (item.getQuality() == 4) {
+            } else if (item.getQuality().getType().equals("EPIC")) {
                 return Color.parseColor("#663288");
-            } else if (item.getQuality() == 5) {
+            } else if (item.getQuality().getType().equals("LEGENDARY")) {
                 return Color.parseColor("#ff8000");
-            } else if (item.getQuality() == 6) {
+            } else if (item.getQuality().getType().equals("ARTIFACT")) {
                 return Color.parseColor("#b2a06c");
-            } else if (item.getQuality() == 7) {
+            } else if (item.getQuality().getType().equals("HEIRLOOM")) {
                 return Color.parseColor("#01c5f7");
             }
         } catch (Exception e) {
@@ -1094,15 +1142,9 @@ public class WoWCharacterFragment extends Fragment {
         return 0;
     }
 
-    private void setOnPressItemInformation(final ImageView imageView, Drawable icon) {
-        imageView.setId(index);
-        imageView.setImageDrawable(icon);
-        imageView.setPadding(3, 3, 3, 3);
-        imageView.setClipToOutline(true);
-        Drawable backgroundStroke = itemColor(itemsInfoList.get(index), new GradientDrawable());
-        imageView.setBackground(backgroundStroke);
+    private void setOnPressItemInformation(final ImageView imageView, Drawable icon, String itemSlot) {
 
-        imageView.setOnTouchListener(new View.OnTouchListener() {
+        /*imageView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             @SuppressWarnings("deprecation")
@@ -1141,14 +1183,18 @@ public class WoWCharacterFragment extends Fragment {
                     cardView.setVisibility(View.GONE);
                 }
             }
-        });
+        });*/
         index++;
     }
 
     private void setTalentInformation() {
         for (int i = 0; i < talentsInfo.getSpecializations().size(); i++) {
             if (talentsInfo.getActiveSpecialization().getName().equals(talentsInfo.getSpecializations().get(i).getSpecialization().getName())) {
-                talents.addAll(talentsInfo.getSpecializations().get(i).getTalents());
+                try {
+                    talents.addAll(talentsInfo.getSpecializations().get(i).getTalents());
+                }catch (Exception e){
+                    talents.add(new Talent());
+                }
                 spec.setText(String.format("Specialization: %s", talentsInfo.getActiveSpecialization().getName()));
             }
         }
@@ -1161,18 +1207,29 @@ public class WoWCharacterFragment extends Fragment {
             specs.removeTab(specs.getTabAt(3));
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < talentsInfo.getSpecializations().size(); i++) {
             TabLayout.Tab tab = specs.getTabAt(i);
             try {
                 assert tab != null;
                 tab.setText(talentsInfo.getSpecializations().get(i).getSpecialization().getName());
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
                 for (int j = 0; j < e.getStackTrace().length; j++) {
                     Log.e("Error", e.getStackTrace()[j].toString() + "\n");
                 }
                 tab.setText("Unavailable");
             }
         }
+
+        if(talentsInfo.getSpecializations().size() < 3){
+            TabLayout.Tab tab2 = specs.getTabAt(1);
+            tab2.setText("Unavailable");
+            TabLayout.Tab tab3 = specs.getTabAt(2);
+            tab3.setText("Unavailable");
+        }else if(talentsInfo.getSpecializations().size() < 2){
+            TabLayout.Tab tab2 = specs.getTabAt(1);
+            tab2.setText("Unavailable");
+        }
+
 
         talentsTierContainer = new ArrayList<>(Arrays.asList(fifteen, thirty, forty_five,
                 sixty, seventy_five, ninety, hundred));
@@ -1188,7 +1245,12 @@ public class WoWCharacterFragment extends Fragment {
                     noTalent.setVisibility(View.INVISIBLE);
                     talentsTierContainer.get(i).setGravity(Gravity.CENTER);
                     talentsTierContainer.get(i).setText(talentsTier.get(i));
-                    talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
+                    try {
+                        talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
+                    }catch (Exception e){
+                        removeTalents();
+                        noTalent.setVisibility(View.VISIBLE);
+                    }
                 }
             } else {
                 removeTalents();
@@ -1206,16 +1268,24 @@ public class WoWCharacterFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        getTalentsForSpecificSpec(0);
+                        if(!tab.getText().equals("Unavailable")) {
+                            getTalentsForSpecificSpec(0);
+                        }
                         break;
                     case 1:
-                        getTalentsForSpecificSpec(1);
+                        if(!tab.getText().equals("Unavailable")) {
+                            getTalentsForSpecificSpec(1);
+                        }
                         break;
                     case 2:
-                        getTalentsForSpecificSpec(2);
+                        if(!tab.getText().equals("Unavailable")) {
+                            getTalentsForSpecificSpec(2);
+                        }
                         break;
                     case 3:
-                        getTalentsForSpecificSpec(3);
+                        if(!tab.getText().equals("Unavailable")) {
+                            getTalentsForSpecificSpec(3);
+                        }
                         break;
                     default:
                 }
@@ -1263,20 +1333,20 @@ public class WoWCharacterFragment extends Fragment {
 
 
     private void setCharacterItemsInformation(final int index) throws JSONException {
-        String description = "";
         String nameDescription = "";
-        String trigger = "";
         String damageInfo = "";
-        String durability = "Durability " + itemInformations.get(index).getMaxDurability() + "/" + itemInformations.get(index).getMaxDurability();
-        String requiredLevel = "Requires Level " + itemInformations.get(index).getRequiredLevel();
-        String itemName = itemsInfoList.get(index).getName();
-        String itemLvl = "<font color=#edc201>Item Level " + itemsInfoList.get(index).getItemLevel().toString() + "</font>";
-        String armor = itemsInfoList.get(index).getArmor().toString();
-        if (itemInformations.get(index).getName() != null) {
-            description = "<font color=#edc201>" + itemInformations.get(index).getDescription() + "</font>";
-            nameDescription = "<font color=#00cc00>" + itemInformations.get(index).getNameDescription() + "</font><br>";
-            trigger = getTrigger(index);
+        String durability = equipment.getEquippedItems().get(index).getDurability().getDisplayString();
+        String requiredLevel = equipment.getEquippedItems().get(index).getRequirements().getLevel().getDisplayString();
+        String itemName = equipment.getEquippedItems().get(index).getName();
+        String itemLvl = "<font color=#edc201>" + equipment.getEquippedItems().get(index).getLevel().getDisplayString() + "</font>";
+        String armor = equipment.getEquippedItems().get(index).getArmor().getDisplayString();
+        String description = "<font color=#edc201>" + equipment.getEquippedItems().get(index).getNameDescription() + "</font>";
+        if(equipment.getEquippedItems().get(index).getNameDescription().equals("")) {
+            nameDescription = "<font color=#00cc00>" + equipment.getEquippedItems().get(index).getNameDescription() + "</font><br>";
+        }else{
+            nameDescription = "<font color=#00cc00>" + equipment.getEquippedItems().get(index).getNameDescriptionObject().getDisplayString() + "</font><br>";
         }
+        String trigger = getTrigger(index);
         String HoALevel = "";
         if(itemsInfoList.get(1).getName().equals("Heart of Azeroth") && index == 1){
             HoALevel = "<font color=#edc201>Azerite Power Level " + itemsInfoList.get(1).getAzeriteItem().getAzeriteLevel().toString() + "</font><br>";
