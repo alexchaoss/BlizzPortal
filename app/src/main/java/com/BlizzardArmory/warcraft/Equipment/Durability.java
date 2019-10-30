@@ -11,7 +11,7 @@ public class Durability {
     private int value;
     @SerializedName("display_string")
     @Expose
-    private String displayString;
+    private String displayString = "";
 
     public int getValue() {
         return value;

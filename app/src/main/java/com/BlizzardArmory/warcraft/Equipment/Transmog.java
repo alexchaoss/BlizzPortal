@@ -9,10 +9,10 @@ public class Transmog {
     @SerializedName("item")
     @Expose
     private Item item;
-    @SerializedName("displaystring")
+    @SerializedName("display_string")
     @Expose
     private String displayString;
-    @SerializedName("itemmodifiedappearanceid")
+    @SerializedName("item_modified_appearance_id")
     @Expose
     private int itemModifiedAppearanceId;
 

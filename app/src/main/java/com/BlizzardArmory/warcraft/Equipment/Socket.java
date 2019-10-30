@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Socket {
 
-    @SerializedName("sockettype")
+    @SerializedName("socket_type")
     @Expose
     private SocketType socketType;
     @SerializedName("item")
@@ -16,13 +16,13 @@ public class Socket {
     @SerializedName("context")
     @Expose
     private int context;
-    @SerializedName("displaystring")
+    @SerializedName("display_string")
     @Expose
     private String displayString;
     @SerializedName("media")
     @Expose
     private Media media;
-    @SerializedName("bonuslist")
+    @SerializedName("bonus_list")
     @Expose
     private List<Integer> bonusList = null;
 

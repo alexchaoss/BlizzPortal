@@ -12,7 +12,7 @@ public class MainSpellTooltip {
     @SerializedName("description")
     @Expose
     private String description;
-    @SerializedName("casttime")
+    @SerializedName("cast_time")
     @Expose
     private String castTime;
     @SerializedName("range")
