@@ -753,53 +753,38 @@ public class WoWCharacterFragment extends Fragment {
                     case 0:
                         if(!tab.getText().equals("Unavailable")) {
                             getTalentsForSpecificSpec(0);
+                        }else{
+                            removeTalents();
+                            noTalent.setVisibility(View.VISIBLE);
                         }
                         break;
                     case 1:
                         if(!tab.getText().equals("Unavailable")) {
                             getTalentsForSpecificSpec(1);
+                        }else{
+                            removeTalents();
+                            noTalent.setVisibility(View.VISIBLE);
                         }
                         break;
                     case 2:
                         if(!tab.getText().equals("Unavailable")) {
                             getTalentsForSpecificSpec(2);
+                        }else{
+                            removeTalents();
+                            noTalent.setVisibility(View.VISIBLE);
                         }
                         break;
                     case 3:
                         if(!tab.getText().equals("Unavailable")) {
                             getTalentsForSpecificSpec(3);
+                        }else{
+                            removeTalents();
+                            noTalent.setVisibility(View.VISIBLE);
                         }
                         break;
                     default:
                 }
 
-            }
-
-            private void getTalentsForSpecificSpec(int position) {
-                try {
-                    talents.clear();
-                    talents.addAll(talentsInfo.getSpecializations().get(position).getTalents());
-                    if (talents.size() == 0) {
-                        noTalent.setVisibility(View.VISIBLE);
-                        removeTalents();
-                    } else {
-                        noTalent.setVisibility(View.INVISIBLE);
-                    }
-                    //sortTalents();
-                    for (int i = 0; i < talents.size(); i++) {
-                        talentsTierContainer.get(i).setGravity(Gravity.CENTER);
-                        talentsTierContainer.get(i).setText(talentsTier.get(i));
-                        talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
-                    }
-                } catch (NullPointerException e) {
-                    removeTalents();
-                    noTalent.setVisibility(View.VISIBLE);
-
-                    Log.e("Error", e.toString() + "\n");
-                    for (int i = 0; i < e.getStackTrace().length; i++) {
-                        Log.e("Error", e.getStackTrace()[i].toString() + "\n");
-                    }
-                }
             }
 
             @Override
@@ -814,11 +799,48 @@ public class WoWCharacterFragment extends Fragment {
         });
     }
 
+    private void getTalentsForSpecificSpec(int position) {
+        try {
+            talents.clear();
+            talents.addAll(talentsInfo.getSpecializations().get(position).getTalents());
+            noTalent.setVisibility(View.INVISIBLE);
+
+            //sortTalents();
+            for (int i = 0; i < talents.size(); i++) {
+                talentsTierContainer.get(i).setGravity(Gravity.CENTER);
+                talentsTierContainer.get(i).setText(talentsTier.get(i));
+                talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
+            }
+        } catch (NullPointerException e) {
+            removeTalents();
+            noTalent.setVisibility(View.VISIBLE);
+
+            Log.e("Error", e.toString() + "\n");
+            for (int i = 0; i < e.getStackTrace().length; i++) {
+                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
+            }
+        }
+    }
+
+    /*private void sortTalents() {
+        talents.sort(new Comparator<Talents>() {
+            @Override
+            public int compare(Talents o1, Talents o2) {
+                if (o1.getTier() < o2.getTier()) {
+                    return -1;
+                } else if (o1.getTier() > o2.getTier()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+    }*/
+
 
     private void setCharacterItemsInformation(final int index){
         EquippedItem equippedItem = equipment.getEquippedItems().get(index);
         nameList.put(equippedItem.getSlot().getType(), equippedItem.getName());
-        String slot = equippedItem.getInventoryType().getName() + "<br>";
+        String slot = equippedItem.getInventoryType().getName();
         String itemLvl = "<font color=#edc201>" + equippedItem.getLevel().getDisplayString() + "</font><br>";
         String nameDescription = "";
         String damageInfo = "";
@@ -830,11 +852,32 @@ public class WoWCharacterFragment extends Fragment {
         String trigger = "";
         String HoALevel = "";
         String bind = "";
+        String itemSubclass = "";
         StringBuilder sockets = new StringBuilder();
         StringBuilder statsString = new StringBuilder();
         StringBuilder azeriteSpells = new StringBuilder();
         try {
             durability = equippedItem.getDurability().getDisplayString();
+        }catch (Exception e){
+            Log.e("Durability", "no durability");
+        }
+        try {
+            itemSubclass = equippedItem.getItemSubclass().getName();
+            int length = slot.length() + itemSubclass.length();
+            while(length < 45) {
+                slot += "&nbsp;";
+                length++;
+            }
+            int lengthSubClass = itemSubclass.length();
+            while(lengthSubClass < 15){
+                slot += "&nbsp;";
+                lengthSubClass++;
+            }
+            Log.i("length", ""+slot.length());
+            if(lengthSubClass + length == 60 && itemSubclass.equals("Miscellaneous")){
+                slot = slot.substring(0, slot.length()-6);
+            }
+            slot += itemSubclass + "<br>";
         }catch (Exception e){
             Log.e("Durability", "no durability");
         }
@@ -860,17 +903,17 @@ public class WoWCharacterFragment extends Fragment {
         }
 
         if(!equippedItem.getNameDescription().equals("")) {
+            Log.i("name descript", equippedItem.getNameDescription());
             nameDescription = "<font color=#00cc00>" + equippedItem.getNameDescription() + "</font><br>";
         }else{
             try {
-                nameDescription = "<font color=#" + Float.toHexString(equippedItem.getNameDescriptionObject().getColor().getR())
-                        + Float.toHexString(equippedItem.getNameDescriptionObject().getColor().getG())
-                        + Float.toHexString(equippedItem.getNameDescriptionObject().getColor().getB()) + ">" + equippedItem.getNameDescriptionObject().getDisplayString() + "</font><br>";
+                Log.i("name descript obj", equippedItem.getNameDescriptionObject().getDisplayString());
+                nameDescription = "<font color=#" + getNameDescriptionColor(equippedItem) + ">" + equippedItem.getNameDescriptionObject().getDisplayString() + "</font><br>";
             }catch(Exception e){
-                Log.e("Description", "none");
+                Log.e("Error", e.toString());
+                Log.e("Name description", "none");
             }
         }
-        Log.e("ND", nameDescription);
         try {
             trigger = "<font color=#00cc00>" + equippedItem.getSpells().get(0).getDescription() + "</font>";
         }catch (Exception e){
@@ -919,7 +962,13 @@ public class WoWCharacterFragment extends Fragment {
             HoALevel = "<font color=#edc201>" + equippedItem.getAzeriteDetails().getLevel().getDisplayString() + "</font><br>";
         }
         if(equippedItem.getItemClass().getName().equals("Weapon")){
-            damageInfo = "<br>" + equippedItem.getWeapon().getDamage().getDisplayString() + "<br>" +  equippedItem.getWeapon().getDps().getDisplayString() + "<br>";
+            damageInfo = equippedItem.getWeapon().getDamage().getDisplayString();
+            int length = damageInfo.length();
+            while(length < 30) {
+                damageInfo += "&nbsp;";
+                length++;
+            }
+            damageInfo += equippedItem.getWeapon().getAttackSpeed().getDisplayString() + "<br>" +  equippedItem.getWeapon().getDps().getDisplayString() + "<br>";
         }
 
         for(int i = 0; i < equippedItem.getStats().size(); i++){
@@ -956,6 +1005,23 @@ public class WoWCharacterFragment extends Fragment {
 
         Log.i("Stats per slot: ", equippedItem.getSlot().getName() + ": " + stats.get(equippedItem.getSlot().getType()));
         setOnPressItemInformation(gearImageView.get(equippedItem.getSlot().getType()), index);
+    }
+
+    private String getNameDescriptionColor(EquippedItem equippedItem) {
+        String red = Integer.toHexString(equippedItem.getNameDescriptionObject().getColor().getR());
+        String green = Integer.toHexString(equippedItem.getNameDescriptionObject().getColor().getG());
+        String blue =  Integer.toHexString(equippedItem.getNameDescriptionObject().getColor().getB());
+
+        if(red.equals("0")){
+            red += "0";
+        }
+        if(green.equals("0")){
+            green += "0";
+        }
+        if(blue.equals("0")){
+            blue += "0";
+        }
+        return red + green + blue;
     }
 
     private void getSocketColor(Socket socket) {
@@ -1006,18 +1072,4 @@ public class WoWCharacterFragment extends Fragment {
             talentsContainer.get(i).setText("");
         }
     }
-
-    /*private void sortTalents() {
-        talents.sort(new Comparator<Talents>() {
-            @Override
-            public int compare(Talents o1, Talents o2) {
-                if (o1.getTier() < o2.getTier()) {
-                    return -1;
-                } else if (o1.getTier() > o2.getTier()) {
-                    return 1;
-                }
-                return 0;
-            }
-        });
-    }*/
 }

@@ -364,12 +364,12 @@ public class EquippedItem {
             EquippedItem equippedItem = new Gson().fromJson(json, EquippedItem.class);
             JsonObject jsonObject = json.getAsJsonObject();
 
-            if (jsonObject.has("rated")) {
-                JsonElement elem = jsonObject.get("rated");
+            if (jsonObject.has("name_description")) {
+                JsonElement elem = jsonObject.get("name_description");
                 if (elem != null && !elem.isJsonNull()) {
-                    if(elem.getAsString() != null){
+                    try{
                         equippedItem.setNameDescription(elem.getAsString());
-                    }else{
+                    }catch (Exception e){
                         equippedItem.setNameDescription(new NameDescription(elem.getAsJsonObject().get("display_string").getAsString(),
                                 new Color(elem.getAsJsonObject().get("color").getAsJsonObject().get("r").getAsInt(),
                                         elem.getAsJsonObject().get("color").getAsJsonObject().get("g").getAsInt(),
