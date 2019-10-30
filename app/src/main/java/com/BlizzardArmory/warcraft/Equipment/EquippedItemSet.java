@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class EquippedItemSet {
 
-    @SerializedName("itemset")
+    @SerializedName("item_set")
     @Expose
     private ItemSet itemSet;
     @SerializedName("items")
@@ -16,7 +16,7 @@ public class EquippedItemSet {
     @SerializedName("effects")
     @Expose
     private List<Effect> effects = null;
-    @SerializedName("displaystring")
+    @SerializedName("display_string")
     @Expose
     private String displayString;
 

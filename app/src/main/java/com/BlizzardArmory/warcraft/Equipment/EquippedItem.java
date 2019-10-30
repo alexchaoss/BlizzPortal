@@ -3,6 +3,7 @@ package com.BlizzardArmory.warcraft.Equipment;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -31,7 +32,7 @@ public class EquippedItem {
     private int context;
     @SerializedName("bonus_list")
     @Expose
-    private List<Integer> bonusList = null;
+    private List<Integer> bonusList = new ArrayList<>();
     @SerializedName("quality")
     @Expose
     private Quality quality;
@@ -64,7 +65,7 @@ public class EquippedItem {
     private Armor armor;
     @SerializedName("stats")
     @Expose
-    private List<Stat> stats = null;
+    private List<Stat> stats = new ArrayList<>();
     @SerializedName("requirements")
     @Expose
     private Requirements requirements;
@@ -82,7 +83,7 @@ public class EquippedItem {
     private String uniqueEquipped;
     @SerializedName("spells")
     @Expose
-    private List<SpellDescription> spells = null;
+    private List<SpellDescription> spells = new ArrayList<>();
     @SerializedName("description")
     @Expose
     private String description;
@@ -99,10 +100,10 @@ public class EquippedItem {
     private SellPrice sellPrice;
     @SerializedName("sockets")
     @Expose
-    private List<Socket> sockets = null;
+    private List<Socket> sockets = new ArrayList<>();
     @SerializedName("enchantments")
     @Expose
-    private List<Enchantment> enchantments = null;
+    private List<Enchantment> enchantments = new ArrayList<>();
     @SerializedName("weapon")
     @Expose
     private Weapon weapon;
