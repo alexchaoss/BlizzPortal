@@ -12,13 +12,11 @@ public class Key {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Key() {
     }
 
     /**
-     * 
      * @param href
      */
     public Key(String href) {

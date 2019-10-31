@@ -12,7 +12,7 @@ public class NameDescription {
     @Expose
     private Color color;
 
-    public NameDescription(String displayString, Color color){
+    public NameDescription(String displayString, Color color) {
         this.displayString = displayString;
         this.color = color;
     }

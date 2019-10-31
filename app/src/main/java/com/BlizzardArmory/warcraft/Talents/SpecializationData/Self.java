@@ -12,13 +12,11 @@ public class Self {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Self() {
     }
 
     /**
-     * 
      * @param href
      */
     public Self(String href) {

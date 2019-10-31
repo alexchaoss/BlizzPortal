@@ -18,7 +18,6 @@ import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.connection.ConnectionService;
-import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;

@@ -7,7 +7,7 @@ import java.util.Map;
 public enum RaceEnum {
     HUMAN("Human", 0), ORC("Orc", 1), DWARF("Dwarf", 0), NIGHT_ELF("Night Elf", 0), UNDEAD("Undead", 1), TAUREN("Tauren", 1),
     GNOME("Gnome", 0), TROLL("Troll", 1), GOBLIN("Goblin", 1), BLOOD_ELF("Blood Elf", 1), DRAENEI("Draenei", 0),
-    PLACEHOLDER12("",-1), PLACEHOLDER13("", -1), PLACEHOLDER14("", -1), PLACEHOLDER15("", -1), PLACEHOLDER16("", -1),
+    PLACEHOLDER12("", -1), PLACEHOLDER13("", -1), PLACEHOLDER14("", -1), PLACEHOLDER15("", -1), PLACEHOLDER16("", -1),
     PLACEHOLDER17("", -1), PLACEHOLDER18("", -1), PLACEHOLDER19("", -1), PLACEHOLDER20("", -1), PLACEHOLDER21("", -1),
     WORGEN("Worgen", 0), PLACEHOLDER23("", -1), PANDAREN1("Pandaren", -1), PANDAREN2("Pandaren", 0), PANDAREN3("Pandaren", 1),
     NIGHTBORNE("Nightborne", 1), HIGHMOUNTAIN_TAUREN("Highmountain Tauren", 1), VOID_ELF("Void Elf", 0), LIGHTFORGED_DRAENEI("Lightforged Draenei", 0),
@@ -36,7 +36,7 @@ public enum RaceEnum {
         return lookup.get(ordinal).race;
     }
 
-    public static int fromOrdinalFaction(int ordinal){
+    public static int fromOrdinalFaction(int ordinal) {
         return lookup.get(ordinal).faction;
     }
 

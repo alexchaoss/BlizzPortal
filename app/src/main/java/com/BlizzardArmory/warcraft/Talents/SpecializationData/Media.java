@@ -15,13 +15,11 @@ public class Media {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Media() {
     }
 
     /**
-     * 
      * @param id
      * @param key
      */

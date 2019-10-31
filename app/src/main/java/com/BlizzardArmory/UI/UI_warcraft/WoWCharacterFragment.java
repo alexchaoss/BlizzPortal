@@ -16,9 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,10 +33,13 @@ import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.warcraft.CharacterSummary.CharacterSummary;
+import com.BlizzardArmory.warcraft.Equipment.Enchantment;
 import com.BlizzardArmory.warcraft.Equipment.Equipment;
 import com.BlizzardArmory.warcraft.Equipment.EquippedItem;
+import com.BlizzardArmory.warcraft.Equipment.ItemEquipped;
 import com.BlizzardArmory.warcraft.Equipment.SelectedEssence;
 import com.BlizzardArmory.warcraft.Equipment.SelectedPower;
+import com.BlizzardArmory.warcraft.Equipment.Set;
 import com.BlizzardArmory.warcraft.Equipment.Socket;
 import com.BlizzardArmory.warcraft.Media.Media;
 import com.BlizzardArmory.warcraft.Statistic.Statistic;
@@ -152,7 +152,6 @@ public class WoWCharacterFragment extends Fragment {
     private Network network;
     private RequestQueue requestQueueImage;
     private RequestQueue requestQueue;
-    private Socket socket;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -647,7 +646,7 @@ public class WoWCharacterFragment extends Fragment {
                 case "RARE":
                     return Color.parseColor("#0070ff");
                 case "EPIC":
-                    return Color.parseColor("#663288");
+                    return Color.parseColor("#c600ff");
                 case "LEGENDARY":
                     return Color.parseColor("#ff8000");
                 case "ARTIFACT":
@@ -685,7 +684,7 @@ public class WoWCharacterFragment extends Fragment {
                                     drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                                     return drawable;
                                 }
-                            },null));
+                            }, null));
                         } else {
                             statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType())));
                         }
@@ -769,8 +768,8 @@ public class WoWCharacterFragment extends Fragment {
 
         try {
 
-            for(SpecializationData specializationList: specializationData){
-                if(specializationList.getName().equals(talentsInfo.getActiveSpecialization().getName())){
+            for (SpecializationData specializationList : specializationData) {
+                if (specializationList.getName().equals(talentsInfo.getActiveSpecialization().getName())) {
                     sortTalents(specializationList);
                 }
             }
@@ -857,12 +856,12 @@ public class WoWCharacterFragment extends Fragment {
             public int compare(Talent talent1, Talent talent2) {
                 int talentNumber1 = 0;
                 int talentNumber2 = 0;
-                for(TalentTier talentTier: specializationData.getTalentTiers()){
-                    for(com.BlizzardArmory.warcraft.Talents.SpecializationData.Talent talent: talentTier.getTalents()){
-                        if(talent1.getTalent().getName().equals(talent.getTalent().getName())){
+                for (TalentTier talentTier : specializationData.getTalentTiers()) {
+                    for (com.BlizzardArmory.warcraft.Talents.SpecializationData.Talent talent : talentTier.getTalents()) {
+                        if (talent1.getTalent().getName().equals(talent.getTalent().getName())) {
                             talentNumber1 = talentTier.getLevel();
                         }
-                        if(talent2.getTalent().getName().equals(talent.getTalent().getName())){
+                        if (talent2.getTalent().getName().equals(talent.getTalent().getName())) {
                             talentNumber2 = talentTier.getLevel();
                         }
                     }
@@ -883,8 +882,8 @@ public class WoWCharacterFragment extends Fragment {
             talents.addAll(talentsInfo.getSpecializations().get(position).getTalents());
             noTalent.setVisibility(View.INVISIBLE);
 
-            for(SpecializationData specializationList: specializationData){
-                if(specializationList.getName().equals(talentsInfo.getSpecializations().get(position).getSpecialization().getName())){
+            for (SpecializationData specializationList : specializationData) {
+                if (specializationList.getName().equals(talentsInfo.getSpecializations().get(position).getSpecialization().getName())) {
                     sortTalents(specializationList);
                 }
             }
@@ -908,10 +907,10 @@ public class WoWCharacterFragment extends Fragment {
     private void setCharacterItemsInformation(final int index) {
         EquippedItem equippedItem = equipment.getEquippedItems().get(index);
         nameList.put(equippedItem.getSlot().getType(), equippedItem.getName());
-        String slot = equippedItem.getInventoryType().getName();
+        StringBuilder slot = new StringBuilder(equippedItem.getInventoryType().getName());
         String itemLvl = "<font color=#edc201>" + equippedItem.getLevel().getDisplayString() + "</font><br>";
         String nameDescription = "";
-        String damageInfo = "";
+        StringBuilder damageInfo = new StringBuilder();
         String durability = "";
         String transmog = "";
         String armor = "";
@@ -920,34 +919,71 @@ public class WoWCharacterFragment extends Fragment {
         String trigger = "";
         String HoALevel = "";
         String bind = "";
-        String itemSubclass = "";
+        String itemSubclass;
+        StringBuilder enchant = new StringBuilder();
+        StringBuilder setInfo = new StringBuilder();
+        String socketBonus = "";
         StringBuilder sockets = new StringBuilder();
         StringBuilder statsString = new StringBuilder();
         StringBuilder azeriteSpells = new StringBuilder();
+        StringBuilder sellPrice = new StringBuilder();
+        try {
+            assert equippedItem.getSet() != null;
+            setInfo.append("<font color=#edc201>").append(equippedItem.getSet().getDisplayString()).append("</font><br>");
+            setInfo.append(formatSetItemText(equippedItem.getSet()));
+        } catch (Exception e) {
+            setInfo.replace(0, setInfo.length(), "");
+            Log.e("set info", "none");
+        }
+
+        try {
+            sellPrice.append(equippedItem.getSellPrice().getDisplayStrings().getHeader()).append(" ");
+            if (!equippedItem.getSellPrice().getDisplayStrings().getGold().equals("0")) {
+                sellPrice.append(equippedItem.getSellPrice().getDisplayStrings().getGold()).append(" <img src=\"gold\">");
+            }
+            if (!equippedItem.getSellPrice().getDisplayStrings().getSilver().equals("0")) {
+                sellPrice.append(equippedItem.getSellPrice().getDisplayStrings().getSilver()).append(" <img src=\"silver\">");
+            }
+            if (!equippedItem.getSellPrice().getDisplayStrings().getCopper().equals("0")) {
+                sellPrice.append(equippedItem.getSellPrice().getDisplayStrings().getCopper()).append(" <img src=\"copper\">");
+            }
+        } catch (Exception e) {
+            Log.e("Sell price", "none");
+        }
+
         try {
             durability = equippedItem.getDurability().getDisplayString();
         } catch (Exception e) {
-            Log.e("Durability", "no durability");
+            Log.e("Durability", "none");
+        }
+        try {
+            for (Enchantment enchantment : equippedItem.getEnchantments()) {
+                if (!enchantment.getDisplayString().equals("null")) {
+                    enchant.append("<font color=#00cc00>").append(enchantment.getDisplayString()).append("</font><br>");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Enchant", "none");
         }
         try {
             itemSubclass = equippedItem.getItemSubclass().getName();
             int length = slot.length() + itemSubclass.length();
             while (length < 45) {
-                slot += "&nbsp;";
+                slot.append("&nbsp;");
                 length++;
             }
             int lengthSubClass = itemSubclass.length();
             while (lengthSubClass < 15) {
-                slot += "&nbsp;";
+                slot.append("&nbsp;");
                 lengthSubClass++;
             }
             Log.i("length", "" + slot.length());
             if (lengthSubClass + length == 60 && itemSubclass.equals("Miscellaneous")) {
-                slot = slot.substring(0, slot.length() - 6);
+                slot = new StringBuilder(slot.substring(0, slot.length() - 12));
             }
-            slot += itemSubclass + "<br>";
+            slot.append(itemSubclass).append("<br>");
         } catch (Exception e) {
-            Log.e("Durability", "no durability");
+            Log.e("Item sub class", "none");
         }
         try {
             transmog = "<font color=#f57bf5>" + equippedItem.getTransmog().getDisplayString().replace("\n", "<br>") + "</font><br>";
@@ -991,8 +1027,9 @@ public class WoWCharacterFragment extends Fragment {
             if (equippedItem.getName().equals("Heart of Azeroth")) {
                 azeriteSpells.append("<br>");
                 for (SelectedEssence selectedEssence : equippedItem.getAzeriteDetails().getSelectedEssences()) {
+                    String essenceImage = "<img src=\"" + getEssenceImage(selectedEssence.getSlot()) + "\"> ";
                     String color = "<font color=#" + getEssenceRankColor(selectedEssence.getRank()) + ">";
-                    azeriteSpells.append(color).append(selectedEssence.getEssence().getName()).append("</font><br>");
+                    azeriteSpells.append(essenceImage).append(color).append(selectedEssence.getEssence().getName()).append("</font><br>");
                 }
             } else {
                 azeriteSpells = new StringBuilder("<br><font color=#edc201>" + equippedItem.getAzeriteDetails().getSelectedPowersString() + "</font><br>");
@@ -1023,22 +1060,30 @@ public class WoWCharacterFragment extends Fragment {
         }
 
         try {
+            if (!equippedItem.getSocketBonus().equals("null")) {
+                socketBonus = "<font color=#00cc00>" + equippedItem.getSocketBonus() + "</font><br>";
+            }
+        } catch (Exception e) {
+            Log.e("socket bonus", "none");
+        }
+
+        try {
             bind = equippedItem.getBinding().getName() + "<br>";
         } catch (Exception e) {
-            Log.e("trigger", "none");
+            Log.e("bind", "none");
         }
 
         if (equippedItem.getName().equals("Heart of Azeroth")) {
             HoALevel = "<font color=#edc201>" + equippedItem.getAzeriteDetails().getLevel().getDisplayString() + "</font><br>";
         }
         if (equippedItem.getItemClass().getName().equals("Weapon")) {
-            damageInfo = equippedItem.getWeapon().getDamage().getDisplayString();
-            int length = damageInfo.length();
-            while (length < 30) {
-                damageInfo += "&nbsp;";
+            damageInfo = new StringBuilder(equippedItem.getWeapon().getDamage().getDisplayString());
+            int length = damageInfo.length() + equippedItem.getWeapon().getAttackSpeed().getDisplayString().length();
+            while (length < 39) {
+                damageInfo.append("&nbsp;");
                 length++;
             }
-            damageInfo += equippedItem.getWeapon().getAttackSpeed().getDisplayString() + "<br>" + equippedItem.getWeapon().getDps().getDisplayString() + "<br>";
+            damageInfo.append(equippedItem.getWeapon().getAttackSpeed().getDisplayString()).append("<br>").append(equippedItem.getWeapon().getDps().getDisplayString()).append("<br>");
         }
 
         for (int i = 0; i < equippedItem.getStats().size(); i++) {
@@ -1049,7 +1094,11 @@ public class WoWCharacterFragment extends Fragment {
             }
         }
 
-        stats.put(equippedItem.getSlot().getType(), String.format("%s%s%s%s%s%s%s%s%s", nameDescription, itemLvl, transmog, HoALevel, bind, slot, damageInfo, armor, statsString.toString()));
+        stats.put(equippedItem.getSlot().getType(), String.format("%s%s%s%s%s%s%s%s%s", nameDescription, itemLvl, transmog, HoALevel, bind, slot.toString(), damageInfo.toString(), armor, statsString.toString()));
+
+        if (!enchant.toString().equals("")) {
+            stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("<br>%s", enchant));
+        }
 
         stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + azeriteSpells);
 
@@ -1061,12 +1110,28 @@ public class WoWCharacterFragment extends Fragment {
             stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("<br>%s", sockets));
         }
 
+        if (!socketBonus.equals("")) {
+            stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("%s", socketBonus));
+        }
+
+        if (!setInfo.toString().equals("")) {
+            stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("<br>%s", setInfo));
+        }
+
         if (!durability.equals("")) {
             stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("<br>%s<br>", durability));
         }
 
         if (!requiredLevel.equals("")) {
-            stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("%s<br>", requiredLevel));
+            if (durability.equals("")) {
+                stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("<br>%s<br>", requiredLevel));
+            } else {
+                stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("%s<br>", requiredLevel));
+            }
+        }
+
+        if (!sellPrice.toString().equals("")) {
+            stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("%s<br>", sellPrice));
         }
 
         if (!description.equals("<font color=#edc201>null</font>")) {
@@ -1075,6 +1140,36 @@ public class WoWCharacterFragment extends Fragment {
 
         Log.i("Stats per slot: ", equippedItem.getSlot().getName() + ": " + stats.get(equippedItem.getSlot().getType()));
         setOnPressItemInformation(Objects.requireNonNull(gearImageView.get(equippedItem.getSlot().getType())), index);
+    }
+
+    private StringBuilder formatSetItemText(Set set) {
+        int equippedSetItem = 0;
+        int[] itemRequiredForEffect = new int[set.getEffects().size()];
+        StringBuilder setInfo = new StringBuilder();
+
+        for (int i = 0; i < set.getEffects().size(); i++) {
+            itemRequiredForEffect[i] = set.getEffects().get(i).getRequiredCount();
+        }
+
+        for (ItemEquipped itemEquipped : set.getItems()) {
+            if (itemEquipped.isIsEquipped()) {
+                setInfo.append("&nbsp;&nbsp;&nbsp;&nbsp;<font color=#ffff98>").append(itemEquipped.getItem().getName()).append("</font><br>");
+                equippedSetItem++;
+            } else {
+                setInfo.append("&nbsp;&nbsp;&nbsp;&nbsp;<font color=#6e6e6e>").append(itemEquipped.getItem().getName()).append("</font><br>");
+            }
+        }
+
+        setInfo.append("<br>");
+
+        for (int i = 0; i < itemRequiredForEffect.length; i++) {
+            if (itemRequiredForEffect[i] <= equippedSetItem) {
+                setInfo.append("<font color=#ffff98>").append(set.getEffects().get(i).getDisplayString()).append("</font><br>");
+            } else {
+                setInfo.append("<font color=#6e6e6e>").append(set.getEffects().get(i).getDisplayString()).append("</font><br>");
+            }
+        }
+        return setInfo;
     }
 
     private String getNameDescriptionColor(EquippedItem equippedItem) {
@@ -1110,6 +1205,17 @@ public class WoWCharacterFragment extends Fragment {
         return "socket_prismatic";
     }
 
+    private String getEssenceImage(int essenceSlot) {
+        switch (essenceSlot) {
+            case 0:
+                return "essence_border_gold";
+            case 1:
+            case 3:
+                return "essence_border_silver";
+        }
+        return "essence_border_gold";
+    }
+
     private String getEssenceRankColor(int rank) {
         switch (rank) {
             case 1:
@@ -1118,6 +1224,8 @@ public class WoWCharacterFragment extends Fragment {
                 return "0070ff";
             case 3:
                 return "663288";
+            case 4:
+                return "ff8000";
         }
         return "00cc00";
     }

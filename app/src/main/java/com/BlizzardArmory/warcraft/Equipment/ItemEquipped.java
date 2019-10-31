@@ -11,7 +11,7 @@ public class ItemEquipped {
     private Item item;
     @SerializedName("is_equipped")
     @Expose
-    private boolean isEquipped;
+    private boolean isEquipped = false;
 
     public Item getItem() {
         return item;

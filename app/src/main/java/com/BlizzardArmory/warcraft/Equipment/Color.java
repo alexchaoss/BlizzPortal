@@ -18,7 +18,7 @@ public class Color {
     @Expose
     private float a;
 
-    public Color(int r, int g, int b, float a){
+    public Color(int r, int g, int b, float a) {
         this.r = r;
         this.g = g;
         this.b = b;

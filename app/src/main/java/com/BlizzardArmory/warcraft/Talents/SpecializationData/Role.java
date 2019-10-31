@@ -15,13 +15,11 @@ public class Role {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Role() {
     }
 
     /**
-     * 
      * @param name
      * @param type
      */

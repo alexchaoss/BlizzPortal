@@ -15,13 +15,11 @@ public class Talent {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Talent() {
     }
 
     /**
-     * 
      * @param talent
      * @param spellTooltip
      */

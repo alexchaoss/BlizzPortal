@@ -24,13 +24,11 @@ public class SpellTooltip {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public SpellTooltip() {
     }
 
     /**
-     * 
      * @param castTime
      * @param cooldown
      * @param description

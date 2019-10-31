@@ -38,62 +38,56 @@
                 android:layout_marginBottom="35dp"
                 android:layout_alignBottom="@id/paperdoll"
                 android:layout_alignParentStart="true">
+
                 <TextView
                     android:id="@+id/top_stat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#555da5"
                     android:textSize="18sp"
-                    android:layout_marginBottom="5dp"
-                    />
+                    android:layout_marginBottom="5dp" />
 
                 <TextView
                     android:id="@+id/vitality"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#555da5"
-                    android:textSize="15sp"
-                    />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/crit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#555da5"
-                    android:textSize="15sp"
-                    />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/crit_chance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#555da5"
-                    android:textSize="15sp"
-                    />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/attack_speed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#555da5"
-                    android:textSize="15sp"
-                    />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/area_damage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#555da5"
-                    android:textSize="15sp"
-                    />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/cooldown_reduction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#555da5"
-                    android:textSize="15sp"
-                    />
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -106,6 +100,7 @@
                 android:gravity="center"
                 android:layout_marginEnd="15dp"
                 android:layout_marginTop="35dp">
+
                 <TextView
                     android:id="@+id/level_class"
                     android:text="@string/class_level"
@@ -114,8 +109,7 @@
                     android:textColor="#ffead4"
                     android:textSize="12sp"
                     android:fontFamily="@font/diablo_light"
-                    android:layout_marginBottom="5dp"
-                    />
+                    android:layout_marginBottom="5dp" />
 
                 <TextView
                     android:id="@+id/character_name"
