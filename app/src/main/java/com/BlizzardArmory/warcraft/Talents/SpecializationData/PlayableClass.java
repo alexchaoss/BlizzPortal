@@ -18,13 +18,11 @@ public class PlayableClass {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public PlayableClass() {
     }
 
     /**
-     * 
      * @param name
      * @param id
      * @param key

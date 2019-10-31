@@ -12,13 +12,11 @@ public class Links {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Links() {
     }
 
     /**
-     * 
      * @param self
      */
     public Links(Self self) {

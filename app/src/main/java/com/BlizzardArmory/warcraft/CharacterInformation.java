@@ -86,7 +86,7 @@ public class CharacterInformation {
     }
 
     public String getClass_() {
-        return ClassEnum.fromOrdinal(_class - 1).toString() ;
+        return ClassEnum.fromOrdinal(_class - 1).toString();
     }
 
     public void setClass_(Integer _class) {

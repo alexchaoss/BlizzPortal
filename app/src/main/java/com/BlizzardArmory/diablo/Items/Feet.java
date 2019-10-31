@@ -1,11 +1,6 @@
 package com.BlizzardArmory.diablo.Items;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-
-public class Feet extends Item{
+public class Feet extends Item {
 
 
 }

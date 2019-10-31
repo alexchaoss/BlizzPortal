@@ -12,6 +12,9 @@ public class Item {
     @SerializedName("id")
     @Expose
     private int id;
+    @SerializedName("name")
+    @Expose
+    private String name;
 
     public Key getKey() {
         return key;
@@ -27,6 +30,15 @@ public class Item {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

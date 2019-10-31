@@ -1,11 +1,6 @@
 
 package com.BlizzardArmory.warcraft.Equipment;
 
-import android.text.TextUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -14,7 +9,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EquippedItem {
 
@@ -95,6 +92,9 @@ public class EquippedItem {
     private Set set;
     private String nameDescription = "";
     private NameDescription nameDescriptionObject;
+    @SerializedName("socket_bonus")
+    @Expose
+    private String socketBonus;
     @SerializedName("sell_price")
     @Expose
     private SellPrice sellPrice;
@@ -324,6 +324,14 @@ public class EquippedItem {
         this.nameDescription = nameDescription;
     }
 
+    public String getSocketBonus() {
+        return socketBonus;
+    }
+
+    public void setSocketBonus(String socketBonus) {
+        this.socketBonus = socketBonus;
+    }
+
     public SellPrice getSellPrice() {
         return sellPrice;
     }
@@ -367,9 +375,9 @@ public class EquippedItem {
             if (jsonObject.has("name_description")) {
                 JsonElement elem = jsonObject.get("name_description");
                 if (elem != null && !elem.isJsonNull()) {
-                    try{
+                    try {
                         equippedItem.setNameDescription(elem.getAsString());
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         equippedItem.setNameDescription(new NameDescription(elem.getAsJsonObject().get("display_string").getAsString(),
                                 new Color(elem.getAsJsonObject().get("color").getAsJsonObject().get("r").getAsInt(),
                                         elem.getAsJsonObject().get("color").getAsJsonObject().get("g").getAsInt(),
@@ -378,7 +386,7 @@ public class EquippedItem {
                     }
                 }
             }
-            return equippedItem ;
+            return equippedItem;
         }
     }
 }

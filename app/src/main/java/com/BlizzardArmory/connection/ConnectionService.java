@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
-import java.io.IOException;
 
+import java.io.IOException;
 
 
 public class ConnectionService {

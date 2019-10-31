@@ -1,9 +1,10 @@
 
 package com.BlizzardArmory.warcraft.Talents.SpecializationData;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class SpecializationData {
 
@@ -37,13 +38,11 @@ public class SpecializationData {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public SpecializationData() {
     }
 
     /**
-     * 
      * @param genderDescription
      * @param role
      * @param name

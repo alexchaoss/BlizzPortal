@@ -192,7 +192,7 @@ public class WoWActivity extends AppCompatActivity {
                                                 linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
 
                                                 layoutParamsInfo = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                                layoutParamsInfo.addRule(RelativeLayout.RIGHT_OF, index+1);
+                                                layoutParamsInfo.addRule(RelativeLayout.RIGHT_OF, index + 1);
                                                 layoutParamsInfo.setMargins(30, 0, 0, 0);
 
                                                 //Add layouts of texts to parent layout
@@ -203,9 +203,9 @@ public class WoWActivity extends AppCompatActivity {
 
                                                 //Add faction logo
                                                 ImageView factionImage = new ImageView(getApplicationContext());
-                                                if(faction.get(index).equals("Horde")){
+                                                if (faction.get(index).equals("Horde")) {
                                                     factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.horde_logo, getTheme()));
-                                                }else if(faction.get(index).equals("Alliance")){
+                                                } else if (faction.get(index).equals("Alliance")) {
                                                     factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.alliance_logo, getTheme()));
                                                 }
                                                 factionImage.setLayoutParams(layoutParamsLogo);

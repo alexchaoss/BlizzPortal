@@ -107,11 +107,11 @@ public class WowCharacters {
     public ArrayList<String> getFactionList() {
         for (String number : raceListNumber) {
             int tempNum = RaceEnum.fromOrdinalFaction(Integer.parseInt(number) - 1);
-            if(tempNum == 0){
+            if (tempNum == 0) {
                 factionList.add("Alliance");
-            }else if(tempNum == 1){
+            } else if (tempNum == 1) {
                 factionList.add("Horde");
-            }else{
+            } else {
                 factionList.add("Neutral");
             }
         }

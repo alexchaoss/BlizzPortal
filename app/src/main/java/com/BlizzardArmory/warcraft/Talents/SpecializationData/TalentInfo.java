@@ -18,13 +18,11 @@ public class TalentInfo {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public TalentInfo() {
     }
 
     /**
-     * 
      * @param name
      * @param id
      * @param key

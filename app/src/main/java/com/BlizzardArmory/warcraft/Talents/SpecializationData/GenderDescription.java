@@ -15,13 +15,11 @@ public class GenderDescription {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public GenderDescription() {
     }
 
     /**
-     * 
      * @param female
      * @param male
      */

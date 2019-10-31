@@ -15,13 +15,11 @@ public class PvpTalent {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public PvpTalent() {
     }
 
     /**
-     * 
      * @param talent
      * @param spellTooltip
      */

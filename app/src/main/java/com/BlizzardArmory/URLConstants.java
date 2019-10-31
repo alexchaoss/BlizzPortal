@@ -79,7 +79,7 @@ public class URLConstants {
         return WOW_CHARACTER_THUMNAIL_URL.replace("zone", MainActivity.selectedRegion.toLowerCase());
     }
 
-    public static String getRegion(){
+    public static String getRegion() {
         return MainActivity.selectedRegion.toLowerCase();
     }
 }
