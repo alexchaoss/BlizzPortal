@@ -261,7 +261,7 @@ public class D3CharacterFragment extends Fragment {
                             attack_speed.setText(attackSpeedString);
                             area_damage.setText(areaDamageString);
                             cooldown_reduction.setText(cdReductString);
-                            setItemInformation();
+                            //setItemInformation();
 
                         }
                     }, new Response.ErrorListener() {
