@@ -17,6 +17,7 @@ public class URLConstants {
 
     //Access Token Query
     public final static String ACCESS_TOKEN_QUERY = "access_token=";
+    public final static String ACCESS_TOKEN_AND_LOCALE = "&locale=en_US&access_token=";
 
     //URLs for WoW images
     public final static String WOW_CHARACTER_THUMNAIL_URL = "http://render-zone.worldofwarcraft.com/character/";
