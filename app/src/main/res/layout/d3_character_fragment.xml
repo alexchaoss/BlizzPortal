@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_d3_character"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,106 +15,124 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/paperdoll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/background_character"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:layout_alignParentStart="true"
-                android:contentDescription="@string/background_character" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/items"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/stats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginBottom="30dp"
+                    android:gravity="start"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/top_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:textColor="#555da5"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/vitality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#555da5"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/crit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#555da5"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/crit_chance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#555da5"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/attack_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#555da5"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/area_damage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#555da5"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/cooldown_reduction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#555da5"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="start"
-                android:layout_marginStart="50dp"
-                android:layout_marginBottom="35dp"
-                android:layout_alignBottom="@id/paperdoll"
-                android:layout_alignParentStart="true">
-
-                <TextView
-                    android:id="@+id/top_stat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#555da5"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="5dp" />
-
-                <TextView
-                    android:id="@+id/vitality"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#555da5"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/crit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#555da5"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/crit_chance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#555da5"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/attack_speed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#555da5"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/area_damage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#555da5"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/cooldown_reduction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#555da5"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_alignEnd="@id/paperdoll"
                 android:layout_alignStart="@+id/items"
+                android:layout_alignEnd="@id/paperdoll"
                 android:gravity="center"
-                android:layout_marginEnd="15dp"
-                android:layout_marginTop="35dp">
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/items"
+                app:layout_constraintEnd_toEndOf="@+id/items"
+                app:layout_constraintStart_toStartOf="@+id/items"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/level_class"
-                    android:text="@string/class_level"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#ffead4"
-                    android:textSize="12sp"
+                    android:layout_marginBottom="5dp"
                     android:fontFamily="@font/diablo_light"
-                    android:layout_marginBottom="5dp" />
+                    android:textColor="#ffead4"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/character_name"
-                    android:text="@string/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/diablo_light"
@@ -128,14 +147,18 @@
                 android:id="@+id/items"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@id/paperdoll"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="35dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/name">
 
                 <LinearLayout
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:layout_marginEnd="4dp"
-                    android:layout_marginTop="145dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -173,7 +196,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="1dp"
-                    android:layout_marginTop="125dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -215,7 +237,7 @@
                 <LinearLayout
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="160dp"
+                    android:layout_marginTop="35dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -252,8 +274,7 @@
                         android:contentDescription="@string/off_hand" />
                 </LinearLayout>
             </LinearLayout>
-
-        </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
     </HorizontalScrollView>
 
     <android.support.v7.widget.CardView

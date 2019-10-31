@@ -1,5 +1,6 @@
 package com.BlizzardArmory.UI.UI_warcraft;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -638,15 +640,15 @@ public class WoWCharacterFragment extends Fragment {
         try {
             switch (item.getQuality().getType()) {
                 case "POOR":
-                    return Color.GRAY;
+                    return Color.parseColor("#9d9d9d");
                 case "COMMON":
-                    return Color.WHITE;
+                    return Color.parseColor("#ffffff");
                 case "UNCOMMON":
-                    return Color.parseColor("#00cc00");
+                    return Color.parseColor("#1eff00");
                 case "RARE":
-                    return Color.parseColor("#0070ff");
+                    return Color.parseColor("#0070dd");
                 case "EPIC":
-                    return Color.parseColor("#c600ff");
+                    return Color.parseColor("#a335ee");
                 case "LEGENDARY":
                     return Color.parseColor("#ff8000");
                 case "ARTIFACT":
@@ -661,42 +663,46 @@ public class WoWCharacterFragment extends Fragment {
         return 0;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setOnPressItemInformation(final ImageView imageView, final int index) {
 
         imageView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
-            @SuppressWarnings("deprecation")
             public boolean onTouch(View v, MotionEvent event) {
-
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-
-                        nameView.setText(nameList.get(equipment.getEquippedItems().get(index).getSlot().getType()));
-                        nameView.setTextColor(getItemColor(equipment.getEquippedItems().get(index)));
-                        nameView.setTextSize(20);
-                        if (Build.VERSION.SDK_INT >= 24) {
-                            statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), new Html.ImageGetter() {
-                                @Override
-                                public Drawable getDrawable(String source) {
-                                    int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                                    Drawable drawable = getResources().getDrawable(resourceId);
-                                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                                    return drawable;
-                                }
-                            }, null));
-                        } else {
-                            statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType())));
-                        }
-                        statsView.setTextColor(Color.WHITE);
-                        statsView.setTextSize(13);
-                        cardView.setContentPadding(10, 10, 10, 10);
-                        cardView.setBackground(imageView.getBackground());
-                        cardView.setVisibility(View.VISIBLE);
-                        cardView.setVerticalScrollBarEnabled(true);
-
-                        break;
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nameView.setText(nameList.get(equipment.getEquippedItems().get(index).getSlot().getType()));
+                    nameView.setTextColor(getItemColor(equipment.getEquippedItems().get(index)));
+                    nameView.setTextSize(20);
+                    if (Build.VERSION.SDK_INT >= 24) {
+                        statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
+                            @Override
+                            public Drawable getDrawable(String source) {
+                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                                return drawable;
+                            }
+                        }, null));
+                    } else {
+                        statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), new Html.ImageGetter() {
+                            @Override
+                            public Drawable getDrawable(String source) {
+                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                                return drawable;
+                            }
+                        }, null));
                     }
+                    statsView.setTextColor(Color.WHITE);
+                    statsView.setTextSize(13);
+                    cardView.setContentPadding(10, 10, 10, 10);
+                    cardView.setBackground(imageView.getBackground());
+                    cardView.setVisibility(View.VISIBLE);
+                    cardView.setVerticalScrollBarEnabled(true);
+                }else if(cardView.getVisibility() == View.VISIBLE && event.getAction() == MotionEvent.ACTION_DOWN){
+                    cardView.setVisibility(View.GONE);
                 }
                 return true;
             }
@@ -959,7 +965,7 @@ public class WoWCharacterFragment extends Fragment {
         try {
             for (Enchantment enchantment : equippedItem.getEnchantments()) {
                 if (!enchantment.getDisplayString().equals("null")) {
-                    enchant.append("<font color=#00cc00>").append(enchantment.getDisplayString()).append("</font><br>");
+                    enchant.append("<font color=#00ff00>").append(enchantment.getDisplayString()).append("</font><br>");
                 }
             }
         } catch (Exception e) {
@@ -1008,7 +1014,7 @@ public class WoWCharacterFragment extends Fragment {
 
         if (!equippedItem.getNameDescription().equals("")) {
             Log.i("name descript", equippedItem.getNameDescription());
-            nameDescription = "<font color=#00cc00>" + equippedItem.getNameDescription() + "</font><br>";
+            nameDescription = "<font color=#00ff00>" + equippedItem.getNameDescription() + "</font><br>";
         } else {
             try {
                 Log.i("name descript obj", equippedItem.getNameDescriptionObject().getDisplayString());
@@ -1019,7 +1025,7 @@ public class WoWCharacterFragment extends Fragment {
             }
         }
         try {
-            trigger = "<font color=#00cc00>" + equippedItem.getSpells().get(0).getDescription() + "</font>";
+            trigger = "<font color=#00ff00>" + equippedItem.getSpells().get(0).getDescription() + "</font>";
         } catch (Exception e) {
             Log.e("trigger", "none");
         }
@@ -1036,7 +1042,7 @@ public class WoWCharacterFragment extends Fragment {
                 for (SelectedPower selectedPower : equippedItem.getAzeriteDetails().getSelectedPowers()) {
                     if (!selectedPower.isIsDisplayHidden()) {
                         azeriteSpells.append("- ").append(selectedPower.getSpellTooltip().getSpell().getName()).append("<br>");
-                        azeriteSpells.append("<font color=#00cc00>").append(selectedPower.getSpellTooltip().getDescription()).append("</font><br>");
+                        azeriteSpells.append("<font color=#00ff00>").append(selectedPower.getSpellTooltip().getDescription()).append("</font><br>");
                     }
                 }
             }
@@ -1061,7 +1067,7 @@ public class WoWCharacterFragment extends Fragment {
 
         try {
             if (!equippedItem.getSocketBonus().equals("null")) {
-                socketBonus = "<font color=#00cc00>" + equippedItem.getSocketBonus() + "</font><br>";
+                socketBonus = "<font color=#00ff00>" + equippedItem.getSocketBonus() + "</font><br>";
             }
         } catch (Exception e) {
             Log.e("socket bonus", "none");
@@ -1088,7 +1094,7 @@ public class WoWCharacterFragment extends Fragment {
 
         for (int i = 0; i < equippedItem.getStats().size(); i++) {
             if (equippedItem.getStats().get(i).isIsEquipBonus()) {
-                statsString.append("<font color=#00cc00>").append(equippedItem.getStats().get(i).getDisplayString()).append("</font>").append("<br>");
+                statsString.append("<font color=#00ff00>").append(equippedItem.getStats().get(i).getDisplayString()).append("</font>").append("<br>");
             } else {
                 statsString.append(equippedItem.getStats().get(i).getDisplayString()).append("<br>");
             }
@@ -1219,7 +1225,7 @@ public class WoWCharacterFragment extends Fragment {
     private String getEssenceRankColor(int rank) {
         switch (rank) {
             case 1:
-                return "00cc00";
+                return "00ff00";
             case 2:
                 return "0070ff";
             case 3:
@@ -1227,7 +1233,7 @@ public class WoWCharacterFragment extends Fragment {
             case 4:
                 return "ff8000";
         }
-        return "00cc00";
+        return "00ff00";
     }
 
     private void setCharacterInformationTextviews() {
