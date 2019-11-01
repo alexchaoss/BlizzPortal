@@ -1,15 +1,22 @@
 package com.BlizzardArmory.warcraft;
 
+import android.support.v7.widget.CardView;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class WowCharacters {
 
@@ -27,6 +34,8 @@ public class WowCharacters {
     private ArrayList<String> raceListNumber = new ArrayList<>();
     private ArrayList<String> raceList = new ArrayList<>();
     private ArrayList<String> factionList = new ArrayList<>();
+    private ArrayList<String> lastModified = new ArrayList<>();
+    private long now = System.currentTimeMillis();
 
     public WowCharacters(JSONObject characterList) {
         this.characterList = characterList;
@@ -37,19 +46,24 @@ public class WowCharacters {
         try {
             if (characterList.has("characters")) {
                 characterInfo = (JSONArray) characterList.get("characters");
-
                 characterInfo = sortInfo(characterInfo);
 
                 for (int i = 0; i < characterInfo.length(); i++) {
                     JSONObject characters = (JSONObject) this.characterInfo.get(i);
 
-                    characterNamesList.add(characters.get("name").toString());
-                    realmList.add(characters.get("realm").toString());
-                    levelList.add(characters.get("level").toString());
-                    urlThumbnail.add(characters.get("thumbnail").toString());
-                    classListNumber.add(characters.get("class").toString());
-                    genderList.add(characters.get("gender").toString());
-                    raceListNumber.add(characters.get("race").toString());
+                    long timestamp = Long.valueOf(characters.get("lastModified").toString());
+
+                    long thirtyDays = 2592000000L;
+                    if(now - timestamp < thirtyDays) {
+
+                        characterNamesList.add(characters.get("name").toString());
+                        realmList.add(characters.get("realm").toString());
+                        levelList.add(characters.get("level").toString());
+                        urlThumbnail.add(characters.get("thumbnail").toString());
+                        classListNumber.add(characters.get("class").toString());
+                        genderList.add(characters.get("gender").toString());
+                        raceListNumber.add(characters.get("race").toString());
+                    }
                 }
             } else {
                 characterNamesList.add(characterList.get("name").toString());
@@ -59,6 +73,7 @@ public class WowCharacters {
                 classListNumber.add(characterList.get("class").toString());
                 genderList.add(characterList.get("gender").toString());
                 raceListNumber.add(characterList.get("race").toString());
+                lastModified.add(characterList.get("lastModified").toString());
             }
         } catch (Exception e) {
             Log.e("Error WowCharacters", e.toString());

@@ -2,13 +2,13 @@ package com.BlizzardArmory.UI.UI_warcraft;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.util.Log;
@@ -25,6 +26,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -97,7 +100,8 @@ public class WoWCharacterFragment extends Fragment {
     private TextView itemLVL;
     private TextView levelRaceClass;
     private ImageView background;
-    private CardView cardView;
+    private RelativeLayout itemView;
+    private ScrollView itemScrollView;
     private TextView statsView;
     private TextView nameView;
     private ScrollView scrollView;
@@ -141,8 +145,8 @@ public class WoWCharacterFragment extends Fragment {
     private TextView ninetyTalent;
     private TextView hundredTalent;
 
+    private ImageView closeButton;
     private RelativeLayout loadingCircle;
-
     //Containers
     private HashMap<String, ImageView> gearImageView = new HashMap<>();
 
@@ -174,14 +178,14 @@ public class WoWCharacterFragment extends Fragment {
         itemLVL = view.findViewById(R.id.item_lvl);
         levelRaceClass = view.findViewById(R.id.level_race_class);
         background = view.findViewById(R.id.background);
-        cardView = view.findViewById(R.id.item_stats);
-        cardView.setContentPadding(10, 10, 10, 10);
-        ScrollView itemInfoScroll = new ScrollView(view.getContext());
+        itemView = view.findViewById(R.id.item_stats);
+        itemScrollView = view.findViewById(R.id.item_scroll_view);
+        itemScrollView.setPadding(10, 10, 10, 10);
+        closeButton = view.findViewById(R.id.close_button);
         LinearLayout linearLayoutItemStats = new LinearLayout(view.getContext());
         linearLayoutItemStats.setOrientation(LinearLayout.VERTICAL);
         linearLayoutItemStats.setGravity(Gravity.CENTER);
-        itemInfoScroll.addView(linearLayoutItemStats);
-        cardView.addView(itemInfoScroll);
+        itemView.addView(linearLayoutItemStats);
         statsView = new TextView(view.getContext());
         nameView = new TextView(view.getContext());
         linearLayoutItemStats.addView(nameView);
@@ -209,6 +213,18 @@ public class WoWCharacterFragment extends Fragment {
         seventy_fiveTalent = view.findViewById(R.id.seventy_fiveTalent);
         ninetyTalent = view.findViewById(R.id.ninetyTalent);
         hundredTalent = view.findViewById(R.id.hundredTalent);
+
+        closeButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    v.performClick();
+                    Log.i("CLOSE", "CLICKED");
+                    itemScrollView.setVisibility(View.GONE);
+                }
+                return false;
+            }
+        });
 
         Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -336,7 +352,16 @@ public class WoWCharacterFragment extends Fragment {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError e) {
+                            try {
+                                    callErrorAlertDialog(e.networkResponse.statusCode);
+                                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    loadingCircle.setVisibility(View.GONE);
 
+                            }catch (Exception d){
+                                callErrorAlertDialog(0);
+                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
+                            }
                         }
                     });
 
@@ -344,6 +369,72 @@ public class WoWCharacterFragment extends Fragment {
         } catch (Exception e) {
             Log.e("Error Talents Download", e.toString());
         }
+    }
+
+    private void callErrorAlertDialog(int responseCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.DialogTransparent);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        TextView titleText = new TextView(getContext());
+
+        titleText.setTextSize(20);
+        titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleText.setPadding(0, 20, 0, 20);
+        titleText.setLayoutParams(layoutParams);
+        titleText.setTextColor(Color.WHITE);
+
+        TextView messageText = new TextView(getContext());
+
+        messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+        messageText.setPadding(0, 0, 0, 20);
+        messageText.setLayoutParams(layoutParams);
+        messageText.setTextColor(Color.WHITE);
+        if(responseCode == 404) {
+            titleText.setText("Information Outdated");
+            messageText.setText("Please login in game to update this character's information.");
+        }else{
+            titleText.setText("No Internet Connection");
+            messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+        }
+
+        Button button = new Button(getContext());
+        button.setText("OK");
+        button.setTextSize(20);
+        button.setTextColor(Color.WHITE);
+        button.setGravity(Gravity.CENTER);
+        button.setWidth(200);
+        button.setHeight(100);
+        button.setLayoutParams(layoutParams);
+        button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+        final AlertDialog dialog = builder.show();
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setLayout(800, 450);
+
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER);
+        linearLayout.setPadding(20, 20, 20, 20);
+
+        linearLayout.addView(titleText);
+        linearLayout.addView(messageText);
+        linearLayout.addView(button);
+
+        dialog.addContentView(linearLayout, layoutParams);
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                getFragmentManager().beginTransaction().remove(WoWCharacterFragment.this).commit();
+            }
+        });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
     }
 
     private void downloadStats(BnOAuth2Helper bnOAuth2Helper) {
@@ -400,8 +491,7 @@ public class WoWCharacterFragment extends Fragment {
                                                 equipment = gsonEquipment.fromJson(response.toString(), Equipment.class);
 
                                                 for (int i = 0; i < equipment.getEquippedItems().size(); i++) {
-                                                    getImageURLs(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(), bnOAuth2Helper, gson);
-
+                                                    downloadIcons(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(), bnOAuth2Helper, gson);
                                                     try {
                                                         setCharacterItemsInformation(i);
                                                     } catch (Exception e) {
@@ -424,10 +514,6 @@ public class WoWCharacterFragment extends Fragment {
                                                         getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
                                                     }
                                                 }
-
-
-                                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                                loadingCircle.setVisibility(View.GONE);
                                             }
                                         },
                                         new Response.ErrorListener() {
@@ -492,7 +578,7 @@ public class WoWCharacterFragment extends Fragment {
         requestQueue.add(imageRequest);
     }
 
-    private void getImageURLs(final Equipment equipment, final int index, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
+    private void downloadIcons(final Equipment equipment, final int index, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
         cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5); // 1MB cap
         network = new BasicNetwork(new HurlStack());
         requestQueueImage = new RequestQueue(cache, network);
@@ -511,6 +597,10 @@ public class WoWCharacterFragment extends Fragment {
                             ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), new Response.Listener<Bitmap>() {
                                 @Override
                                 public void onResponse(Bitmap bitmap) {
+                                    if(index == equipment.getEquippedItems().size()-1){
+                                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        loadingCircle.setVisibility(View.GONE);
+                                    }
                                     item = new BitmapDrawable(getResources(), bitmap);
                                     setIcons(itemSlot, equipment, item);
                                 }
@@ -665,11 +755,11 @@ public class WoWCharacterFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setOnPressItemInformation(final ImageView imageView, final int index) {
-
         imageView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                closeButton.requestFocus();
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     nameView.setText(nameList.get(equipment.getEquippedItems().get(index).getSlot().getType()));
                     nameView.setTextColor(getItemColor(equipment.getEquippedItems().get(index)));
@@ -697,12 +787,12 @@ public class WoWCharacterFragment extends Fragment {
                     }
                     statsView.setTextColor(Color.WHITE);
                     statsView.setTextSize(13);
-                    cardView.setContentPadding(10, 10, 10, 10);
-                    cardView.setBackground(imageView.getBackground());
-                    cardView.setVisibility(View.VISIBLE);
-                    cardView.setVerticalScrollBarEnabled(true);
-                }else if(cardView.getVisibility() == View.VISIBLE && event.getAction() == MotionEvent.ACTION_DOWN){
-                    cardView.setVisibility(View.GONE);
+                    itemScrollView.setPadding(10, 10, 10, 10);
+                    itemScrollView.setBackground(imageView.getBackground());
+                    itemScrollView.setVisibility(View.VISIBLE);
+                    itemScrollView.setVerticalScrollBarEnabled(true);
+                }else if(itemScrollView.getVisibility() == View.VISIBLE && event.getAction() == MotionEvent.ACTION_DOWN){
+                    itemScrollView.setVisibility(View.GONE);
                 }
                 return true;
             }
@@ -713,7 +803,7 @@ public class WoWCharacterFragment extends Fragment {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (oldScrollY != scrollY) {
-                    cardView.setVisibility(View.GONE);
+                    itemScrollView.setVisibility(View.GONE);
                 }
             }
         });

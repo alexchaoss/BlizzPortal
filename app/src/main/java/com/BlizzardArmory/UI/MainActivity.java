@@ -1,19 +1,27 @@
 package com.BlizzardArmory.UI;
 
 
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,8 +35,10 @@ import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Button clearCredentials = findViewById(R.id.clear_credentials);
         String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
         getRandomServer();
+        clearCacheOlderThan30Days();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -104,10 +115,10 @@ public class MainActivity extends AppCompatActivity {
                             CreateToken(bnOAuth2Params);
                             setContentView(R.layout.activity_games);
                         } else {
-                            //ConnectionService.showNoConnectionMessage(MainActivity.this);
+                            showNoConnectionMessage(MainActivity.this);
                         }
                     } catch (Exception e) {
-                        //ConnectionService.showNoConnectionMessage(MainActivity.this);
+                        showNoConnectionMessage(MainActivity.this);
                     }
                 }
 
@@ -126,6 +137,33 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void clearCacheOlderThan30Days() {
+        if(getCacheDir().isDirectory()){
+            Log.i("Cache", "exist");
+            File[] files= getCacheDir().listFiles();
+            for(File file:files){
+                if(null != file){
+                    Log.i("File", "exist");
+                    long lastModified = file.lastModified();
+
+                    if (0 < lastModified) {
+                        Date lastMDate = new Date(lastModified);
+                        Date today = new Date(System.currentTimeMillis());
+
+                        if (null != lastMDate && null != today) {
+                            long diff = today.getTime() - lastMDate.getTime();
+                            long diffDays = diff / (24 * 60 * 60 * 1000);
+                            if (30 < diffDays) {
+                                Log.i("File", "deleted");
+                                file.delete();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void CreateToken(BnOAuth2Params bnOAuth2Params) {
@@ -152,10 +190,69 @@ public class MainActivity extends AppCompatActivity {
     private void clearCredentials(final BnOAuth2Params bnOAuth2Params) {
         try {
             new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
-            sharedPreferences.getAll().clear();
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void showNoConnectionMessage(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        TextView titleText = new TextView(context);
+        titleText.setText("No Internet Connection");
+        titleText.setTextSize(20);
+        titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleText.setPadding(0, 20, 0, 20);
+        titleText.setLayoutParams(layoutParams);
+        titleText.setTextColor(Color.WHITE);
+
+        TextView messageText = new TextView(context);
+        messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+        messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+        messageText.setPadding(0, 0, 0, 20);
+        messageText.setLayoutParams(layoutParams);
+        messageText.setTextColor(Color.WHITE);
+
+        Button button = new Button(context);
+        button.setText("OK");
+        button.setTextSize(20);
+        button.setTextColor(Color.WHITE);
+        button.setGravity(Gravity.CENTER);
+        button.setWidth(200);
+        button.setHeight(100);
+        button.setLayoutParams(layoutParams);
+        button.setBackground(context.getDrawable(R.drawable.buttonstyle));
+
+        final AlertDialog dialog = builder.show();
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setLayout(800, 450);
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER);
+        linearLayout.setPadding(20, 20, 20, 20);
+
+        linearLayout.addView(titleText);
+        linearLayout.addView(messageText);
+        linearLayout.addView(button);
+
+        dialog.addContentView(linearLayout, layoutParams);
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.cancel();
+            }
+        });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
     }
 
 }

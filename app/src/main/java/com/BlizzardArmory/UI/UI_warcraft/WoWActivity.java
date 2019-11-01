@@ -238,11 +238,7 @@ public class WoWActivity extends AppCompatActivity {
                                                             }
                                                         }
                                                         try {
-                                                            if (ConnectionService.isConnected()) {
-                                                                displayFragment();
-                                                            } else {
-                                                                //ConnectionService.showNoConnectionMessage(getApplicationContext());
-                                                            }
+                                                            displayFragment();
                                                         } catch (Exception e) {
                                                             Log.e("Error", e.toString());
                                                         }

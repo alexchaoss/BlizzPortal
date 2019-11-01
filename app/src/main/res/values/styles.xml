@@ -17,8 +17,11 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="dialogInternetCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="background">@drawable/inputstyle</item>
+    <style name="DialogTransparent" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@drawable/alert_dialog</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:button">@drawable/buttonstyle</item>
     </style>
 
 </resources>
