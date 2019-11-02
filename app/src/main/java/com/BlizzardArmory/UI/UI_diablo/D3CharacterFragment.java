@@ -16,13 +16,12 @@ import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +31,6 @@ import android.widget.TextView;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
 import com.BlizzardArmory.diablo.Items.Item;
 import com.BlizzardArmory.diablo.Items.Items;
@@ -112,16 +110,18 @@ public class D3CharacterFragment extends Fragment {
     private HashMap<Integer, String> secondaryStatsMap = new HashMap<>();
     private HashMap<Integer, String> gemsMap = new HashMap<>();
 
-    private ScrollView itemScrollView;
+    public ScrollView itemScrollView;
     private ImageButton closeButton;
 
     private LinearLayout linearLayoutItemStats;
     private LinearLayout linearLayoutItemArmorDamage;
     private LinearLayout.LayoutParams layoutParamsStats;
+    private ImageView weaponEffect;
 
     private TextView itemName;
+    private TextView typeName;
+    private TextView slot;
     private TextView armor;
-    private TextView weapontype;
     private TextView dps;
     private TextView primarystats;
     private TextView secondarystats;
@@ -171,6 +171,8 @@ public class D3CharacterFragment extends Fragment {
         attack_speed = view.findViewById(R.id.attack_speed);
         area_damage = view.findViewById(R.id.area_damage);
         cooldown_reduction = view.findViewById(R.id.cooldown_reduction);
+        typeName = view.findViewById(R.id.typeName);
+        slot = view.findViewById(R.id.slot);
 
         closeButton = new ImageButton(view.getContext());
         closeButton.setBackground(getContext().getDrawable(R.drawable.close_button_d3));
@@ -188,13 +190,12 @@ public class D3CharacterFragment extends Fragment {
         linearLayoutItemStats = view.findViewById(R.id.item_stats);
         linearLayoutItemArmorDamage = view.findViewById(R.id.armor_damage);
 
+        weaponEffect = view.findViewById(R.id.weapon_effect);
+
         itemName = view.findViewById(R.id.item_name);
         itemName.setTextColor(Color.WHITE);
         itemName.setGravity(View.TEXT_ALIGNMENT_CENTER);
         itemName.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header));
-
-        weapontype = new TextView(view.getContext());
-        weapontype.setTextColor(Color.WHITE);
 
         dps = new TextView(view.getContext());
         dps.setTextColor(Color.WHITE);
@@ -241,11 +242,10 @@ public class D3CharacterFragment extends Fragment {
                     linearLayoutItemStats.removeView(transmog);
                     linearLayoutItemStats.removeView(flavortext);
                     linearLayoutItemStats.removeView(misctext);
-
-                    linearLayoutItemArmorDamage.removeView(weapontype);
                     linearLayoutItemArmorDamage.removeView(dps);
                     linearLayoutItemArmorDamage.removeView(armor);
                     linearLayoutItemStats.removeView(closeButton);
+                    weaponEffect.setImageDrawable(null);
                 }
                 return false;
             }
@@ -349,16 +349,18 @@ public class D3CharacterFragment extends Fragment {
 
     private void setItemInformation(int index) {
 
-
             StringBuilder primary = new StringBuilder();
             StringBuilder secondary = new StringBuilder();
             StringBuilder gem = new StringBuilder();
 
             try {
                 for (int j = 0; j < items.get(index).getAttributesHtml().getPrimary().size(); j++) {
-                    primary.append(items.get(index).getAttributesHtml().getPrimary().get(j)).append("<br>");
+                    String attribute  = items.get(index).getAttributesHtml().getPrimary().get(j).replaceAll("span class=\\\"d3-color-ff", "font color=\"#");
+                    attribute = attribute.replace("<span class=\"tooltip-icon-utility\"></span>", "");
+                    attribute = attribute.replaceAll("span class=\"d3-color-magic", "font color=\"#7979d4");
+                    primary.append(attribute.replaceAll("</span>", "</font>")).append("<br>");
                 }
-
+                Log.i("Test secondary", primary.toString());
             } catch (Exception e) {
                 primary.append("");
             }
@@ -366,7 +368,9 @@ public class D3CharacterFragment extends Fragment {
 
             try {
                 for (int j = 0; j < items.get(index).getAttributesHtml().getSecondary().size(); j++) {
-                    secondary.append(items.get(index).getAttributesHtml().getSecondary().get(j)).append("<br>");
+                    String attribute  = items.get(index).getAttributesHtml().getSecondary().get(j).replaceAll("span class=\\\"d3-color-ff", "font color=\"#");
+                    attribute = attribute.replaceAll("span class=\"d3-color-magic", "font color=\"#7979d4");
+                    secondary.append(attribute.replaceAll("</span>", "</font>")).append("<br>");
                 }
             } catch (Exception e) {
                 secondary.append("");
@@ -377,7 +381,6 @@ public class D3CharacterFragment extends Fragment {
                 for (int j = 0; j < items.get(index).getGems().size(); j++) {
                     StringBuilder gemAttributes = new StringBuilder();
                     for (int k = 0; k < items.get(index).getGems().get(j).getAttributes().size(); k++) {
-                        Log.i("Gem TEST", items.get(index).getGems().get(j).getAttributes().get(k));
                         gemAttributes.append(items.get(index).getGems().get(j).getAttributes().get(k)).append("<br>");
                     }
                     gem.append(gemAttributes).append("<br>");
@@ -392,7 +395,6 @@ public class D3CharacterFragment extends Fragment {
             secondaryStatsMap.put(index, secondary.toString());
             gemsMap.put(index,gem.toString());
 
-            Log.i("TEST", "TEST");
             try {
                 setOnPressItemInformation(Objects.requireNonNull(imageViewItem.get(items.get(index).getSlots())), index);
             }catch (Exception e){
@@ -407,12 +409,14 @@ public class D3CharacterFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.e("TEST", items.get(index).getName());
                     iconTooltip.setImageDrawable(imageView.getDrawable());
                     iconTooltip.setBackground(imageView.getBackground());
                     iconTooltip.setAdjustViewBounds(true);
                     iconTooltip.getLayoutParams().height = (imageView.getHeight() - (int) Math.round(imageView.getHeight() * 0.01));
                     iconTooltip.getLayoutParams().width = (imageView.getWidth() - (int) Math.round(imageView.getWidth() * 0.01));
+
+                    iconTooltip.getLayoutParams().height = (imageView.getHeight() + (int) Math.round(imageView.getHeight() * 0.01));
+                    iconTooltip.getLayoutParams().width = (imageView.getWidth() + (int) Math.round(imageView.getWidth() * 0.01));
 
                     try {
                         String color = selectColor(items.get(index).getDisplayColor());
@@ -423,9 +427,14 @@ public class D3CharacterFragment extends Fragment {
                         Log.e("Error", e.toString());
                     }
 
+                    typeName.setText(items.get(index).getTypeName());
+                    typeName.setTextColor(Color.parseColor(selectColor(items.get(index).getDisplayColor())));
+
+                    slot.setText(items.get(index).getSlots());
+
                     try{
                         if(items.get(index).getArmor() > 0) {
-                            armor.setText(Html.fromHtml("<h1>" + (int) Math.round(items.get(index).getArmor()) + "</h1><br><font color=\"#505050\">Armor</font>", Html.FROM_HTML_MODE_LEGACY));
+                            armor.setText(Html.fromHtml("<big><big><big><big><big>" + (int) Math.round(items.get(index).getArmor()) + "</big></big></big></big></big><br><font color=\"#505050\">Armor</font>", Html.FROM_HTML_MODE_LEGACY));
                             linearLayoutItemArmorDamage.addView(armor, layoutParamsStats);
                         }
                     } catch (Exception e) {
@@ -433,24 +442,33 @@ public class D3CharacterFragment extends Fragment {
                     }
 
                     try {
-                        if (items.get(index).getType().getOneHanded()) {
-                            weapontype.setText(Html.fromHtml("1-Hand" + "<br>", Html.FROM_HTML_MODE_LEGACY));
-                        } else if (items.get(index).getType().getTwoHanded()) {
-                            weapontype.setText(Html.fromHtml("2-Hand" + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                        if (!items.get(index).getType().getTwoHanded() && items.get(index).getMinDamage() > 0) {
+                            slot.setText(Html.fromHtml("1-Hand", Html.FROM_HTML_MODE_LEGACY));
+                        } else if (items.get(index).getType().getTwoHanded() && items.get(index).getMinDamage() > 0) {
+                            slot.setText(Html.fromHtml("2-Hand", Html.FROM_HTML_MODE_LEGACY));
+                        }else{
+                            slot.setText(items.get(index).getSlots());
                         }
-                        linearLayoutItemArmorDamage.addView(weapontype, layoutParamsStats);
                     } catch (Exception e) {
-                        Log.e("Error", e.toString());
+                        Log.e("Error", "No TYPE");
                     }
                     try {
                         if (items.get(index).getMinDamage() > 0 && items.get(index).getMaxDamage() > 0) {
-                            NumberFormat formatter = new DecimalFormat("#0.00");
-                            double dpsText = (items.get(index).getMinDamage() + items.get(index).getMaxDamage())/2 * items.get(index).getAttacksPerSecond();
-                            dps.setText(Html.fromHtml("<h1>" + formatter.format(dpsText) + "</h1><br><font color=\"#505050\">Damage Per Second</font><br>"
+                            NumberFormat formatter = new DecimalFormat("#0.0");
+                            double dpsText = Math.round(((items.get(index).getMinDamage() + items.get(index).getMaxDamage())/2 * items.get(index).getAttacksPerSecond()*10)/10);
+                            dps.setText(Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#505050\">Damage Per Second</font><br>"
                                     + formatter.format(items.get(index).getMinDamage()) + " - "
                                     + formatter.format(items.get(index).getMaxDamage()) + "<font color=\"#505050\"> Damage</font><br>"
                                     + formatter.format(items.get(index).getAttacksPerSecond()) + "<font color=\"#505050\"> Attacks per Second</font><br>", Html.FROM_HTML_MODE_LEGACY));
                             linearLayoutItemArmorDamage.addView(dps, layoutParamsStats);
+
+                            if(items.get(index).getElementalType().equals("fire")){
+                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.fire_effect));
+                            }else if(items.get(index).getElementalType().equals("cold")){
+                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.cold_effect));
+                            }else if(items.get(index).getElementalType().equals("holy")){
+                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.holy_effect));
+                            }
                         }
                     } catch (Exception e) {
                         dps.setText("");
@@ -477,15 +495,20 @@ public class D3CharacterFragment extends Fragment {
 
 
                     try {
-                        flavortext.setText(Html.fromHtml(items.get(index).getFlavorText() + "<br>", Html.FROM_HTML_MODE_LEGACY));
-                        linearLayoutItemStats.addView(flavortext, layoutParamsStats);
+                        if(!items.get(index).getFlavorText().equals("null")) {
+                            flavortext.setText(Html.fromHtml("<font color=\"#9d7853\">\"<i>" + items.get(index).getFlavorText() + "</i>\"</font><br>", Html.FROM_HTML_MODE_LEGACY));
+                            linearLayoutItemStats.addView(flavortext, layoutParamsStats);
+                        }
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
                     }
 
                     try {
                         if (items.get(index).getAccountBound()) {
-                            misctext.setText(Html.fromHtml("Required Level: " + (int) Math.round(items.get(index).getRequiredLevel()) + "<br>Account bound", Html.FROM_HTML_MODE_LEGACY));
+                            misctext.setText(Html.fromHtml("<font color=\"#a99877\">Required Level: " + (int) Math.round(items.get(index).getRequiredLevel()) + "<br>Account bound</font>", Html.FROM_HTML_MODE_LEGACY));
+                            misctext.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                        }else{
+                            misctext.setText(Html.fromHtml("<font color=\"#a99877\">Required Level: " + (int) Math.round(items.get(index).getRequiredLevel()) + "<br></font>", Html.FROM_HTML_MODE_LEGACY));
                             misctext.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
                         }
                         linearLayoutItemStats.addView(misctext, layoutParamsStats);
@@ -750,5 +773,4 @@ public class D3CharacterFragment extends Fragment {
             }
         }
     }
-
 }
