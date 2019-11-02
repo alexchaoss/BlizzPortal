@@ -69,4 +69,5 @@
     <string name="class_level">class_level</string>
     <string name="character_outdated">Information outdated, please login on this character to update the information</string>
     <string name="close_button">close button</string>
+    <string name="item_icon">item_icon</string>
 </resources>
