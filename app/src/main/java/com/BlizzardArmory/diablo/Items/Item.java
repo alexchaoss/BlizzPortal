@@ -57,6 +57,9 @@ public class Item {
     @SerializedName("maxDamage")
     @Expose
     private Double maxDamage;
+    @SerializedName("elementalType")
+    @Expose
+    private String elementalType;
     @SerializedName("slots")
     @Expose
     private String slots;
@@ -215,6 +218,16 @@ public class Item {
     public void setMaxDamage(Double maxDamage) {
         this.maxDamage = maxDamage;
     }
+
+
+    public String getElementalType() {
+        return elementalType;
+    }
+
+    public void setElementalType(String elementalType) {
+        this.elementalType = elementalType;
+    }
+
 
     public String getSlots() {
         return slots;
