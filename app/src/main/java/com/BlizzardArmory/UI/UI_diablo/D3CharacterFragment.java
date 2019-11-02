@@ -3,8 +3,10 @@ package com.BlizzardArmory.UI.UI_diablo;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,7 +21,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -51,6 +55,8 @@ import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,12 +112,15 @@ public class D3CharacterFragment extends Fragment {
     private HashMap<Integer, String> secondaryStatsMap = new HashMap<>();
     private HashMap<Integer, String> gemsMap = new HashMap<>();
 
-    private RelativeLayout itemView;
     private ScrollView itemScrollView;
-    private ImageView closeButton;
-    private HorizontalScrollView scrollView;
+    private ImageButton closeButton;
+
+    private LinearLayout linearLayoutItemStats;
+    private LinearLayout linearLayoutItemArmorDamage;
+    private LinearLayout.LayoutParams layoutParamsStats;
 
     private TextView itemName;
+    private TextView armor;
     private TextView weapontype;
     private TextView dps;
     private TextView primarystats;
@@ -120,6 +129,7 @@ public class D3CharacterFragment extends Fragment {
     private TextView transmog;
     private TextView flavortext;
     private TextView misctext;
+    private ImageView iconTooltip;
 
     private RequestQueue requestQueueImage;
 
@@ -133,6 +143,7 @@ public class D3CharacterFragment extends Fragment {
         Bundle bundle = getArguments();
         assert bundle != null;
         int id = bundle.getInt("id");
+
         shoulders = view.findViewById(R.id.shoulder);
         hands = view.findViewById(R.id.gloves);
         leftFinger = view.findViewById(R.id.ring1);
@@ -146,9 +157,12 @@ public class D3CharacterFragment extends Fragment {
         bracers = view.findViewById(R.id.bracers);
         rightFinger = view.findViewById(R.id.ring2);
         offhand = view.findViewById(R.id.off_hand);
+
         loadingCircle = view.findViewById(R.id.loadingCircle);
+
         paperdoll = view.findViewById(R.id.paperdoll);
         name = view.findViewById(R.id.character_name);
+
         lvl_class = view.findViewById(R.id.level_class);
         top_stat = view.findViewById(R.id.top_stat);
         vitality = view.findViewById(R.id.vitality);
@@ -157,35 +171,61 @@ public class D3CharacterFragment extends Fragment {
         attack_speed = view.findViewById(R.id.attack_speed);
         area_damage = view.findViewById(R.id.area_damage);
         cooldown_reduction = view.findViewById(R.id.cooldown_reduction);
-        itemView = view.findViewById(R.id.item_stats);
+
+        closeButton = new ImageButton(view.getContext());
+        closeButton.setBackground(getContext().getDrawable(R.drawable.close_button_d3));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+        params.setMargins(0,0,0,20);
+        closeButton.setLayoutParams(params);
+
         itemScrollView = view.findViewById(R.id.item_scroll_view);
-        itemScrollView.setPadding(10, 10, 10, 10);
-        closeButton = view.findViewById(R.id.close_button);
-        LinearLayout linearLayoutItemStats = new LinearLayout(view.getContext());
-        linearLayoutItemStats.setOrientation(LinearLayout.VERTICAL);
-        linearLayoutItemStats.setGravity(Gravity.CENTER);
-        itemView.addView(linearLayoutItemStats);
-        scrollView = view.findViewById(R.id.scrollviewhoriz);
-        itemName = new TextView(view.getContext());
+        GradientDrawable backgroundStroke = new GradientDrawable();
+        backgroundStroke.setCornerRadius(3);
+        backgroundStroke.setColor(Color.parseColor("#000000"));
+        backgroundStroke.setStroke(3, Color.GRAY);
+        itemScrollView.setBackground(backgroundStroke);
+
+        linearLayoutItemStats = view.findViewById(R.id.item_stats);
+        linearLayoutItemArmorDamage = view.findViewById(R.id.armor_damage);
+
+        itemName = view.findViewById(R.id.item_name);
+        itemName.setTextColor(Color.WHITE);
+        itemName.setGravity(View.TEXT_ALIGNMENT_CENTER);
+        itemName.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header));
+
         weapontype = new TextView(view.getContext());
+        weapontype.setTextColor(Color.WHITE);
+
         dps = new TextView(view.getContext());
+        dps.setTextColor(Color.WHITE);
+
+        armor = new TextView(view.getContext());
+        armor.setTextColor(Color.WHITE);
+
         primarystats = new TextView(view.getContext());
+        primarystats.setTextColor(Color.WHITE);
+
         secondarystats = new TextView(view.getContext());
+        secondarystats.setTextColor(Color.WHITE);
+
         gems = new TextView(view.getContext());
+        gems.setTextColor(Color.WHITE);
+
         transmog = new TextView(view.getContext());
+        transmog.setTextColor(Color.WHITE);
+
         flavortext = new TextView(view.getContext());
+        flavortext.setTextColor(Color.WHITE);
+
         misctext = new TextView(view.getContext());
-        LinearLayout.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        misctext.setTextColor(Color.WHITE);
+
+        iconTooltip = view.findViewById(R.id.item_icon);
+
+        layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT ,1.0f);
         layoutParamsStats.setMargins(20, 0, 20, 0);
-        linearLayoutItemStats.addView(itemName, layoutParamsStats);
-        linearLayoutItemStats.addView(weapontype, layoutParamsStats);
-        linearLayoutItemStats.addView(dps, layoutParamsStats);
-        linearLayoutItemStats.addView(primarystats, layoutParamsStats);
-        linearLayoutItemStats.addView(secondarystats, layoutParamsStats);
-        linearLayoutItemStats.addView(gems, layoutParamsStats);
-        linearLayoutItemStats.addView(transmog, layoutParamsStats);
-        linearLayoutItemStats.addView(flavortext, layoutParamsStats);
-        linearLayoutItemStats.addView(misctext, layoutParamsStats);
+
+        addImageViewItemsToList();
 
         closeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -194,12 +234,22 @@ public class D3CharacterFragment extends Fragment {
                     v.performClick();
                     Log.i("CLOSE", "CLICKED");
                     itemScrollView.setVisibility(View.GONE);
+
+                    linearLayoutItemStats.removeView(primarystats);
+                    linearLayoutItemStats.removeView(secondarystats);
+                    linearLayoutItemStats.removeView(gems);
+                    linearLayoutItemStats.removeView(transmog);
+                    linearLayoutItemStats.removeView(flavortext);
+                    linearLayoutItemStats.removeView(misctext);
+
+                    linearLayoutItemArmorDamage.removeView(weapontype);
+                    linearLayoutItemArmorDamage.removeView(dps);
+                    linearLayoutItemArmorDamage.removeView(armor);
+                    linearLayoutItemStats.removeView(closeButton);
                 }
                 return false;
             }
         });
-
-        addImageViewItemsToList();
 
         loadingCircle.setVisibility(View.VISIBLE);
         Objects.requireNonNull(D3CharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -308,51 +358,76 @@ public class D3CharacterFragment extends Fragment {
                 for (int j = 0; j < items.get(index).getAttributesHtml().getPrimary().size(); j++) {
                     primary.append(items.get(index).getAttributesHtml().getPrimary().get(j)).append("<br>");
                 }
+
             } catch (Exception e) {
-                primary = new StringBuilder();
+                primary.append("");
             }
 
 
             try {
-                for (int j = 0; j < items.get(j).getAttributesHtml().getSecondary().size(); j++) {
+                for (int j = 0; j < items.get(index).getAttributesHtml().getSecondary().size(); j++) {
                     secondary.append(items.get(index).getAttributesHtml().getSecondary().get(j)).append("<br>");
                 }
             } catch (Exception e) {
-                secondary = new StringBuilder();
+                secondary.append("");
             }
 
 
             try {
                 for (int j = 0; j < items.get(index).getGems().size(); j++) {
                     StringBuilder gemAttributes = new StringBuilder();
-                    for (int k = 0; k < items.get(index).getAttributesHtml().getSecondary().size(); k++) {
-                        gemAttributes.append(items.get(index).getAttributesHtml().getSecondary().get(k)).append("<br>");
+                    for (int k = 0; k < items.get(index).getGems().get(j).getAttributes().size(); k++) {
+                        Log.i("Gem TEST", items.get(index).getGems().get(j).getAttributes().get(k));
+                        gemAttributes.append(items.get(index).getGems().get(j).getAttributes().get(k)).append("<br>");
                     }
                     gem.append(gemAttributes).append("<br>");
                 }
             } catch (Exception e) {
+                gem.append("");
                 Log.e("Error", e.toString());
             }
 
 
             primaryStatsMap.put(index, primary.toString());
             secondaryStatsMap.put(index, secondary.toString());
-            gemsMap.put(index,gems.toString());
+            gemsMap.put(index,gem.toString());
 
             Log.i("TEST", "TEST");
-            setOnPressItemInformation(Objects.requireNonNull(imageViewItem.get(items.get(index).getSlots())), index);
+            try {
+                setOnPressItemInformation(Objects.requireNonNull(imageViewItem.get(items.get(index).getSlots())), index);
+            }catch (Exception e){
+                Log.e("Item", "empty");
+            }
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setOnPressItemInformation(ImageView imageView, final int index) {
+    private void setOnPressItemInformation(final ImageView imageView, final int index) {
 
         imageView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Log.e("TEST", items.get(index).getName());
+                    iconTooltip.setImageDrawable(imageView.getDrawable());
+                    iconTooltip.setBackground(imageView.getBackground());
+                    iconTooltip.setAdjustViewBounds(true);
+                    iconTooltip.getLayoutParams().height = (imageView.getHeight() - (int) Math.round(imageView.getHeight() * 0.01));
+                    iconTooltip.getLayoutParams().width = (imageView.getWidth() - (int) Math.round(imageView.getWidth() * 0.01));
+
                     try {
-                        itemName.setText(Html.fromHtml(items.get(index).getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                        String color = selectColor(items.get(index).getDisplayColor());
+                        itemName.setText(Html.fromHtml("<font color=\"" + color + "\">" + items.get(index).getName() + "</font>", Html.FROM_HTML_MODE_LEGACY));
+                        itemName.setGravity(Gravity.CENTER_HORIZONTAL);
+                        itemName.setGravity(Gravity.CENTER_VERTICAL);
+                    } catch (Exception e) {
+                        Log.e("Error", e.toString());
+                    }
+
+                    try{
+                        if(items.get(index).getArmor() > 0) {
+                            armor.setText(Html.fromHtml("<h1>" + (int) Math.round(items.get(index).getArmor()) + "</h1><br><font color=\"#505050\">Armor</font>", Html.FROM_HTML_MODE_LEGACY));
+                            linearLayoutItemArmorDamage.addView(armor, layoutParamsStats);
+                        }
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
                     }
@@ -363,57 +438,64 @@ public class D3CharacterFragment extends Fragment {
                         } else if (items.get(index).getType().getTwoHanded()) {
                             weapontype.setText(Html.fromHtml("2-Hand" + "<br>", Html.FROM_HTML_MODE_LEGACY));
                         }
+                        linearLayoutItemArmorDamage.addView(weapontype, layoutParamsStats);
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
                     }
                     try {
-                        if (items.get(index).getMinDamage() == 0 && items.get(index).getMaxDamage() != 0) {
-                            dps.setText(Html.fromHtml(items.get(index).getMinDamage() + "-" + items.get(index).getMaxDamage() + "<br>" + items.get(index).getAttacksPerSecond() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                        if (items.get(index).getMinDamage() > 0 && items.get(index).getMaxDamage() > 0) {
+                            NumberFormat formatter = new DecimalFormat("#0.00");
+                            double dpsText = (items.get(index).getMinDamage() + items.get(index).getMaxDamage())/2 * items.get(index).getAttacksPerSecond();
+                            dps.setText(Html.fromHtml("<h1>" + formatter.format(dpsText) + "</h1><br><font color=\"#505050\">Damage Per Second</font><br>"
+                                    + formatter.format(items.get(index).getMinDamage()) + " - "
+                                    + formatter.format(items.get(index).getMaxDamage()) + "<font color=\"#505050\"> Damage</font><br>"
+                                    + formatter.format(items.get(index).getAttacksPerSecond()) + "<font color=\"#505050\"> Attacks per Second</font><br>", Html.FROM_HTML_MODE_LEGACY));
+                            linearLayoutItemArmorDamage.addView(dps, layoutParamsStats);
                         }
                     } catch (Exception e) {
                         dps.setText("");
                     }
+
                     try {
-                        transmog.setText(Html.fromHtml(items.get(index).getTransmog().getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
-                    } catch (Exception e) {
-                        Log.e("Error", e.toString());
-                    }
-                    try {
-                        primarystats.setText(Html.fromHtml(primaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
-                        secondarystats.setText(Html.fromHtml(secondaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
+                        primarystats.setText(Html.fromHtml( "Primary<br>" + primaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
+                        linearLayoutItemStats.addView(primarystats, layoutParamsStats);
+                        secondarystats.setText(Html.fromHtml("Secondary<br>" + secondaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
+                        linearLayoutItemStats.addView(secondarystats, layoutParamsStats);
                         gems.setText(Html.fromHtml(gemsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
+                        linearLayoutItemStats.addView(gems, layoutParamsStats);
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
 
                     }
+
+                    try {
+                        transmog.setText(Html.fromHtml(items.get(index).getTransmog().getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                        linearLayoutItemStats.addView(transmog, layoutParamsStats);
+                    } catch (Exception e) {
+                        Log.e("Error", e.toString());
+                    }
+
 
                     try {
                         flavortext.setText(Html.fromHtml(items.get(index).getFlavorText() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                        linearLayoutItemStats.addView(flavortext, layoutParamsStats);
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
                     }
 
                     try {
                         if (items.get(index).getAccountBound()) {
-                            misctext.setText(Html.fromHtml(items.get(index).getRequiredLevel() + "Account bound", Html.FROM_HTML_MODE_LEGACY));
+                            misctext.setText(Html.fromHtml("Required Level: " + (int) Math.round(items.get(index).getRequiredLevel()) + "<br>Account bound", Html.FROM_HTML_MODE_LEGACY));
+                            misctext.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
                         }
-
+                        linearLayoutItemStats.addView(misctext, layoutParamsStats);
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
                     }
+                    linearLayoutItemStats.addView(closeButton);
                     itemScrollView.setVisibility(View.VISIBLE);
                 }
                 return true;
-            }
-        });
-
-        scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (oldScrollX != scrollX) {
-                    itemScrollView.setVisibility(View.GONE);
-                }
             }
         });
     }
@@ -638,6 +720,24 @@ public class D3CharacterFragment extends Fragment {
                 break;
             default:
         }
+    }
+
+    private String selectColor(String color) {
+        switch (color) {
+            case "blue":
+                return "#7979d4";
+            case "yellow":
+                return "#f8cc35";
+            case "orange":
+                return "#bf642f";
+            case "green":
+                return "#8bd442";
+            case "white":
+                return "#FFFFFF";
+            default:
+        }
+
+        return "#FFFFFF";
     }
 
     private void getItemIconURL() {
