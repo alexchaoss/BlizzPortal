@@ -11,7 +11,7 @@ public class Gem {
 
     @SerializedName("item")
     @Expose
-    private Items item;
+    private GemInfo item;
     @SerializedName("attributes")
     @Expose
     private List<String> attributes = null;
@@ -22,11 +22,11 @@ public class Gem {
     @Expose
     private Boolean isJewel;
 
-    public Items getItem() {
+    public GemInfo getItem() {
         return item;
     }
 
-    public void setItem(Items item) {
+    public void setItem(GemInfo item) {
         this.item = item;
     }
 

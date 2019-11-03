@@ -71,4 +71,5 @@
     <string name="close_button">close button</string>
     <string name="item_icon">item_icon</string>
     <string name="weapon_effect">Weapon Effect</string>
+    <string name="loading">loading</string>
 </resources>

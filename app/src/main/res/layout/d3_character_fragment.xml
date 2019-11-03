@@ -283,7 +283,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:focusable="true"
+        android:scrollbars="none"
         android:visibility="gone">
 
         <LinearLayout
@@ -297,7 +297,7 @@
                 android:id="@+id/item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="1dp"
+                android:layout_margin="5dp"
                 android:fontFamily="@font/diablo_light"
                 android:gravity="center_vertical"
                 android:textAlignment="center"
@@ -317,15 +317,15 @@
 
                     <ImageView
                         android:id="@+id/weapon_effect"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
+                        android:layout_width="95dp"
+                        android:layout_height="140dp"
+                        android:layout_centerInParent="true"
                         android:contentDescription="@string/weapon_effect" />
 
                     <ImageView
                         android:id="@+id/item_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="54dp"
+                        android:layout_height="103dp"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/item_icon" />
                 </RelativeLayout>
@@ -359,7 +359,6 @@
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 
@@ -367,14 +366,14 @@
         android:id="@+id/loadingCircle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:gravity="center">
 
         <ProgressBar
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:indeterminate="true"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:indeterminateDrawable="@drawable/progress_bar" />
     </RelativeLayout>
 
