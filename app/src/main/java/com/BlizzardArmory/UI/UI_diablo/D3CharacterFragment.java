@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.menu.MenuView;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
@@ -48,11 +49,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.felipecsl.gifimageview.library.GifImageView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -181,11 +184,6 @@ public class D3CharacterFragment extends Fragment {
         closeButton.setLayoutParams(params);
 
         itemScrollView = view.findViewById(R.id.item_scroll_view);
-        GradientDrawable backgroundStroke = new GradientDrawable();
-        backgroundStroke.setCornerRadius(3);
-        backgroundStroke.setColor(Color.parseColor("#000000"));
-        backgroundStroke.setStroke(3, Color.GRAY);
-        itemScrollView.setBackground(backgroundStroke);
 
         linearLayoutItemStats = view.findViewById(R.id.item_stats);
         linearLayoutItemArmorDamage = view.findViewById(R.id.armor_damage);
@@ -246,6 +244,7 @@ public class D3CharacterFragment extends Fragment {
                     linearLayoutItemArmorDamage.removeView(armor);
                     linearLayoutItemStats.removeView(closeButton);
                     weaponEffect.setImageDrawable(null);
+                    itemScrollView.scrollTo(0,0);
                 }
                 return false;
             }
@@ -372,6 +371,7 @@ public class D3CharacterFragment extends Fragment {
                     attribute = attribute.replaceAll("span class=\"d3-color-magic", "font color=\"#7979d4");
                     secondary.append(attribute.replaceAll("</span>", "</font>")).append("<br>");
                 }
+                Log.i("Test secondary", secondary.toString());
             } catch (Exception e) {
                 secondary.append("");
             }
@@ -380,10 +380,14 @@ public class D3CharacterFragment extends Fragment {
             try {
                 for (int j = 0; j < items.get(index).getGems().size(); j++) {
                     StringBuilder gemAttributes = new StringBuilder();
-                    for (int k = 0; k < items.get(index).getGems().get(j).getAttributes().size(); k++) {
-                        gemAttributes.append(items.get(index).getGems().get(j).getAttributes().get(k)).append("<br>");
+                    if(items.get(index).getGems().get(j).getItem().getId().contains("Unique")){
+                        gemAttributes.append("<font color=\"#ff8000\">");
                     }
-                    gem.append(gemAttributes).append("<br>");
+                    for (int k = 0; k < items.get(index).getGems().get(j).getAttributes().size(); k++) {
+                        gemAttributes.append(items.get(index).getGems().get(j).getAttributes().get(k).replaceAll("\\n", "<br>")).append("<br>");
+                    }
+                    gemAttributes.append("</font>");
+                    gem.append(gemAttributes);
                 }
             } catch (Exception e) {
                 gem.append("");
@@ -409,14 +413,25 @@ public class D3CharacterFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    GradientDrawable backgroundStroke = new GradientDrawable();
+                    backgroundStroke.setColor(Color.parseColor("#000000"));
+                    backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(index)));
+                    itemScrollView.setBackground(backgroundStroke);
+
                     iconTooltip.setImageDrawable(imageView.getDrawable());
                     iconTooltip.setBackground(imageView.getBackground());
-                    iconTooltip.setAdjustViewBounds(true);
-                    iconTooltip.getLayoutParams().height = (imageView.getHeight() - (int) Math.round(imageView.getHeight() * 0.01));
-                    iconTooltip.getLayoutParams().width = (imageView.getWidth() - (int) Math.round(imageView.getWidth() * 0.01));
 
-                    iconTooltip.getLayoutParams().height = (imageView.getHeight() + (int) Math.round(imageView.getHeight() * 0.01));
-                    iconTooltip.getLayoutParams().width = (imageView.getWidth() + (int) Math.round(imageView.getWidth() * 0.01));
+                    RelativeLayout.LayoutParams jewelleryParams = new RelativeLayout.LayoutParams((int) (60 * getResources().getSystem().getDisplayMetrics().density), (int) (61 * getResources().getSystem().getDisplayMetrics().density));
+                    RelativeLayout.LayoutParams normalIconParams = new RelativeLayout.LayoutParams((int) (54 * getResources().getSystem().getDisplayMetrics().density), (int) (103 * getResources().getSystem().getDisplayMetrics().density));
+                    normalIconParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    if(items.get(index).getSlots().equals("neck")
+                            || items.get(index).getSlots().equals("leftFinger")
+                            || items.get(index).getSlots().equals("rightFinger")
+                            || items.get(index).getSlots().equals("waist")){
+                        iconTooltip.setLayoutParams(jewelleryParams);
+                    }else{
+                        iconTooltip.setLayoutParams(normalIconParams);
+                    }
 
                     try {
                         String color = selectColor(items.get(index).getDisplayColor());
@@ -452,23 +467,46 @@ public class D3CharacterFragment extends Fragment {
                     } catch (Exception e) {
                         Log.e("Error", "No TYPE");
                     }
+                    RelativeLayout.LayoutParams effectParams = new RelativeLayout.LayoutParams((int) (95 * getResources().getSystem().getDisplayMetrics().density), (int) (140 * getResources().getSystem().getDisplayMetrics().density));
                     try {
                         if (items.get(index).getMinDamage() > 0 && items.get(index).getMaxDamage() > 0) {
                             NumberFormat formatter = new DecimalFormat("#0.0");
                             double dpsText = Math.round(((items.get(index).getMinDamage() + items.get(index).getMaxDamage())/2 * items.get(index).getAttacksPerSecond()*10)/10);
-                            dps.setText(Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#505050\">Damage Per Second</font><br>"
+                            dps.setText(Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#505050\">Damage Per Second</font><br><br>"
                                     + formatter.format(items.get(index).getMinDamage()) + " - "
                                     + formatter.format(items.get(index).getMaxDamage()) + "<font color=\"#505050\"> Damage</font><br>"
                                     + formatter.format(items.get(index).getAttacksPerSecond()) + "<font color=\"#505050\"> Attacks per Second</font><br>", Html.FROM_HTML_MODE_LEGACY));
                             linearLayoutItemArmorDamage.addView(dps, layoutParamsStats);
 
-                            if(items.get(index).getElementalType().equals("fire")){
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.fire_effect));
-                            }else if(items.get(index).getElementalType().equals("cold")){
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.cold_effect));
-                            }else if(items.get(index).getElementalType().equals("holy")){
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.holy_effect));
+                            switch (items.get(index).getElementalType()) {
+                                case "fire":
+                                    weaponEffect.setLayoutParams(effectParams);
+                                    weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.fire_effect));
+                                    break;
+                                case "cold":
+                                    weaponEffect.setLayoutParams(effectParams);
+                                    weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.cold_effect));
+                                    break;
+                                case "holy":
+                                    weaponEffect.setLayoutParams(effectParams);
+                                    weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.holy_effect));
+                                    break;
+                                case "poison":
+                                    weaponEffect.setLayoutParams(effectParams);
+                                    weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.poison_effect));
+                                    break;
+                                case "lightning":
+                                    weaponEffect.setLayoutParams(effectParams);
+                                    weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.lightning_effect));
+                                    break;
+                                case "arcane":
+                                    weaponEffect.setLayoutParams(effectParams);
+                                    weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.arcane_effect));
+                                    break;
                             }
+                        }else{
+                            RelativeLayout.LayoutParams noEffectParams = new RelativeLayout.LayoutParams(0, 0);
+                            weaponEffect.setLayoutParams(noEffectParams);
                         }
                     } catch (Exception e) {
                         dps.setText("");
@@ -487,7 +525,8 @@ public class D3CharacterFragment extends Fragment {
                     }
 
                     try {
-                        transmog.setText(Html.fromHtml(items.get(index).getTransmog().getName() + "<br>", Html.FROM_HTML_MODE_LEGACY));
+                        transmog.setText(Html.fromHtml("<font color=\"#7979d4\">Transmogrification:</font><br>" + "<font color=\""
+                                + selectColor(items.get(index).getTransmog().getDisplayColor()) + "\">" + items.get(index).getTransmog().getName() + "</font><br>", Html.FROM_HTML_MODE_LEGACY));
                         linearLayoutItemStats.addView(transmog, layoutParamsStats);
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
@@ -761,6 +800,16 @@ public class D3CharacterFragment extends Fragment {
         }
 
         return "#FFFFFF";
+    }
+
+    private String getItemBorderColor(int index) {
+        String type = items.get(index).getTypeName();
+        if (type.contains("Ancient")) {
+            return "#b47402";
+        }else if(type.contains("Primal")){
+            return "#920b09";
+        }
+        return "#312a26";
     }
 
     private void getItemIconURL() {
