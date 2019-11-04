@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
@@ -129,6 +130,7 @@ public class D3CharacterFragment extends Fragment {
     private TextView primarystats;
     private TextView secondarystats;
     private TextView gems;
+    private TextView set;
     private TextView transmog;
     private TextView flavortext;
     private TextView misctext;
@@ -193,7 +195,6 @@ public class D3CharacterFragment extends Fragment {
         itemName = view.findViewById(R.id.item_name);
         itemName.setTextColor(Color.WHITE);
         itemName.setGravity(View.TEXT_ALIGNMENT_CENTER);
-        itemName.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header));
 
         dps = new TextView(view.getContext());
         dps.setTextColor(Color.WHITE);
@@ -209,6 +210,8 @@ public class D3CharacterFragment extends Fragment {
 
         gems = new TextView(view.getContext());
         gems.setTextColor(Color.WHITE);
+
+        set = new TextView(view.getContext());
 
         transmog = new TextView(view.getContext());
         transmog.setTextColor(Color.WHITE);
@@ -243,6 +246,7 @@ public class D3CharacterFragment extends Fragment {
                     linearLayoutItemArmorDamage.removeView(dps);
                     linearLayoutItemArmorDamage.removeView(armor);
                     linearLayoutItemStats.removeView(closeButton);
+                    linearLayoutItemStats.removeView(set);
                     weaponEffect.setImageDrawable(null);
                     itemScrollView.scrollTo(0,0);
                 }
@@ -354,8 +358,11 @@ public class D3CharacterFragment extends Fragment {
 
             try {
                 for (int j = 0; j < items.get(index).getAttributesHtml().getPrimary().size(); j++) {
-                    String attribute  = items.get(index).getAttributesHtml().getPrimary().get(j).replaceAll("span class=\\\"d3-color-ff", "font color=\"#");
-                    attribute = attribute.replace("<span class=\"tooltip-icon-utility\"></span>", "");
+                    String attribute  = items.get(index).getAttributesHtml().getPrimary().get(j).replaceAll("<span class=\"tooltip-icon-enchant\"></span>", "<img src=\"utility\">");
+                    attribute = attribute.replaceAll("<span class=\"tooltip-icon-utility\"></span>", "<img src=\"utility\">");
+                    attribute = attribute.replaceAll("<span class=\"tooltip-icon-bullet\"></span>", "<img src=\"primary" +
+                            "\">");
+                            attribute = attribute.replaceAll("span class=\"d3-color-ff", "font color=\"#");
                     attribute = attribute.replaceAll("span class=\"d3-color-magic", "font color=\"#7979d4");
                     primary.append(attribute.replaceAll("</span>", "</font>")).append("<br>");
                 }
@@ -367,7 +374,11 @@ public class D3CharacterFragment extends Fragment {
 
             try {
                 for (int j = 0; j < items.get(index).getAttributesHtml().getSecondary().size(); j++) {
-                    String attribute  = items.get(index).getAttributesHtml().getSecondary().get(j).replaceAll("span class=\\\"d3-color-ff", "font color=\"#");
+                    String attribute  = items.get(index).getAttributesHtml().getSecondary().get(j).replaceAll("<span class=\"tooltip-icon-enchant\"></span>", "<img src=\"utility\">");
+                    attribute = attribute.replaceAll("<span class=\"tooltip-icon-bullet\"></span>", "<img src=\"primary" +
+                            "\">");
+                    attribute = attribute.replaceAll("<span class=\"tooltip-icon-utility\"></span>", "<img src=\"utility\">");
+                    attribute = attribute.replaceAll("span class=\"d3-color-ff", "font color=\"#");
                     attribute = attribute.replaceAll("span class=\"d3-color-magic", "font color=\"#7979d4");
                     secondary.append(attribute.replaceAll("</span>", "</font>")).append("<br>");
                 }
@@ -381,19 +392,25 @@ public class D3CharacterFragment extends Fragment {
                 for (int j = 0; j < items.get(index).getGems().size(); j++) {
                     StringBuilder gemAttributes = new StringBuilder();
                     if(items.get(index).getGems().get(j).getItem().getId().contains("Unique")){
-                        gemAttributes.append("<font color=\"#ff8000\">");
+                        gemAttributes.append("<font color=\"#ff8000\"> ");
                     }
                     for (int k = 0; k < items.get(index).getGems().get(j).getAttributes().size(); k++) {
+                        gemAttributes.append(" <img src=\"").append(items.get(index).getGems().get(j).getItem().getIcon()).append("\">");
+                        gemAttributes.append(" <img src=\"primary\"> ");
                         gemAttributes.append(items.get(index).getGems().get(j).getAttributes().get(k).replaceAll("\\n", "<br>")).append("<br>");
                     }
                     gemAttributes.append("</font>");
                     gem.append(gemAttributes);
                 }
+                if(items.get(index).getOpenSockets() > 0){
+                    for(int i  = 0; i < items.get(index).getOpenSockets(); i++){
+                        gem.append("<img src=\"empty_socket_d3\"> ").append("Empty Socket<br>");
+                    }
+                }
             } catch (Exception e) {
                 gem.append("");
                 Log.e("Error", e.toString());
             }
-
 
             primaryStatsMap.put(index, primary.toString());
             secondaryStatsMap.put(index, secondary.toString());
@@ -418,6 +435,8 @@ public class D3CharacterFragment extends Fragment {
                     backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(index)));
                     itemScrollView.setBackground(backgroundStroke);
 
+                    itemName.setBackground(getHeaderBackground(index));
+
                     iconTooltip.setImageDrawable(imageView.getDrawable());
                     iconTooltip.setBackground(imageView.getBackground());
 
@@ -436,20 +455,31 @@ public class D3CharacterFragment extends Fragment {
                     try {
                         String color = selectColor(items.get(index).getDisplayColor());
                         itemName.setText(Html.fromHtml("<font color=\"" + color + "\">" + items.get(index).getName() + "</font>", Html.FROM_HTML_MODE_LEGACY));
+                        if(items.get(index).getName().length() > 23){
+                            itemName.setTextSize(18);
+                        }
                         itemName.setGravity(Gravity.CENTER_HORIZONTAL);
                         itemName.setGravity(Gravity.CENTER_VERTICAL);
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
                     }
 
-                    typeName.setText(items.get(index).getTypeName());
+                    String typeNameString = items.get(index).getTypeName();
+                    if(typeNameString.length() > 22){
+                        int lastSpace = typeNameString.lastIndexOf(" ");
+                        String beforeLastSpace = typeNameString.substring(0, lastSpace);
+                        int lastSpace2 = beforeLastSpace.lastIndexOf(" ");
+                        typeNameString = typeNameString.substring(0, lastSpace2) + "<br>" + typeNameString.substring(lastSpace2);
+                    }
+
+                    typeName.setText(Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY));
                     typeName.setTextColor(Color.parseColor(selectColor(items.get(index).getDisplayColor())));
 
                     slot.setText(items.get(index).getSlots());
 
                     try{
                         if(items.get(index).getArmor() > 0) {
-                            armor.setText(Html.fromHtml("<big><big><big><big><big>" + (int) Math.round(items.get(index).getArmor()) + "</big></big></big></big></big><br><font color=\"#505050\">Armor</font>", Html.FROM_HTML_MODE_LEGACY));
+                            armor.setText(Html.fromHtml("<big><big><big><big><big>" + (int) Math.round(items.get(index).getArmor()) + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>", Html.FROM_HTML_MODE_LEGACY));
                             linearLayoutItemArmorDamage.addView(armor, layoutParamsStats);
                         }
                     } catch (Exception e) {
@@ -472,10 +502,10 @@ public class D3CharacterFragment extends Fragment {
                         if (items.get(index).getMinDamage() > 0 && items.get(index).getMaxDamage() > 0) {
                             NumberFormat formatter = new DecimalFormat("#0.0");
                             double dpsText = Math.round(((items.get(index).getMinDamage() + items.get(index).getMaxDamage())/2 * items.get(index).getAttacksPerSecond()*10)/10);
-                            dps.setText(Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#505050\">Damage Per Second</font><br><br>"
+                            dps.setText(Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
                                     + formatter.format(items.get(index).getMinDamage()) + " - "
-                                    + formatter.format(items.get(index).getMaxDamage()) + "<font color=\"#505050\"> Damage</font><br>"
-                                    + formatter.format(items.get(index).getAttacksPerSecond()) + "<font color=\"#505050\"> Attacks per Second</font><br>", Html.FROM_HTML_MODE_LEGACY));
+                                    + formatter.format(items.get(index).getMaxDamage()) + "<font color=\"#696969\"> Damage</font><br>"
+                                    + formatter.format(items.get(index).getAttacksPerSecond()) + "<font color=\"#696969\"> Attacks per Second</font><br>", Html.FROM_HTML_MODE_LEGACY));
                             linearLayoutItemArmorDamage.addView(dps, layoutParamsStats);
 
                             switch (items.get(index).getElementalType()) {
@@ -513,15 +543,68 @@ public class D3CharacterFragment extends Fragment {
                     }
 
                     try {
-                        primarystats.setText(Html.fromHtml( "Primary<br>" + primaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
+                        primarystats.setText(Html.fromHtml( "Primary<br>" + primaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
+                            @Override
+                            public Drawable getDrawable(String source) {
+                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                                return drawable;
+                            }
+                        }, null));
                         linearLayoutItemStats.addView(primarystats, layoutParamsStats);
-                        secondarystats.setText(Html.fromHtml("Secondary<br>" + secondaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
+                        secondarystats.setText(Html.fromHtml("Secondary<br>" + secondaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
+                            @Override
+                            public Drawable getDrawable(String source) {
+                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                                return drawable;
+                            }
+                        }, null));
                         linearLayoutItemStats.addView(secondarystats, layoutParamsStats);
-                        gems.setText(Html.fromHtml(gemsMap.get(index), Html.FROM_HTML_MODE_LEGACY));
-                        linearLayoutItemStats.addView(gems, layoutParamsStats);
+                        gems.setText(Html.fromHtml(gemsMap.get(index), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
+                            @Override
+                            public Drawable getDrawable(String source) {
+                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                                return drawable;
+                            }
+                        }, null));
+                        LinearLayout.LayoutParams gemParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        gemParams.setMargins(20,0,20,0);
+                        gems.setGravity(Gravity.CENTER_VERTICAL);
+                        linearLayoutItemStats.addView(gems, gemParams);
                     } catch (Exception e) {
                         Log.e("Error", e.toString());
 
+                    }
+
+                    try{
+                        String setText = items.get(index).getSet().getDescriptionHtml();
+                        String firstPart = setText.substring(0, setText.indexOf("(2)")-38);
+                        Log.i("TEST-2", firstPart);
+                        firstPart = firstPart.replaceAll("<br />", "<br />&nbsp;&nbsp;&nbsp;");
+                        String lastPart = setText.substring(setText.indexOf("(2)")-38);
+                        setText = firstPart + lastPart;
+                        setText = setText.replaceAll("<span class=\"tooltip-icon-bullet\"></span>", "&nbsp;&nbsp;<img src=\"primary" +
+                                "\">");
+                        setText = setText.replaceAll("<span class=\"tooltip-icon-utility\"></span>", "&nbsp;&nbsp;<img src=\"utility\">");
+                        setText = setText.replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("</span>", "</font>");
+                        Log.i("TEST", setText);
+                        set.setText(Html.fromHtml(setText, Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
+                            @Override
+                            public Drawable getDrawable(String source) {
+                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                                return drawable;
+                            }
+                        }, null));
+                        linearLayoutItemStats.addView(set, layoutParamsStats);
+                    }catch (Exception e){
+                        Log.e("Error", e.toString());
                     }
 
                     try {
@@ -561,7 +644,6 @@ public class D3CharacterFragment extends Fragment {
             }
         });
     }
-
 
     private void getItemInformation() {
         items.add(itemsInformation.getShoulders());
@@ -793,13 +875,29 @@ public class D3CharacterFragment extends Fragment {
             case "orange":
                 return "#bf642f";
             case "green":
-                return "#8bd442";
+                return "#00ff00";
             case "white":
                 return "#FFFFFF";
             default:
         }
-
         return "#FFFFFF";
+    }
+
+    private Drawable getHeaderBackground(int index) {
+        if(items.get(index).getTypeName().contains("Primal Legendary")){
+            return getContext().getDrawable(R.drawable.d3_item_header_legendary_primal);
+        }else if(items.get(index).getTypeName().contains("Primal Set")){
+            return getContext().getDrawable(R.drawable.d3_item_header_legendary_primal);
+        }else if (items.get(index).getTypeName().contains("Set")) {
+            return getContext().getDrawable(R.drawable.d3_item_header_set);
+        } else if (items.get(index).getTypeName().contains("Legendary")) {
+            return getContext().getDrawable(R.drawable.d3_item_header_legendary);
+        } else if (items.get(index).getTypeName().contains("Rare")) {
+            return getContext().getDrawable(R.drawable.d3_item_header_rare);
+        } else if (items.get(index).getTypeName().contains("Magic")) {
+            return getContext().getDrawable(R.drawable.d3_item_header_magic);
+        }
+        return getContext().getDrawable(R.drawable.d3_item_header);
     }
 
     private String getItemBorderColor(int index) {
@@ -807,7 +905,7 @@ public class D3CharacterFragment extends Fragment {
         if (type.contains("Ancient")) {
             return "#b47402";
         }else if(type.contains("Primal")){
-            return "#920b09";
+            return "#E52817";
         }
         return "#312a26";
     }
