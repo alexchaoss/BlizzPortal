@@ -350,7 +350,6 @@
         </LinearLayout>
     </ScrollView>
 
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/stats_layout"
         android:layout_width="match_parent"
@@ -452,6 +451,108 @@
                 android:textSize="15sp" />
 
         </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cube_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/d3_nav">
+
+        <ImageView
+            android:id="@+id/cube_sword"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/cubeframe_sword"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cube_armor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/cube_sword_item"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cube_armor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/cube_armor"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/cubeframe_armor"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cube_sword"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/cube_armor_item"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/cubeframe_armor"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cube_sword"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <android.support.constraint.Barrier
+            android:id="@+id/labelBarrier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:layout_constraintBottom_toBottomOf="@id/cube_armor"
+            app:constraint_referenced_ids="cube_armor,cube_armor_item,cube_sword,cube_sword_item" />
+
+        <ImageView
+            android:id="@+id/cube_ring"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/cubeframe_ring"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toTopOf="@id/cube_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelBarrier"/>
+
+        <ImageView
+            android:id="@+id/cube_ring_item"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/cubeframe_ring"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toTopOf="@id/cube_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelBarrier"/>
+
+        <TextView
+            android:id="@+id/cube_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="allo test"
+            android:textSize="40sp"
+            android:textColor="#fff"
+            android:textAlignment="center"
+            android:layout_marginBottom="85dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cube_ring"
+            />
+
     </android.support.constraint.ConstraintLayout>
 
     <RelativeLayout
