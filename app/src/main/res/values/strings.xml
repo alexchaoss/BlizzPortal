@@ -72,4 +72,9 @@
     <string name="item_icon">item_icon</string>
     <string name="weapon_effect">Weapon Effect</string>
     <string name="loading">loading</string>
+    <string name="gear">Gear</string>
+    <string name="skills">Skills</string>
+    <string name="kanai_s_cube">Kanai\'s Cube</string>
+    <string name="paperdoll">paperdoll</string>
+    <string name="cube">Cube</string>
 </resources>
