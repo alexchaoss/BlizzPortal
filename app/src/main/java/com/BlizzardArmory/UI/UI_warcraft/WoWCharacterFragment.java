@@ -856,10 +856,8 @@ public class WoWCharacterFragment extends Fragment {
         }
 
 
-        talentsTierContainer = new ArrayList<>(Arrays.asList(fifteen, thirty, forty_five,
-                sixty, seventy_five, ninety, hundred));
-        talentsContainer = new ArrayList<>(Arrays.asList(fifteenTalent, thirtyTalent, forty_fiveTalent,
-                sixtyTalent, seventy_fiveTalent, ninetyTalent, hundredTalent));
+        talentsTierContainer = new ArrayList<>(Arrays.asList(fifteen, thirty, forty_five, sixty, seventy_five, ninety, hundred));
+        talentsContainer = new ArrayList<>(Arrays.asList(fifteenTalent, thirtyTalent, forty_fiveTalent, sixtyTalent, seventy_fiveTalent, ninetyTalent, hundredTalent));
         talentsTier = new ArrayList<>(Arrays.asList("15", "30", "45", "60", "75", "90", "100"));
 
         try {
