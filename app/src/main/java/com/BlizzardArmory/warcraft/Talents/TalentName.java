@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.warcraft.Talents;
 
 import com.google.gson.annotations.Expose;

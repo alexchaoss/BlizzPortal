@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.warcraft.CharacterSummary;
 
 import com.google.gson.annotations.Expose;

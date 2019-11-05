@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.warcraft.Equipment;
 
 import com.google.gson.annotations.Expose;
