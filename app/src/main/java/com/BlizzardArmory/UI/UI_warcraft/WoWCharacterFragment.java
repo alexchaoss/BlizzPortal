@@ -17,7 +17,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -217,7 +215,7 @@ public class WoWCharacterFragment extends Fragment {
         closeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.performClick();
                     Log.i("CLOSE", "CLICKED");
                     itemScrollView.setVisibility(View.GONE);
@@ -353,11 +351,11 @@ public class WoWCharacterFragment extends Fragment {
                         @Override
                         public void onErrorResponse(VolleyError e) {
                             try {
-                                    callErrorAlertDialog(e.networkResponse.statusCode);
-                                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    loadingCircle.setVisibility(View.GONE);
+                                callErrorAlertDialog(e.networkResponse.statusCode);
+                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
 
-                            }catch (Exception d){
+                            } catch (Exception d) {
                                 callErrorAlertDialog(0);
                                 Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 loadingCircle.setVisibility(View.GONE);
@@ -389,10 +387,10 @@ public class WoWCharacterFragment extends Fragment {
         messageText.setPadding(0, 0, 0, 20);
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
-        if(responseCode == 404) {
+        if (responseCode == 404) {
             titleText.setText("Information Outdated");
             messageText.setText("Please login in game to update this character's information.");
-        }else{
+        } else {
             titleText.setText("No Internet Connection");
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
         }
@@ -597,7 +595,7 @@ public class WoWCharacterFragment extends Fragment {
                             ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), new Response.Listener<Bitmap>() {
                                 @Override
                                 public void onResponse(Bitmap bitmap) {
-                                    if(index == equipment.getEquippedItems().size()-1){
+                                    if (index == equipment.getEquippedItems().size() - 1) {
                                         Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         loadingCircle.setVisibility(View.GONE);
                                     }
@@ -791,7 +789,7 @@ public class WoWCharacterFragment extends Fragment {
                     itemScrollView.setBackground(imageView.getBackground());
                     itemScrollView.setVisibility(View.VISIBLE);
                     itemScrollView.setVerticalScrollBarEnabled(true);
-                }else if(itemScrollView.getVisibility() == View.VISIBLE && event.getAction() == MotionEvent.ACTION_DOWN){
+                } else if (itemScrollView.getVisibility() == View.VISIBLE && event.getAction() == MotionEvent.ACTION_DOWN) {
                     itemScrollView.setVisibility(View.GONE);
                 }
                 return true;

@@ -1,22 +1,15 @@
 package com.BlizzardArmory.warcraft;
 
-import android.support.v7.widget.CardView;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class WowCharacters {
 
@@ -54,7 +47,7 @@ public class WowCharacters {
                     long timestamp = Long.valueOf(characters.get("lastModified").toString());
 
                     long thirtyDays = 2592000000L;
-                    if(now - timestamp < thirtyDays) {
+                    if (now - timestamp < thirtyDays) {
 
                         characterNamesList.add(characters.get("name").toString());
                         realmList.add(characters.get("realm").toString());

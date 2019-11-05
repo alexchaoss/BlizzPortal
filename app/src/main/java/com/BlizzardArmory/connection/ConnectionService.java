@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.UI.UI_warcraft.WoWCharacterFragment;
 
 import java.io.IOException;
 
