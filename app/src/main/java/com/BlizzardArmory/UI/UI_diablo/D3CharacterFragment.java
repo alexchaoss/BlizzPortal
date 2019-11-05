@@ -122,6 +122,7 @@ public class D3CharacterFragment extends Fragment {
     private TabLayout d3Nav;
     private ConstraintLayout stats_layout;
     private ConstraintLayout gear_layout;
+    private ConstraintLayout cube_layout;
     private LinearLayout linearLayoutItemStats;
     private LinearLayout linearLayoutItemArmorDamage;
     private LinearLayout.LayoutParams layoutParamsStats;
@@ -157,6 +158,7 @@ public class D3CharacterFragment extends Fragment {
         d3Nav = view.findViewById(R.id.d3_nav);
         stats_layout = view.findViewById(R.id.stats_layout);
         gear_layout = view.findViewById(R.id.gear_layout);
+        cube_layout = view.findViewById(R.id.cube_layout);
 
         shoulders = view.findViewById(R.id.shoulder);
         hands = view.findViewById(R.id.gloves);
@@ -288,10 +290,12 @@ public class D3CharacterFragment extends Fragment {
                         gear_layout.setVisibility(View.GONE);
                         chatgemInactive.setVisibility(View.VISIBLE);
                         chatgemStatue.setVisibility(View.VISIBLE);
+                        cube_layout.setVisibility(View.GONE);
                         break;
                     case 1:
                         stats_layout.setVisibility(View.GONE);
                         gear_layout.setVisibility(View.VISIBLE);
+                        cube_layout.setVisibility(View.GONE);
                         chatgemActive.setVisibility(View.GONE);
                         chatgemInactive.setVisibility(View.GONE);
                         chatgemStatue.setVisibility(View.GONE);
@@ -300,10 +304,16 @@ public class D3CharacterFragment extends Fragment {
                     case 2:
                         stats_layout.setVisibility(View.GONE);
                         gear_layout.setVisibility(View.GONE);
+                        cube_layout.setVisibility(View.GONE);
+                        chatgemInactive.setVisibility(View.VISIBLE);
+                        chatgemStatue.setVisibility(View.VISIBLE);
                         break;
                     case 3:
                         stats_layout.setVisibility(View.GONE);
                         gear_layout.setVisibility(View.GONE);
+                        cube_layout.setVisibility(View.VISIBLE);
+                        chatgemInactive.setVisibility(View.VISIBLE);
+                        chatgemStatue.setVisibility(View.VISIBLE);
                         break;
                     default:
                 }
