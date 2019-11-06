@@ -1,43 +1,33 @@
+
 package com.BlizzardArmory.diablo.Item;
 
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-
 public class Attributes {
-    @SerializedName("primary")
-    @Expose
-    private ArrayList< String > primary = new ArrayList <> ();
-    @SerializedName("secondary")
-    @Expose
-    private ArrayList < String > secondary = new ArrayList <> ();
+
+
     @SerializedName("other")
     @Expose
-    private ArrayList < String > other = new ArrayList <> ();
+    private List<Object> other;
+    @SerializedName("primary")
+    @Expose
+    private List<Primary> primary;
+    @SerializedName("secondary")
+    @Expose
+    private List<Secondary> secondary;
 
-    public ArrayList<String> getPrimary() {
-        return primary;
-    }
-
-    public void setPrimary(ArrayList<String> primary) {
-        this.primary = primary;
-    }
-
-    public ArrayList<String> getSecondary() {
-        return secondary;
-    }
-
-    public void setSecondary(ArrayList<String> secondary) {
-        this.secondary = secondary;
-    }
-
-    public ArrayList<String> getOther() {
+    public List<Object> getOther() {
         return other;
     }
 
-    public void setOther(ArrayList<String> other) {
-        this.other = other;
+    public List<Primary> getPrimary() {
+        return primary;
+    }
+
+    public List<Secondary> getSecondary() {
+        return secondary;
     }
 
 }

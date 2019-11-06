@@ -1,103 +1,104 @@
+
 package com.BlizzardArmory.diablo.Item;
+
+import java.util.List;
 
 import com.BlizzardArmory.diablo.Items.Type;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 
 public class SingleItem {
-    @SerializedName("id")
-    @Expose
-    private String id;
-    @SerializedName("slug")
-    @Expose
-    private String slug;
-    @SerializedName("name")
-    @Expose
-    private String name;
-    @SerializedName("icon")
-    @Expose
-    private String icon;
-    @SerializedName("tooltipParams")
-    @Expose
-    private String tooltipParams;
-    @SerializedName("requiredLevel")
-    @Expose
-    private float requiredLevel;
-    @SerializedName("stackSizeMax")
-    @Expose
-    private float stackSizeMax;
+
     @SerializedName("accountBound")
     @Expose
-    private boolean accountBound;
+    private Boolean accountBound;
+    @SerializedName("attributes")
+    @Expose
+    private Attributes attributes;
+    @SerializedName("color")
+    @Expose
+    private String color;
+    @SerializedName("damage")
+    @Expose
+    private String damage;
+    @SerializedName("damageHtml")
+    @Expose
+    private String damageHtml;
+    @SerializedName("p")
+    @Expose
+    private String dps;
     @SerializedName("flavorText")
     @Expose
     private String flavorText;
     @SerializedName("flavorTextHtml")
     @Expose
     private String flavorTextHtml;
+    @SerializedName("icon")
+    @Expose
+    private String icon;
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("isSeasonRequiredToDrop")
+    @Expose
+    private Boolean isSeasonRequiredToDrop;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("randomAffixes")
+    @Expose
+    private List<RandomAffix> randomAffixes;
+    @SerializedName("requiredLevel")
+    @Expose
+    private Long requiredLevel;
+    @SerializedName("seasonRequiredToDrop")
+    @Expose
+    private Long seasonRequiredToDrop;
+    @SerializedName("setItems")
+    @Expose
+    private List<Object> setItems;
+    @SerializedName("slots")
+    @Expose
+    private List<String> slots;
+    @SerializedName("slug")
+    @Expose
+    private String slug;
+    @SerializedName("stackSizeMax")
+    @Expose
+    private Long stackSizeMax;
+    @SerializedName("tooltipParams")
+    @Expose
+    private String tooltipParams;
+    @SerializedName("type")
+    @Expose
+    private Type type;
     @SerializedName("typeName")
     @Expose
     private String typeName;
-    @SerializedName("type")
-    @Expose
-    private Type TypeString;
-    @SerializedName("color")
-    @Expose
-    private String color;
-    @SerializedName("tooltipParams")
-    @Expose
-    private boolean isSeasonRequiredToDrop;
-    @SerializedName("seasonRequiredToDrop")
-    @Expose
-    private float seasonRequiredToDrop;
-    @SerializedName("slots")
-    @Expose
-    private ArrayList< String > slots = new ArrayList <> ();
-    @SerializedName("attributes")
-    @Expose
-    private Attributes AttributesString;
-    @SerializedName("randomAffixes")
-    @Expose
-    private ArrayList < String > randomAffixes = new ArrayList <> ();
-    @SerializedName("setItems")
-    @Expose
-    private ArrayList < String > setItems = new ArrayList <> ();
 
-
-    // Getter Methods
-
-    public String getId() {
-        return id;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public String getTooltipParams() {
-        return tooltipParams;
-    }
-
-    public float getRequiredLevel() {
-        return requiredLevel;
-    }
-
-    public float getStackSizeMax() {
-        return stackSizeMax;
-    }
-
-    public boolean getAccountBound() {
+    public Boolean getAccountBound() {
         return accountBound;
+    }
+
+    public Attributes getAttributes() {
+        return attributes;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getDamage() {
+        return damage;
+    }
+
+    public String getDamageHtml() {
+        return damageHtml;
+    }
+
+    public String getDps() {
+        return dps;
     }
 
     public String getFlavorText() {
@@ -108,93 +109,60 @@ public class SingleItem {
         return flavorTextHtml;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Boolean getIsSeasonRequiredToDrop() {
+        return isSeasonRequiredToDrop;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<RandomAffix> getRandomAffixes() {
+        return randomAffixes;
+    }
+
+    public Long getRequiredLevel() {
+        return requiredLevel;
+    }
+
+    public Long getSeasonRequiredToDrop() {
+        return seasonRequiredToDrop;
+    }
+
+    public List<Object> getSetItems() {
+        return setItems;
+    }
+
+    public List<String> getSlots() {
+        return slots;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public Long getStackSizeMax() {
+        return stackSizeMax;
+    }
+
+    public String getTooltipParams() {
+        return tooltipParams;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
     public String getTypeName() {
         return typeName;
     }
 
-    public Type getType() {
-        return TypeString;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public boolean getIsSeasonRequiredToDrop() {
-        return isSeasonRequiredToDrop;
-    }
-
-    public float getSeasonRequiredToDrop() {
-        return seasonRequiredToDrop;
-    }
-
-    public Attributes getAttributes() {
-        return AttributesString;
-    }
-
-    // Setter Methods
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public void setTooltipParams(String tooltipParams) {
-        this.tooltipParams = tooltipParams;
-    }
-
-    public void setRequiredLevel(float requiredLevel) {
-        this.requiredLevel = requiredLevel;
-    }
-
-    public void setStackSizeMax(float stackSizeMax) {
-        this.stackSizeMax = stackSizeMax;
-    }
-
-    public void setAccountBound(boolean accountBound) {
-        this.accountBound = accountBound;
-    }
-
-    public void setFlavorText(String flavorText) {
-        this.flavorText = flavorText;
-    }
-
-    public void setFlavorTextHtml(String flavorTextHtml) {
-        this.flavorTextHtml = flavorTextHtml;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public void setType(Type typeString) {
-        this.TypeString = typeString;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public void setIsSeasonRequiredToDrop(boolean isSeasonRequiredToDrop) {
-        this.isSeasonRequiredToDrop = isSeasonRequiredToDrop;
-    }
-
-    public void setSeasonRequiredToDrop(float seasonRequiredToDrop) {
-        this.seasonRequiredToDrop = seasonRequiredToDrop;
-    }
-
-    public void setAttributes(Attributes attributesString) {
-        this.AttributesString = attributesString;
-    }
 }

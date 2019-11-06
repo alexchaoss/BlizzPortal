@@ -796,13 +796,9 @@ public class WoWCharacterFragment extends Fragment {
             }
         });
 
-        scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (oldScrollY != scrollY) {
-                    itemScrollView.setVisibility(View.GONE);
-                }
+        scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (oldScrollY != scrollY) {
+                itemScrollView.setVisibility(View.GONE);
             }
         });
     }

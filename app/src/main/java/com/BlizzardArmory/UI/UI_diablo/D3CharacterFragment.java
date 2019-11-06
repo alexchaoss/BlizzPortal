@@ -2,6 +2,7 @@ package com.BlizzardArmory.UI.UI_diablo;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -41,8 +42,6 @@ import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -154,6 +153,7 @@ public class D3CharacterFragment extends Fragment {
         return inflater.inflate(R.layout.d3_character_fragment, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         Bundle bundle = getArguments();
@@ -168,6 +168,9 @@ public class D3CharacterFragment extends Fragment {
         cubeArmor = view.findViewById(R.id.cube_armor_item);
         cubeSword = view.findViewById(R.id.cube_sword_item);
         cubeRing = view.findViewById(R.id.cube_ring_item);
+        cubeArmor.setImageResource(0);
+        cubeSword.setImageResource(0);
+        cubeRing.setImageResource(0);
         cubeInfo = view.findViewById(R.id.cube_text);
 
         shoulders = view.findViewById(R.id.shoulder);
@@ -200,7 +203,7 @@ public class D3CharacterFragment extends Fragment {
         slot = view.findViewById(R.id.slot);
 
         closeButton = new ImageButton(view.getContext());
-        closeButton.setBackground(getContext().getDrawable(R.drawable.close_button_d3));
+        closeButton.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.close_button_d3));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
         params.setMargins(0, 0, 0, 20);
         closeButton.setLayoutParams(params);
@@ -316,7 +319,8 @@ public class D3CharacterFragment extends Fragment {
                         characterInfo = response;
                         characterInformation = gson.fromJson(characterInfo.toString(), CharacterInformation.class);
                         setName();
-
+                        getCubeIcons();
+                        downloadCubeItems(bnOAuth2Helper, gson);
                         String topStatString = "+" + characterInformation.getStats().getStrength() + " Strength";
                         if (characterInformation.getStats().getStrength() < characterInformation.getStats().getIntelligence()) {
                             topStatString = "+" + characterInformation.getStats().getIntelligence() + " Intelligence";
@@ -338,8 +342,6 @@ public class D3CharacterFragment extends Fragment {
                         itemsInformation = gson.fromJson(response.toString(), Items.class);
                         getItemInformation();
                         setItemBackgroundColor();
-                        getCubeIcons();
-                        downloadCubeItems(bnOAuth2Helper, gson);
                         getItemIconURL();
                         getItemIcons();
                         getAttackStats();
@@ -372,8 +374,9 @@ public class D3CharacterFragment extends Fragment {
         try {
             for (int i = 0; i < characterInformation.getLegendaryPowers().size(); i++) {
                 final int index = i;
-                JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.D3_ITEM + characterInformation.getLegendaryPowers().get(i).getTooltipParams()
-                        + "?locale=en_US&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+                        URLConstants.D3_ITEM.replace("item", characterInformation.getLegendaryPowers().get(i).getTooltipParams()) + URLConstants.ACCESS_TOKEN_QUERY
+                        + bnOAuth2Helper.getAccessToken(), null,
                         response -> {
                             singleItem.add(gson.fromJson(response.toString(), SingleItem.class));
 
@@ -389,21 +392,29 @@ public class D3CharacterFragment extends Fragment {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setCubeText() {
 
-        final String [] armorArray = {"shoulder","gloves","helm","chest","waist","legs","boots","bracers"};
+        final String [] armorArray = {"shoulder", "spirit", "voodoo", "wizard","gloves","helm","chest", "cloak","belt", "mighty","pants","boots","bracers"};
         final String [] ringArray = {"ring", "amulet"};
-        final String [] swordArray = {"shoulder","gloves","helm","chest","waist","legs","boots","bracers", "ring", "amulet"};
+        final String [] swordArray = {"shoulder", "spirit", "voodoo", "wizard","gloves","helm","chest", "cloak","belt", "mighty","pants","boots","bracers", "ring", "amulet"};
 
 
         cubeSword.setOnTouchListener((v, event) -> {
             String sword = "";
             for(int i = 0; i < singleItem.size(); i++){
-                if(!Arrays.stream(swordArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)){
-                    sword = singleItem.get(i).getName() + "<br>" + singleItem.get(i).getAttributes().getSecondary().get(0);
+                if(Arrays.stream(swordArray).parallel().noneMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)){
+                    for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
+                        if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
+                            sword = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
+                                    .replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("<span class=\"d3-color-magic\">", "<font color=\"#7979d4\">")
+                                    .replaceAll("</span>", "</font>");
+                        }
+                    }
                 }
             }
-            cubeInfo.setText(sword);
+            cubeInfo.setVisibility(View.VISIBLE);
+            cubeInfo.setText(Html.fromHtml(sword, Html.FROM_HTML_MODE_LEGACY));
             return false;
         });
 
@@ -411,10 +422,17 @@ public class D3CharacterFragment extends Fragment {
             String armor = "";
             for(int i = 0; i < singleItem.size(); i++){
                 if(Arrays.stream(armorArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)){
-                    armor = singleItem.get(i).getName() + "<br>" + singleItem.get(i).getAttributes().getSecondary().get(0);
+                    for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
+                        if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
+                            armor = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
+                                    .replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("<span class=\"d3-color-magic\">", "<font color=\"#7979d4\">")
+                                    .replaceAll("span", "font");
+                        }
+                    }
                 }
             }
-            cubeInfo.setText(armor);
+            cubeInfo.setVisibility(View.VISIBLE);
+            cubeInfo.setText(Html.fromHtml(armor, Html.FROM_HTML_MODE_LEGACY));
             return false;
         });
 
@@ -422,10 +440,17 @@ public class D3CharacterFragment extends Fragment {
             String ring = "";
             for(int i = 0; i < singleItem.size(); i++){
                 if(Arrays.stream(ringArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)){
-                    ring = singleItem.get(i).getName() + "<br>" + singleItem.get(i).getAttributes().getSecondary().get(0);
+                    for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
+                        if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
+                            ring = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
+                                    .replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("<span class=\"d3-color-magic\">", "<font color=\"#7979d4\">")
+                                    .replaceAll("</span>", "</font>");
+                        }
+                    }
                 }
             }
-            cubeInfo.setText(ring);
+            cubeInfo.setVisibility(View.VISIBLE);
+            cubeInfo.setText(Html.fromHtml(ring, Html.FROM_HTML_MODE_LEGACY));
             return false;
         });
     }
@@ -568,11 +593,17 @@ public class D3CharacterFragment extends Fragment {
 
                 itemName.setBackground(getHeaderBackground(index));
 
-                iconTooltip.setImageDrawable(imageView.getDrawable());
-                iconTooltip.setBackground(imageView.getBackground());
+                Drawable tooltipBG = imageView.getBackground();
+                Drawable tooltipImage = imageView.getDrawable();
+                iconTooltip.setImageDrawable(tooltipImage);
+                iconTooltip.setBackground(tooltipBG);
 
-                RelativeLayout.LayoutParams jewelleryParams = new RelativeLayout.LayoutParams((int) (60 * getResources().getSystem().getDisplayMetrics().density), (int) (61 * getResources().getSystem().getDisplayMetrics().density));
-                RelativeLayout.LayoutParams normalIconParams = new RelativeLayout.LayoutParams((int) (54 * getResources().getSystem().getDisplayMetrics().density), (int) (103 * getResources().getSystem().getDisplayMetrics().density));
+                getResources();
+                RelativeLayout.LayoutParams jewelleryParams = new RelativeLayout.LayoutParams((int) (60 * Resources.getSystem().getDisplayMetrics().density),
+                        (int) (61 * Resources.getSystem().getDisplayMetrics().density));
+                getResources();
+                RelativeLayout.LayoutParams normalIconParams = new RelativeLayout.LayoutParams((int) (54 * Resources.getSystem().getDisplayMetrics().density),
+                        (int) (103 * Resources.getSystem().getDisplayMetrics().density));
                 normalIconParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 if (items.get(index).getSlots().equals("neck")
                         || items.get(index).getSlots().equals("leftFinger")
@@ -628,7 +659,8 @@ public class D3CharacterFragment extends Fragment {
                 } catch (Exception e) {
                     Log.e("Error", "No TYPE");
                 }
-                RelativeLayout.LayoutParams effectParams = new RelativeLayout.LayoutParams((int) (95 * getResources().getSystem().getDisplayMetrics().density), (int) (140 * getResources().getSystem().getDisplayMetrics().density));
+                RelativeLayout.LayoutParams effectParams = new RelativeLayout.LayoutParams((int) (95 * Resources.getSystem().getDisplayMetrics().density),
+                        (int) (140 * Resources.getSystem().getDisplayMetrics().density));
                 try {
                     if (items.get(index).getMinDamage() > 0 && items.get(index).getMaxDamage() > 0) {
                         NumberFormat formatter = new DecimalFormat("#0.0");
@@ -642,27 +674,27 @@ public class D3CharacterFragment extends Fragment {
                         switch (items.get(index).getElementalType()) {
                             case "fire":
                                 weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.fire_effect));
+                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.fire_effect));
                                 break;
                             case "cold":
                                 weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.cold_effect));
+                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.cold_effect));
                                 break;
                             case "holy":
                                 weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.holy_effect));
+                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.holy_effect));
                                 break;
                             case "poison":
                                 weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.poison_effect));
+                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.poison_effect));
                                 break;
                             case "lightning":
                                 weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.lightning_effect));
+                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.lightning_effect));
                                 break;
                             case "arcane":
                                 weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(getContext().getDrawable(R.drawable.arcane_effect));
+                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.arcane_effect));
                                 break;
                         }
                     } else {
@@ -674,34 +706,25 @@ public class D3CharacterFragment extends Fragment {
                 }
 
                 try {
-                    primarystats.setText(Html.fromHtml("Primary<br>" + primaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
-                        @Override
-                        public Drawable getDrawable(String source) {
-                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                            return drawable;
-                        }
+                    primarystats.setText(Html.fromHtml("Primary<br>" + primaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, source -> {
+                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
                     }, null));
                     linearLayoutItemStats.addView(primarystats, layoutParamsStats);
-                    secondarystats.setText(Html.fromHtml("Secondary<br>" + secondaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
-                        @Override
-                        public Drawable getDrawable(String source) {
-                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                            return drawable;
-                        }
+                    secondarystats.setText(Html.fromHtml("Secondary<br>" + secondaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, source -> {
+                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
                     }, null));
                     linearLayoutItemStats.addView(secondarystats, layoutParamsStats);
-                    gems.setText(Html.fromHtml(gemsMap.get(index), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
-                        @Override
-                        public Drawable getDrawable(String source) {
-                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                            return drawable;
-                        }
+                    gems.setText(Html.fromHtml(gemsMap.get(index), Html.FROM_HTML_MODE_LEGACY, source -> {
+                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
                     }, null));
                     LinearLayout.LayoutParams gemParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     gemParams.setMargins(20, 0, 20, 0);
@@ -724,14 +747,11 @@ public class D3CharacterFragment extends Fragment {
                     setText = setText.replaceAll("<span class=\"tooltip-icon-utility\"></span>", "&nbsp;&nbsp;<img src=\"utility\">");
                     setText = setText.replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("</span>", "</font>");
                     Log.i("TEST", setText);
-                    set.setText(Html.fromHtml(setText, Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
-                        @Override
-                        public Drawable getDrawable(String source) {
-                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                            return drawable;
-                        }
+                    set.setText(Html.fromHtml(setText, Html.FROM_HTML_MODE_LEGACY, source -> {
+                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
                     }, null));
                     linearLayoutItemStats.addView(set, layoutParamsStats);
                 } catch (Exception e) {
@@ -812,28 +832,23 @@ public class D3CharacterFragment extends Fragment {
     private void getItemIcons() {
         for (String key : itemIconURL.keySet()) {
             final String tempKey = key;
-            ImageRequest imageRequest = new ImageRequest(itemIconURL.get(key), new Response.Listener<Bitmap>() {
-                @Override
-                public void onResponse(Bitmap bitmap) {
-                    Drawable item = new BitmapDrawable(getResources(), bitmap);
-                    Objects.requireNonNull(imageViewItem.get(tempKey)).setImageDrawable(item);
-                    imageIndex++;
+            ImageRequest imageRequest = new ImageRequest(itemIconURL.get(key), bitmap -> {
+                Drawable item = new BitmapDrawable(getResources(), bitmap);
+                Objects.requireNonNull(imageViewItem.get(tempKey)).setImageDrawable(item);
+                imageIndex++;
 
-                    if (imageIndex == itemIconURL.size()) {
-                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        loadingCircle.setVisibility(View.GONE);
-                    }
+                if (imageIndex == itemIconURL.size()) {
+                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    loadingCircle.setVisibility(View.GONE);
                 }
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    new Response.ErrorListener() {
-                        public void onErrorResponse(VolleyError error) {
-                            imageIndex++;
-                            if (imageIndex == itemIconURL.size()) {
-                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                loadingCircle.setVisibility(View.GONE);
-                            }
-                            Log.e("Error", error.toString());
+                    error -> {
+                        imageIndex++;
+                        if (imageIndex == itemIconURL.size()) {
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
                         }
+                        Log.e("Error", error.toString());
                     });
             requestQueueImage.add(imageRequest);
         }
@@ -857,35 +872,26 @@ public class D3CharacterFragment extends Fragment {
             Log.e("Power", "None");
         }
 
-        Log.i("CUBE SIZE", "" + cubeURL.size());
-
         for (String key : cubeURL.keySet()) {
             final String tempKey = key;
-            ImageRequest imageRequest = new ImageRequest(cubeURL.get(key), new Response.Listener<Bitmap>() {
-                @Override
-                public void onResponse(Bitmap bitmap) {
-                    Drawable item = new BitmapDrawable(getResources(), bitmap);
-                    switch (tempKey) {
-                        case "sword":
-                            cubeSword.setVisibility(View.VISIBLE);
-                            cubeSword.setImageDrawable(item);
-                            break;
-                        case "armor":
-                            cubeArmor.setVisibility(View.VISIBLE);
-                            cubeArmor.setImageDrawable(item);
-                            break;
-                        case "ring":
-                            cubeRing.setVisibility(View.VISIBLE);
-                            cubeRing.setImageDrawable(item);
-                            break;
-                    }
+            ImageRequest imageRequest = new ImageRequest(cubeURL.get(key), bitmap -> {
+                Drawable item = new BitmapDrawable(getResources(), bitmap);
+                switch (tempKey) {
+                    case "sword":
+                        cubeSword.setVisibility(View.VISIBLE);
+                        cubeSword.setImageDrawable(item);
+                        break;
+                    case "armor":
+                        cubeArmor.setVisibility(View.VISIBLE);
+                        cubeArmor.setImageDrawable(item);
+                        break;
+                    case "ring":
+                        cubeRing.setVisibility(View.VISIBLE);
+                        cubeRing.setImageDrawable(item);
+                        break;
                 }
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    new Response.ErrorListener() {
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    });
+                    error -> Log.e("CUBE URL ITEM", "DOWNLOAD ERROR"));
             requestQueueImage.add(imageRequest);
         }
     }
@@ -1012,19 +1018,19 @@ public class D3CharacterFragment extends Fragment {
 
     private Drawable getHeaderBackground(int index) {
         if (items.get(index).getTypeName().contains("Primal Legendary")) {
-            return getContext().getDrawable(R.drawable.d3_item_header_legendary_primal);
+            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_legendary_primal);
         } else if (items.get(index).getTypeName().contains("Primal Set")) {
-            return getContext().getDrawable(R.drawable.d3_item_header_legendary_primal);
+            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_legendary_primal);
         } else if (items.get(index).getTypeName().contains("Set")) {
-            return getContext().getDrawable(R.drawable.d3_item_header_set);
+            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_set);
         } else if (items.get(index).getTypeName().contains("Legendary")) {
-            return getContext().getDrawable(R.drawable.d3_item_header_legendary);
+            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_legendary);
         } else if (items.get(index).getTypeName().contains("Rare")) {
-            return getContext().getDrawable(R.drawable.d3_item_header_rare);
+            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_rare);
         } else if (items.get(index).getTypeName().contains("Magic")) {
-            return getContext().getDrawable(R.drawable.d3_item_header_magic);
+            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_magic);
         }
-        return getContext().getDrawable(R.drawable.d3_item_header);
+        return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header);
     }
 
     private String getItemBorderColor(int index) {
