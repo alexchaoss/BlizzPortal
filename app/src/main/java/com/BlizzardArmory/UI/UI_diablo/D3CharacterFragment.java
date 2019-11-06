@@ -17,6 +17,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
+import com.BlizzardArmory.diablo.Character.Skill;
 import com.BlizzardArmory.diablo.Item.SingleItem;
 import com.BlizzardArmory.diablo.Items.Item;
 import com.BlizzardArmory.diablo.Items.Items;
@@ -60,6 +62,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -120,6 +123,7 @@ public class D3CharacterFragment extends Fragment {
     private ConstraintLayout stats_layout;
     private ConstraintLayout gear_layout;
     private ConstraintLayout cube_layout;
+    private ConstraintLayout skills_layout;
     private LinearLayout linearLayoutItemStats;
     private LinearLayout linearLayoutItemArmorDamage;
     private LinearLayout.LayoutParams layoutParamsStats;
@@ -145,6 +149,14 @@ public class D3CharacterFragment extends Fragment {
     private TextView cubeInfo;
     private ArrayList<SingleItem> singleItem = new ArrayList<>();
 
+    private HashMap<String, Pair<Integer, Skill>> passiveIcons = new HashMap<>();
+    private ArrayList<ImageView> passiveList = new ArrayList<>();
+    private TextView passiveInfo;
+    private ImageView passive1;
+    private ImageView passive2;
+    private ImageView passive3;
+    private ImageView passive4;
+
 
     private RequestQueue requestQueueImage;
 
@@ -164,6 +176,23 @@ public class D3CharacterFragment extends Fragment {
         stats_layout = view.findViewById(R.id.stats_layout);
         gear_layout = view.findViewById(R.id.gear_layout);
         cube_layout = view.findViewById(R.id.cube_layout);
+        skills_layout = view.findViewById(R.id.skill_layout);
+
+        passive1 = view.findViewById(R.id.passive1);
+        passive2 = view.findViewById(R.id.passive2);
+        passive3 = view.findViewById(R.id.passive3);
+        passive4 = view.findViewById(R.id.passive4);
+        passiveInfo = view.findViewById(R.id.passiveInfo);
+
+        GradientDrawable passiveTextBG = new GradientDrawable();
+        passiveTextBG.setStroke(2, Color.GRAY);
+        passiveTextBG.setColor(Color.BLACK);
+        passiveInfo.setBackground(passiveTextBG);
+
+        passiveList.add(passive1);
+        passiveList.add(passive2);
+        passiveList.add(passive3);
+        passiveList.add(passive4);
 
         cubeArmor = view.findViewById(R.id.cube_armor_item);
         cubeSword = view.findViewById(R.id.cube_sword_item);
@@ -321,6 +350,7 @@ public class D3CharacterFragment extends Fragment {
                         setName();
                         getCubeIcons();
                         downloadCubeItems(bnOAuth2Helper, gson);
+                        downloadPssiveIcons();
                         String topStatString = "+" + characterInformation.getStats().getStrength() + " Strength";
                         if (characterInformation.getStats().getStrength() < characterInformation.getStats().getIntelligence()) {
                             topStatString = "+" + characterInformation.getStats().getIntelligence() + " Intelligence";
@@ -368,6 +398,36 @@ public class D3CharacterFragment extends Fragment {
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         Log.i("time", String.valueOf(duration));
+    }
+
+    private void downloadPssiveIcons() {
+        for(int i = 0; i < characterInformation.getSkills().getPassive().size(); i++){
+            Pair<Integer, Skill> tempPair = new Pair<>(i, characterInformation.getSkills().getPassive().get(i).getSkill());
+            passiveIcons.put(characterInformation.getSkills().getPassive().get(i).getSkill().getName(), tempPair);
+        }
+        for (String key : passiveIcons.keySet()) {
+            final String tempKey = key;
+            ImageRequest imageRequest = new ImageRequest(URLConstants.D3_ICON_SKILLS.replace("url", passiveIcons.get(key).second.getIcon()), bitmap -> {
+                Drawable passive = new BitmapDrawable(getResources(), bitmap);
+                passiveList.get(passiveIcons.get(tempKey).first).setImageDrawable(passive);
+                passiveList.get(passiveIcons.get(tempKey).first).setOnTouchListener((v, event) ->{
+                    switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN: {
+                        passiveInfo.setText(Html.fromHtml("<big>" + passiveIcons.get(tempKey).second.getName() + "</big><br><br>"
+                                + passiveIcons.get(tempKey).second.getDescriptionHtml().replaceAll("<span class=\"d3-color-green", "<font color=\"#00ff00")
+                                .replaceAll("</span>", "</font>"), Html.FROM_HTML_MODE_LEGACY));
+                        passiveInfo.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP:
+                        passiveInfo.setVisibility(View.GONE);
+                    }
+                        return true;
+                });
+            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                    error -> Log.e("Error", error.toString()));
+            requestQueueImage.add(imageRequest);
+        }
     }
 
     private void downloadCubeItems(BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
@@ -464,23 +524,29 @@ public class D3CharacterFragment extends Fragment {
                     case 0:
                         stats_layout.setVisibility(View.VISIBLE);
                         gear_layout.setVisibility(View.GONE);
+                        skills_layout.setVisibility(View.GONE);
+                        cube_layout.setVisibility(View.GONE);
                         chatgemInactive.setVisibility(View.VISIBLE);
                         chatgemStatue.setVisibility(View.VISIBLE);
-                        cube_layout.setVisibility(View.GONE);
+
+
                         break;
                     case 1:
                         stats_layout.setVisibility(View.GONE);
                         gear_layout.setVisibility(View.VISIBLE);
                         cube_layout.setVisibility(View.GONE);
+                        skills_layout.setVisibility(View.GONE);
                         chatgemActive.setVisibility(View.GONE);
                         chatgemInactive.setVisibility(View.GONE);
                         chatgemStatue.setVisibility(View.GONE);
+
 
                         break;
                     case 2:
                         stats_layout.setVisibility(View.GONE);
                         gear_layout.setVisibility(View.GONE);
                         cube_layout.setVisibility(View.GONE);
+                        skills_layout.setVisibility(View.VISIBLE);
                         chatgemInactive.setVisibility(View.VISIBLE);
                         chatgemStatue.setVisibility(View.VISIBLE);
                         break;
@@ -488,6 +554,7 @@ public class D3CharacterFragment extends Fragment {
                         stats_layout.setVisibility(View.GONE);
                         gear_layout.setVisibility(View.GONE);
                         cube_layout.setVisibility(View.VISIBLE);
+                        skills_layout.setVisibility(View.GONE);
                         chatgemInactive.setVisibility(View.VISIBLE);
                         chatgemStatue.setVisibility(View.VISIBLE);
                         break;

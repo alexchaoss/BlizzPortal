@@ -128,9 +128,9 @@
             android:id="@+id/ring1"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:contentDescription="@string/ring1"
             android:layout_marginEnd="27dp"
             android:layout_marginBottom="2dp"
+            android:contentDescription="@string/ring1"
             app:layout_constraintBottom_toTopOf="@id/main_hand"
             app:layout_constraintEnd_toStartOf="@id/legs"
             app:layout_constraintStart_toStartOf="parent"
@@ -153,10 +153,10 @@
             android:id="@+id/head"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:contentDescription="@string/head"
-            android:layout_marginEnd="3dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="3dp"
             android:layout_marginBottom="3dp"
+            android:contentDescription="@string/head"
             app:layout_constraintBottom_toTopOf="@id/chest"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent"
@@ -166,22 +166,22 @@
             android:id="@+id/chest"
             android:layout_width="82dp"
             android:layout_height="115dp"
-            android:contentDescription="@string/chest"
             android:layout_marginEnd="3dp"
             android:layout_marginBottom="3dp"
-            app:layout_constraintVertical_chainStyle="packed"
+            android:contentDescription="@string/chest"
             app:layout_constraintBottom_toTopOf="@id/belt"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/head" />
+            app:layout_constraintTop_toBottomOf="@id/head"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <ImageView
             android:id="@+id/belt"
             android:layout_width="82dp"
             android:layout_height="34dp"
+            android:layout_marginEnd="3dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/belt"
-            android:layout_marginEnd="3dp"
             app:layout_constraintBottom_toTopOf="@id/legs"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent"
@@ -191,9 +191,9 @@
             android:id="@+id/legs"
             android:layout_width="67dp"
             android:layout_height="87dp"
+            android:layout_marginEnd="3dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/legs"
-            android:layout_marginEnd="3dp"
             app:layout_constraintBottom_toTopOf="@id/boots"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -203,9 +203,9 @@
             android:id="@+id/boots"
             android:layout_width="67dp"
             android:layout_height="87dp"
-            android:contentDescription="@string/boots"
             android:layout_marginEnd="3dp"
             android:layout_marginBottom="20dp"
+            android:contentDescription="@string/boots"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -362,11 +362,11 @@
             android:id="@+id/level_class"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
             android:fontFamily="@font/diablo_light"
+            android:textAlignment="center"
             android:textColor="#ffead4"
             android:textSize="12sp"
-            android:textAlignment="center"
-            android:layout_marginTop="90dp"
             app:layout_constraintBottom_toTopOf="@id/character_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -377,9 +377,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/diablo_light"
+            android:textAlignment="center"
             android:textColor="#F5F5F5"
             android:textSize="40sp"
-            android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@id/stats"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -465,8 +465,8 @@
             android:id="@+id/cube_sword"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/cubeframe_sword"
             android:layout_marginBottom="200dp"
+            android:src="@drawable/cubeframe_sword"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cube_armor"
             app:layout_constraintStart_toStartOf="parent"
@@ -476,8 +476,8 @@
             android:id="@+id/cube_sword_item"
             android:layout_width="38dp"
             android:layout_height="72dp"
-            android:background="@drawable/power_slab"
             android:layout_marginEnd="2dp"
+            android:background="@drawable/power_slab"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/cube_sword"
             app:layout_constraintEnd_toEndOf="@id/cube_sword"
@@ -488,8 +488,8 @@
             android:id="@+id/cube_armor"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/cubeframe_armor"
             android:layout_marginBottom="200dp"
+            android:src="@drawable/cubeframe_armor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cube_sword"
@@ -499,8 +499,8 @@
             android:id="@+id/cube_armor_item"
             android:layout_width="38dp"
             android:layout_height="72dp"
-            android:background="@drawable/power_slab"
             android:layout_marginEnd="2dp"
+            android:background="@drawable/power_slab"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/cube_armor"
             app:layout_constraintEnd_toEndOf="@id/cube_armor"
@@ -512,15 +512,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:layout_constraintBottom_toBottomOf="@id/cube_armor"
-            app:constraint_referenced_ids="cube_armor,cube_armor_item,cube_sword,cube_sword_item" />
+            app:constraint_referenced_ids="cube_armor,cube_armor_item,cube_sword,cube_sword_item"
+            app:layout_constraintBottom_toBottomOf="@id/cube_armor" />
 
         <ImageView
             android:id="@+id/cube_ring"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/cubeframe_ring"
             android:layout_marginTop="30dp"
+            android:src="@drawable/cubeframe_ring"
             app:layout_constraintBottom_toTopOf="@id/labelBarrier2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -530,8 +530,8 @@
             android:id="@+id/cube_ring_item"
             android:layout_width="38dp"
             android:layout_height="72dp"
-            android:background="@drawable/power_slab"
             android:layout_marginEnd="2dp"
+            android:background="@drawable/power_slab"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/cube_ring"
             app:layout_constraintEnd_toEndOf="@id/cube_ring"
@@ -543,24 +543,174 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:layout_constraintBottom_toBottomOf="@id/cube_ring"
-            app:constraint_referenced_ids="cube_ring,cube_ring_item" />
+            app:constraint_referenced_ids="cube_ring,cube_ring_item"
+            app:layout_constraintBottom_toBottomOf="@id/cube_ring" />
 
         <TextView
             android:id="@+id/cube_text"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:textColor="#fff"
-            android:textAlignment="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="50dp"
-            android:layout_marginEnd="25dp"
             android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="50dp"
             android:gravity="center_horizontal|center_vertical"
+            android:textAlignment="center"
+            android:textColor="#fff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/labelBarrier2" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/skill_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/d3_nav">
+
+        <ImageView
+            android:id="@+id/skill1"
+            android:layout_width="170dp"
+            android:layout_height="56dp"
+            android:background="@drawable/d3_skill_unselected"
+            android:layout_marginTop="115dp"
+            app:layout_constraintBottom_toTopOf="@id/skill3"
+            app:layout_constraintEnd_toStartOf="@id/skill2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/skill2"
+            android:layout_width="170dp"
+            android:layout_height="56dp"
+            android:background="@drawable/d3_skill_unselected"
+            android:layout_marginTop="115dp"
+            app:layout_constraintBottom_toTopOf="@id/skill4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/skill1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/skill3"
+            android:layout_width="170dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/d3_skill_unselected"
+            app:layout_constraintBottom_toTopOf="@id/skill5"
+            app:layout_constraintEnd_toStartOf="@id/skill4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/skill1" />
+
+        <ImageView
+            android:id="@+id/skill4"
+            android:layout_width="170dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/d3_skill_unselected"
+            app:layout_constraintBottom_toTopOf="@id/skill6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/skill3"
+            app:layout_constraintTop_toBottomOf="@id/skill2" />
+
+        <ImageView
+            android:id="@+id/skill5"
+            android:layout_width="170dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/d3_skill_unselected"
+            app:layout_constraintBottom_toTopOf="@id/labelBarrier3"
+            app:layout_constraintEnd_toStartOf="@id/skill6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/skill3" />
+
+        <ImageView
+            android:id="@+id/skill6"
+            android:layout_width="170dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/d3_skill_unselected"
+            app:layout_constraintBottom_toTopOf="@id/labelBarrier3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/skill5"
+            app:layout_constraintTop_toBottomOf="@id/skill4" />
+
+        <android.support.constraint.Barrier
+            android:id="@+id/labelBarrier3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="skill5,skill6"
+            app:layout_constraintBottom_toBottomOf="@id/skill5" />
+
+        <TextView
+            android:id="@+id/passiveInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:visibility="gone"
+            android:textAlignment="center"
+            android:paddingTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"/>
+
+
+        <ImageView
+            android:id="@+id/passive1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/d3_passive_unselected"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/passive2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
+
+        <ImageView
+            android:id="@+id/passive2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/d3_passive_unselected"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/passive3"
+            app:layout_constraintStart_toEndOf="@id/passive1"
+            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
+
+        <ImageView
+            android:id="@+id/passive3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/d3_passive_unselected"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/passive4"
+            app:layout_constraintStart_toEndOf="@id/passive2"
+            app:layout_constraintTop_toBottomOf="@id/labelBarrier3"/>
+
+        <ImageView
+            android:id="@+id/passive4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/d3_passive_unselected"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/passive3"
+            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
 
     </android.support.constraint.ConstraintLayout>
 
