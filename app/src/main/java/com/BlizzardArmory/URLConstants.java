@@ -34,7 +34,7 @@ public class URLConstants {
     public final static String D3_CHARACTER_ITEMS = "/d3/profile/btag/hero/id/items?locale=en_US&";
     public final static String D3_ITEM = "/d3/data/item?locale=en_US&";
     public final static String D3_ICON_ITEMS = "http://media.blizzard.com/d3/icons/items/large/icon.png";
-    public final static String D3_ICON_SKILLS = "http://media.blizzard.com/d3/icons/skills/64/icon.png";
+    public final static String D3_ICON_SKILLS = "http://media.blizzard.com/d3/icons/skills/64/url.png";
 
     //URLs for WoW characters and queries
     public final static String WOW_CHAR_URL = "/wow/user/characters";
@@ -48,7 +48,6 @@ public class URLConstants {
     public static String getD3URLBtagProfile() {
         return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
     }
-
 
     public static String getD3HeroURL(int id) {
         String url = D3_CHARACTER.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
