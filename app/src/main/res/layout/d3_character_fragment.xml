@@ -4,7 +4,7 @@
     android:id="@+id/item_d3_character"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/diablo3_main_window"
+    android:background="@drawable/diablo3_main_window_no_separation"
     android:clickable="true"
     android:focusable="true">
 
@@ -52,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:contentDescription="@string/chat_gem_statue"
         android:src="@drawable/chatgem_statue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,6 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
+        android:contentDescription="@string/chat_gem_statue"
         android:src="@drawable/chatgem_inactive"
         app:layout_constraintBottom_toBottomOf="@id/chatgem_statue"
         app:layout_constraintEnd_toEndOf="@id/chatgem_statue"
@@ -73,6 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
+        android:contentDescription="@string/chat_gem_statue"
         android:src="@drawable/chatgem_active"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/chatgem_statue"
@@ -263,7 +266,7 @@
     <ScrollView
         android:id="@+id/item_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_gravity="center"
         android:scrollbars="none"
         android:visibility="gone"
@@ -311,7 +314,7 @@
                     <ImageView
                         android:id="@+id/item_icon"
                         android:layout_width="74dp"
-                        android:layout_height="103dp"
+                        android:layout_height="125dp"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/item_icon" />
                 </RelativeLayout>
@@ -370,7 +373,8 @@
             app:layout_constraintBottom_toTopOf="@id/character_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <TextView
             android:id="@+id/character_name"
@@ -379,76 +383,146 @@
             android:fontFamily="@font/diablo_light"
             android:textAlignment="center"
             android:textColor="#F5F5F5"
-            android:textSize="40sp"
+            android:textSize="35sp"
             app:layout_constraintBottom_toTopOf="@id/stats"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/level_class" />
+            app:layout_constraintTop_toBottomOf="@id/level_class"/>
 
-        <LinearLayout
-            android:id="@+id/stats"
+        <TableLayout
+            android:id="@id/stats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="100dp"
+            android:layout_marginStart="100dp"
             android:gravity="center"
-            android:orientation="vertical"
+            android:stretchColumns="0,1"
+            app:layout_constraintBottom_toTopOf="@id/damage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/character_name">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/strength"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/strength"
+                    android:textColor="#c7b377"
+                    android:layout_gravity="start"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/strength_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFF"
+                    android:textSize="15sp"
+                    android:layout_gravity="end"/>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/dexterity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dexterity"
+                    android:textColor="#c7b377"
+                    android:textSize="15sp"
+                    android:layout_gravity="start" />
+
+                <TextView
+                    android:id="@+id/dexterity_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" "
+                    android:textColor="#FFF"
+                    android:textSize="15sp"
+                    android:layout_gravity="end"/>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/intelligence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/intelligence"
+                    android:textColor="#c7b377"
+                    android:textSize="15sp"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/intelligence_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFF"
+                    android:textSize="15sp"
+                    android:layout_gravity="end"/>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/vitality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vitality"
+                    android:textColor="#c7b377"
+                    android:textSize="15sp"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/vitality_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFF"
+                    android:textSize="15sp"
+                    android:layout_gravity="end"/>
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/damage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#c7b377"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/toughness"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stats" />
+
+        <TextView
+            android:id="@+id/toughness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#c7b377"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@id/recovery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/damage" />
+
+
+        <TextView
+            android:id="@+id/recovery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#c7b377"
+            android:textSize="15sp"
+            android:layout_marginBottom="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/toughness" />
 
-            <TextView
-                android:id="@+id/top_stat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:textColor="#555da5"
-                android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/vitality"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#555da5"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/crit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#555da5"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/crit_chance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#555da5"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/attack_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#555da5"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/area_damage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#555da5"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/cooldown_reduction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#555da5"
-                android:textSize="15sp" />
-
-        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -466,6 +540,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginBottom="200dp"
+            android:contentDescription="@string/sword_for_cube"
             android:src="@drawable/cubeframe_sword"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cube_armor"
@@ -478,6 +553,7 @@
             android:layout_height="72dp"
             android:layout_marginEnd="2dp"
             android:background="@drawable/power_slab"
+            android:contentDescription="@string/sword_for_cube"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/cube_sword"
             app:layout_constraintEnd_toEndOf="@id/cube_sword"
@@ -489,6 +565,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginBottom="200dp"
+            android:contentDescription="@string/armor_for_cube"
             android:src="@drawable/cubeframe_armor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -501,6 +578,7 @@
             android:layout_height="72dp"
             android:layout_marginEnd="2dp"
             android:background="@drawable/power_slab"
+            android:contentDescription="@string/armor_for_cube"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/cube_armor"
             app:layout_constraintEnd_toEndOf="@id/cube_armor"
@@ -520,6 +598,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="30dp"
+            android:contentDescription="@string/ring_for_cube"
             android:src="@drawable/cubeframe_ring"
             app:layout_constraintBottom_toTopOf="@id/labelBarrier2"
             app:layout_constraintEnd_toEndOf="parent"
@@ -532,6 +611,7 @@
             android:layout_height="72dp"
             android:layout_marginEnd="2dp"
             android:background="@drawable/power_slab"
+            android:contentDescription="@string/ring_for_cube"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/cube_ring"
             app:layout_constraintEnd_toEndOf="@id/cube_ring"
@@ -578,9 +658,9 @@
             android:id="@+id/skill1"
             android:layout_width="185dp"
             android:layout_height="65dp"
-            android:background="@drawable/d3_skill_unselected"
-            android:layout_marginTop="100dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/d3_skill_unselected"
             android:contentDescription="@string/skill_icon"
             app:layout_constraintBottom_toTopOf="@id/skill3"
             app:layout_constraintEnd_toStartOf="@id/skill2"
@@ -600,28 +680,30 @@
                 android:id="@+id/skill1_icon"
                 android:layout_width="30dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="13dp"
                 android:layout_marginStart="13dp"
-                android:contentDescription="@string/skill_icon"/>
+                android:layout_marginTop="13dp"
+                android:contentDescription="@string/skill_icon" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/skill1_name"
-                    android:textColor="#FFF"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/skill1_rune"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#c7b377"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -630,9 +712,9 @@
             android:id="@+id/skill2"
             android:layout_width="185dp"
             android:layout_height="65dp"
-            android:background="@drawable/d3_skill_unselected"
             android:layout_marginTop="100dp"
             android:layout_marginEnd="10dp"
+            android:background="@drawable/d3_skill_unselected"
             android:contentDescription="@string/skill_icon"
             app:layout_constraintBottom_toTopOf="@id/skill4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -652,28 +734,30 @@
                 android:id="@+id/skill2_icon"
                 android:layout_width="30dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="13dp"
                 android:layout_marginStart="13dp"
-                android:contentDescription="@string/skill_icon"/>
+                android:layout_marginTop="13dp"
+                android:contentDescription="@string/skill_icon" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/skill2_name"
-                    android:textColor="#FFF"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/skill2_rune"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#c7b377"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -682,10 +766,10 @@
             android:id="@+id/skill3"
             android:layout_width="185dp"
             android:layout_height="65dp"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
-            android:contentDescription="@string/skill_icon"
+            android:layout_marginTop="20dp"
             android:background="@drawable/d3_skill_unselected"
+            android:contentDescription="@string/skill_icon"
             app:layout_constraintBottom_toTopOf="@id/skill5"
             app:layout_constraintEnd_toStartOf="@id/skill4"
             app:layout_constraintStart_toStartOf="parent"
@@ -704,28 +788,30 @@
                 android:id="@+id/skill3_icon"
                 android:layout_width="30dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="13dp"
                 android:layout_marginStart="13dp"
-                android:contentDescription="@string/skill_icon"/>
+                android:layout_marginTop="13dp"
+                android:contentDescription="@string/skill_icon" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/skill3_name"
-                    android:textColor="#FFF"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/skill3_rune"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#c7b377"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -756,28 +842,30 @@
                 android:id="@+id/skill4_icon"
                 android:layout_width="30dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="13dp"
                 android:layout_marginStart="13dp"
-                android:contentDescription="@string/skill_icon"/>
+                android:layout_marginTop="13dp"
+                android:contentDescription="@string/skill_icon" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/skill4_name"
-                    android:textColor="#FFF"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/skill4_rune"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#c7b377"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -786,8 +874,8 @@
             android:id="@+id/skill5"
             android:layout_width="185dp"
             android:layout_height="65dp"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/d3_skill_unselected"
             android:contentDescription="@string/skill_icon"
             app:layout_constraintBottom_toTopOf="@id/labelBarrier3"
@@ -808,28 +896,30 @@
                 android:id="@+id/skill5_icon"
                 android:layout_width="30dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="13dp"
                 android:layout_marginStart="13dp"
-                android:contentDescription="@string/skill_icon"/>
+                android:layout_marginTop="13dp"
+                android:contentDescription="@string/skill_icon" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/skill5_name"
-                    android:textColor="#FFF"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/skill5_rune"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#c7b377"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -860,28 +950,30 @@
                 android:id="@+id/skill6_icon"
                 android:layout_width="30dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="13dp"
                 android:layout_marginStart="13dp"
-                android:contentDescription="@string/skill_icon"/>
+                android:layout_marginTop="13dp"
+                android:contentDescription="@string/skill_icon" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/skill6_name"
-                    android:textColor="#FFF"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/skill6_rune"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:textColor="#c7b377"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -900,8 +992,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:background="@drawable/d3_passive_unselected"
-            android:padding="5dp"
             android:contentDescription="@string/passive_icon"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/passive2"
             app:layout_constraintStart_toStartOf="parent"
@@ -913,8 +1005,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:background="@drawable/d3_passive_unselected"
-            android:padding="5dp"
             android:contentDescription="@string/passive_icon"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/passive3"
             app:layout_constraintStart_toEndOf="@id/passive1"
@@ -926,12 +1018,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:background="@drawable/d3_passive_unselected"
-            android:padding="5dp"
             android:contentDescription="@string/passive_icon"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/passive4"
             app:layout_constraintStart_toEndOf="@id/passive2"
-            app:layout_constraintTop_toBottomOf="@id/labelBarrier3"/>
+            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
 
         <ImageView
             android:id="@+id/passive4"
@@ -939,8 +1031,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:background="@drawable/d3_passive_unselected"
-            android:padding="5dp"
             android:contentDescription="@string/passive_icon"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/passive3"
@@ -948,20 +1040,90 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/passiveInfo"
+    <ScrollView
+        android:id="@+id/skill_tooltip_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#c7b377"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:scrollbars="none"
         android:visibility="gone"
-        android:textAlignment="center"
-        android:padding="10dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/d3_nav">
+
+        <LinearLayout
+            android:id="@+id/skill_tooltip"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/skill_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/d3_item_header"
+                android:gravity="center_vertical"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/tooltip_skill_icon"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_margin="5dp"
+                    android:contentDescription="@string/skill_icon" />
+
+                <TextView
+                    android:id="@+id/skill_tooltip_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:textAlignment="textStart"
+                    android:textColor="#c7b377" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/rune_separator"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginBottom="5dp"
+                android:background="#2e2a27" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/tooltip_rune_icon"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_margin="5dp"
+                    android:contentDescription="@string/tooltip_rune"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:id="@+id/rune_tooltip_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:textAlignment="textStart"
+                    android:textColor="#c7b377" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <RelativeLayout
         android:id="@+id/loadingCircle"

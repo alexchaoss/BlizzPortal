@@ -28,6 +28,17 @@ public class Skill {
     @SerializedName("descriptionHtml")
     @Expose
     private String descriptionHtml;
+    @SerializedName("flavorText")
+    @Expose
+    private String flavorText;
+
+    public String getFlavorText() {
+        return flavorText;
+    }
+
+    public void setFlavorText(String flavorText) {
+        this.flavorText = flavorText;
+    }
 
     public String getSlug() {
         return slug;

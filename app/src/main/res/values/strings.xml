@@ -79,4 +79,13 @@
     <string name="cube">Cube</string>
     <string name="skill_icon">skill_icon</string>
     <string name="passive_icon">passive_icon</string>
+    <string name="chat_gem_statue">Chat gem statue</string>
+    <string name="sword_for_cube">sword for cube</string>
+    <string name="armor_for_cube">armor for cube</string>
+    <string name="ring_for_cube">ring for cube</string>
+    <string name="tooltip_rune">tooltip rune</string>
+    <string name="strength">Strength:</string>
+    <string name="dexterity">Dexterity:</string>
+    <string name="intelligence">Intelligence:</string>
+    <string name="vitality">Vitality:</string>
 </resources>
