@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.diablo.Character.Active;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
 import com.BlizzardArmory.diablo.Character.Skill;
 import com.BlizzardArmory.diablo.Item.SingleItem;
@@ -62,6 +63,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
@@ -157,6 +159,29 @@ public class D3CharacterFragment extends Fragment {
     private ImageView passive3;
     private ImageView passive4;
 
+    private HashMap<String, Pair<Integer, Active>> skillIcons = new HashMap<>();
+    private ArrayList<ImageView> skillList = new ArrayList<>();
+    private ArrayList<TextView> skillNameList = new ArrayList<>();
+    private ArrayList<TextView> skillRuneList = new ArrayList<>();
+    private TextView skill1Name;
+    private TextView skill2Name;
+    private TextView skill3Name;
+    private TextView skill4Name;
+    private TextView skill5Name;
+    private TextView skill6Name;
+    private TextView skill1Rune;
+    private TextView skill2Rune;
+    private TextView skill3Rune;
+    private TextView skill4Rune;
+    private TextView skill5Rune;
+    private TextView skill6Rune;
+    private ImageView skill1;
+    private ImageView skill2;
+    private ImageView skill3;
+    private ImageView skill4;
+    private ImageView skill5;
+    private ImageView skill6;
+
 
     private RequestQueue requestQueueImage;
 
@@ -183,6 +208,29 @@ public class D3CharacterFragment extends Fragment {
         passive3 = view.findViewById(R.id.passive3);
         passive4 = view.findViewById(R.id.passive4);
         passiveInfo = view.findViewById(R.id.passiveInfo);
+
+        skill1 = view.findViewById(R.id.skill1_icon);
+        skill2 = view.findViewById(R.id.skill2_icon);
+        skill3 = view.findViewById(R.id.skill3_icon);
+        skill4 = view.findViewById(R.id.skill4_icon);
+        skill5 = view.findViewById(R.id.skill5_icon);
+        skill6 = view.findViewById(R.id.skill6_icon);
+        skill1Name = view.findViewById(R.id.skill1_name);
+        skill2Name = view.findViewById(R.id.skill2_name);
+        skill3Name = view.findViewById(R.id.skill3_name);
+        skill4Name = view.findViewById(R.id.skill4_name);
+        skill5Name = view.findViewById(R.id.skill5_name);
+        skill6Name = view.findViewById(R.id.skill6_name);
+        skill1Rune = view.findViewById(R.id.skill1_rune);
+        skill2Rune = view.findViewById(R.id.skill2_rune);
+        skill3Rune = view.findViewById(R.id.skill3_rune);
+        skill4Rune = view.findViewById(R.id.skill4_rune);
+        skill5Rune = view.findViewById(R.id.skill5_rune);
+        skill6Rune = view.findViewById(R.id.skill6_rune);
+
+        Collections.addAll(skillList, skill1, skill2, skill3, skill4, skill5, skill6);
+        Collections.addAll(skillNameList, skill1Name, skill2Name, skill3Name, skill4Name, skill5Name, skill6Name);
+        Collections.addAll(skillRuneList, skill1Rune, skill2Rune, skill3Rune, skill4Rune, skill5Rune, skill6Rune);
 
         GradientDrawable passiveTextBG = new GradientDrawable();
         passiveTextBG.setStroke(2, Color.GRAY);
@@ -350,6 +398,7 @@ public class D3CharacterFragment extends Fragment {
                         setName();
                         getCubeIcons();
                         downloadCubeItems(bnOAuth2Helper, gson);
+                        downloadSkillIcons();
                         downloadPssiveIcons();
                         String topStatString = "+" + characterInformation.getStats().getStrength() + " Strength";
                         if (characterInformation.getStats().getStrength() < characterInformation.getStats().getIntelligence()) {
@@ -400,6 +449,84 @@ public class D3CharacterFragment extends Fragment {
         Log.i("time", String.valueOf(duration));
     }
 
+    private void downloadSkillIcons() {
+        for(int i = 0; i < characterInformation.getSkills().getActive().size(); i++){
+            Pair<Integer, Active> tempPair = new Pair<>(i, characterInformation.getSkills().getActive().get(i));
+            skillIcons.put(characterInformation.getSkills().getActive().get(i).getSkill().getName(), tempPair);
+        }
+        for (String key : skillIcons.keySet()) {
+            final String tempKey = key;
+            ImageRequest imageRequest = new ImageRequest(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(skillIcons.get(key)).second.getSkill().getIcon()), bitmap -> {
+                Drawable skill = new BitmapDrawable(getResources(), bitmap);
+                skillList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setImageDrawable(skill);
+                skillNameList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setText(Objects.requireNonNull(skillIcons.get(tempKey)).second.getSkill().getName());
+                String smallRune = "";
+                try {
+                    smallRune = getSmallRuneIcon(Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getType());
+                }catch (Exception e){
+                    Log.e("Rune", "none");
+                }
+                final String runeText = smallRune;
+                if(!smallRune.equals("")){
+                    skillRuneList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setText(Html.fromHtml( "<img src=\"" + smallRune + "\">" +
+                            Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getName(), Html.FROM_HTML_MODE_LEGACY, source -> {
+                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
+                    }, null));
+                }
+
+                skillList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setOnTouchListener((v, event) ->{
+                    switch(event.getAction()){
+                        case MotionEvent.ACTION_DOWN: {
+                            if(!runeText.equals("")) {
+                                passiveInfo.setText(Html.fromHtml(("<big><font color=\"FFFFFF\">" + Objects.requireNonNull(skillIcons.get(tempKey)).second.getSkill().getName() + "</font></big><br><br>"
+                                        + Objects.requireNonNull(skillIcons.get(tempKey)).second.getSkill().getDescriptionHtml() + "<br><br>"
+                                        + "<big><font color=\"FFFFFF\">" + Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getName() + "</font></big><br><br>"
+                                        + Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getDescriptionHtml())
+                                        .replaceAll("<span class=\"d3-color-green", "<font color=\"#00ff00")
+                                        .replaceAll("<span class=\"d3-color-gold", "<font color=\"#c7b377")
+                                        .replaceAll("<span class=\"d3-color-yellow", "<font color=\"#ffff00")
+                                        .replaceAll("</span>", "</font>"), Html.FROM_HTML_MODE_LEGACY));
+                            }else{
+                                passiveInfo.setText(Html.fromHtml(("<big>" + Objects.requireNonNull(skillIcons.get(tempKey)).second.getSkill().getName() + "</big><br><br>"
+                                        + Objects.requireNonNull(skillIcons.get(tempKey)).second.getSkill().getDescriptionHtml())
+                                        .replaceAll("<span class=\"d3-color-green", "<font color=\"#00ff00")
+                                        .replaceAll("<span class=\"d3-color-gold", "<font color=\"#c7b377")
+                                        .replaceAll("<span class=\"d3-color-yellow", "<font color=\"#ffff00")
+                                        .replaceAll("</span>", "</font>"), Html.FROM_HTML_MODE_LEGACY));
+                            }
+                            passiveInfo.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP:
+                            passiveInfo.setVisibility(View.GONE);
+                    }
+                    return true;
+                });
+            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                    error -> Log.e("Error", error.toString()));
+            requestQueueImage.add(imageRequest);
+        }
+    }
+
+    private String getSmallRuneIcon(String type) {
+        switch (type){
+            case "a":
+                return "small_rune_a";
+            case "b":
+                return "small_rune_b";
+            case "c":
+                return "small_rune_c";
+            case "d":
+                return "small_rune_d";
+            case "e":
+                return "small_rune_e";
+        }
+        return "";
+    }
+
     private void downloadPssiveIcons() {
         for(int i = 0; i < characterInformation.getSkills().getPassive().size(); i++){
             Pair<Integer, Skill> tempPair = new Pair<>(i, characterInformation.getSkills().getPassive().get(i).getSkill());
@@ -407,14 +534,14 @@ public class D3CharacterFragment extends Fragment {
         }
         for (String key : passiveIcons.keySet()) {
             final String tempKey = key;
-            ImageRequest imageRequest = new ImageRequest(URLConstants.D3_ICON_SKILLS.replace("url", passiveIcons.get(key).second.getIcon()), bitmap -> {
+            ImageRequest imageRequest = new ImageRequest(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(passiveIcons.get(key)).second.getIcon()), bitmap -> {
                 Drawable passive = new BitmapDrawable(getResources(), bitmap);
-                passiveList.get(passiveIcons.get(tempKey).first).setImageDrawable(passive);
-                passiveList.get(passiveIcons.get(tempKey).first).setOnTouchListener((v, event) ->{
+                passiveList.get(Objects.requireNonNull(passiveIcons.get(tempKey)).first).setImageDrawable(passive);
+                passiveList.get(Objects.requireNonNull(passiveIcons.get(tempKey)).first).setOnTouchListener((v, event) ->{
                     switch(event.getAction()){
                     case MotionEvent.ACTION_DOWN: {
-                        passiveInfo.setText(Html.fromHtml("<big>" + passiveIcons.get(tempKey).second.getName() + "</big><br><br>"
-                                + passiveIcons.get(tempKey).second.getDescriptionHtml().replaceAll("<span class=\"d3-color-green", "<font color=\"#00ff00")
+                        passiveInfo.setText(Html.fromHtml("<big>" + Objects.requireNonNull(passiveIcons.get(tempKey)).second.getName() + "</big><br><br>"
+                                + Objects.requireNonNull(passiveIcons.get(tempKey)).second.getDescriptionHtml().replaceAll("<span class=\"d3-color-green", "<font color=\"#00ff00")
                                 .replaceAll("</span>", "</font>"), Html.FROM_HTML_MODE_LEGACY));
                         passiveInfo.setVisibility(View.VISIBLE);
                         break;
