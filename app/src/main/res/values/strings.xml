@@ -77,4 +77,6 @@
     <string name="kanai_s_cube">Kanai\'s Cube</string>
     <string name="paperdoll">paperdoll</string>
     <string name="cube">Cube</string>
+    <string name="skill_icon">skill_icon</string>
+    <string name="passive_icon">passive_icon</string>
 </resources>
