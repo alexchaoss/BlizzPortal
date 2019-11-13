@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -91,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) view).setTextColor(Color.WHITE);
                 ((TextView) view).setTextSize(20);
                 ((TextView) view).setGravity(Gravity.CENTER);
-                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER2.getClientKey(), Servers.SERVER2.getSecretKey(), selectedRegion.toLowerCase(),
-                        URLConstants.CALLBACK_URL, "Blizzard Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
+                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER1.getClientKey(), Servers.SERVER1.getSecretKey(), selectedRegion.toLowerCase(),
+                        URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
             }
 
             @Override
@@ -102,37 +103,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedRegion.equals("Select Region")) {
-                    Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        if (ConnectionService.isConnected()) {
-                            CreateToken(bnOAuth2Params);
-                            setContentView(R.layout.activity_games);
-                        } else {
-                            showNoConnectionMessage(MainActivity.this);
-                        }
-                    } catch (Exception e) {
+        login.setOnClickListener(view -> {
+            if (selectedRegion.equals("Select Region")) {
+                Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    if (ConnectionService.isConnected()) {
+                        CreateToken(bnOAuth2Params);
+                        setContentView(R.layout.activity_games);
+                    } else {
                         showNoConnectionMessage(MainActivity.this);
                     }
+                } catch (Exception e) {
+                    showNoConnectionMessage(MainActivity.this);
                 }
-
             }
+
         });
 
 
-        clearCredentials.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedRegion.equals("Select Region")) {
-                    Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Login information cleared", Toast.LENGTH_SHORT).show();
-                    clearCredentials(bnOAuth2Params);
-                }
+        clearCredentials.setOnClickListener(v -> {
+            if (selectedRegion.equals("Select Region")) {
+                Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Login information cleared", Toast.LENGTH_SHORT).show();
+                clearCredentials(bnOAuth2Params);
             }
         });
     }
@@ -150,13 +145,11 @@ public class MainActivity extends AppCompatActivity {
                         Date lastMDate = new Date(lastModified);
                         Date today = new Date(System.currentTimeMillis());
 
-                        if (null != lastMDate && null != today) {
-                            long diff = today.getTime() - lastMDate.getTime();
-                            long diffDays = diff / (24 * 60 * 60 * 1000);
-                            if (30 < diffDays) {
-                                Log.i("File", "deleted");
-                                file.delete();
-                            }
+                        long diff = today.getTime() - lastMDate.getTime();
+                        long diffDays = diff / (24 * 60 * 60 * 1000);
+                        if (30 < diffDays) {
+                            Log.i("File", "deleted");
+                            file.delete();
                         }
                     }
                 }
@@ -224,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         button.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
         final AlertDialog dialog = builder.show();
-        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         dialog.getWindow().setLayout(800, 450);
 
         LinearLayout linearLayout = new LinearLayout(context);
@@ -238,19 +231,9 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.addContentView(linearLayout, layoutParams);
 
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                dialog.cancel();
-            }
-        });
+        dialog.setOnCancelListener(dialog1 -> dialog1.cancel());
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        button.setOnClickListener(v -> dialog.cancel());
     }
 
 }

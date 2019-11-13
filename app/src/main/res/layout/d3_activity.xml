@@ -140,16 +140,6 @@
             android:orientation="vertical">
 
 
-            <TextView
-                android:id="@+id/Career"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:gravity="center"
-                android:text="@string/career"
-                android:textColor="#FFFFFF"
-                android:textSize="25sp" />
-
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

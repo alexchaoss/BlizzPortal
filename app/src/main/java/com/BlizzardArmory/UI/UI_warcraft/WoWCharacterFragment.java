@@ -317,49 +317,37 @@ public class WoWCharacterFragment extends Fragment {
             String talentsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_TALENT_QUERY);
             talentsURL = talentsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + talentsURL, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            talentsInfo = gson.fromJson(response.toString(), Talents.class);
+                    response -> {
+                        talentsInfo = gson.fromJson(response.toString(), Talents.class);
 
-                            for (final Specialization specialization : talentsInfo.getSpecializations()) {
-                                try {
-                                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, specialization.getSpecialization().getKey().getHref() + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper.getAccessToken(), null,
-                                            new Response.Listener<JSONObject>() {
-                                                @Override
-                                                public void onResponse(JSONObject response) {
-                                                    specializationData.add(gson.fromJson(response.toString(), SpecializationData.class));
-                                                    if (specializationData.size() == talentsInfo.getSpecializations().size()) {
-                                                        setTalentInformation();
-                                                    }
-                                                }
-                                            },
-                                            new Response.ErrorListener() {
-                                                @Override
-                                                public void onErrorResponse(VolleyError e) {
+                        for (final Specialization specialization : talentsInfo.getSpecializations()) {
+                            try {
+                                JsonObjectRequest jsonRequest1 = new JsonObjectRequest(Request.Method.GET, specialization.getSpecialization().getKey().getHref() + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper.getAccessToken(), null,
+                                        response1 -> {
+                                            specializationData.add(gson.fromJson(response1.toString(), SpecializationData.class));
+                                            if (specializationData.size() == talentsInfo.getSpecializations().size()) {
+                                                setTalentInformation();
+                                            }
+                                        },
+                                        e -> {
 
-                                                }
-                                            });
-                                    requestQueue.add(jsonRequest);
-                                } catch (Exception e) {
-                                    Log.e("Error Spec Download", e.toString());
-                                }
+                                        });
+                                requestQueue.add(jsonRequest1);
+                            } catch (Exception e) {
+                                Log.e("Error Spec Download", e.toString());
                             }
                         }
                     },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError e) {
-                            try {
-                                callErrorAlertDialog(e.networkResponse.statusCode);
-                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                loadingCircle.setVisibility(View.GONE);
+                    e -> {
+                        try {
+                            callErrorAlertDialog(e.networkResponse.statusCode);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
 
-                            } catch (Exception d) {
-                                callErrorAlertDialog(0);
-                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                loadingCircle.setVisibility(View.GONE);
-                            }
+                        } catch (Exception d) {
+                            callErrorAlertDialog(0);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
                         }
                     });
 
@@ -420,19 +408,9 @@ public class WoWCharacterFragment extends Fragment {
 
         dialog.addContentView(linearLayout, layoutParams);
 
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                getFragmentManager().beginTransaction().remove(WoWCharacterFragment.this).commit();
-            }
-        });
+        dialog.setOnCancelListener(dialog1 -> getFragmentManager().beginTransaction().remove(WoWCharacterFragment.this).commit());
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        button.setOnClickListener(v -> dialog.cancel());
     }
 
     private void downloadStats(BnOAuth2Helper bnOAuth2Helper) {
@@ -441,18 +419,12 @@ public class WoWCharacterFragment extends Fragment {
             String statsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_STATS_QUERY);
             statsURL = statsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + statsURL, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            statistic = gson.fromJson(response.toString(), Statistic.class);
-                            setCharacterInformationTextviews();
-                        }
+                    response -> {
+                        statistic = gson.fromJson(response.toString(), Statistic.class);
+                        setCharacterInformationTextviews();
                     },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError e) {
+                    e -> {
 
-                        }
                     });
 
             requestQueue.add(jsonRequest);
@@ -468,82 +440,70 @@ public class WoWCharacterFragment extends Fragment {
             characterURL = characterURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + characterURL, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
-                            characterName.setText(characterSummary.getName());
-                            itemLVL.setText(String.format("Item Level : %s", characterSummary.getEquippedItemLevel()));
-                            String levelRaceClassString = characterSummary.getLevel() + " " + characterSummary.getRace().getName() + " " + characterSummary.getCharacterClass().getName();
-                            levelRaceClass.setText(levelRaceClassString);
+                    response -> {
+                        characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
+                        characterName.setText(characterSummary.getName());
+                        itemLVL.setText(String.format("Item Level : %s", characterSummary.getEquippedItemLevel()));
+                        String levelRaceClassString = characterSummary.getLevel() + " " + characterSummary.getRace().getName() + " " + characterSummary.getCharacterClass().getName();
+                        levelRaceClass.setText(levelRaceClassString);
 
-                            try {
-                                String equipmentURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_ITEM_QUERY);
+                        try {
+                            String equipmentURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_ITEM_QUERY);
 
-                                equipmentURL = equipmentURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
-                                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + equipmentURL, null,
-                                        new Response.Listener<JSONObject>() {
-                                            @Override
-                                            public void onResponse(JSONObject response) {
-                                                final Gson gsonEquipment = new GsonBuilder().registerTypeAdapter(EquippedItem.class, new EquippedItem.NameDescriptionDeserializer()).create();
-                                                equipment = gsonEquipment.fromJson(response.toString(), Equipment.class);
+                            equipmentURL = equipmentURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
+                            JsonObjectRequest jsonRequest1 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + equipmentURL, null,
+                                    response1 -> {
+                                        final Gson gsonEquipment = new GsonBuilder().registerTypeAdapter(EquippedItem.class, new EquippedItem.NameDescriptionDeserializer()).create();
+                                        equipment = gsonEquipment.fromJson(response1.toString(), Equipment.class);
 
-                                                for (int i = 0; i < equipment.getEquippedItems().size(); i++) {
-                                                    downloadIcons(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(), bnOAuth2Helper, gson);
-                                                    try {
-                                                        setCharacterItemsInformation(i);
-                                                    } catch (Exception e) {
-                                                        StringBuilder error = new StringBuilder();
-                                                        for (int j = 0; j < e.getStackTrace().length; j++) {
-                                                            error.append(e.getStackTrace()[j]).append("\n");
-                                                        }
-                                                        Log.e("Character Information Error", error.toString());
-                                                    }
+                                        for (int i = 0; i < equipment.getEquippedItems().size(); i++) {
+                                            downloadIcons(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(), bnOAuth2Helper, gson);
+                                            try {
+                                                setCharacterItemsInformation(i);
+                                            } catch (Exception e) {
+                                                StringBuilder error = new StringBuilder();
+                                                for (int j = 0; j < e.getStackTrace().length; j++) {
+                                                    error.append(e.getStackTrace()[j]).append("\n");
                                                 }
+                                                Log.e("Character Information Error", error.toString());
+                                            }
+                                        }
 
-                                                for (String slot : gearImageView.keySet()) {
-                                                    boolean slotEquipped = false;
-                                                    for (int i = 0; i < equipment.getEquippedItems().size(); i++) {
-                                                        if (slot.equals(equipment.getEquippedItems().get(i).getSlot().getType())) {
-                                                            slotEquipped = true;
-                                                        }
-                                                    }
-                                                    if (!slotEquipped) {
-                                                        getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
-                                                    }
+                                        for (String slot : gearImageView.keySet()) {
+                                            boolean slotEquipped = false;
+                                            for (int i = 0; i < equipment.getEquippedItems().size(); i++) {
+                                                if (slot.equals(equipment.getEquippedItems().get(i).getSlot().getType())) {
+                                                    slotEquipped = true;
                                                 }
                                             }
-                                        },
-                                        new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError e) {
-
+                                            if (!slotEquipped) {
+                                                getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
                                             }
-                                        });
+                                        }
+                                    },
+                                    e -> {
 
-                                requestQueue.add(jsonRequest);
-                            } catch (Exception e) {
-                                Log.e("Error Equipment Download", e.toString());
-                            }
+                                    });
 
-
+                            requestQueue.add(jsonRequest1);
+                        } catch (Exception e) {
+                            Log.e("Error Equipment Download", e.toString());
                         }
+
+
                     },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError e) {
-                            try {
-                                String response = new String(e.networkResponse.data);
-                                characterInformation = new JSONObject(response);
-                                characterName.setText(characterInformation.get("reason").toString());
-                                itemLVL.setText("");
-                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                loadingCircle.setVisibility(View.GONE);
-                            } catch (Exception b) {
-                                Log.e("Error", b.toString() + "\n");
-                                for (int i = 0; i < b.getStackTrace().length; i++) {
-                                    Log.e("Error", b.getStackTrace()[i].toString() + "\n");
-                                }
+                    e -> {
+                        try {
+                            String response = new String(e.networkResponse.data);
+                            characterInformation = new JSONObject(response);
+                            characterName.setText(characterInformation.get("reason").toString());
+                            itemLVL.setText("");
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        } catch (Exception b) {
+                            Log.e("Error", b.toString() + "\n");
+                            for (int i = 0; i < b.getStackTrace().length; i++) {
+                                Log.e("Error", b.getStackTrace()[i].toString() + "\n");
                             }
                         }
                     });
@@ -558,18 +518,13 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private void downloadBackground(String urlMain) {
-        ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap bitmap) {
-                backgroundMain = new BitmapDrawable(getResources(), bitmap);
-                background.setImageDrawable(backgroundMain);
-            }
+        ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, bitmap -> {
+            backgroundMain = new BitmapDrawable(getResources(), bitmap);
+            background.setImageDrawable(backgroundMain);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                new Response.ErrorListener() {
-                    public void onErrorResponse(VolleyError e) {
-                        for (int i = 0; i < e.getStackTrace().length; i++) {
-                            Log.e("Error-Background", e.getStackTrace()[i].getLineNumber() + "\n");
-                        }
+                e -> {
+                    for (int i = 0; i < e.getStackTrace().length; i++) {
+                        Log.e("Error-Background", e.getStackTrace()[i].getLineNumber() + "\n");
                     }
                 });
 
@@ -585,37 +540,24 @@ public class WoWCharacterFragment extends Fragment {
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
                     + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Media media = gson.fromJson(response.toString(), Media.class);
-                            imageURLs.put(itemSlot, media.getAssets().get(0).getValue());
-                            Log.i("Icon URL", media.getAssets().get(0).getValue());
+                    response -> {
+                        Media media = gson.fromJson(response.toString(), Media.class);
+                        imageURLs.put(itemSlot, media.getAssets().get(0).getValue());
+                        Log.i("Icon URL", media.getAssets().get(0).getValue());
 
-                            ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), new Response.Listener<Bitmap>() {
-                                @Override
-                                public void onResponse(Bitmap bitmap) {
-                                    if (index == equipment.getEquippedItems().size() - 1) {
-                                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                        loadingCircle.setVisibility(View.GONE);
-                                    }
-                                    item = new BitmapDrawable(getResources(), bitmap);
-                                    setIcons(itemSlot, equipment, item);
-                                }
-                            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                    new Response.ErrorListener() {
-                                        public void onErrorResponse(VolleyError e) {
-                                            Log.e("Error-Image", e.toString());
-                                        }
-                                    });
-                            requestQueueImage.add(imageRequest);
-                        }
+                        ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), bitmap -> {
+                            if (index == equipment.getEquippedItems().size() - 1) {
+                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
+                            }
+                            item = new BitmapDrawable(getResources(), bitmap);
+                            setIcons(itemSlot, equipment, item);
+                        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                e -> Log.e("Error-Image", e.toString()));
+                        requestQueueImage.add(imageRequest);
                     },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError e) {
+                    e -> {
 
-                        }
                     });
 
             requestQueueImage.add(jsonRequest);
@@ -939,28 +881,25 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private void sortTalents(final SpecializationData specializationData) {
-        talents.sort(new Comparator<Talent>() {
-            @Override
-            public int compare(Talent talent1, Talent talent2) {
-                int talentNumber1 = 0;
-                int talentNumber2 = 0;
-                for (TalentTier talentTier : specializationData.getTalentTiers()) {
-                    for (com.BlizzardArmory.warcraft.Talents.SpecializationData.Talent talent : talentTier.getTalents()) {
-                        if (talent1.getTalent().getName().equals(talent.getTalent().getName())) {
-                            talentNumber1 = talentTier.getLevel();
-                        }
-                        if (talent2.getTalent().getName().equals(talent.getTalent().getName())) {
-                            talentNumber2 = talentTier.getLevel();
-                        }
+        talents.sort((talent1, talent2) -> {
+            int talentNumber1 = 0;
+            int talentNumber2 = 0;
+            for (TalentTier talentTier : specializationData.getTalentTiers()) {
+                for (com.BlizzardArmory.warcraft.Talents.SpecializationData.Talent talent : talentTier.getTalents()) {
+                    if (talent1.getTalent().getName().equals(talent.getTalent().getName())) {
+                        talentNumber1 = talentTier.getLevel();
+                    }
+                    if (talent2.getTalent().getName().equals(talent.getTalent().getName())) {
+                        talentNumber2 = talentTier.getLevel();
                     }
                 }
-                if (talentNumber1 < talentNumber2) {
-                    return -1;
-                } else if (talentNumber1 > talentNumber2) {
-                    return 1;
-                }
-                return 0;
             }
+            if (talentNumber1 < talentNumber2) {
+                return -1;
+            } else if (talentNumber1 > talentNumber2) {
+                return 1;
+            }
+            return 0;
         });
     }
 

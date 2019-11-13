@@ -1,11 +1,11 @@
 
 package com.BlizzardArmory.diablo.Item;
 
-import java.util.List;
-
 import com.BlizzardArmory.diablo.Items.Type;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 
 public class SingleItem {
