@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blizzard Armory</string>
+    <string name="app_name">Blizzard Games Profiles</string>
     <string name="battle_tag">Battle tag</string>
     <string name="select_region">Select Region</string>
     <string name="login">Login</string>

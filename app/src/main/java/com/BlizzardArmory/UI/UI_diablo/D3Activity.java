@@ -1,5 +1,6 @@
 package com.BlizzardArmory.UI.UI_diablo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,14 +8,17 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.UI.IOnBackPressed;
 import com.BlizzardArmory.UI.UI_overwatch.OWActivity;
 import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
 import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
@@ -34,8 +39,6 @@ import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -125,61 +128,52 @@ public class D3Activity extends AppCompatActivity {
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtagProfile()
                     + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            D3AccountInfo = response;
-                            accountInformation = gson.fromJson(D3AccountInfo.toString(), AccountInformation.class);
+                    response -> {
+                        D3AccountInfo = response;
+                        accountInformation = gson.fromJson(D3AccountInfo.toString(), AccountInformation.class);
 
-                            portraits = getCharacterImage(accountInformation.getHeroes(), getApplicationContext());
+                        sortHeroes();
 
-                            String paragon = accountInformation.getParagonLevel() +
-                                    " | " +
-                                    "<font color=#FF0000>" +
-                                    accountInformation.getParagonLevelHardcore() +
-                                    "</font>";
+                        portraits = getCharacterImage(accountInformation.getHeroes(), getApplicationContext());
 
-                            paragonLevel.setText(Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY));
-                            eliteKills.setText(String.valueOf(accountInformation.getKills().getElites()));
-                            lifetimeKills.setText(String.valueOf(accountInformation.getKills().getMonsters()));
+                        String paragon = accountInformation.getParagonLevel() +
+                                " | " +
+                                "<font color=#FF0000>" +
+                                accountInformation.getParagonLevelHardcore() +
+                                "</font>";
 
-                            setCharacterFrames();
+                        paragonLevel.setText(Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY));
+                        eliteKills.setText(String.valueOf(accountInformation.getKills().getElites()));
+                        lifetimeKills.setText(String.valueOf(accountInformation.getKills().getMonsters()));
 
-                            double barbTime = accountInformation.getTimePlayed().getBarbarian();
-                            double wizTime = accountInformation.getTimePlayed().getWizard();
-                            double wdTime = accountInformation.getTimePlayed().getWitchDoctor();
-                            double necroTime = accountInformation.getTimePlayed().getNecromancer();
-                            double crusaderTime = accountInformation.getTimePlayed().getCrusader();
-                            double monkTime = accountInformation.getTimePlayed().getMonk();
-                            double dhTime = accountInformation.getTimePlayed().getDemonHunter();
+                        setCharacterFrames();
 
-                            List<Double> timePlayed = new ArrayList<>(Arrays.asList(barbTime, wdTime, wizTime, necroTime, crusaderTime, monkTime, dhTime));
-                            List<Double> timePlayedPercent = new ArrayList<>();
+                        double barbTime = accountInformation.getTimePlayed().getBarbarian();
+                        double wizTime = accountInformation.getTimePlayed().getWizard();
+                        double wdTime = accountInformation.getTimePlayed().getWitchDoctor();
+                        double necroTime = accountInformation.getTimePlayed().getNecromancer();
+                        double crusaderTime = accountInformation.getTimePlayed().getCrusader();
+                        double monkTime = accountInformation.getTimePlayed().getMonk();
+                        double dhTime = accountInformation.getTimePlayed().getDemonHunter();
 
-                            double total = 0;
+                        List<Double> timePlayed = new ArrayList<>(Arrays.asList(barbTime, wdTime, wizTime, necroTime, crusaderTime, monkTime, dhTime));
+                        List<Double> timePlayedPercent = new ArrayList<>();
 
-                            for (int i = 0; i < timePlayed.size(); i++) {
-                                total += timePlayed.get(i);
-                            }
+                        double total = 0;
 
-                            for (int i = 0; i < timePlayed.size(); i++) {
-                                timePlayedPercent.add((100 * timePlayed.get(i) / total));
-                            }
-
-
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
+                        for (int i = 0; i < timePlayed.size(); i++) {
+                            total += timePlayed.get(i);
                         }
 
+                        for (int i = 0; i < timePlayed.size(); i++) {
+                            timePlayedPercent.add((100 * timePlayed.get(i) / total));
+                        }
+
+
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
                     },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.i("test", error.toString());
-                            //ConnectionService.showNoConnectionMessage(D3Activity.this);
-                            finish();
-                        }
-                    });
+                    error -> showNoConnectionMessage(getApplicationContext(), error.networkResponse.statusCode));
 
             requestQueue.add(jsonRequest);
 
@@ -191,28 +185,19 @@ public class D3Activity extends AppCompatActivity {
 
 
         //Button calls
-        wowButton.setOnClickListener(new View.OnClickListener() {
+        wowButton.setOnClickListener(v -> callNextActivity(WoWActivity.class));
 
-            @Override
-            public void onClick(View v) {
-                callNextActivity(WoWActivity.class);
+        sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
+
+        owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
+    }
+
+    private void sortHeroes() {
+        accountInformation.getHeroes().sort((hero1, hero2) -> {
+            if (hero1.getLastUpdated() > hero2.getLastUpdated()) {
+                return -1;
             }
-        });
-
-        sc2Button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                callNextActivity(SC2Activity.class);
-            }
-        });
-
-        owButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                callNextActivity(OWActivity.class);
-            }
+            return 0;
         });
     }
 
@@ -279,25 +264,22 @@ public class D3Activity extends AppCompatActivity {
             linearLayoutCharacter.setLayoutParams(layoutParamsCharacters);
             linearLayoutCharacters.addView(linearLayoutCharacter);
 
-            linearLayoutCharacter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for (int i = 0; i < accountInformation.getHeroes().size(); i++) {
-                        if (i == linearLayoutCharacter.getId()) {
-                            characterID = accountInformation.getHeroes().get(i).getId();
-                        }
+            linearLayoutCharacter.setOnClickListener(v -> {
+                for (int i1 = 0; i1 < accountInformation.getHeroes().size(); i1++) {
+                    if (i1 == linearLayoutCharacter.getId()) {
+                        characterID = accountInformation.getHeroes().get(i1).getId();
                     }
-                    try {
-                        if (ConnectionService.isConnected()) {
-                            displayFragment();
-                        } else {
-                            //ConnectionService.showNoConnectionMessage(getApplicationContext());
-                        }
-                    } catch (Exception e) {
-                        Log.e("Error-test", e.toString());
-                    }
-
                 }
+                try {
+                    if (ConnectionService.isConnected()) {
+                        displayFragment();
+                    } else {
+                        showNoConnectionMessage(getApplicationContext(), -1);
+                    }
+                } catch (Exception e) {
+                    Log.e("Error-test", e.toString());
+                }
+
             });
         }
     }
@@ -431,4 +413,83 @@ public class D3Activity extends AppCompatActivity {
         fragmentTransaction.addToBackStack(null).commit();
         getSupportFragmentManager().executePendingTransactions();
     }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
+
+    public void showNoConnectionMessage(final Context context, final int responseCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+
+        TextView titleText = new TextView(context);
+
+        titleText.setTextSize(20);
+        titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleText.setPadding(0, 20, 0, 20);
+        titleText.setLayoutParams(layoutParams);
+        titleText.setTextColor(Color.WHITE);
+
+        TextView messageText = new TextView(context);
+
+        messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+        messageText.setPadding(0, 0, 0, 20);
+        messageText.setLayoutParams(layoutParams);
+        messageText.setTextColor(Color.WHITE);
+
+        Button button = new Button(context);
+
+        button.setTextSize(20);
+        button.setTextColor(Color.WHITE);
+        button.setGravity(Gravity.CENTER);
+        button.setWidth(200);
+        button.setHeight(100);
+        button.setLayoutParams(layoutParams);
+        button.setBackground(context.getDrawable(R.drawable.buttonstyle));
+
+
+        try {
+            if (responseCode == 403) {
+                titleText.setText("Information Outdated");
+                messageText.setText("The information for this account is outdated. Please login in game and try again.");
+                button.setText("OK");
+            } else if (responseCode == -1) {
+                titleText.setText("No Internet Connection");
+                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                button.setText("Retry");
+            }
+        } catch (Exception e) {
+            Log.e("Connection error", e.toString());
+        }
+
+        final AlertDialog dialog = builder.show();
+        Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setLayout(800, 450);
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER);
+        linearLayout.setPadding(20, 20, 20, 20);
+
+        linearLayout.addView(titleText);
+        linearLayout.addView(messageText);
+        linearLayout.addView(button);
+
+        dialog.addContentView(linearLayout, layoutParams);
+
+        dialog.setOnCancelListener(dialog1 -> dialog1.cancel());
+
+        button.setOnClickListener(v -> {
+            if(responseCode == -1){
+                D3Activity.this.recreate();
+            }
+            dialog.cancel();
+        });
+    }
+
 }

@@ -32,10 +32,10 @@ public class CompetitiveStats {
     private float soloKillsAvg;
     @SerializedName("games")
     @Expose
-    private Games_ games;
+    private Games games;
     @SerializedName("awards")
     @Expose
-    private Awards_ awards;
+    private Awards awards;
 
     public float getEliminationsAvg() {
         return eliminationsAvg;
@@ -101,19 +101,19 @@ public class CompetitiveStats {
         this.soloKillsAvg = soloKillsAvg;
     }
 
-    public Games_ getGames() {
+    public Games getGames() {
         return games;
     }
 
-    public void setGames(Games_ games) {
+    public void setGames(Games games) {
         this.games = games;
     }
 
-    public Awards_ getAwards() {
+    public Awards getAwards() {
         return awards;
     }
 
-    public void setAwards(Awards_ awards) {
+    public void setAwards(Awards awards) {
         this.awards = awards;
     }
 

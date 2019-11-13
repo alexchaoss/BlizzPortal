@@ -111,43 +111,39 @@ public class WoWActivity extends AppCompatActivity {
                 try {
                     JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
                             URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    wowCharacters = response;
+                            response -> {
+                                wowCharacters = response;
 
-                                    Log.i("json", wowCharacters.toString());
-                                    linearLayout = findViewById(R.id.linear_wow_characters);
+                                Log.i("json", wowCharacters.toString());
+                                linearLayout = findViewById(R.id.linear_wow_characters);
 
-                                    characterList = new WowCharacters(wowCharacters);
-                                    characterNames = characterList.getCharacterNamesList();
-                                    realms = characterList.getRealmsList();
-                                    levels = characterList.getLevelList();
-                                    className = characterList.getClassList();
-                                    faction = characterList.getFactionList();
+                                characterList = new WowCharacters(wowCharacters);
+                                characterNames = characterList.getCharacterNamesList();
+                                realms = characterList.getRealmsList();
+                                levels = characterList.getLevelList();
+                                className = characterList.getClassList();
+                                faction = characterList.getFactionList();
 
-                                    linearLayoutCharacterList = new ArrayList<>();
+                                linearLayoutCharacterList = new ArrayList<>();
 
-                                    layoutParamsImage = new RelativeLayout.LayoutParams(150, 150);
-                                    layoutParamsImage.setMargins(15, 0, 0, 0);
-                                    layoutParamsImage.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-                                    layoutParamsImage.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                                layoutParamsImage = new RelativeLayout.LayoutParams(150, 150);
+                                layoutParamsImage.setMargins(15, 0, 0, 0);
+                                layoutParamsImage.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+                                layoutParamsImage.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
 
-                                    layoutParamsLogo = new RelativeLayout.LayoutParams(150, 150);
-                                    layoutParamsLogo.setMargins(15, 0, 0, 0);
-                                    layoutParamsLogo.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-                                    layoutParamsLogo.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                                layoutParamsLogo = new RelativeLayout.LayoutParams(150, 150);
+                                layoutParamsLogo.setMargins(15, 0, 0, 0);
+                                layoutParamsLogo.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                                layoutParamsLogo.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
 
-                                    layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                    layoutParamsClass.setMargins(15, 0, 0, 0);
+                                layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                layoutParamsClass.setMargins(15, 0, 0, 0);
 
-                                    for (int i = 0; i < characterList.getUrlThumbnail().size(); i++) {
+                                for (int i = 0; i < characterList.getUrlThumbnail().size(); i++) {
 
-                                        ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + characterList.getUrlThumbnail().get(i) +
-                                                URLConstants.NOT_FOUND_URL_AVATAR + characterList.getRaceList().get(i) + "-"
-                                                + characterList.getGenderList().get(i) + ".jpg", new Response.Listener<Bitmap>() {
-                                            @Override
-                                            public void onResponse(Bitmap bitmap) {
+                                    ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + characterList.getUrlThumbnail().get(i) +
+                                            URLConstants.NOT_FOUND_URL_AVATAR + characterList.getRaceList().get(i) + "-"
+                                            + characterList.getGenderList().get(i) + ".jpg", bitmap -> {
                                                 Drawable portrait = new BitmapDrawable(getResources(), bitmap);
 
                                                 final RelativeLayout relativeLayoutCharacters = new RelativeLayout(getApplicationContext());
@@ -227,48 +223,38 @@ public class WoWActivity extends AppCompatActivity {
                                                 relativeLayoutCharacters.setLayoutParams(layoutParams);
                                                 relativeLayoutCharacters.setBackground(getResources().getDrawable(R.drawable.inputstyle, getTheme()));
                                                 relativeLayoutCharacters.setClickable(true);
-                                                relativeLayoutCharacters.setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-                                                        for (int i = 0; i < characterNames.size(); i++) {
-                                                            if (i == relativeLayoutCharacters.getId()) {
-                                                                characterClicked = characterNames.get(i);
-                                                                characterRealm = realms.get(i);
-                                                                url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
-                                                            }
+                                                relativeLayoutCharacters.setOnClickListener(v -> {
+                                                    for (int i1 = 0; i1 < characterNames.size(); i1++) {
+                                                        if (i1 == relativeLayoutCharacters.getId()) {
+                                                            characterClicked = characterNames.get(i1);
+                                                            characterRealm = realms.get(i1);
+                                                            url = characterList.getUrlThumbnail().get(i1).replace("-avatar.jpg", "-main.jpg");
                                                         }
-                                                        try {
-                                                            displayFragment();
-                                                        } catch (Exception e) {
-                                                            Log.e("Error", e.toString());
-                                                        }
-
                                                     }
+                                                    try {
+                                                        displayFragment();
+                                                    } catch (Exception e) {
+                                                        Log.e("Error", e.toString());
+                                                    }
+
                                                 });
                                                 index++;
 
-                                            }
-                                        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                                new Response.ErrorListener() {
-                                                    public void onErrorResponse(VolleyError error) {
-                                                        //ConnectionService.showNoConnectionMessage(new GamesActivity());
-                                                        Log.e("Error", error.toString());
-                                                        finish();
-                                                    }
-                                                });
-                                        requestQueueImage.add(imageRequest);
-                                    }
-                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    loadingCircle.setVisibility(View.GONE);
+                                            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                            error -> {
+                                                //ConnectionService.showNoConnectionMessage(new GamesActivity());
+                                                Log.e("Error", error.toString());
+                                                finish();
+                                            });
+                                    requestQueueImage.add(imageRequest);
                                 }
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
                             },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    //ConnectionService.showNoConnectionMessage(new GamesActivity());
-                                    Log.e("Error", error.toString());
-                                    finish();
-                                }
+                            error -> {
+                                //ConnectionService.showNoConnectionMessage(new GamesActivity());
+                                Log.e("Error", error.toString());
+                                finish();
                             });
                     requestQueue.add(jsonRequest);
 
@@ -286,29 +272,11 @@ public class WoWActivity extends AppCompatActivity {
 
         //Button calls
 
-        d3Button.setOnClickListener(new View.OnClickListener() {
+        d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
 
-            @Override
-            public void onClick(View v) {
-                callNextActivity(D3Activity.class);
-            }
-        });
+        sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
-        sc2Button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                callNextActivity(SC2Activity.class);
-            }
-        });
-
-        owButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                callNextActivity(OWActivity.class);
-            }
-        });
+        owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
     }
 
     private void callNextActivity(Class activity) {

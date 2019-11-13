@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,9 +32,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.UI.IOnBackPressed;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.diablo.Character.Active;
 import com.BlizzardArmory.diablo.Character.CharacterInformation;
@@ -67,9 +70,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class D3CharacterFragment extends Fragment {
+public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
-    private static CharacterInformation characterInformation;
+    private CharacterInformation characterInformation;
     private JSONObject characterInfo;
     private Items itemsInformation;
 
@@ -77,7 +80,7 @@ public class D3CharacterFragment extends Fragment {
 
     private RelativeLayout loadingCircle;
 
-    ConstraintLayout mainLayout;
+    private ConstraintLayout mainLayout;
 
     private HashMap<String, ImageView> imageViewItem = new HashMap<>();
     private ImageView shoulders;
@@ -171,12 +174,12 @@ public class D3CharacterFragment extends Fragment {
     private TextView skill4Rune;
     private TextView skill5Rune;
     private TextView skill6Rune;
-    private ImageView skill1;
-    private ImageView skill2;
-    private ImageView skill3;
-    private ImageView skill4;
-    private ImageView skill5;
-    private ImageView skill6;
+    private ImageView skill1Icon;
+    private ImageView skill2Icon;
+    private ImageView skill3Icon;
+    private ImageView skill4Icon;
+    private ImageView skill5Icon;
+    private ImageView skill6Icon;
     private ImageView skillLayout1;
     private ImageView skillLayout2;
     private ImageView skillLayout3;
@@ -191,7 +194,7 @@ public class D3CharacterFragment extends Fragment {
     private ImageView tooltipPassive;
     private TextView passiveText;
     private View runeSeparator;
-    ScrollView skillToolTipScroll;
+    private ScrollView skillToolTipScroll;
 
 
     private RequestQueue requestQueueImage;
@@ -235,12 +238,12 @@ public class D3CharacterFragment extends Fragment {
         passive3 = view.findViewById(R.id.passive3);
         passive4 = view.findViewById(R.id.passive4);
 
-        skill1 = view.findViewById(R.id.skill1_icon);
-        skill2 = view.findViewById(R.id.skill2_icon);
-        skill3 = view.findViewById(R.id.skill3_icon);
-        skill4 = view.findViewById(R.id.skill4_icon);
-        skill5 = view.findViewById(R.id.skill5_icon);
-        skill6 = view.findViewById(R.id.skill6_icon);
+        skill1Icon = view.findViewById(R.id.skill1_icon);
+        skill2Icon = view.findViewById(R.id.skill2_icon);
+        skill3Icon = view.findViewById(R.id.skill3_icon);
+        skill4Icon = view.findViewById(R.id.skill4_icon);
+        skill5Icon = view.findViewById(R.id.skill5_icon);
+        skill6Icon = view.findViewById(R.id.skill6_icon);
         skill1Name = view.findViewById(R.id.skill1_name);
         skill2Name = view.findViewById(R.id.skill2_name);
         skill3Name = view.findViewById(R.id.skill3_name);
@@ -273,7 +276,7 @@ public class D3CharacterFragment extends Fragment {
         passiveText = view.findViewById(R.id.rune_tooltip_text);
         runeSeparator = view.findViewById(R.id.rune_separator);
 
-        Collections.addAll(skillList, skill1, skill2, skill3, skill4, skill5, skill6);
+        Collections.addAll(skillList, skill1Icon, skill2Icon, skill3Icon, skill4Icon, skill5Icon, skill6Icon);
         Collections.addAll(skillNameList, skill1Name, skill2Name, skill3Name, skill4Name, skill5Name, skill6Name);
         Collections.addAll(skillRuneList, skill1Rune, skill2Rune, skill3Rune, skill4Rune, skill5Rune, skill6Rune);
         Collections.addAll(skillLayoutList, skillLayout1, skillLayout2, skillLayout3, skillLayout4, skillLayout5, skillLayout6);
@@ -361,9 +364,19 @@ public class D3CharacterFragment extends Fragment {
 
         chatgemInactive.setOnTouchListener((v, event) -> {
             if (chatgemActive.getVisibility() == View.VISIBLE) {
+                Toast.makeText(getContext(), "Gem Deactivated", Toast.LENGTH_SHORT).show();
                 chatgemActive.setVisibility(View.GONE);
             } else {
                 chatgemActive.setVisibility(View.VISIBLE);
+                double moo = Math.random();
+                double perfect = Math.random();
+                if(perfect >= 0.98){
+                    Toast.makeText(getContext(), "Perfect Gem Activated", Toast.LENGTH_SHORT).show();
+                }else if(moo >= 0.95){
+                    Toast.makeText(getContext(), "Mooooooooo!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getContext(), "Gem Activated", Toast.LENGTH_SHORT).show();
+                }
             }
             return false;
         });
@@ -466,7 +479,7 @@ public class D3CharacterFragment extends Fragment {
         Log.i("time", String.valueOf(duration));
     }
 
-    private void closeViewsWithButton() {
+    private void closeViewsWithoutButton() {
         itemScrollView.setVisibility(View.GONE);
         skillToolTipScroll.setVisibility(View.GONE);
 
@@ -521,8 +534,9 @@ public class D3CharacterFragment extends Fragment {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setOnTouchSkillTooltip(String tempKey, String runeText, Drawable icon) {
-        skillList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setOnTouchListener((v, event) ->{
+        skillLayoutList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setOnTouchListener((v, event) ->{
             tooltipPassive.setVisibility(View.VISIBLE);
             try {
                 ((ViewGroup) closeButton.getParent()).removeView(closeButton);
@@ -610,6 +624,7 @@ public class D3CharacterFragment extends Fragment {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setOnTouchPassiveTooltip(String tempKey, Drawable icon) {
         passiveList.get(Objects.requireNonNull(passiveIcons.get(tempKey)).first).setOnTouchListener((v, event) ->{
             runeSeparator.setVisibility(View.VISIBLE);
@@ -668,14 +683,14 @@ public class D3CharacterFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     private void setCubeText() {
 
-        final String [] armorArray = {"shoulder", "spirit", "voodoo", "wizard", "gloves", "helm", "chest", "cloak", "belt", "mighty", "pants", "boots", "bracers"};
+        final String [] armorArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers"};
         final String [] ringArray = {"ring", "amulet"};
-        final String [] swordArray = {"shoulder", "spirit", "voodoo", "wizard", "gloves", "helm", "chest", "cloak", "belt", "mighty", "pants", "boots", "bracers", "ring", "amulet"};
+        final String [] swordArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers", "ring", "amulet"};
 
         cubeSword.setOnTouchListener((v, event) -> {
             String sword = "";
             for(int i = 0; i < singleItem.size(); i++){
-                if(Arrays.stream(swordArray).parallel().noneMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)){
+                if(Arrays.stream(swordArray).parallel().noneMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)){
                     for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
                         if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
                             sword = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
@@ -693,7 +708,7 @@ public class D3CharacterFragment extends Fragment {
         cubeArmor.setOnTouchListener((v, event) -> {
             String armor = "";
             for(int i = 0; i < singleItem.size(); i++){
-                if(Arrays.stream(armorArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)){
+                if(Arrays.stream(armorArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)){
                     for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
                         if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
                             armor = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
@@ -711,7 +726,7 @@ public class D3CharacterFragment extends Fragment {
         cubeRing.setOnTouchListener((v, event) -> {
             String ring = "";
             for(int i = 0; i < singleItem.size(); i++){
-                if(Arrays.stream(ringArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)){
+                if(Arrays.stream(ringArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)){
                     for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
                         if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
                             ring = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
@@ -739,7 +754,7 @@ public class D3CharacterFragment extends Fragment {
                         gear_layout.setVisibility(View.GONE);
                         skills_layout.setVisibility(View.GONE);
                         cube_layout.setVisibility(View.GONE);
-                        closeViewsWithButton();
+                        closeViewsWithoutButton();
                         chatgemInactive.setVisibility(View.VISIBLE);
                         chatgemStatue.setVisibility(View.VISIBLE);
 
@@ -751,7 +766,7 @@ public class D3CharacterFragment extends Fragment {
                         gear_layout.setVisibility(View.VISIBLE);
                         cube_layout.setVisibility(View.GONE);
                         skills_layout.setVisibility(View.GONE);
-                        closeViewsWithButton();
+                        closeViewsWithoutButton();
                         chatgemActive.setVisibility(View.GONE);
                         chatgemInactive.setVisibility(View.GONE);
                         chatgemStatue.setVisibility(View.GONE);
@@ -764,7 +779,7 @@ public class D3CharacterFragment extends Fragment {
                         gear_layout.setVisibility(View.GONE);
                         cube_layout.setVisibility(View.GONE);
                         skills_layout.setVisibility(View.VISIBLE);
-                        closeViewsWithButton();
+                        closeViewsWithoutButton();
                         chatgemInactive.setVisibility(View.VISIBLE);
                         chatgemStatue.setVisibility(View.VISIBLE);
                         break;
@@ -774,7 +789,7 @@ public class D3CharacterFragment extends Fragment {
                         gear_layout.setVisibility(View.GONE);
                         cube_layout.setVisibility(View.VISIBLE);
                         skills_layout.setVisibility(View.GONE);
-                        closeViewsWithButton();
+                        closeViewsWithoutButton();
                         chatgemInactive.setVisibility(View.VISIBLE);
                         chatgemStatue.setVisibility(View.VISIBLE);
                         break;
@@ -880,7 +895,15 @@ public class D3CharacterFragment extends Fragment {
 
                 itemName.setBackground(getHeaderBackground(index));
 
-                selectColor(items.get(index).getDisplayColor(), iconTooltip);
+                Drawable background = selectBackgroundColor(items.get(index).getDisplayColor());
+                GradientDrawable backgroundStrokeTooltipIcon = new GradientDrawable();
+                backgroundStrokeTooltipIcon.setStroke(3, Color.parseColor(selectColor(items.get(index).getDisplayColor())));
+                backgroundStrokeTooltipIcon.setCornerRadius(5);
+                Drawable[] layers = new Drawable[2];
+                layers[0] = background;
+                layers[1] = backgroundStrokeTooltipIcon;
+                LayerDrawable layerList = new LayerDrawable(layers);
+                iconTooltip.setBackground(layerList);
                 iconTooltip.setImageDrawable(imageView.getDrawable());
 
                 RelativeLayout.LayoutParams jewelleryParams = new RelativeLayout.LayoutParams((int) (60 * Resources.getSystem().getDisplayMetrics().density),
@@ -1145,13 +1168,13 @@ public class D3CharacterFragment extends Fragment {
 
     private void getCubeIcons() {
         HashMap<String, String> cubeURL = new HashMap<>();
-        String [] armor = {"shoulder","gloves","helm","chest","waist","legs","boots","bracers"};
-        String [] ring = {"ring", "amulet"};
+        final String [] armorArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers"};
+        final String [] ringArray = {"ring", "amulet"};
         try {
             for (int i = 0; i < characterInformation.getLegendaryPowers().size(); i++) {
-                if (Arrays.stream(armor).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)) {
+                if (Arrays.stream(armorArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)) {
                     cubeURL.put("armor", URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getLegendaryPowers().get(i).getIcon() + ".png"));
-                } else if (Arrays.stream(ring).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)) {
+                } else if (Arrays.stream(ringArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)) {
                     cubeURL.put("ring", URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getLegendaryPowers().get(i).getIcon() + ".png"));
                 } else {
                     cubeURL.put("sword", URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getLegendaryPowers().get(i).getIcon() + ".png"));
@@ -1210,38 +1233,36 @@ public class D3CharacterFragment extends Fragment {
     private void setItemBackgroundColor() {
         for (int i = 0; i < imageViewItem.size(); i++) {
             try {
-                selectColor(items.get(i).getDisplayColor(), imageViewItem.get(items.get(i).getSlots()));
+                Drawable background = selectBackgroundColor(items.get(i).getDisplayColor());
+                GradientDrawable backgroundStroke = new GradientDrawable();
+                backgroundStroke.setStroke(3, Color.parseColor(selectColor(items.get(i).getDisplayColor())));
+                backgroundStroke.setCornerRadius(5);
+                Drawable[] layers = new Drawable[2];
+                layers[0] = background;
+                layers[1] = backgroundStroke;
+                LayerDrawable layerList = new LayerDrawable(layers);
+                imageViewItem.get(items.get(i).getSlots()).setBackground(layerList);
             } catch (Exception e) {
                 Log.e("Item", "empty");
             }
         }
-
-        for (String key : imageViewItem.keySet()) {
-            if (imageViewItem.get(key) == null) {
-                selectColor("", imageViewItem.get(key));
-            }
-        }
     }
 
-    private void selectColor(String color, ImageView imageView) {
+    private Drawable selectBackgroundColor(String color) {
         switch (color) {
             case "blue":
-                imageView.setBackgroundResource(R.drawable.blue_bg_item_d3);
-                break;
+                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.blue_bg_item_d3);
             case "yellow":
-                imageView.setBackgroundResource(R.drawable.yellow_bg_item_d3);
-                break;
+                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.yellow_bg_item_d3);
             case "orange":
-                imageView.setBackgroundResource(R.drawable.orange_bg_item_d3);
-                break;
+                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.orange_bg_item_d3);
             case "green":
-                imageView.setBackgroundResource(R.drawable.green_bg_item_d3);
-                break;
+                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.green_bg_item_d3);
             case "white":
-                imageView.setBackgroundResource(R.drawable.brown_bg_item_d3);
-                break;
+                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.brown_bg_item_d3);
             default:
         }
+        return Objects.requireNonNull(getContext()).getDrawable(R.drawable.brown_bg_item_d3);
     }
 
     private String selectColor(String color) {
@@ -1296,6 +1317,16 @@ public class D3CharacterFragment extends Fragment {
                 Log.e("Error", e.toString());
                 itemIconURL.put("empty", null);
             }
+        }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (itemScrollView.getVisibility() == View.VISIBLE || skillToolTipScroll.getVisibility() == View.VISIBLE) {
+            closeViewsWithoutButton();
+            return true;
+        } else {
+            return false;
         }
     }
 }

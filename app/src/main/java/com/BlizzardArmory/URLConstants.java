@@ -21,12 +21,7 @@ public class URLConstants {
 
     //URLs for WoW images
     public final static String WOW_CHARACTER_THUMNAIL_URL = "http://render-zone.worldofwarcraft.com/character/";
-    public final static String WOW_ICONS_URL = "https://render-us.worldofwarcraft.com/icons/";
     public final static String NOT_FOUND_URL_AVATAR = "?alt=/wow/static/images/2d/avatar/";
-
-    //URLs for D3 images
-    public final static String D3_ICONS_ITEMS_URL = "http://media.blizzard.com/d3/icons/items/large/";
-    public final static String D3_ICONS_SKILLS_URL = "http://media.blizzard.com/d3/icons/skills/64/";
 
     //URLS for D3 characters and queries
     public final static String D3_PROFILE = "/d3/profile/btag/?locale=en_US&";
@@ -42,8 +37,6 @@ public class URLConstants {
     public final static String WOW_STATS_QUERY = "/profile/wow/character/realm/characterName/statistics?namespace=profile-zone&locale=en_US&access_token=TOKEN";
     public final static String WOW_TALENT_QUERY = "/profile/wow/character/realm/characterName/specializations?namespace=profile-zone&locale=en_US&access_token=TOKEN";
     public final static String WOW_CHARACTER_QUERY = "/profile/wow/character/realm/characterName?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String BONUSID_QUERY = "/data/wow/item/id?b1=bonusList&locale=en_US&";
-    public final static String SPELL_ID_QUERY = "/wow/spell/";
 
     public static String getD3URLBtagProfile() {
         return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
