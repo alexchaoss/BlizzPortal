@@ -4,7 +4,7 @@ import com.BlizzardArmory.UI.MainActivity;
 
 public class URLConstants {
     //Callback URL
-    public final static String CALLBACK_URL = "https://localhost";
+    public final static String CALLBACK_URL = "https://alexchaoss.github.io/BnetAuthorize";
 
     //Account information
     public final static String BASE_URL_USER_INFO = "https://zone.battle.net";
