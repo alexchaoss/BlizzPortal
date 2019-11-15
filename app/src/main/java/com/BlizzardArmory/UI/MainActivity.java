@@ -2,15 +2,11 @@ package com.BlizzardArmory.UI;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,16 +20,30 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ConnectionService;
+import com.BlizzardArmory.connection.Server;
 import com.BlizzardArmory.connection.Servers;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     public static String selectedRegion = "";
-    private ArrayList<String> servers = new ArrayList<>();
-    BnOAuth2Params bnOAuth2Params;
+    private BnOAuth2Params bnOAuth2Params;
+    private String clientID = "";
+    private String clientSecret = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +66,25 @@ public class MainActivity extends AppCompatActivity {
         Button login = findViewById(R.id.buttonLogin);
         Button clearCredentials = findViewById(R.id.clear_credentials);
         String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
-        getRandomServer();
         clearCacheOlderThan30Days();
+
+
+
+        DatabaseReference serverDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference serverRef = serverDatabase.child("servers");
+
+        serverRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                clientID = dataSnapshot.child("clientID").getValue(String.class);
+                clientSecret = dataSnapshot.child("clientSecret").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("SERVER DATA", databaseError.getMessage());
+            }
+        });
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -92,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) view).setTextColor(Color.WHITE);
                 ((TextView) view).setTextSize(20);
                 ((TextView) view).setGravity(Gravity.CENTER);
-                bnOAuth2Params = new BnOAuth2Params(Servers.SERVER1.getClientKey(), Servers.SERVER1.getSecretKey(), selectedRegion.toLowerCase(),
+                bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
                         URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
             }
 
@@ -167,15 +195,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         intent.putExtra(BnConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity.class);
         startActivity(intent);
-    }
-
-    //For future usage
-    private void getRandomServer() {
-        Random random = new Random();
-        int serverNumber = random.nextInt(4);
-        Servers getServers = Servers.fromOrdinal(serverNumber);
-        servers.add(getServers.getClientKey());
-        servers.add(getServers.getSecretKey());
     }
 
     private void clearCredentials(final BnOAuth2Params bnOAuth2Params) {
