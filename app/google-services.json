@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "331942866904",
+    "firebase_url": "https://blizzard-games-profiles.firebaseio.com",
+    "project_id": "blizzard-games-profiles",
+    "storage_bucket": "blizzard-games-profiles.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331942866904:android:8aff4a3f4d74d220904cad",
+        "android_client_info": {
+          "package_name": "com.BlizzardArmory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331942866904-8anu1ig0iv03uv4s3923oqvjlijmfphh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.BlizzardArmory",
+            "certificate_hash": "f49a526a4b71c0194479b9efc476505369600747"
+          }
+        },
+        {
+          "client_id": "331942866904-pgvs6l5nb96rlq1oighdemlpo1rtvpu2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJYErc9EwpeJmIild2LZ7yrkGy91VIFuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331942866904-pgvs6l5nb96rlq1oighdemlpo1rtvpu2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
