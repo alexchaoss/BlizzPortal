@@ -11,13 +11,13 @@ public class Junkrat {
     private Object assists;
     @SerializedName("average")
     @Expose
-    private Average_ average;
+    private Average average;
     @SerializedName("best")
     @Expose
-    private Best_ best;
+    private Best best;
     @SerializedName("combat")
     @Expose
-    private Combat_ combat;
+    private Combat combat;
     @SerializedName("deaths")
     @Expose
     private Object deaths;
@@ -26,10 +26,10 @@ public class Junkrat {
     private HeroSpecific heroSpecific;
     @SerializedName("game")
     @Expose
-    private Game_ game;
+    private Game game;
     @SerializedName("matchAwards")
     @Expose
-    private MatchAwards_ matchAwards;
+    private MatchAwards matchAwards;
     @SerializedName("miscellaneous")
     @Expose
     private Object miscellaneous;
@@ -42,27 +42,27 @@ public class Junkrat {
         this.assists = assists;
     }
 
-    public Average_ getAverage() {
+    public Average getAverage() {
         return average;
     }
 
-    public void setAverage(Average_ average) {
+    public void setAverage(Average average) {
         this.average = average;
     }
 
-    public Best_ getBest() {
+    public Best getBest() {
         return best;
     }
 
-    public void setBest(Best_ best) {
+    public void setBest(Best best) {
         this.best = best;
     }
 
-    public Combat_ getCombat() {
+    public Combat getCombat() {
         return combat;
     }
 
-    public void setCombat(Combat_ combat) {
+    public void setCombat(Combat combat) {
         this.combat = combat;
     }
 
@@ -82,19 +82,19 @@ public class Junkrat {
         this.heroSpecific = heroSpecific;
     }
 
-    public Game_ getGame() {
+    public Game getGame() {
         return game;
     }
 
-    public void setGame(Game_ game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 
-    public MatchAwards_ getMatchAwards() {
+    public MatchAwards getMatchAwards() {
         return matchAwards;
     }
 
-    public void setMatchAwards(MatchAwards_ matchAwards) {
+    public void setMatchAwards(MatchAwards matchAwards) {
         this.matchAwards = matchAwards;
     }
 

@@ -8,61 +8,61 @@ public class Lucio {
 
     @SerializedName("assists")
     @Expose
-    private Assists_ assists;
+    private Assists assists;
     @SerializedName("average")
     @Expose
-    private Average__ average;
+    private Average average;
     @SerializedName("best")
     @Expose
-    private Best__ best;
+    private Best best;
     @SerializedName("combat")
     @Expose
-    private Combat__ combat;
+    private Combat combat;
     @SerializedName("deaths")
     @Expose
     private Object deaths;
     @SerializedName("heroSpecific")
     @Expose
-    private HeroSpecific_ heroSpecific;
+    private HeroSpecific heroSpecific;
     @SerializedName("game")
     @Expose
-    private Game__ game;
+    private Game game;
     @SerializedName("matchAwards")
     @Expose
-    private MatchAwards__ matchAwards;
+    private MatchAwards matchAwards;
     @SerializedName("miscellaneous")
     @Expose
     private Object miscellaneous;
 
-    public Assists_ getAssists() {
+    public Assists getAssists() {
         return assists;
     }
 
-    public void setAssists(Assists_ assists) {
+    public void setAssists(Assists assists) {
         this.assists = assists;
     }
 
-    public Average__ getAverage() {
+    public Average getAverage() {
         return average;
     }
 
-    public void setAverage(Average__ average) {
+    public void setAverage(Average average) {
         this.average = average;
     }
 
-    public Best__ getBest() {
+    public Best getBest() {
         return best;
     }
 
-    public void setBest(Best__ best) {
+    public void setBest(Best best) {
         this.best = best;
     }
 
-    public Combat__ getCombat() {
+    public Combat getCombat() {
         return combat;
     }
 
-    public void setCombat(Combat__ combat) {
+    public void setCombat(Combat combat) {
         this.combat = combat;
     }
 
@@ -74,27 +74,27 @@ public class Lucio {
         this.deaths = deaths;
     }
 
-    public HeroSpecific_ getHeroSpecific() {
+    public HeroSpecific getHeroSpecific() {
         return heroSpecific;
     }
 
-    public void setHeroSpecific(HeroSpecific_ heroSpecific) {
+    public void setHeroSpecific(HeroSpecific heroSpecific) {
         this.heroSpecific = heroSpecific;
     }
 
-    public Game__ getGame() {
+    public Game getGame() {
         return game;
     }
 
-    public void setGame(Game__ game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 
-    public MatchAwards__ getMatchAwards() {
+    public MatchAwards getMatchAwards() {
         return matchAwards;
     }
 
-    public void setMatchAwards(MatchAwards__ matchAwards) {
+    public void setMatchAwards(MatchAwards matchAwards) {
         this.matchAwards = matchAwards;
     }
 
