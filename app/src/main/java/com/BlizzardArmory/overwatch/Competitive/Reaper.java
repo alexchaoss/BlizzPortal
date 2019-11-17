@@ -11,13 +11,13 @@ public class Reaper {
     private Object assists;
     @SerializedName("average")
     @Expose
-    private Average_____ average;
+    private Average average;
     @SerializedName("best")
     @Expose
-    private Best_____ best;
+    private Best best;
     @SerializedName("combat")
     @Expose
-    private Combat_____ combat;
+    private Combat combat;
     @SerializedName("deaths")
     @Expose
     private Object deaths;
@@ -26,10 +26,10 @@ public class Reaper {
     private Object heroSpecific;
     @SerializedName("game")
     @Expose
-    private Game_____ game;
+    private Game game;
     @SerializedName("matchAwards")
     @Expose
-    private MatchAwards_____ matchAwards;
+    private MatchAwards matchAwards;
     @SerializedName("miscellaneous")
     @Expose
     private Object miscellaneous;
@@ -42,27 +42,27 @@ public class Reaper {
         this.assists = assists;
     }
 
-    public Average_____ getAverage() {
+    public Average getAverage() {
         return average;
     }
 
-    public void setAverage(Average_____ average) {
+    public void setAverage(Average average) {
         this.average = average;
     }
 
-    public Best_____ getBest() {
+    public Best getBest() {
         return best;
     }
 
-    public void setBest(Best_____ best) {
+    public void setBest(Best best) {
         this.best = best;
     }
 
-    public Combat_____ getCombat() {
+    public Combat getCombat() {
         return combat;
     }
 
-    public void setCombat(Combat_____ combat) {
+    public void setCombat(Combat combat) {
         this.combat = combat;
     }
 
@@ -82,19 +82,19 @@ public class Reaper {
         this.heroSpecific = heroSpecific;
     }
 
-    public Game_____ getGame() {
+    public Game getGame() {
         return game;
     }
 
-    public void setGame(Game_____ game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 
-    public MatchAwards_____ getMatchAwards() {
+    public MatchAwards getMatchAwards() {
         return matchAwards;
     }
 
-    public void setMatchAwards(MatchAwards_____ matchAwards) {
+    public void setMatchAwards(MatchAwards matchAwards) {
         this.matchAwards = matchAwards;
     }
 

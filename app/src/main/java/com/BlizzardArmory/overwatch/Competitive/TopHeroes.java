@@ -8,68 +8,68 @@ public class TopHeroes {
 
     @SerializedName("junkrat")
     @Expose
-    private Junkrat_ junkrat;
+    private Junkrat junkrat;
     @SerializedName("lucio")
     @Expose
-    private Lucio_ lucio;
+    private Lucio lucio;
     @SerializedName("mei")
     @Expose
-    private Mei_ mei;
+    private Mei mei;
     @SerializedName("pharah")
     @Expose
-    private Pharah_ pharah;
+    private Pharah pharah;
     @SerializedName("reaper")
     @Expose
-    private Reaper_ reaper;
+    private Reaper reaper;
     @SerializedName("tracer")
     @Expose
-    private Tracer_ tracer;
+    private Tracer tracer;
 
-    public Junkrat_ getJunkrat() {
+    public Junkrat getJunkrat() {
         return junkrat;
     }
 
-    public void setJunkrat(Junkrat_ junkrat) {
+    public void setJunkrat(Junkrat junkrat) {
         this.junkrat = junkrat;
     }
 
-    public Lucio_ getLucio() {
+    public Lucio getLucio() {
         return lucio;
     }
 
-    public void setLucio(Lucio_ lucio) {
+    public void setLucio(Lucio lucio) {
         this.lucio = lucio;
     }
 
-    public Mei_ getMei() {
+    public Mei getMei() {
         return mei;
     }
 
-    public void setMei(Mei_ mei) {
+    public void setMei(Mei mei) {
         this.mei = mei;
     }
 
-    public Pharah_ getPharah() {
+    public Pharah getPharah() {
         return pharah;
     }
 
-    public void setPharah(Pharah_ pharah) {
+    public void setPharah(Pharah pharah) {
         this.pharah = pharah;
     }
 
-    public Reaper_ getReaper() {
+    public Reaper getReaper() {
         return reaper;
     }
 
-    public void setReaper(Reaper_ reaper) {
+    public void setReaper(Reaper reaper) {
         this.reaper = reaper;
     }
 
-    public Tracer_ getTracer() {
+    public Tracer getTracer() {
         return tracer;
     }
 
-    public void setTracer(Tracer_ tracer) {
+    public void setTracer(Tracer tracer) {
         this.tracer = tracer;
     }
 

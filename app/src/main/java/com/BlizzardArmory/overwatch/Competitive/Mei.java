@@ -11,28 +11,28 @@ public class Mei {
     private Object assists;
     @SerializedName("average")
     @Expose
-    private Average___ average;
+    private Average average;
     @SerializedName("best")
     @Expose
-    private Best___ best;
+    private Best best;
     @SerializedName("combat")
     @Expose
-    private Combat___ combat;
+    private Combat combat;
     @SerializedName("deaths")
     @Expose
     private Object deaths;
     @SerializedName("heroSpecific")
     @Expose
-    private HeroSpecific__ heroSpecific;
+    private HeroSpecific heroSpecific;
     @SerializedName("game")
     @Expose
-    private Game___ game;
+    private Game game;
     @SerializedName("matchAwards")
     @Expose
-    private MatchAwards___ matchAwards;
+    private MatchAwards matchAwards;
     @SerializedName("miscellaneous")
     @Expose
-    private Miscellaneous_ miscellaneous;
+    private Miscellaneous miscellaneous;
 
     public Object getAssists() {
         return assists;
@@ -42,27 +42,27 @@ public class Mei {
         this.assists = assists;
     }
 
-    public Average___ getAverage() {
+    public Average getAverage() {
         return average;
     }
 
-    public void setAverage(Average___ average) {
+    public void setAverage(Average average) {
         this.average = average;
     }
 
-    public Best___ getBest() {
+    public Best getBest() {
         return best;
     }
 
-    public void setBest(Best___ best) {
+    public void setBest(Best best) {
         this.best = best;
     }
 
-    public Combat___ getCombat() {
+    public Combat getCombat() {
         return combat;
     }
 
-    public void setCombat(Combat___ combat) {
+    public void setCombat(Combat combat) {
         this.combat = combat;
     }
 
@@ -74,35 +74,35 @@ public class Mei {
         this.deaths = deaths;
     }
 
-    public HeroSpecific__ getHeroSpecific() {
+    public HeroSpecific getHeroSpecific() {
         return heroSpecific;
     }
 
-    public void setHeroSpecific(HeroSpecific__ heroSpecific) {
+    public void setHeroSpecific(HeroSpecific heroSpecific) {
         this.heroSpecific = heroSpecific;
     }
 
-    public Game___ getGame() {
+    public Game getGame() {
         return game;
     }
 
-    public void setGame(Game___ game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 
-    public MatchAwards___ getMatchAwards() {
+    public MatchAwards getMatchAwards() {
         return matchAwards;
     }
 
-    public void setMatchAwards(MatchAwards___ matchAwards) {
+    public void setMatchAwards(MatchAwards matchAwards) {
         this.matchAwards = matchAwards;
     }
 
-    public Miscellaneous_ getMiscellaneous() {
+    public Miscellaneous getMiscellaneous() {
         return miscellaneous;
     }
 
-    public void setMiscellaneous(Miscellaneous_ miscellaneous) {
+    public void setMiscellaneous(Miscellaneous miscellaneous) {
         this.miscellaneous = miscellaneous;
     }
 
