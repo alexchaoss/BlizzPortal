@@ -8,13 +8,13 @@ public class TopHeroes {
 
     @SerializedName("topHeroes")
     @Expose
-    private TopHeroes_ topHeroes;
+    private TopHeroes topHeroes;
 
-    public TopHeroes_ getTopHeroes() {
+    public TopHeroes getTopHeroes() {
         return topHeroes;
     }
 
-    public void setTopHeroes(TopHeroes_ topHeroes) {
+    public void setTopHeroes(TopHeroes topHeroes) {
         this.topHeroes = topHeroes;
     }
 
