@@ -60,24 +60,6 @@ public class MainActivity extends AppCompatActivity {
         String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
         clearCacheOlderThan30Days();
 
-
-
-        DatabaseReference serverDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference serverRef = serverDatabase.child("servers");
-
-        serverRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                clientID = dataSnapshot.child("clientID").getValue(String.class);
-                clientSecret = dataSnapshot.child("clientSecret").getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("SERVER DATA", databaseError.getMessage());
-            }
-        });
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
@@ -112,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) view).setTextColor(Color.WHITE);
                 ((TextView) view).setTextSize(20);
                 ((TextView) view).setGravity(Gravity.CENTER);
-                bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
-                        URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
             }
 
             @Override
@@ -129,13 +109,32 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 try {
                     if (ConnectionService.isConnected()) {
-                        CreateToken(bnOAuth2Params);
-                        setContentView(R.layout.activity_games);
+                                DatabaseReference serverDatabase = FirebaseDatabase.getInstance().getReference();
+                                DatabaseReference serverRef = serverDatabase.child("servers");
+
+                                serverRef.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        clientID = dataSnapshot.child("clientID").getValue(String.class);
+                                        clientSecret = dataSnapshot.child("clientSecret").getValue(String.class);
+
+                                        bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
+                                                URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
+
+                                        CreateToken(bnOAuth2Params);
+                                        setContentView(R.layout.activity_games);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Log.e("SERVER DATA", databaseError.getMessage());
+                                    }
+                                });
                     } else {
-                        showNoConnectionMessage(MainActivity.this);
+                        showNoConnectionMessage(MainActivity.this, 0);
                     }
                 } catch (Exception e) {
-                    showNoConnectionMessage(MainActivity.this);
+                    showNoConnectionMessage(MainActivity.this, 0);
                 }
             }
 
@@ -198,9 +197,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void showNoConnectionMessage(final Context context) {
+    public void showNoConnectionMessage(final Context context, int responseCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0,20,0,0);
 
         TextView titleText = new TextView(context);
         titleText.setText("No Internet Connection");
@@ -213,34 +213,38 @@ public class MainActivity extends AppCompatActivity {
         TextView messageText = new TextView(context);
         messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
         messageText.setGravity(Gravity.CENTER_HORIZONTAL);
-        messageText.setPadding(0, 0, 0, 20);
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
 
         Button button = new Button(context);
-        button.setText("OK");
-        button.setTextSize(20);
+        if(responseCode == -10){
+            button.setText("RETRY");
+        }else{
+            button.setText("OK");
+        }
+        button.setTextSize(18);
         button.setTextColor(Color.WHITE);
         button.setGravity(Gravity.CENTER);
         button.setWidth(200);
-        button.setHeight(100);
         button.setLayoutParams(layoutParams);
         button.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.getWindow().setLayout(800, 450);
+        dialog.getWindow().setLayout(800, 500);
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
-        linearLayout.setPadding(20, 20, 20, 20);
 
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
         linearLayout.addView(button);
 
-        dialog.addContentView(linearLayout, layoutParams);
+        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(20,20,20,20);
+
+        dialog.addContentView(linearLayout, layoutParamsWindow);
 
         dialog.setOnCancelListener(dialog1 -> dialog1.cancel());
 

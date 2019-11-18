@@ -209,16 +209,13 @@ public class WoWCharacterFragment extends Fragment {
         ninetyTalent = view.findViewById(R.id.ninetyTalent);
         hundredTalent = view.findViewById(R.id.hundredTalent);
 
-        closeButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    v.performClick();
-                    Log.i("CLOSE", "CLICKED");
-                    itemScrollView.setVisibility(View.GONE);
-                }
-                return false;
+        closeButton.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                v.performClick();
+                Log.i("CLOSE", "CLICKED");
+                itemScrollView.setVisibility(View.GONE);
             }
+            return false;
         });
 
         Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -355,8 +352,9 @@ public class WoWCharacterFragment extends Fragment {
     }
 
     private void callErrorAlertDialog(int responseCode) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.DialogTransparent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0,20,0,0);
 
         TextView titleText = new TextView(getContext());
 
@@ -369,43 +367,58 @@ public class WoWCharacterFragment extends Fragment {
         TextView messageText = new TextView(getContext());
 
         messageText.setGravity(Gravity.CENTER_HORIZONTAL);
-        messageText.setPadding(0, 0, 0, 20);
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
+
+        Button button = new Button(getContext());
+
         if (responseCode == 404) {
             titleText.setText("Information Outdated");
             messageText.setText("Please login in game to update this character's information.");
+            button.setText("OK");
         } else {
             titleText.setText("No Internet Connection");
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+            button.setText("RETRY");
         }
 
-        Button button = new Button(getContext());
-        button.setText("OK");
-        button.setTextSize(20);
+        button.setTextSize(18);
         button.setTextColor(Color.WHITE);
         button.setGravity(Gravity.CENTER);
         button.setWidth(200);
-        button.setHeight(100);
         button.setLayoutParams(layoutParams);
         button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
 
         final AlertDialog dialog = builder.show();
-        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.getWindow().setLayout(800, 450);
+        Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setLayout(800, 500);
 
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
-        linearLayout.setPadding(20, 20, 20, 20);
 
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
         linearLayout.addView(button);
 
-        dialog.addContentView(linearLayout, layoutParams);
+        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(20,20,20,20);
 
-        dialog.setOnCancelListener(dialog1 -> getFragmentManager().beginTransaction().remove(WoWCharacterFragment.this).commit());
+        dialog.addContentView(linearLayout, layoutParamsWindow);
+
+        dialog.setOnCancelListener(dialog1 -> {
+            if(responseCode != 404){
+                WoWCharacterFragment fragment = (WoWCharacterFragment)
+                        getFragmentManager().findFragmentById(R.id.fragment);
+
+                getFragmentManager().beginTransaction()
+                        .detach(fragment)
+                        .attach(fragment)
+                        .commit();
+            }else {
+                Objects.requireNonNull(getFragmentManager()).beginTransaction().remove(WoWCharacterFragment.this).commit();
+            }
+        });
 
         button.setOnClickListener(v -> dialog.cancel());
     }
@@ -692,47 +705,43 @@ public class WoWCharacterFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setOnPressItemInformation(final ImageView imageView, final int index) {
-        imageView.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                closeButton.requestFocus();
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    nameView.setText(nameList.get(equipment.getEquippedItems().get(index).getSlot().getType()));
-                    nameView.setTextColor(getItemColor(equipment.getEquippedItems().get(index)));
-                    nameView.setTextSize(20);
-                    if (Build.VERSION.SDK_INT >= 24) {
-                        statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
-                            @Override
-                            public Drawable getDrawable(String source) {
-                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
-                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                                return drawable;
-                            }
-                        }, null));
-                    } else {
-                        statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), new Html.ImageGetter() {
-                            @Override
-                            public Drawable getDrawable(String source) {
-                                int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                                Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
-                                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                                return drawable;
-                            }
-                        }, null));
-                    }
-                    statsView.setTextColor(Color.WHITE);
-                    statsView.setTextSize(13);
-                    itemScrollView.setPadding(10, 10, 10, 10);
-                    itemScrollView.setBackground(imageView.getBackground());
-                    itemScrollView.setVisibility(View.VISIBLE);
-                    itemScrollView.setVerticalScrollBarEnabled(true);
-                } else if (itemScrollView.getVisibility() == View.VISIBLE && event.getAction() == MotionEvent.ACTION_DOWN) {
-                    itemScrollView.setVisibility(View.GONE);
+        imageView.setOnTouchListener((v, event) -> {
+            closeButton.requestFocus();
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                nameView.setText(nameList.get(equipment.getEquippedItems().get(index).getSlot().getType()));
+                nameView.setTextColor(getItemColor(equipment.getEquippedItems().get(index)));
+                nameView.setTextSize(20);
+                if (Build.VERSION.SDK_INT >= 24) {
+                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
+                        @Override
+                        public Drawable getDrawable(String source) {
+                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                            return drawable;
+                        }
+                    }, null));
+                } else {
+                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), new Html.ImageGetter() {
+                        @Override
+                        public Drawable getDrawable(String source) {
+                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                            return drawable;
+                        }
+                    }, null));
                 }
-                return true;
+                statsView.setTextColor(Color.WHITE);
+                statsView.setTextSize(13);
+                itemScrollView.setPadding(10, 10, 10, 10);
+                itemScrollView.setBackground(imageView.getBackground());
+                itemScrollView.setVisibility(View.VISIBLE);
+                itemScrollView.setVerticalScrollBarEnabled(true);
+            } else if (itemScrollView.getVisibility() == View.VISIBLE && event.getAction() == MotionEvent.ACTION_DOWN) {
+                itemScrollView.setVisibility(View.GONE);
             }
+            return true;
         });
 
         scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {

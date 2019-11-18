@@ -8,13 +8,13 @@ public class CareerStats {
 
     @SerializedName("careerStats")
     @Expose
-    private CareerStats_ careerStats;
+    private CareerStats careerStats;
 
-    public CareerStats_ getCareerStats() {
+    public CareerStats getCareerStats() {
         return careerStats;
     }
 
-    public void setCareerStats(CareerStats_ careerStats) {
+    public void setCareerStats(CareerStats careerStats) {
         this.careerStats = careerStats;
     }
 
