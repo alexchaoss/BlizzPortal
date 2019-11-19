@@ -50,6 +50,8 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.w3c.dom.Text;
+
 import java.util.Objects;
 
 public class SC2Activity extends AppCompatActivity {
@@ -75,13 +77,43 @@ public class SC2Activity extends AppCompatActivity {
 
     private LinearLayout summary;
     private LinearLayout snapshot;
-
+    private LinearLayout statistics;
+    private LinearLayout campaign;
 
     private ImageView ones;
     private ImageView archon;
     private ImageView twos;
     private ImageView threes;
     private ImageView fours;
+    private TextView onesText;
+    private TextView archonText;
+    private TextView twosText;
+    private TextView threesText;
+    private TextView foursText;
+
+    private TextView terranWins;
+    private TextView zergWins;
+    private TextView protossWins;
+    private TextView playedSeason;
+    private TextView careerGames;
+    private TextView bestOne;
+    private TextView bestTeam;
+    private ImageView bestOneIcon;
+    private ImageView bestTeamIcon;
+
+    private ImageView terranImage;
+    private ImageView zergImage;
+    private ImageView protossImage;
+    private TextView terranLevel;
+    private TextView zergLevel;
+    private TextView protossLevel;
+
+    private ImageView wol;
+    private ImageView hots;
+    private ImageView lotv;
+    private TextView wol_text;
+    private TextView hots_text;
+    private TextView lotv_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,20 +133,64 @@ public class SC2Activity extends AppCompatActivity {
         clan = findViewById(R.id.clan);
         achievement = findViewById(R.id.achievement_points);
         snapshot = findViewById(R.id.snapshot);
+        statistics = findViewById(R.id.statistics);
+        terranImage = findViewById(R.id.terran_image);
+        zergImage = findViewById(R.id.zerg_image);
+        protossImage = findViewById(R.id.protoss_image);
+        terranLevel = findViewById(R.id.terran_level);
+        zergLevel = findViewById(R.id.zerg_level);
+        protossLevel = findViewById(R.id.protoss_level);
+        wol = findViewById(R.id.wol_icon);
+        hots = findViewById(R.id.hots_icon);
+        lotv = findViewById(R.id.lotv_icon);
+        wol_text = findViewById(R.id.campaign_wol);
+        hots_text = findViewById(R.id.campaign_hots);
+        lotv_text = findViewById(R.id.campaign_lotv);
+        campaign = findViewById(R.id.campaign);
 
-        GradientDrawable panelsBG = new GradientDrawable();
-        panelsBG.setStroke(6, Color.parseColor("#122a42"));
-        panelsBG.setColor(Color.parseColor("#75091c2e"));
-        summary.setBackground(panelsBG);
-        snapshot.setBackground(panelsBG);
+        GradientDrawable summaryBG = new GradientDrawable();
+        summaryBG.setStroke(6, Color.parseColor("#122a42"));
+        summaryBG.setColor(Color.parseColor("#75091c2e"));
+
+        GradientDrawable statsBG = new GradientDrawable();
+        statsBG.setStroke(6, Color.parseColor("#122a42"));
+        statsBG.setColor(Color.parseColor("#75091c2e"));
+
+        GradientDrawable snapshotBG = new GradientDrawable();
+        snapshotBG.setStroke(6, Color.parseColor("#122a42"));
+        snapshotBG.setColor(Color.parseColor("#75091c2e"));
+
+        GradientDrawable campaignBG = new GradientDrawable();
+        campaignBG.setStroke(6, Color.parseColor("#122a42"));
+        campaignBG.setColor(Color.parseColor("#75091c2e"));
+
+        summary.setBackground(summaryBG);
+        snapshot.setBackground(snapshotBG);
+        statistics.setBackground(statsBG);
+        campaign.setBackground(campaignBG);
+
+
 
         ones = findViewById(R.id.one_one);
         archon = findViewById(R.id.archon);
         twos = findViewById(R.id.two_two);
         threes = findViewById(R.id.three_three);
         fours = findViewById(R.id.four_four);
+        onesText = findViewById(R.id.one_one_text);
+        archonText = findViewById(R.id.archon_text);
+        twosText = findViewById(R.id.two_two_text);
+        threesText = findViewById(R.id.three_three_text);
+        foursText = findViewById(R.id.four_four_text);
 
-
+        terranWins = findViewById(R.id.terran_wins);
+        zergWins = findViewById(R.id.zerg_wins);
+        protossWins = findViewById(R.id.protoss_wins);
+        playedSeason = findViewById(R.id.season_played);
+        careerGames = findViewById(R.id.career_played);
+        bestOne = findViewById(R.id.best_one);
+        bestTeam = findViewById(R.id.best_team);
+        bestOneIcon = findViewById(R.id.best_one_icon);
+        bestTeamIcon = findViewById(R.id.best_team_icon);
 
         int startColor = 0xFF0066cc;
         int endColor = 0x00000000;
@@ -123,6 +199,16 @@ public class SC2Activity extends AppCompatActivity {
         avatarShadow.setStroke(6, Color.parseColor("#0066cc"));
         avatarShadow.setGradientType(GradientDrawable.RADIAL_GRADIENT);
         avatarShadow.setGradientRadius(800.0f);
+
+        GradientDrawable raceImageBG = new GradientDrawable();
+        raceImageBG.setColors(new int[]{endColor, startColor});
+        raceImageBG.setStroke(6, Color.parseColor("#122a42"));
+        raceImageBG.setGradientType(GradientDrawable.RADIAL_GRADIENT);
+        raceImageBG.setGradientRadius(800.0f);
+
+        terranImage.setImageDrawable(raceImageBG);
+        zergImage.setImageDrawable(raceImageBG);
+        protossImage.setImageDrawable(raceImageBG);
 
         avatar.setImageDrawable(avatarShadow);
 
@@ -154,18 +240,80 @@ public class SC2Activity extends AppCompatActivity {
 
                             Log.i("URL", url + bnOAuth2Helper.getAccessToken());
 
-                            JsonObjectRequest profileRequest = new JsonObjectRequest(Request.Method.GET, "https://us.api.blizzard.com/sc2/profile/1/1/2150678?:regionId=1&:realmId=1&locale=en_US&access_token=" + bnOAuth2Helper.getAccessToken(), null,
+                            JsonObjectRequest profileRequest = new JsonObjectRequest(Request.Method.GET, "https://us.api.blizzard.com/sc2/profile/1/2/1519462?locale=en_US&access_token=" + bnOAuth2Helper.getAccessToken(), null,
                                     response1 -> {
 
                                         sc2Profile = gson.fromJson(response1.toString(), Profile.class);
                                         setSummaryInformation();
-                                        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getRank(), ones);
-                                        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().getArchon().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().getArchon().getRank(), archon);
-                                        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get2v2().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get2v2().getRank(), twos);
-                                        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get3v3().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get3v3().getRank(), threes);
-                                        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get4v4().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get4v4().getRank(), fours);
-                                        //sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getTotalGames();
-                                        //sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getTotalWins();
+                                        setSnapshotInformation();
+                                        setStatisticsInformation();
+                                        setRaceLevelInformation();
+
+                                        if(sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty() != null)
+                                        {
+                                            switch (sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty()) {
+                                                case "CASUAL":
+                                                    wol.setImageResource(R.drawable.campaign_badge_wol_casual);
+                                                    wol_text.setText("Casual Campaign Ace");
+                                                    break;
+                                                case "NORMAL":
+                                                    wol.setImageResource(R.drawable.campaign_badge_lotv_casual);
+                                                    wol_text.setText("Normal Campaign Ace");
+                                                    break;
+                                                case "HARD":
+                                                    wol.setImageResource(R.drawable.campaign_badge_wol_hard);
+                                                    wol_text.setText("Hard Campaign Ace");
+                                                    break;
+                                                case "BRUTAL":
+                                                    wol.setImageResource(R.drawable.campaign_badge_wol_brutal);
+                                                    wol_text.setText("Brutal Campaign Ace");
+                                                    break;
+                                            }
+                                        }
+
+                                        if(sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm() != null)
+                                        {
+                                            switch (sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm()) {
+                                                case "CASUAL":
+                                                    hots.setImageResource(R.drawable.campaign_badge_hots_casual);
+                                                    hots_text.setText("Casual Campaign Ace");
+                                                    break;
+                                                case "NORMAL":
+                                                    hots.setImageResource(R.drawable.campaign_badge_hots_normal);
+                                                    hots_text.setText("Normal Campaign Ace");
+                                                    break;
+                                                case "HARD":
+                                                    hots.setImageResource(R.drawable.campaign_badge_hots_hard);
+                                                    hots_text.setText("Hard Campaign Ace");
+                                                    break;
+                                                case "BRUTAL":
+                                                    hots.setImageResource(R.drawable.campaign_badge_hots_brutal);
+                                                    hots_text.setText("Brutal Campaign Ace");
+                                                    break;
+                                            }
+                                        }
+
+                                        if(sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid() != null)
+                                        {
+                                            switch (sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid()) {
+                                                case "CASUAL":
+                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_casual);
+                                                    lotv_text.setText("Casual Campaign Ace");
+                                                    break;
+                                                case "NORMAL":
+                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_normal);
+                                                    lotv_text.setText("Normal Campaign Ace");
+                                                    break;
+                                                case "HARD":
+                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_hard);
+                                                    lotv_text.setText("Hard Campaign Ace");
+                                                    break;
+                                                case "BRUTAL":
+                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_brutal);
+                                                    lotv_text.setText("Brutal Campaign Ace");
+                                                    break;
+                                            }
+                                        }
 
                                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         loadingCircle.setVisibility(View.GONE);
@@ -196,6 +344,60 @@ public class SC2Activity extends AppCompatActivity {
         d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
 
         owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
+    }
+
+    private void setRaceLevelInformation() {
+        String terranTemp = "Level " + sc2Profile.getSwarmLevels().getTerran().getLevel();
+        String zergTemp = "Level " + sc2Profile.getSwarmLevels().getZerg().getLevel();
+        String protossTemp = "Level " + sc2Profile.getSwarmLevels().getProtoss().getLevel();
+        terranLevel.setText(terranTemp);
+        zergLevel.setText(zergTemp);
+        protossLevel.setText(protossTemp);
+    }
+
+    private void setStatisticsInformation() {
+        terranWins.setText(String.valueOf(sc2Profile.getCareer().getTerranWins()));
+        zergWins.setText(String.valueOf(sc2Profile.getCareer().getZergWins()));
+        protossWins.setText(String.valueOf(sc2Profile.getCareer().getProtossWins()));
+        playedSeason.setText(String.valueOf(sc2Profile.getCareer().getTotalGamesThisSeason()));
+        careerGames.setText(String.valueOf(sc2Profile.getCareer().getTotalCareerGames()));
+        if(sc2Profile.getCareer().getBest1v1Finish().getLeagueName() != null){
+            setSnapshotIcons(sc2Profile.getCareer().getBest1v1Finish().getLeagueName(), 500, bestOneIcon);
+            String temp = sc2Profile.getCareer().getBest1v1Finish().getLeagueName().substring(1).toLowerCase();
+            temp = sc2Profile.getCareer().getBest1v1Finish().getLeagueName().substring(0, 1) + temp;
+            bestOne.setText(temp);
+        }else{
+            bestOne.setVisibility(View.GONE);
+        }
+        if(sc2Profile.getCareer().getBestTeamFinish().getLeagueName() != null){
+            setSnapshotIcons(sc2Profile.getCareer().getBestTeamFinish().getLeagueName(), 500, bestTeamIcon);
+            String temp = sc2Profile.getCareer().getBestTeamFinish().getLeagueName().substring(1).toLowerCase();
+            temp = sc2Profile.getCareer().getBestTeamFinish().getLeagueName().substring(0, 1) + temp;
+            bestTeam.setText(temp);
+        }else{
+            bestOne.setVisibility(View.GONE);
+        }
+    }
+
+    private void setSnapshotInformation() {
+        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getRank(), ones);
+        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().getArchon().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().getArchon().getRank(), archon);
+        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get2v2().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get2v2().getRank(), twos);
+        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get3v3().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get3v3().getRank(), threes);
+        setSnapshotIcons(sc2Profile.getSnapshot().getSeasonSnapshot().get4v4().getLeagueName(), sc2Profile.getSnapshot().getSeasonSnapshot().get4v4().getRank(), fours);
+        setSnapshotText(sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getTotalGames(), sc2Profile.getSnapshot().getSeasonSnapshot().get1v1().getTotalWins(), onesText);
+        setSnapshotText(sc2Profile.getSnapshot().getSeasonSnapshot().getArchon().getTotalGames(), sc2Profile.getSnapshot().getSeasonSnapshot().getArchon().getTotalWins(), archonText);
+        setSnapshotText(sc2Profile.getSnapshot().getSeasonSnapshot().get2v2().getTotalGames(), sc2Profile.getSnapshot().getSeasonSnapshot().get2v2().getTotalWins(), twosText);
+        setSnapshotText(sc2Profile.getSnapshot().getSeasonSnapshot().get3v3().getTotalGames(), sc2Profile.getSnapshot().getSeasonSnapshot().get3v3().getTotalWins(), threesText);
+        setSnapshotText(sc2Profile.getSnapshot().getSeasonSnapshot().get4v4().getTotalGames(), sc2Profile.getSnapshot().getSeasonSnapshot().get4v4().getTotalWins(), foursText);
+    }
+
+    private void setSnapshotText(int totalGames, int totalWins, TextView text) {
+        if(totalGames != 0){
+            String tempText = " - " + totalGames + " Games | " + totalWins + " Wins";
+            text.setText(tempText);
+        }
+
     }
 
     private void setSnapshotIcons(String league, int rank, ImageView icon) {
