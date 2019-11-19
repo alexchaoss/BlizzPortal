@@ -248,72 +248,7 @@ public class SC2Activity extends AppCompatActivity {
                                         setSnapshotInformation();
                                         setStatisticsInformation();
                                         setRaceLevelInformation();
-
-                                        if(sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty() != null)
-                                        {
-                                            switch (sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty()) {
-                                                case "CASUAL":
-                                                    wol.setImageResource(R.drawable.campaign_badge_wol_casual);
-                                                    wol_text.setText("Casual Campaign Ace");
-                                                    break;
-                                                case "NORMAL":
-                                                    wol.setImageResource(R.drawable.campaign_badge_lotv_casual);
-                                                    wol_text.setText("Normal Campaign Ace");
-                                                    break;
-                                                case "HARD":
-                                                    wol.setImageResource(R.drawable.campaign_badge_wol_hard);
-                                                    wol_text.setText("Hard Campaign Ace");
-                                                    break;
-                                                case "BRUTAL":
-                                                    wol.setImageResource(R.drawable.campaign_badge_wol_brutal);
-                                                    wol_text.setText("Brutal Campaign Ace");
-                                                    break;
-                                            }
-                                        }
-
-                                        if(sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm() != null)
-                                        {
-                                            switch (sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm()) {
-                                                case "CASUAL":
-                                                    hots.setImageResource(R.drawable.campaign_badge_hots_casual);
-                                                    hots_text.setText("Casual Campaign Ace");
-                                                    break;
-                                                case "NORMAL":
-                                                    hots.setImageResource(R.drawable.campaign_badge_hots_normal);
-                                                    hots_text.setText("Normal Campaign Ace");
-                                                    break;
-                                                case "HARD":
-                                                    hots.setImageResource(R.drawable.campaign_badge_hots_hard);
-                                                    hots_text.setText("Hard Campaign Ace");
-                                                    break;
-                                                case "BRUTAL":
-                                                    hots.setImageResource(R.drawable.campaign_badge_hots_brutal);
-                                                    hots_text.setText("Brutal Campaign Ace");
-                                                    break;
-                                            }
-                                        }
-
-                                        if(sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid() != null)
-                                        {
-                                            switch (sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid()) {
-                                                case "CASUAL":
-                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_casual);
-                                                    lotv_text.setText("Casual Campaign Ace");
-                                                    break;
-                                                case "NORMAL":
-                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_normal);
-                                                    lotv_text.setText("Normal Campaign Ace");
-                                                    break;
-                                                case "HARD":
-                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_hard);
-                                                    lotv_text.setText("Hard Campaign Ace");
-                                                    break;
-                                                case "BRUTAL":
-                                                    lotv.setImageResource(R.drawable.campaign_badge_lotv_brutal);
-                                                    lotv_text.setText("Brutal Campaign Ace");
-                                                    break;
-                                            }
-                                        }
+                                        setCampaignInformation();
 
                                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         loadingCircle.setVisibility(View.GONE);
@@ -346,6 +281,74 @@ public class SC2Activity extends AppCompatActivity {
         owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
     }
 
+    private void setCampaignInformation() {
+        if(sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty() != null)
+        {
+            switch (sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty()) {
+                case "CASUAL":
+                    wol.setImageResource(R.drawable.campaign_badge_wol_casual);
+                    wol_text.setText("Casual Campaign Ace");
+                    break;
+                case "NORMAL":
+                    wol.setImageResource(R.drawable.campaign_badge_lotv_casual);
+                    wol_text.setText("Normal Campaign Ace");
+                    break;
+                case "HARD":
+                    wol.setImageResource(R.drawable.campaign_badge_wol_hard);
+                    wol_text.setText("Hard Campaign Ace");
+                    break;
+                case "BRUTAL":
+                    wol.setImageResource(R.drawable.campaign_badge_wol_brutal);
+                    wol_text.setText("Brutal Campaign Ace");
+                    break;
+            }
+        }
+
+        if(sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm() != null)
+        {
+            switch (sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm()) {
+                case "CASUAL":
+                    hots.setImageResource(R.drawable.campaign_badge_hots_casual);
+                    hots_text.setText("Casual Campaign Ace");
+                    break;
+                case "NORMAL":
+                    hots.setImageResource(R.drawable.campaign_badge_hots_normal);
+                    hots_text.setText("Normal Campaign Ace");
+                    break;
+                case "HARD":
+                    hots.setImageResource(R.drawable.campaign_badge_hots_hard);
+                    hots_text.setText("Hard Campaign Ace");
+                    break;
+                case "BRUTAL":
+                    hots.setImageResource(R.drawable.campaign_badge_hots_brutal);
+                    hots_text.setText("Brutal Campaign Ace");
+                    break;
+            }
+        }
+
+        if(sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid() != null)
+        {
+            switch (sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid()) {
+                case "CASUAL":
+                    lotv.setImageResource(R.drawable.campaign_badge_lotv_casual);
+                    lotv_text.setText("Casual Campaign Ace");
+                    break;
+                case "NORMAL":
+                    lotv.setImageResource(R.drawable.campaign_badge_lotv_normal);
+                    lotv_text.setText("Normal Campaign Ace");
+                    break;
+                case "HARD":
+                    lotv.setImageResource(R.drawable.campaign_badge_lotv_hard);
+                    lotv_text.setText("Hard Campaign Ace");
+                    break;
+                case "BRUTAL":
+                    lotv.setImageResource(R.drawable.campaign_badge_lotv_brutal);
+                    lotv_text.setText("Brutal Campaign Ace");
+                    break;
+            }
+        }
+    }
+
     private void setRaceLevelInformation() {
         String terranTemp = "Level " + sc2Profile.getSwarmLevels().getTerran().getLevel();
         String zergTemp = "Level " + sc2Profile.getSwarmLevels().getZerg().getLevel();
@@ -375,7 +378,7 @@ public class SC2Activity extends AppCompatActivity {
             temp = sc2Profile.getCareer().getBestTeamFinish().getLeagueName().substring(0, 1) + temp;
             bestTeam.setText(temp);
         }else{
-            bestOne.setVisibility(View.GONE);
+            bestTeam.setVisibility(View.GONE);
         }
     }
 

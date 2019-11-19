@@ -23,9 +23,15 @@ public class Profile {
     @SerializedName("prestigeIcon")
     @Expose
     private String prestigeIcon;
+    @SerializedName("endorsement")
+    @Expose
+    private int endorsement;
+    @SerializedName("endorsementIcon")
+    @Expose
+    private String endorsementIcon;
     @SerializedName("rating")
     @Expose
-    private String rating;
+    private int rating;
     @SerializedName("ratingIcon")
     @Expose
     private String ratingIcon;
@@ -34,10 +40,10 @@ public class Profile {
     private int gamesWon;
     @SerializedName("quickPlayStats")
     @Expose
-    private QuickPlayStats quickPlayStats;
+    private com.BlizzardArmory.overwatch.QuickPlay.QuickPlayStats quickPlayStats;
     @SerializedName("competitiveStats")
     @Expose
-    private CompetitiveStats competitiveStats;
+    private com.BlizzardArmory.overwatch.Competitive.CompetitiveStats competitiveStats;
 
     public String getIcon() {
         return icon;
@@ -87,11 +93,11 @@ public class Profile {
         this.prestigeIcon = prestigeIcon;
     }
 
-    public String getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -111,20 +117,39 @@ public class Profile {
         this.gamesWon = gamesWon;
     }
 
-    public QuickPlayStats getQuickPlayStats() {
+    public com.BlizzardArmory.overwatch.QuickPlay.QuickPlayStats getQuickPlayStats() {
         return quickPlayStats;
     }
 
-    public void setQuickPlayStats(QuickPlayStats quickPlayStats) {
+    public void setQuickPlayStats(com.BlizzardArmory.overwatch.QuickPlay.QuickPlayStats quickPlayStats) {
         this.quickPlayStats = quickPlayStats;
     }
 
-    public CompetitiveStats getCompetitiveStats() {
+    public com.BlizzardArmory.overwatch.Competitive.CompetitiveStats getCompetitiveStats() {
         return competitiveStats;
     }
 
-    public void setCompetitiveStats(CompetitiveStats competitiveStats) {
+    public void setCompetitiveStats(com.BlizzardArmory.overwatch.Competitive.CompetitiveStats competitiveStats) {
         this.competitiveStats = competitiveStats;
     }
+
+
+    public int getEndorsement() {
+        return endorsement;
+    }
+
+    public void setEndorsement(int endorsement) {
+        this.endorsement = endorsement;
+    }
+
+    public String getEndorsementIcon() {
+        return endorsementIcon;
+    }
+
+    public void setEndorsementIcon(String endorsementIcon) {
+        this.endorsementIcon = endorsementIcon;
+    }
+
+
 
 }
