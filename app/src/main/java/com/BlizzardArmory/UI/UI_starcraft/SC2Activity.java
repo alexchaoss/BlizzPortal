@@ -240,7 +240,7 @@ public class SC2Activity extends AppCompatActivity {
 
                             Log.i("URL", url + bnOAuth2Helper.getAccessToken());
 
-                            JsonObjectRequest profileRequest = new JsonObjectRequest(Request.Method.GET, "https://us.api.blizzard.com/sc2/profile/1/2/1519462?locale=en_US&access_token=" + bnOAuth2Helper.getAccessToken(), null,
+                            JsonObjectRequest profileRequest = new JsonObjectRequest(Request.Method.GET, url + bnOAuth2Helper.getAccessToken(), null,
                                     response1 -> {
 
                                         sc2Profile = gson.fromJson(response1.toString(), Profile.class);
