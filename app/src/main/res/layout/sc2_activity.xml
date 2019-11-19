@@ -809,8 +809,8 @@
 
                     <ImageView
                         android:id="@+id/wol_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/campaign_badge_wol_unearned" />
 
@@ -856,8 +856,8 @@
 
                     <ImageView
                         android:id="@+id/hots_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/campaign_badge_hots_unearned" />
 
@@ -903,8 +903,8 @@
 
                     <ImageView
                         android:id="@+id/lotv_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/campaign_badge_lotv_unearned" />
 

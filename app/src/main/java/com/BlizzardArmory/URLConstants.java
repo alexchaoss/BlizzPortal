@@ -42,6 +42,9 @@ public class URLConstants {
     public final static String SC2_PROFILE = "/sc2/player/id?";
     public final static String SC2_PROFILE_INFO = "/sc2/profile/region_id/realm_id/profile_id?locale=en_US&access_token=";
 
+    //URL Overwwatch
+    public final static String OW_PROFILE = "https://ow-api.com/v1/stats/pc/:region/:battletag/complete";
+
     public static String getD3URLBtagProfile() {
         return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
     }
@@ -78,5 +81,15 @@ public class URLConstants {
 
     public static String getRegion() {
         return MainActivity.selectedRegion.toLowerCase();
+    }
+
+    public static String getOWProfile(){
+        String url = OW_PROFILE.replace(":battletag", UserInformation.getBattleTag().replace("#", "-"));
+        if(MainActivity.selectedRegion.toLowerCase().equals("cn") || MainActivity.selectedRegion.toLowerCase().equals("tw")){
+            url = url.replace(":region", "asia");
+        }else{
+            url = url.replace(":region", MainActivity.selectedRegion.toLowerCase());
+        }
+        return url;
     }
 }
