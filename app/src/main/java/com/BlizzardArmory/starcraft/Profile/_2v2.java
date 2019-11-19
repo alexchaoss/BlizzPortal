@@ -11,7 +11,7 @@ public class _2v2 {
     private int rank;
     @SerializedName("leagueName")
     @Expose
-    private Object leagueName;
+    private String leagueName;
     @SerializedName("totalGames")
     @Expose
     private int totalGames;
@@ -27,11 +27,11 @@ public class _2v2 {
         this.rank = rank;
     }
 
-    public Object getLeagueName() {
+    public String getLeagueName() {
         return leagueName;
     }
 
-    public void setLeagueName(Object leagueName) {
+    public void setLeagueName(String leagueName) {
         this.leagueName = leagueName;
     }
 

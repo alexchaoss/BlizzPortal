@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.starcraft;
 
 import com.google.gson.annotations.Expose;

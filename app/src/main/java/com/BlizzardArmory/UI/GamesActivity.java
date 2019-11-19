@@ -2,12 +2,18 @@ package com.BlizzardArmory.UI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.BlizzardArmory.R;
@@ -17,7 +23,6 @@ import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
 import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
-import com.BlizzardArmory.connection.ConnectionService;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -94,57 +99,15 @@ public class GamesActivity extends AppCompatActivity {
 
                         btag.setText(UserInformation.getBattleTag());
 
-                        wowButton.setOnClickListener(v -> {
-                            try {
-                                if (ConnectionService.isConnected()) {
-                                    callNextActivity(WoWActivity.class);
-                                } else {
-                                    //ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                                }
-                            } catch (Exception e) {
-                                Log.e("Error", e.toString());
-                            }
-                        });
+                        wowButton.setOnClickListener(v -> callNextActivity(WoWActivity.class));
 
-                        d3Button.setOnClickListener(v -> {
-                            try {
-                                if (ConnectionService.isConnected()) {
-                                    callNextActivity(D3Activity.class);
-                                } else {
-                                    //ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                                }
-                            } catch (Exception e) {
-                                Log.e("Error", e.toString());
-                            }
-                        });
+                        d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
 
-                        sc2Button.setOnClickListener(v -> {
-                            try {
-                                if (ConnectionService.isConnected()) {
-                                    callNextActivity(SC2Activity.class);
-                                } else {
-                                    //ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                                }
-                            } catch (Exception e) {
-                                Log.e("Error", e.toString());
-                            }
+                        sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
-                        });
-
-                        owButton.setOnClickListener(v -> {
-                            try {
-                                if (ConnectionService.isConnected()) {
-                                    callNextActivity(OWActivity.class);
-                                } else {
-                                    //ConnectionService.showNoConnectionMessage(GamesActivity.this);
-                                }
-                            } catch (Exception e) {
-                                Log.e("Error", e.toString());
-                            }
-
-                        });
+                        owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
                     },
-                    error -> Log.i("test", error.toString()));
+                    error -> callErrorAlertDialog(error.networkResponse.statusCode));
 
             requestQueue.add(jsonRequest);
 
@@ -166,5 +129,60 @@ public class GamesActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);
+    }
+
+    private void callErrorAlertDialog(int responseCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GamesActivity.this, R.style.DialogTransparent);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 20, 0, 0);
+
+        TextView titleText = new TextView(GamesActivity.this);
+
+        titleText.setTextSize(20);
+        titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleText.setPadding(0, 20, 0, 20);
+        titleText.setLayoutParams(layoutParams);
+        titleText.setTextColor(Color.WHITE);
+
+        TextView messageText = new TextView(GamesActivity.this);
+
+        messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+        messageText.setLayoutParams(layoutParams);
+        messageText.setTextColor(Color.WHITE);
+
+        Button button = new Button(GamesActivity.this);
+
+        titleText.setText("No Internet Connection");
+        messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+        button.setText("RETRY");
+
+
+        button.setTextSize(18);
+        button.setTextColor(Color.WHITE);
+        button.setGravity(Gravity.CENTER);
+        button.setWidth(200);
+        button.setLayoutParams(layoutParams);
+        button.setBackground(GamesActivity.this.getDrawable(R.drawable.buttonstyle));
+
+        final AlertDialog dialog = builder.show();
+        Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setLayout(800, 500);
+
+        LinearLayout linearLayout = new LinearLayout(GamesActivity.this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER);
+
+        linearLayout.addView(titleText);
+        linearLayout.addView(messageText);
+        linearLayout.addView(button);
+
+        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(20, 20, 20, 20);
+
+        dialog.addContentView(linearLayout, layoutParamsWindow);
+
+        dialog.setOnCancelListener(dialog1 -> GamesActivity.this.recreate());
+
+        button.setOnClickListener(v -> dialog.cancel());
     }
 }

@@ -23,7 +23,7 @@ public class Career {
     private int totalGamesThisSeason;
     @SerializedName("current1v1LeagueName")
     @Expose
-    private Object current1v1LeagueName;
+    private String current1v1LeagueName;
     @SerializedName("currentBestTeamLeagueName")
     @Expose
     private Object currentBestTeamLeagueName;
@@ -74,11 +74,11 @@ public class Career {
         this.totalGamesThisSeason = totalGamesThisSeason;
     }
 
-    public Object getCurrent1v1LeagueName() {
+    public String getCurrent1v1LeagueName() {
         return current1v1LeagueName;
     }
 
-    public void setCurrent1v1LeagueName(Object current1v1LeagueName) {
+    public void setCurrent1v1LeagueName(String current1v1LeagueName) {
         this.current1v1LeagueName = current1v1LeagueName;
     }
 

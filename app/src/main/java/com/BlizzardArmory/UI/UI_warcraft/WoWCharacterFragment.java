@@ -66,8 +66,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,7 +78,7 @@ public class WoWCharacterFragment extends Fragment {
     private String characterRealm;
     private String characterClicked;
 
-    private JSONObject characterInformation;
+    private AlertDialog dialog;
 
     //Character information
     CharacterSummary characterSummary;
@@ -151,7 +149,6 @@ public class WoWCharacterFragment extends Fragment {
 
     private Cache cache;
     private Network network;
-    private RequestQueue requestQueueImage;
     private RequestQueue requestQueue;
 
     @Override
@@ -167,6 +164,8 @@ public class WoWCharacterFragment extends Fragment {
         characterRealm = bundle.getString("realm");
         characterClicked = bundle.getString("name");
         String urlMain = bundle.getString("url");
+
+        dialog = null;
 
         scrollView = view.findViewById(R.id.scrollView3);
         characterName = view.findViewById(R.id.character_name);
@@ -324,7 +323,15 @@ public class WoWCharacterFragment extends Fragment {
                                             }
                                         },
                                         e -> {
-
+                                            if (e.networkResponse == null) {
+                                                callErrorAlertDialog(0);
+                                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                loadingCircle.setVisibility(View.GONE);
+                                            } else {
+                                                callErrorAlertDialog(e.networkResponse.statusCode);
+                                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                loadingCircle.setVisibility(View.GONE);
+                                            }
                                         });
                                 requestQueue.add(jsonRequest1);
                             } catch (Exception e) {
@@ -333,13 +340,12 @@ public class WoWCharacterFragment extends Fragment {
                         }
                     },
                     e -> {
-                        try {
-                            callErrorAlertDialog(e.networkResponse.statusCode);
+                        if (e.networkResponse == null) {
+                            callErrorAlertDialog(0);
                             Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
-
-                        } catch (Exception d) {
-                            callErrorAlertDialog(0);
+                        } else {
+                            callErrorAlertDialog(e.networkResponse.statusCode);
                             Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
                         }
@@ -349,78 +355,82 @@ public class WoWCharacterFragment extends Fragment {
         } catch (Exception e) {
             Log.e("Error Talents Download", e.toString());
         }
+
     }
 
     private void callErrorAlertDialog(int responseCode) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0,20,0,0);
+        if (dialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 20, 0, 0);
 
-        TextView titleText = new TextView(getContext());
+            TextView titleText = new TextView(getContext());
 
-        titleText.setTextSize(20);
-        titleText.setGravity(Gravity.CENTER_HORIZONTAL);
-        titleText.setPadding(0, 20, 0, 20);
-        titleText.setLayoutParams(layoutParams);
-        titleText.setTextColor(Color.WHITE);
+            titleText.setTextSize(20);
+            titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+            titleText.setPadding(0, 20, 0, 20);
+            titleText.setLayoutParams(layoutParams);
+            titleText.setTextColor(Color.WHITE);
 
-        TextView messageText = new TextView(getContext());
+            TextView messageText = new TextView(getContext());
 
-        messageText.setGravity(Gravity.CENTER_HORIZONTAL);
-        messageText.setLayoutParams(layoutParams);
-        messageText.setTextColor(Color.WHITE);
+            messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+            messageText.setLayoutParams(layoutParams);
+            messageText.setTextColor(Color.WHITE);
 
-        Button button = new Button(getContext());
+            Button button = new Button(getContext());
 
-        if (responseCode == 404) {
-            titleText.setText("Information Outdated");
-            messageText.setText("Please login in game to update this character's information.");
-            button.setText("OK");
-        } else {
-            titleText.setText("No Internet Connection");
-            messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-            button.setText("RETRY");
-        }
-
-        button.setTextSize(18);
-        button.setTextColor(Color.WHITE);
-        button.setGravity(Gravity.CENTER);
-        button.setWidth(200);
-        button.setLayoutParams(layoutParams);
-        button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
-
-        final AlertDialog dialog = builder.show();
-        Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.getWindow().setLayout(800, 500);
-
-        LinearLayout linearLayout = new LinearLayout(getContext());
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setGravity(Gravity.CENTER);
-
-        linearLayout.addView(titleText);
-        linearLayout.addView(messageText);
-        linearLayout.addView(button);
-
-        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(20,20,20,20);
-
-        dialog.addContentView(linearLayout, layoutParamsWindow);
-
-        dialog.setOnCancelListener(dialog1 -> {
-            if(responseCode != 404){
-                WoWCharacterFragment fragment = (WoWCharacterFragment)
-                        getFragmentManager().findFragmentById(R.id.fragment);
-
-                getFragmentManager().beginTransaction()
-                        .detach(fragment)
-                        .attach(fragment)
-                        .commit();
-            }else {
-                Objects.requireNonNull(getFragmentManager()).beginTransaction().remove(WoWCharacterFragment.this).commit();
+            if (responseCode == 404) {
+                titleText.setText("Information Outdated");
+                messageText.setText("Please login in game to update this character's information.");
+                button.setText("OK");
+            } else {
+                titleText.setText("No Internet Connection");
+                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                button.setText("RETRY");
             }
-        });
 
-        button.setOnClickListener(v -> dialog.cancel());
+            button.setTextSize(18);
+            button.setTextColor(Color.WHITE);
+            button.setGravity(Gravity.CENTER);
+            button.setWidth(200);
+            button.setLayoutParams(layoutParams);
+            button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            dialog = builder.show();
+            Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            dialog.getWindow().setLayout(800, 500);
+
+            LinearLayout linearLayout = new LinearLayout(getContext());
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setGravity(Gravity.CENTER);
+
+            linearLayout.addView(titleText);
+            linearLayout.addView(messageText);
+            linearLayout.addView(button);
+
+            LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(20, 20, 20, 20);
+
+            dialog.addContentView(linearLayout, layoutParamsWindow);
+
+            dialog.setOnCancelListener(dialog1 -> {
+                if (responseCode != 404) {
+                    dialog.hide();
+                    WoWCharacterFragment fragment = (WoWCharacterFragment)
+                            Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.fragment);
+
+                    getFragmentManager().beginTransaction()
+                            .detach(Objects.requireNonNull(fragment))
+                            .attach(fragment)
+                            .commit();
+                } else {
+                    Objects.requireNonNull(getFragmentManager()).beginTransaction().remove(WoWCharacterFragment.this).commit();
+                }
+            });
+
+            button.setOnClickListener(v -> dialog.cancel());
+        }
     }
 
     private void downloadStats(BnOAuth2Helper bnOAuth2Helper) {
@@ -434,13 +444,22 @@ public class WoWCharacterFragment extends Fragment {
                         setCharacterInformationTextviews();
                     },
                     e -> {
-
+                        if (e.networkResponse == null) {
+                            callErrorAlertDialog(0);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        } else {
+                            callErrorAlertDialog(e.networkResponse.statusCode);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        }
                     });
 
             requestQueue.add(jsonRequest);
         } catch (Exception e) {
             Log.e("Error Stats Download", e.toString());
         }
+
     }
 
     private void downloadAndSetCharacterInformation(final BnOAuth2Helper bnOAuth2Helper) {
@@ -467,7 +486,11 @@ public class WoWCharacterFragment extends Fragment {
                                         equipment = gsonEquipment.fromJson(response1.toString(), Equipment.class);
 
                                         for (int i = 0; i < equipment.getEquippedItems().size(); i++) {
-                                            downloadIcons(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(), bnOAuth2Helper, gson);
+                                            try {
+                                                downloadIcons(equipment, i, equipment.getEquippedItems().get(i).getSlot().getType(), bnOAuth2Helper, gson);
+                                            } catch (Exception e) {
+                                                break;
+                                            }
                                             try {
                                                 setCharacterItemsInformation(i);
                                             } catch (Exception e) {
@@ -492,7 +515,15 @@ public class WoWCharacterFragment extends Fragment {
                                         }
                                     },
                                     e -> {
-
+                                        if (e.networkResponse == null) {
+                                            callErrorAlertDialog(0);
+                                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            loadingCircle.setVisibility(View.GONE);
+                                        } else {
+                                            callErrorAlertDialog(e.networkResponse.statusCode);
+                                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            loadingCircle.setVisibility(View.GONE);
+                                        }
                                     });
 
                             requestQueue.add(jsonRequest1);
@@ -503,18 +534,14 @@ public class WoWCharacterFragment extends Fragment {
 
                     },
                     e -> {
-                        try {
-                            String response = new String(e.networkResponse.data);
-                            characterInformation = new JSONObject(response);
-                            characterName.setText(characterInformation.get("reason").toString());
-                            itemLVL.setText("");
+                        if (e.networkResponse == null) {
+                            callErrorAlertDialog(0);
                             Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
-                        } catch (Exception b) {
-                            Log.e("Error", b.toString() + "\n");
-                            for (int i = 0; i < b.getStackTrace().length; i++) {
-                                Log.e("Error", b.getStackTrace()[i].toString() + "\n");
-                            }
+                        } else {
+                            callErrorAlertDialog(e.networkResponse.statusCode);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
                         }
                     });
 
@@ -525,6 +552,7 @@ public class WoWCharacterFragment extends Fragment {
                 Log.e("Error", e.getStackTrace()[i].toString() + "\n");
             }
         }
+
     }
 
     private void downloadBackground(String urlMain) {
@@ -533,19 +561,22 @@ public class WoWCharacterFragment extends Fragment {
             background.setImageDrawable(backgroundMain);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> {
-                    for (int i = 0; i < e.getStackTrace().length; i++) {
-                        Log.e("Error-Background", e.getStackTrace()[i].getLineNumber() + "\n");
+                    if (e.networkResponse == null) {
+                        callErrorAlertDialog(0);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    } else {
+                        callErrorAlertDialog(e.networkResponse.statusCode);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
                     }
+
                 });
 
         requestQueue.add(imageRequest);
     }
 
     private void downloadIcons(final Equipment equipment, final int index, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
-        cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5); // 1MB cap
-        network = new BasicNetwork(new HurlStack());
-        requestQueueImage = new RequestQueue(cache, network);
-        requestQueueImage.start();
         try {
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
@@ -563,14 +594,32 @@ public class WoWCharacterFragment extends Fragment {
                             item = new BitmapDrawable(getResources(), bitmap);
                             setIcons(itemSlot, equipment, item);
                         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                e -> Log.e("Error-Image", e.toString()));
-                        requestQueueImage.add(imageRequest);
+                                e -> {
+                                    if (e.networkResponse == null) {
+                                        callErrorAlertDialog(0);
+                                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        loadingCircle.setVisibility(View.GONE);
+                                    } else {
+                                        callErrorAlertDialog(e.networkResponse.statusCode);
+                                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        loadingCircle.setVisibility(View.GONE);
+                                    }
+                                });
+                        requestQueue.add(imageRequest);
                     },
                     e -> {
-
+                        if (e.networkResponse == null) {
+                            callErrorAlertDialog(0);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        } else {
+                            callErrorAlertDialog(e.networkResponse.statusCode);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        }
                     });
 
-            requestQueueImage.add(jsonRequest);
+            requestQueue.add(jsonRequest);
         } catch (Exception e) {
             try {
                 Log.e("Error Image URL Download", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
@@ -579,6 +628,7 @@ public class WoWCharacterFragment extends Fragment {
                 Log.e("Error", f.toString());
             }
         }
+
     }
 
     private void setIcons(String itemSlot, Equipment equipment, Drawable item) {
@@ -712,24 +762,18 @@ public class WoWCharacterFragment extends Fragment {
                 nameView.setTextColor(getItemColor(equipment.getEquippedItems().get(index)));
                 nameView.setTextSize(20);
                 if (Build.VERSION.SDK_INT >= 24) {
-                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, new Html.ImageGetter() {
-                        @Override
-                        public Drawable getDrawable(String source) {
-                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                            return drawable;
-                        }
+                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, source -> {
+                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
                     }, null));
                 } else {
-                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), new Html.ImageGetter() {
-                        @Override
-                        public Drawable getDrawable(String source) {
-                            int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                            Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                            return drawable;
-                        }
+                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), source -> {
+                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
                     }, null));
                 }
                 statsView.setTextColor(Color.WHITE);
@@ -1168,7 +1212,7 @@ public class WoWCharacterFragment extends Fragment {
         }
 
         if (!description.equals("<font color=#edc201>null</font>")) {
-            stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("<br>%s", description));
+            stats.put(equippedItem.getSlot().getType(), stats.get(equippedItem.getSlot().getType()) + String.format("<br>%s<br>", description));
         }
 
         Log.i("Stats per slot: ", equippedItem.getSlot().getName() + ": " + stats.get(equippedItem.getSlot().getType()));

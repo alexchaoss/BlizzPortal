@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.overwatch.QuickPlay;
 
 

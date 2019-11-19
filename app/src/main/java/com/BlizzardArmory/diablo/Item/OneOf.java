@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.diablo.Item;
 
 import com.google.gson.annotations.Expose;

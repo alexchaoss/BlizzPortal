@@ -2,6 +2,7 @@ package com.BlizzardArmory.UI;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -109,27 +110,27 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 try {
                     if (ConnectionService.isConnected()) {
-                                DatabaseReference serverDatabase = FirebaseDatabase.getInstance().getReference();
-                                DatabaseReference serverRef = serverDatabase.child("servers");
+                        DatabaseReference serverDatabase = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference serverRef = serverDatabase.child("servers");
 
-                                serverRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        clientID = dataSnapshot.child("clientID").getValue(String.class);
-                                        clientSecret = dataSnapshot.child("clientSecret").getValue(String.class);
+                        serverRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                clientID = dataSnapshot.child("clientID").getValue(String.class);
+                                clientSecret = dataSnapshot.child("clientSecret").getValue(String.class);
 
-                                        bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
-                                                URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
+                                bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
+                                        URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
 
-                                        CreateToken(bnOAuth2Params);
-                                        setContentView(R.layout.activity_games);
-                                    }
+                                CreateToken(bnOAuth2Params);
+                                setContentView(R.layout.activity_games);
+                            }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        Log.e("SERVER DATA", databaseError.getMessage());
-                                    }
-                                });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.e("SERVER DATA", databaseError.getMessage());
+                            }
+                        });
                     } else {
                         showNoConnectionMessage(MainActivity.this, 0);
                     }
@@ -200,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
     public void showNoConnectionMessage(final Context context, int responseCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0,20,0,0);
+        layoutParams.setMargins(0, 20, 0, 0);
 
         TextView titleText = new TextView(context);
         titleText.setText("No Internet Connection");
@@ -217,9 +218,9 @@ public class MainActivity extends AppCompatActivity {
         messageText.setTextColor(Color.WHITE);
 
         Button button = new Button(context);
-        if(responseCode == -10){
+        if (responseCode == -10) {
             button.setText("RETRY");
-        }else{
+        } else {
             button.setText("OK");
         }
         button.setTextSize(18);
@@ -242,13 +243,11 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.addView(button);
 
         LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(20,20,20,20);
+        layoutParams.setMargins(20, 20, 20, 20);
 
         dialog.addContentView(linearLayout, layoutParamsWindow);
 
-        dialog.setOnCancelListener(dialog1 -> dialog1.cancel());
-
-        button.setOnClickListener(v -> dialog.cancel());
+        dialog.setOnCancelListener(DialogInterface::cancel);
     }
 
 }

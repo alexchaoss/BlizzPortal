@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
@@ -76,6 +78,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private CharacterInformation characterInformation;
     private JSONObject characterInfo;
     private Items itemsInformation;
+    private AlertDialog dialog;
 
     private int imageIndex = 0;
 
@@ -198,7 +201,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private ScrollView skillToolTipScroll;
 
 
-    private RequestQueue requestQueueImage;
+    private RequestQueue requestQueue;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -212,6 +215,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         assert bundle != null;
         int id = bundle.getInt("id");
 
+        dialog = null;
         mainLayout = view.findViewById(R.id.item_d3_character);
 
         closeButton = new ImageButton(view.getContext());
@@ -371,11 +375,11 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 chatgemActive.setVisibility(View.VISIBLE);
                 double moo = Math.random();
                 double perfect = Math.random();
-                if(perfect >= 0.98){
+                if (perfect >= 0.98) {
                     Toast.makeText(getContext(), "Perfect Gem Activated", Toast.LENGTH_SHORT).show();
-                }else if(moo >= 0.95){
+                } else if (moo >= 0.95) {
                     Toast.makeText(getContext(), "Mooooooooo!", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(getContext(), "Gem Activated", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -425,9 +429,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         Cache cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5);
         Log.i("Cache", getContext().getCacheDir().getAbsolutePath());
         Network network = new BasicNetwork(new HurlStack());
-        RequestQueue requestQueue = new RequestQueue(cache, network);
-        requestQueueImage = new RequestQueue(cache, network);
-        requestQueueImage.start();
+        requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
 
         try {
@@ -454,7 +456,17 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         toughness.setText(Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getToughness()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
                         recovery.setText(Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getHealing()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
 
-                    }, error -> Log.i("test", error.toString()));
+                    }, error -> {
+                if (error.networkResponse == null) {
+                    callErrorAlertDialog(0);
+                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    loadingCircle.setVisibility(View.GONE);
+                } else {
+                    callErrorAlertDialog(error.networkResponse.statusCode);
+                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    loadingCircle.setVisibility(View.GONE);
+                }
+            });
             requestQueue.add(jsonRequest);
 
             JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
@@ -469,7 +481,17 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                             setItemInformation(i);
                         }
 
-                    }, error -> Log.i("Error", error.toString()));
+                    }, error -> {
+                if (error.networkResponse == null) {
+                    callErrorAlertDialog(0);
+                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    loadingCircle.setVisibility(View.GONE);
+                } else {
+                    callErrorAlertDialog(error.networkResponse.statusCode);
+                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    loadingCircle.setVisibility(View.GONE);
+                }
+            });
             requestQueue.add(jsonRequest2);
         } catch (Exception e) {
             Log.e("Error", e.toString());
@@ -500,7 +522,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void downloadSkillIcons() {
-        for(int i = 0; i < characterInformation.getSkills().getActive().size(); i++){
+        for (int i = 0; i < characterInformation.getSkills().getActive().size(); i++) {
             Pair<Integer, Active> tempPair = new Pair<>(i, characterInformation.getSkills().getActive().get(i));
             skillIcons.put(characterInformation.getSkills().getActive().get(i).getSkill().getName(), tempPair);
         }
@@ -513,12 +535,12 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 String smallRune = "";
                 try {
                     smallRune = getSmallRuneIcon(Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getType());
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Rune", "none");
                 }
                 final String runeText = smallRune;
-                if(!smallRune.equals("")){
-                    skillRuneList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setText(Html.fromHtml( "<img src=\"" + smallRune + "\">" +
+                if (!smallRune.equals("")) {
+                    skillRuneList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setText(Html.fromHtml("<img src=\"" + smallRune + "\">" +
                             Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getName(), Html.FROM_HTML_MODE_LEGACY, source -> {
                         int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
                         Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
@@ -530,18 +552,28 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 setOnTouchSkillTooltip(tempKey, runeText, skill);
 
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    error -> Log.e("Error", error.toString()));
-            requestQueueImage.add(imageRequest);
+                    error -> {
+                        if (error.networkResponse == null) {
+                            callErrorAlertDialog(0);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        } else {
+                            callErrorAlertDialog(error.networkResponse.statusCode);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        }
+                    });
+            requestQueue.add(imageRequest);
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void setOnTouchSkillTooltip(String tempKey, String runeText, Drawable icon) {
-        skillLayoutList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setOnTouchListener((v, event) ->{
+        skillLayoutList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setOnTouchListener((v, event) -> {
             tooltipPassive.setVisibility(View.VISIBLE);
             try {
                 ((ViewGroup) closeButton.getParent()).removeView(closeButton);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Parent", "None");
             }
             tooltipSkillLayout.addView(closeButton);
@@ -565,7 +597,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                             .replaceAll("<span class=\"d3-color-gold", "<font color=\"#c7b377")
                             .replaceAll("<span class=\"d3-color-yellow", "<font color=\"#ffff00")
                             .replaceAll("</span>", "</font>"), Html.FROM_HTML_MODE_LEGACY));
-                }else{
+                } else {
                     passiveText.setText("");
                     tooltipPassive.setImageResource(0);
                     runeSeparator.setVisibility(View.GONE);
@@ -577,7 +609,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private String getSmallRuneIcon(String type) {
-        switch (type){
+        switch (type) {
             case "a":
                 return "small_rune_a";
             case "b":
@@ -593,7 +625,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private int getRuneIcon(String type) {
-        switch (type){
+        switch (type) {
             case "a":
                 return R.drawable.rune_a;
             case "b":
@@ -609,7 +641,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void downloadPssiveIcons() {
-        for(int i = 0; i < characterInformation.getSkills().getPassive().size(); i++){
+        for (int i = 0; i < characterInformation.getSkills().getPassive().size(); i++) {
             Pair<Integer, Skill> tempPair = new Pair<>(i, characterInformation.getSkills().getPassive().get(i).getSkill());
             passiveIcons.put(characterInformation.getSkills().getPassive().get(i).getSkill().getName(), tempPair);
         }
@@ -620,20 +652,30 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 passiveList.get(Objects.requireNonNull(passiveIcons.get(tempKey)).first).setImageDrawable(passive);
                 setOnTouchPassiveTooltip(tempKey, passive);
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    error -> Log.e("Error", error.toString()));
-            requestQueueImage.add(imageRequest);
+                    error -> {
+                        if (error.networkResponse == null) {
+                            callErrorAlertDialog(0);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        } else {
+                            callErrorAlertDialog(error.networkResponse.statusCode);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        }
+                    });
+            requestQueue.add(imageRequest);
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void setOnTouchPassiveTooltip(String tempKey, Drawable icon) {
-        passiveList.get(Objects.requireNonNull(passiveIcons.get(tempKey)).first).setOnTouchListener((v, event) ->{
+        passiveList.get(Objects.requireNonNull(passiveIcons.get(tempKey)).first).setOnTouchListener((v, event) -> {
             runeSeparator.setVisibility(View.VISIBLE);
             tooltipPassive.setImageResource(0);
             tooltipPassive.setVisibility(View.GONE);
             try {
                 ((ViewGroup) closeButton.getParent()).removeView(closeButton);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Parent", "None");
             }
             tooltipSkillLayout.addView(closeButton);
@@ -651,7 +693,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 try {
                     passiveText.setText(Html.fromHtml("<i>" + Objects.requireNonNull(passiveIcons.get(tempKey)).second.getFlavorText() + "</i>", Html.FROM_HTML_MODE_LEGACY));
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     runeSeparator.setVisibility(View.GONE);
                 }
             }
@@ -669,12 +711,22 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         response -> {
                             singleItem.add(gson.fromJson(response.toString(), SingleItem.class));
 
-                            if(index == characterInformation.getLegendaryPowers().size() -1){
+                            if (index == characterInformation.getLegendaryPowers().size() - 1) {
                                 setCubeText();
                             }
 
-                        }, error -> Log.i("Error", error.toString()));
-                requestQueueImage.add(jsonRequest2);
+                        }, error -> {
+                    if (error.networkResponse == null) {
+                        callErrorAlertDialog(0);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    } else {
+                        callErrorAlertDialog(error.networkResponse.statusCode);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    }
+                });
+                requestQueue.add(jsonRequest2);
             }
         } catch (IOException e) {
             Log.e("Error", e.toString());
@@ -684,16 +736,16 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     @SuppressLint("ClickableViewAccessibility")
     private void setCubeText() {
 
-        final String [] armorArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers"};
-        final String [] ringArray = {"ring", "amulet"};
-        final String [] swordArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers", "ring", "amulet"};
+        final String[] armorArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers"};
+        final String[] ringArray = {"ring", "amulet"};
+        final String[] swordArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers", "ring", "amulet"};
 
         cubeSword.setOnTouchListener((v, event) -> {
             String sword = "";
-            for(int i = 0; i < singleItem.size(); i++){
-                if(Arrays.stream(swordArray).parallel().noneMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)){
-                    for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
-                        if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
+            for (int i = 0; i < singleItem.size(); i++) {
+                if (Arrays.stream(swordArray).parallel().noneMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)) {
+                    for (int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++) {
+                        if (singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")) {
                             sword = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
                                     .replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("<span class=\"d3-color-magic\">", "<font color=\"#7979d4\">")
                                     .replaceAll("</span>", "</font>");
@@ -708,10 +760,10 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
         cubeArmor.setOnTouchListener((v, event) -> {
             String armor = "";
-            for(int i = 0; i < singleItem.size(); i++){
-                if(Arrays.stream(armorArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)){
-                    for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
-                        if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
+            for (int i = 0; i < singleItem.size(); i++) {
+                if (Arrays.stream(armorArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)) {
+                    for (int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++) {
+                        if (singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")) {
                             armor = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
                                     .replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("<span class=\"d3-color-magic\">", "<font color=\"#7979d4\">")
                                     .replaceAll("span", "font");
@@ -726,10 +778,10 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
         cubeRing.setOnTouchListener((v, event) -> {
             String ring = "";
-            for(int i = 0; i < singleItem.size(); i++){
-                if(Arrays.stream(ringArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)){
-                    for(int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++){
-                        if(singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")){
+            for (int i = 0; i < singleItem.size(); i++) {
+                if (Arrays.stream(ringArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)) {
+                    for (int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++) {
+                        if (singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")) {
                             ring = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
                                     .replaceAll("<span class=\"d3-color-ff", "<font color=\"#").replaceAll("<span class=\"d3-color-magic\">", "<font color=\"#7979d4\">")
                                     .replaceAll("</span>", "</font>");
@@ -1098,7 +1150,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 }
                 try {
                     ((ViewGroup) closeButton.getParent()).removeView(closeButton);
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Parent", "None");
                 }
                 linearLayoutItemStats.addView(closeButton);
@@ -1156,21 +1208,29 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 }
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     error -> {
-                        imageIndex++;
-                        if (imageIndex == itemIconURL.size()) {
+                        if (error.networkResponse.statusCode == 400) {
+                            callErrorAlertDialog(error.networkResponse.statusCode);
                             Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
+
+                        } else {
+                            imageIndex++;
+                            if (imageIndex == itemIconURL.size()) {
+                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
+                            }
+                            Log.e("Error", error.toString());
                         }
-                        Log.e("Error", error.toString());
                     });
-            requestQueueImage.add(imageRequest);
+
+            requestQueue.add(imageRequest);
         }
     }
 
     private void getCubeIcons() {
         HashMap<String, String> cubeURL = new HashMap<>();
-        final String [] armorArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers"};
-        final String [] ringArray = {"ring", "amulet"};
+        final String[] armorArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers"};
+        final String[] ringArray = {"ring", "amulet"};
         try {
             for (int i = 0; i < characterInformation.getLegendaryPowers().size(); i++) {
                 if (Arrays.stream(armorArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon()::contains)) {
@@ -1181,7 +1241,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     cubeURL.put("sword", URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation.getLegendaryPowers().get(i).getIcon() + ".png"));
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Power", "None");
         }
 
@@ -1204,8 +1264,18 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         break;
                 }
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    error -> Log.e("CUBE URL ITEM", "DOWNLOAD ERROR"));
-            requestQueueImage.add(imageRequest);
+                    error -> {
+                        if (error.networkResponse == null) {
+                            callErrorAlertDialog(0);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        } else {
+                            callErrorAlertDialog(error.networkResponse.statusCode);
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                        }
+                    });
+            requestQueue.add(imageRequest);
         }
     }
 
@@ -1328,6 +1398,77 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void callErrorAlertDialog(int responseCode) {
+        if (dialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 20, 0, 0);
+
+            TextView titleText = new TextView(getContext());
+            titleText.setTextSize(20);
+            titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+            titleText.setPadding(0, 20, 0, 20);
+            titleText.setLayoutParams(layoutParams);
+            titleText.setTextColor(Color.WHITE);
+
+            TextView messageText = new TextView(getContext());
+
+            messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+            messageText.setLayoutParams(layoutParams);
+            messageText.setTextColor(Color.WHITE);
+
+            Button button = new Button(getContext());
+
+            if (responseCode == 404) {
+                titleText.setText("Information Outdated");
+                messageText.setText("Please login in game to update this character's information.");
+                button.setText("OK");
+            } else {
+                titleText.setText("No Internet Connection");
+                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                button.setText("RETRY");
+            }
+
+            button.setTextSize(18);
+            button.setTextColor(Color.WHITE);
+            button.setGravity(Gravity.CENTER);
+            button.setWidth(200);
+            button.setLayoutParams(layoutParams);
+            button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            dialog = builder.show();
+            Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            dialog.getWindow().setLayout(800, 500);
+
+            LinearLayout linearLayout = new LinearLayout(getContext());
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setGravity(Gravity.CENTER);
+
+            linearLayout.addView(titleText);
+            linearLayout.addView(messageText);
+            linearLayout.addView(button);
+
+            LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(20, 20, 20, 20);
+
+            dialog.addContentView(linearLayout, layoutParamsWindow);
+
+            dialog.setOnCancelListener(dialog1 -> {
+                if (responseCode != 404) {
+                    D3CharacterFragment fragment = (D3CharacterFragment) Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.fragment);
+                    getFragmentManager().beginTransaction()
+                            .detach(Objects.requireNonNull(fragment))
+                            .attach(fragment)
+                            .commit();
+                } else {
+                    Objects.requireNonNull(getFragmentManager()).beginTransaction().remove(D3CharacterFragment.this).commit();
+                }
+            });
+
+            button.setOnClickListener(v -> dialog.cancel());
         }
     }
 }

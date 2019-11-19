@@ -88,4 +88,5 @@
     <string name="dexterity">Dexterity:</string>
     <string name="intelligence">Intelligence:</string>
     <string name="vitality">Vitality:</string>
+    <string name="snapshot">SNAPSHOT</string>
 </resources>

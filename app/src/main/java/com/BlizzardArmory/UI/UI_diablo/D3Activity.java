@@ -32,7 +32,6 @@ import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
 import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
-import com.BlizzardArmory.connection.ConnectionService;
 import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.BlizzardArmory.diablo.account.Hero;
 import com.android.volley.Cache;
@@ -173,7 +172,7 @@ public class D3Activity extends AppCompatActivity {
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                     },
-                    error -> showNoConnectionMessage(getApplicationContext(), error.networkResponse.statusCode));
+                    error -> showNoConnectionMessage(D3Activity.this, 0));
 
             requestQueue.add(jsonRequest);
 
@@ -270,16 +269,7 @@ public class D3Activity extends AppCompatActivity {
                         characterID = accountInformation.getHeroes().get(i1).getId();
                     }
                 }
-                try {
-                    if (ConnectionService.isConnected()) {
-                        displayFragment();
-                    } else {
-                        showNoConnectionMessage(getApplicationContext(), -1);
-                    }
-                } catch (Exception e) {
-                    Log.e("Error-test", e.toString());
-                }
-
+                displayFragment();
             });
         }
     }
@@ -453,19 +443,9 @@ public class D3Activity extends AppCompatActivity {
         button.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
 
-        try {
-            if (responseCode == 403) {
-                titleText.setText("Information Outdated");
-                messageText.setText("The information for this account is outdated. Please login in game and try again.");
-                button.setText("OK");
-            } else if (responseCode == -1) {
-                titleText.setText("No Internet Connection");
-                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-                button.setText("Retry");
-            }
-        } catch (Exception e) {
-            Log.e("Connection error", e.toString());
-        }
+        titleText.setText("No Internet Connection");
+        messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+        button.setText("Retry");
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -482,14 +462,9 @@ public class D3Activity extends AppCompatActivity {
 
         dialog.addContentView(linearLayout, layoutParams);
 
-        dialog.setOnCancelListener(dialog1 -> dialog1.cancel());
+        dialog.setOnCancelListener(dialog1 -> D3Activity.this.recreate());
 
-        button.setOnClickListener(v -> {
-            if(responseCode == -1){
-                D3Activity.this.recreate();
-            }
-            dialog.cancel();
-        });
+        button.setOnClickListener(v -> dialog.cancel());
     }
 
 }
