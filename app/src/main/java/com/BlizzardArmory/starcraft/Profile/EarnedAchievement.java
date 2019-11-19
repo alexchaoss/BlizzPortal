@@ -1,10 +1,9 @@
 
 package com.BlizzardArmory.starcraft.Profile;
 
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 public class EarnedAchievement {
 
@@ -13,7 +12,7 @@ public class EarnedAchievement {
     private String achievementId;
     @SerializedName("completionDate")
     @Expose
-    private int completionDate;
+    private float completionDate;
     @SerializedName("numCompletedAchievementsInSeries")
     @Expose
     private int numCompletedAchievementsInSeries;
@@ -38,7 +37,7 @@ public class EarnedAchievement {
         this.achievementId = achievementId;
     }
 
-    public int getCompletionDate() {
+    public float getCompletionDate() {
         return completionDate;
     }
 

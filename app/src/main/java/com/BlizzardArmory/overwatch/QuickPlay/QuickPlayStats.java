@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.overwatch.QuickPlay;
 
 import com.BlizzardArmory.overwatch.Games;

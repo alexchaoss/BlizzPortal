@@ -15,6 +15,12 @@ public class Summary {
     @SerializedName("displayName")
     @Expose
     private String displayName;
+    @SerializedName("clanName")
+    @Expose
+    private String clanName;
+    @SerializedName("clanTag")
+    @Expose
+    private String clanTag;
     @SerializedName("portrait")
     @Expose
     private String portrait;
@@ -56,6 +62,22 @@ public class Summary {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getClanName() {
+        return clanName;
+    }
+
+    public void setClanName(String clanName) {
+        this.clanName = clanName;
+    }
+
+    public String getClanTag() {
+        return clanTag;
+    }
+
+    public void setClanTag(String clanTag) {
+        this.clanTag = clanTag;
     }
 
     public String getPortrait() {

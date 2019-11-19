@@ -8,16 +8,16 @@ public class BestTeamFinish {
 
     @SerializedName("leagueName")
     @Expose
-    private Object leagueName;
+    private String leagueName;
     @SerializedName("timesAchieved")
     @Expose
     private int timesAchieved;
 
-    public Object getLeagueName() {
+    public String getLeagueName() {
         return leagueName;
     }
 
-    public void setLeagueName(Object leagueName) {
+    public void setLeagueName(String leagueName) {
         this.leagueName = leagueName;
     }
 

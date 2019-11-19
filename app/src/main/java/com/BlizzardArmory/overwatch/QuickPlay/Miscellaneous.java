@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.overwatch.QuickPlay;
 
 import com.google.gson.annotations.Expose;

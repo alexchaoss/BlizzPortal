@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.overwatch.Competitive;
 
 import com.google.gson.annotations.Expose;

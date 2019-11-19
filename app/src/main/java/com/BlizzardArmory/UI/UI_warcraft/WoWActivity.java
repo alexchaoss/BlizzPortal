@@ -12,12 +12,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -88,8 +90,7 @@ public class WoWActivity extends AppCompatActivity {
         loadingCircle = findViewById(R.id.loadingCircle);
         btag.setText(UserInformation.getBattleTag());
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.VISIBLE);
 
         try {
@@ -143,107 +144,102 @@ public class WoWActivity extends AppCompatActivity {
                                     ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + characterList.getUrlThumbnail().get(i) +
                                             URLConstants.NOT_FOUND_URL_AVATAR + characterList.getRaceList().get(i) + "-"
                                             + characterList.getGenderList().get(i) + ".jpg", bitmap -> {
-                                                Drawable portrait = new BitmapDrawable(getResources(), bitmap);
+                                        Drawable portrait = new BitmapDrawable(getResources(), bitmap);
 
-                                                final RelativeLayout relativeLayoutCharacters = new RelativeLayout(getApplicationContext());
-                                                LinearLayout linearLayoutText = new LinearLayout(getApplicationContext());
-                                                LinearLayout linearLayoutLevelClass = new LinearLayout(getApplicationContext());
-                                                linearLayoutText.setOrientation(LinearLayout.VERTICAL);
-                                                linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
+                                        final RelativeLayout relativeLayoutCharacters = new RelativeLayout(getApplicationContext());
+                                        LinearLayout linearLayoutText = new LinearLayout(getApplicationContext());
+                                        LinearLayout linearLayoutLevelClass = new LinearLayout(getApplicationContext());
+                                        linearLayoutText.setOrientation(LinearLayout.VERTICAL);
+                                        linearLayoutLevelClass.setOrientation(LinearLayout.HORIZONTAL);
 
-                                                //Add character name to view
-                                                TextView textViewName = new TextView(getApplicationContext());
-                                                textViewName.setText(characterNames.get(index));
-                                                textViewName.setTextColor(Color.WHITE);
-                                                textViewName.setTextSize(17);
+                                        //Add character name to view
+                                        TextView textViewName = new TextView(getApplicationContext());
+                                        textViewName.setText(characterNames.get(index));
+                                        textViewName.setTextColor(Color.WHITE);
+                                        textViewName.setTextSize(17);
 
-                                                //Add level to view
-                                                TextView textViewLevel = new TextView(getApplicationContext());
-                                                textViewLevel.setText(levels.get(index));
-                                                textViewLevel.setTextColor(Color.WHITE);
-                                                textViewLevel.setTextSize(15);
+                                        //Add level to view
+                                        TextView textViewLevel = new TextView(getApplicationContext());
+                                        textViewLevel.setText(levels.get(index));
+                                        textViewLevel.setTextColor(Color.WHITE);
+                                        textViewLevel.setTextSize(15);
 
-                                                //Add class to view
-                                                TextView textViewClass = new TextView(getApplicationContext());
-                                                textViewClass.setText(className.get(index));
-                                                textViewClass.setTextColor(Color.WHITE);
-                                                textViewClass.setTextSize(15);
+                                        //Add class to view
+                                        TextView textViewClass = new TextView(getApplicationContext());
+                                        textViewClass.setText(className.get(index));
+                                        textViewClass.setTextColor(Color.WHITE);
+                                        textViewClass.setTextSize(15);
 
 
-                                                //Add realm to view
-                                                TextView textViewRealm = new TextView(getApplicationContext());
-                                                textViewRealm.setText(realms.get(index));
-                                                textViewRealm.setTextColor(Color.WHITE);
-                                                textViewRealm.setTextSize(15);
+                                        //Add realm to view
+                                        TextView textViewRealm = new TextView(getApplicationContext());
+                                        textViewRealm.setText(realms.get(index));
+                                        textViewRealm.setTextColor(Color.WHITE);
+                                        textViewRealm.setTextSize(15);
 
-                                                //Add character thumbnail to view
-                                                ImageView portraitImage = new ImageView(getApplicationContext());
-                                                portraitImage.setId(index + 1);
-                                                portraitImage.setImageDrawable(portrait);
-                                                portraitImage.setLayoutParams(layoutParamsImage);
+                                        //Add character thumbnail to view
+                                        ImageView portraitImage = new ImageView(getApplicationContext());
+                                        portraitImage.setId(index + 1);
+                                        portraitImage.setImageDrawable(portrait);
+                                        portraitImage.setLayoutParams(layoutParamsImage);
 
-                                                //Add level and class to parent layout
-                                                linearLayoutLevelClass.addView(textViewLevel);
-                                                linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
+                                        //Add level and class to parent layout
+                                        linearLayoutLevelClass.addView(textViewLevel);
+                                        linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
 
-                                                layoutParamsInfo = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                                layoutParamsInfo.addRule(RelativeLayout.RIGHT_OF, index + 1);
-                                                layoutParamsInfo.setMargins(30, 0, 0, 0);
+                                        layoutParamsInfo = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                        layoutParamsInfo.addRule(RelativeLayout.RIGHT_OF, index + 1);
+                                        layoutParamsInfo.setMargins(30, 0, 0, 0);
 
-                                                //Add layouts of texts to parent layout
-                                                linearLayoutText.addView(textViewName);
-                                                linearLayoutText.addView(linearLayoutLevelClass);
-                                                linearLayoutText.addView(textViewRealm);
-                                                linearLayoutText.setLayoutParams(layoutParamsInfo);
+                                        //Add layouts of texts to parent layout
+                                        linearLayoutText.addView(textViewName);
+                                        linearLayoutText.addView(linearLayoutLevelClass);
+                                        linearLayoutText.addView(textViewRealm);
+                                        linearLayoutText.setLayoutParams(layoutParamsInfo);
 
-                                                //Add faction logo
-                                                ImageView factionImage = new ImageView(getApplicationContext());
-                                                if (faction.get(index).equals("Horde")) {
-                                                    factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.horde_logo, getTheme()));
-                                                } else if (faction.get(index).equals("Alliance")) {
-                                                    factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.alliance_logo, getTheme()));
+                                        //Add faction logo
+                                        ImageView factionImage = new ImageView(getApplicationContext());
+                                        if (faction.get(index).equals("Horde")) {
+                                            factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.horde_logo, getTheme()));
+                                        } else if (faction.get(index).equals("Alliance")) {
+                                            factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.alliance_logo, getTheme()));
+                                        }
+                                        factionImage.setLayoutParams(layoutParamsLogo);
+
+                                        //Add views to layout
+                                        relativeLayoutCharacters.addView(portraitImage);
+                                        relativeLayoutCharacters.addView(linearLayoutText);
+                                        relativeLayoutCharacters.addView(factionImage);
+                                        relativeLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
+                                        linearLayoutCharacterList.add(relativeLayoutCharacters);
+
+
+                                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                        layoutParams.setMargins(100, 0, 100, 75);
+
+
+                                        relativeLayoutCharacters.setId(index);
+                                        linearLayout.addView(relativeLayoutCharacters);
+                                        relativeLayoutCharacters.setLayoutParams(layoutParams);
+                                        relativeLayoutCharacters.setBackground(getResources().getDrawable(R.drawable.inputstyle, getTheme()));
+                                        relativeLayoutCharacters.setClickable(true);
+                                        relativeLayoutCharacters.setOnClickListener(v -> {
+                                            for (int i1 = 0; i1 < characterNames.size(); i1++) {
+                                                if (i1 == relativeLayoutCharacters.getId()) {
+                                                    characterClicked = characterNames.get(i1);
+                                                    characterRealm = realms.get(i1);
+                                                    url = characterList.getUrlThumbnail().get(i1).replace("-avatar.jpg", "-main.jpg");
                                                 }
-                                                factionImage.setLayoutParams(layoutParamsLogo);
+                                            }
+                                            displayFragment();
+                                        });
+                                        index++;
 
-                                                //Add views to layout
-                                                relativeLayoutCharacters.addView(portraitImage);
-                                                relativeLayoutCharacters.addView(linearLayoutText);
-                                                relativeLayoutCharacters.addView(factionImage);
-                                                relativeLayoutCharacters.setGravity(Gravity.CENTER_VERTICAL);
-                                                linearLayoutCharacterList.add(relativeLayoutCharacters);
-
-
-                                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                                layoutParams.setMargins(100, 0, 100, 75);
-
-
-                                                relativeLayoutCharacters.setId(index);
-                                                linearLayout.addView(relativeLayoutCharacters);
-                                                relativeLayoutCharacters.setLayoutParams(layoutParams);
-                                                relativeLayoutCharacters.setBackground(getResources().getDrawable(R.drawable.inputstyle, getTheme()));
-                                                relativeLayoutCharacters.setClickable(true);
-                                                relativeLayoutCharacters.setOnClickListener(v -> {
-                                                    for (int i1 = 0; i1 < characterNames.size(); i1++) {
-                                                        if (i1 == relativeLayoutCharacters.getId()) {
-                                                            characterClicked = characterNames.get(i1);
-                                                            characterRealm = realms.get(i1);
-                                                            url = characterList.getUrlThumbnail().get(i1).replace("-avatar.jpg", "-main.jpg");
-                                                        }
-                                                    }
-                                                    try {
-                                                        displayFragment();
-                                                    } catch (Exception e) {
-                                                        Log.e("Error", e.toString());
-                                                    }
-
-                                                });
-                                                index++;
-
-                                            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                    }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                                             error -> {
-                                                //ConnectionService.showNoConnectionMessage(new GamesActivity());
-                                                Log.e("Error", error.toString());
-                                                finish();
+                                                callErrorAlertDialog(error.networkResponse.statusCode);
+                                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                loadingCircle.setVisibility(View.GONE);
                                             });
                                     requestQueueImage.add(imageRequest);
                                 }
@@ -251,9 +247,9 @@ public class WoWActivity extends AppCompatActivity {
                                 loadingCircle.setVisibility(View.GONE);
                             },
                             error -> {
-                                //ConnectionService.showNoConnectionMessage(new GamesActivity());
-                                Log.e("Error", error.toString());
-                                finish();
+                                callErrorAlertDialog(error.networkResponse.statusCode);
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                loadingCircle.setVisibility(View.GONE);
                             });
                     requestQueue.add(jsonRequest);
 
@@ -263,7 +259,10 @@ public class WoWActivity extends AppCompatActivity {
 
 
             } else {
-                //ConnectionService.showNoConnectionMessage(WoWActivity.this);
+                Log.i("test", "here");
+                callErrorAlertDialog(0);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                loadingCircle.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             Log.e("Error", e.toString());
@@ -296,5 +295,65 @@ public class WoWActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
         fragmentTransaction.addToBackStack(null).commit();
         getSupportFragmentManager().executePendingTransactions();
+    }
+
+    private void callErrorAlertDialog(int responseCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(WoWActivity.this, R.style.DialogTransparent);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 20, 0, 0);
+
+        TextView titleText = new TextView(WoWActivity.this);
+
+        titleText.setTextSize(20);
+        titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleText.setPadding(0, 20, 0, 20);
+        titleText.setLayoutParams(layoutParams);
+        titleText.setTextColor(Color.WHITE);
+
+        TextView messageText = new TextView(WoWActivity.this);
+
+        messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+        messageText.setLayoutParams(layoutParams);
+        messageText.setTextColor(Color.WHITE);
+
+        Button button = new Button(WoWActivity.this);
+
+        if (responseCode == 404) {
+            titleText.setText("Information Outdated");
+            messageText.setText("Please login in game to update this character's information.");
+            button.setText("OK");
+        } else {
+            titleText.setText("No Internet Connection");
+            messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+            button.setText("RETRY");
+        }
+
+        button.setTextSize(18);
+        button.setTextColor(Color.WHITE);
+        button.setGravity(Gravity.CENTER);
+        button.setWidth(200);
+        button.setLayoutParams(layoutParams);
+        button.setBackground(WoWActivity.this.getDrawable(R.drawable.buttonstyle));
+
+        final AlertDialog dialog = builder.show();
+        Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setLayout(800, 500);
+
+        LinearLayout linearLayout = new LinearLayout(WoWActivity.this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER);
+
+        linearLayout.addView(titleText);
+        linearLayout.addView(messageText);
+        linearLayout.addView(button);
+
+        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(20, 20, 20, 20);
+
+        dialog.addContentView(linearLayout, layoutParamsWindow);
+
+        dialog.setOnCancelListener(dialog1 -> this.recreate());
+
+        button.setOnClickListener(v -> dialog.cancel());
     }
 }
