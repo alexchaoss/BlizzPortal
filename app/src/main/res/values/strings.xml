@@ -89,4 +89,26 @@
     <string name="intelligence">Intelligence:</string>
     <string name="vitality">Vitality:</string>
     <string name="snapshot">SNAPSHOT</string>
+    <string name="statistics">statistics</string>
+    <string name="_1v1">1v1</string>
+    <string name="team">Team</string>
+    <string name="total_career_games">Total Career Games</string>
+    <string name="games_played_this_season">Games Played This Season</string>
+    <string name="protoss_wins">Protoss Wins</string>
+    <string name="zerg_wins">Zerg Wins</string>
+    <string name="terran_wins">Terran Wins</string>
+    <string name="not_yet_ranked">- Not Yet Ranked</string>
+    <string name="_4v4">4v4</string>
+    <string name="_3v3">3v3</string>
+    <string name="_2v2">2v2</string>
+    <string name="archon">Archon</string>
+    <string name="race_levels">race levels</string>
+    <string name="zerg">Zerg</string>
+    <string name="protoss">Protoss</string>
+    <string name="terran">Terran</string>
+    <string name="campaign">campaign</string>
+    <string name="wings_of_liberty">Wings of Liberty</string>
+    <string name="legacy_of_the_void">Legacy of the Void</string>
+    <string name="heart_of_the_swarm">Heart of the Swarm</string>
+    <string name="campaign_not_complete">Campaign Not Complete</string>
 </resources>

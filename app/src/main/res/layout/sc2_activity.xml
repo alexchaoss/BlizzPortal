@@ -125,15 +125,16 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/sc2_background"
         android:scaleType="centerCrop"
+        android:src="@drawable/sc2_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
@@ -144,14 +145,14 @@
 
             <LinearLayout
                 android:id="@+id/summary"
-                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/snapshot_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/snapshot_title">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="125dp"
@@ -161,7 +162,6 @@
                         android:id="@+id/avatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -171,9 +171,9 @@
                         android:id="@+id/total_level"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/sc2_total_level"
-                        android:layout_marginBottom="1dp"
                         android:layout_marginStart="1dp"
+                        android:layout_marginBottom="1dp"
+                        android:background="@drawable/sc2_total_level"
                         app:layout_constraintBottom_toBottomOf="@id/avatar"
                         app:layout_constraintStart_toStartOf="@id/avatar" />
 
@@ -199,24 +199,24 @@
 
                     <TextView
                         android:id="@+id/name"
-                        android:textSize="25sp"
-                        android:textColor="#FFF"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFF"
+                        android:textSize="25sp" />
 
                     <TextView
                         android:id="@+id/clan"
-                        android:textSize="22sp"
-                        android:textColor="#7aa3cc"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textColor="#7aa3cc"
+                        android:textSize="22sp" />
 
                     <TextView
                         android:id="@+id/achievement_points"
-                        android:textSize="22sp"
-                        android:textColor="#a3b8cc"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textColor="#a3b8cc"
+                        android:textSize="22sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -224,149 +224,709 @@
                 android:id="@+id/snapshot_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FFF"
-                android:textSize="30sp"
+                android:fontFamily="@font/starcraft_normal"
                 android:text="@string/snapshot"
                 android:textAlignment="center"
-                android:fontFamily="@font/starcraft_normal"
+                android:textColor="#FFF"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toTopOf="@+id/snapshot"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/summary"
-                app:layout_constraintBottom_toTopOf="@+id/snapshot"/>
+                app:layout_constraintTop_toBottomOf="@+id/summary" />
 
             <LinearLayout
                 android:id="@+id/snapshot"
-                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:orientation="vertical"
                 android:padding="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/snapshot_title">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="10dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
                     <ImageView
                         android:id="@+id/one_one"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginEnd="10dp"
-                        android:src="@drawable/snapshot_placeholder"/>
+                        android:src="@drawable/snapshot_placeholder" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1v1"
+                        android:text="@string/_1v1"
                         android:textColor="#cce6ff"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/one_one_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#7aa3cc"
-                        android:text=" - Not Yet Ranked"/>
+                        android:text="@string/not_yet_ranked"
+                        android:textColor="#7aa3cc" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="10dp"
-                    android:gravity="center">
-                   <ImageView
-                       android:id="@+id/archon"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/archon"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginEnd="10dp"
-                        android:src="@drawable/snapshot_placeholder"/>
+                        android:src="@drawable/snapshot_placeholder" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Archon"
+                        android:text="@string/archon"
                         android:textColor="#cce6ff"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/archon_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#7aa3cc"
-                        android:text=" - Not Yet Ranked"/>
+                        android:text="@string/not_yet_ranked"
+                        android:textColor="#7aa3cc" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="10dp"
-                    android:gravity="center">
-                   <ImageView
-                       android:id="@+id/two_two"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/two_two"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginEnd="10dp"
-                        android:src="@drawable/snapshot_placeholder"/>
+                        android:src="@drawable/snapshot_placeholder" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2v2"
+                        android:text="@string/_2v2"
                         android:textColor="#cce6ff"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/two_two_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#7aa3cc"
-                        android:text=" - Not Yet Ranked"/>
+                        android:text="@string/not_yet_ranked"
+                        android:textColor="#7aa3cc" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="10dp"
-                    android:gravity="center">
-                   <ImageView
-                       android:id="@+id/three_three"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/three_three"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginEnd="10dp"
-                        android:src="@drawable/snapshot_placeholder"/>
+                        android:src="@drawable/snapshot_placeholder" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="3v3"
+                        android:text="@string/_3v3"
                         android:textColor="#cce6ff"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/three_three_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#7aa3cc"
-                        android:text=" - Not Yet Ranked"/>
+                        android:text="@string/not_yet_ranked"
+                        android:textColor="#7aa3cc" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                   <ImageView
-                       android:id="@+id/four_four"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/four_four"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginEnd="10dp"
-                        android:src="@drawable/snapshot_placeholder"/>
+                        android:src="@drawable/snapshot_placeholder" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4v4"
+                        android:text="@string/_4v4"
                         android:textColor="#cce6ff"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/four_four_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#7aa3cc"
-                        android:text=" - Not Yet Ranked"/>
+                        android:text="@string/not_yet_ranked"
+                        android:textColor="#7aa3cc" />
 
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/statistics_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/starcraft_normal"
+                android:text="@string/statistics"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="30sp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/statistics"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/snapshot" />
+
+            <LinearLayout
+                android:id="@+id/statistics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/statistics_title">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/terran_wins_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/terran_wins"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/terran_wins"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/zerg_wins_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/zerg_wins"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/zerg_wins"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/protoss_wins_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/protoss_wins"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/protoss_wins"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/season_played_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/games_played_this_season"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/season_played"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/career_played_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_career_games"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/career_played"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#cce6ff"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:background="#122a42"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/best_one_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/snapshot_placeholder" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_1v1"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/best_one"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/best_team_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/snapshot_placeholder" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/team"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/best_team"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/race_levels_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/starcraft_normal"
+                android:text="@string/race_levels"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="30sp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/races"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/statistics" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/races"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/race_levels_title">
+
+                <ImageView
+                    android:id="@+id/terran_image"
+                    android:layout_width="120dp"
+                    android:layout_height="170dp"
+                    android:background="@drawable/summary_racelevel_terran_image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/zerg_image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/terran_image"
+                    app:layout_constraintEnd_toEndOf="@id/terran_image"
+                    app:layout_constraintStart_toStartOf="@id/terran_image">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/summary_racelevel_terran_icon" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/terran"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/terran_level"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/zerg_image"
+                    android:layout_width="120dp"
+                    android:layout_height="170dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/summary_racelevel_zerg_image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/protoss_image"
+                    app:layout_constraintStart_toEndOf="@+id/terran_image"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/zerg_image"
+                    app:layout_constraintEnd_toEndOf="@id/zerg_image"
+                    app:layout_constraintStart_toStartOf="@id/zerg_image">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/summary_racelevel_zerg_icon" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/zerg"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/zerg_level"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/protoss_image"
+                    android:layout_width="120dp"
+                    android:layout_height="170dp"
+                    android:background="@drawable/summary_racelevel_protoss_image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/zerg_image"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/protoss_image"
+                    app:layout_constraintEnd_toEndOf="@id/protoss_image"
+                    app:layout_constraintStart_toStartOf="@id/protoss_image">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/summary_racelevel_protoss_icon" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/protoss"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/protoss_level"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/campaign_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/starcraft_normal"
+                android:text="@string/campaign"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="30sp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/campaign"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/races" />
+
+            <LinearLayout
+                android:id="@+id/campaign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+                android:padding="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/campaign_title">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/protoss_image"
+                    app:layout_constraintEnd_toEndOf="@id/protoss_image"
+                    app:layout_constraintStart_toStartOf="@id/protoss_image">
+
+                    <ImageView
+                        android:id="@+id/wol_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:src="@drawable/campaign_badge_wol_unearned" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wings_of_liberty"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/campaign_wol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc"
+                            android:text="@string/campaign_not_complete"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="#122a42"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/protoss_image"
+                    app:layout_constraintEnd_toEndOf="@id/protoss_image"
+                    app:layout_constraintStart_toStartOf="@id/protoss_image">
+
+                    <ImageView
+                        android:id="@+id/hots_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:src="@drawable/campaign_badge_hots_unearned" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/heart_of_the_swarm"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/campaign_hots"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc"
+                            android:text="@string/campaign_not_complete"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="#122a42"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/protoss_image"
+                    app:layout_constraintEnd_toEndOf="@id/protoss_image"
+                    app:layout_constraintStart_toStartOf="@id/protoss_image">
+
+                    <ImageView
+                        android:id="@+id/lotv_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:src="@drawable/campaign_badge_lotv_unearned" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/legacy_of_the_void"
+                            android:textColor="#cce6ff"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/campaign_lotv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#7aa3cc"
+                            android:text="@string/campaign_not_complete"/>
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
