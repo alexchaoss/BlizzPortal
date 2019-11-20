@@ -1,43 +1,11 @@
-package com.BlizzardArmory.overwatch.QuickPlay;
 
-import com.BlizzardArmory.overwatch.Heroes.Ana;
-import com.BlizzardArmory.overwatch.Heroes.Ashe;
-import com.BlizzardArmory.overwatch.Heroes.Baptiste;
-import com.BlizzardArmory.overwatch.Heroes.Bastion;
-import com.BlizzardArmory.overwatch.Heroes.Brigitte;
-import com.BlizzardArmory.overwatch.Heroes.DVa;
-import com.BlizzardArmory.overwatch.Heroes.Doomfist;
-import com.BlizzardArmory.overwatch.Heroes.Genji;
-import com.BlizzardArmory.overwatch.Heroes.Hanzo;
-import com.BlizzardArmory.overwatch.Heroes.Junkrat;
-import com.BlizzardArmory.overwatch.Heroes.Lucio;
-import com.BlizzardArmory.overwatch.Heroes.Mccree;
-import com.BlizzardArmory.overwatch.Heroes.Mei;
-import com.BlizzardArmory.overwatch.Heroes.Mercy;
-import com.BlizzardArmory.overwatch.Heroes.Moira;
-import com.BlizzardArmory.overwatch.Heroes.Orisa;
-import com.BlizzardArmory.overwatch.Heroes.Pharah;
-import com.BlizzardArmory.overwatch.Heroes.Reaper;
-import com.BlizzardArmory.overwatch.Heroes.Reinhardt;
-import com.BlizzardArmory.overwatch.Heroes.Roadhog;
-import com.BlizzardArmory.overwatch.Heroes.Soldier76;
-import com.BlizzardArmory.overwatch.Heroes.Sombra;
-import com.BlizzardArmory.overwatch.Heroes.Symmetra;
-import com.BlizzardArmory.overwatch.Heroes.Torbjorn;
-import com.BlizzardArmory.overwatch.Heroes.Tracer;
-import com.BlizzardArmory.overwatch.Heroes.Widowmaker;
-import com.BlizzardArmory.overwatch.Heroes.Winston;
-import com.BlizzardArmory.overwatch.Heroes.WreckingBall;
-import com.BlizzardArmory.overwatch.Heroes.Zarya;
-import com.BlizzardArmory.overwatch.Heroes.Zenyatta;
+package com.BlizzardArmory.overwatch.TopHeroes;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CareerStats {
+public class TopHeroes {
 
-    @SerializedName("careerStats")
-    @Expose
-    private CareerStats careerStats;
     @SerializedName("ana")
     @Expose
     private Ana ana;
@@ -128,14 +96,6 @@ public class CareerStats {
     @SerializedName("zenyatta")
     @Expose
     private Zenyatta zenyatta;
-
-    public CareerStats getCareerStats() {
-        return careerStats;
-    }
-
-    public void setCareerStats(CareerStats careerStats) {
-        this.careerStats = careerStats;
-    }
 
     public Ana getAna() {
         return ana;

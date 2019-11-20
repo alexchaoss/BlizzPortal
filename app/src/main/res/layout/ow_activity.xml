@@ -142,15 +142,18 @@
 
         <ImageView
             android:id="@+id/avatar"
-            android:layout_width="65dp"
-            android:layout_height="65dp"/>
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"/>
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFF"
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/bignoodletoo"
             android:layout_gravity="center"
-            android:textSize="25sp"/>
+            android:textSize="40sp"/>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -160,16 +163,24 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/icon_name"
-        app:layout_constraintBottom_toTopOf="@id/crystal">
+        app:layout_constraintBottom_toTopOf="@id/games_won">
 
         <ImageView
             android:id="@+id/level_icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/view"/>
+        <ImageView
+            android:id="@+id/prestige_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            app:layout_constraintStart_toStartOf="@+id/level_icon"
+            app:layout_constraintTop_toTopOf="@+id/level_icon"
+            app:layout_constraintEnd_toEndOf="@+id/level_icon"/>
 
         <TextView
             android:id="@+id/level"
@@ -183,7 +194,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/level_icon"
             app:layout_constraintEnd_toEndOf="@+id/level_icon"/>
 
-        <View
+        <!--<View
             android:id="@+id/view"
             android:layout_width="1dp"
             android:layout_height="50dp"
@@ -196,8 +207,9 @@
 
         <ImageView
             android:id="@+id/endorsement_icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="25dp"
             app:layout_constraintStart_toEndOf="@+id/view2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -213,7 +225,7 @@
             app:layout_constraintStart_toStartOf="@+id/endorsement_icon"
             app:layout_constraintTop_toTopOf="@+id/endorsement_icon"
             app:layout_constraintBottom_toBottomOf="@+id/endorsement_icon"
-            app:layout_constraintEnd_toEndOf="@+id/endorsement_icon"/>
+            app:layout_constraintEnd_toEndOf="@+id/endorsement_icon"/>-->
 
         <View
             android:id="@+id/view2"
@@ -222,7 +234,7 @@
             android:background="#AAA"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toEndOf="@+id/endorsement_level"
+            app:layout_constraintStart_toEndOf="@+id/level_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/rating_icon"/>
@@ -231,7 +243,7 @@
             android:id="@+id/rating_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintStart_toEndOf="@+id/view2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/rating"/>
@@ -245,15 +257,29 @@
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/rating_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/games_won"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#9daac8"
+        android:textSize="25sp"
+        android:fontFamily="@font/koverwatch"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/level_prestige"
+        app:layout_constraintBottom_toTopOf="@id/crystal" />
 
     <ImageView
         android:id="@+id/crystal"
         android:layout_width="match_parent"
-        android:layout_height="255dp"
+        android:layout_height="wrap_content"
         android:src="@drawable/crystal_bg"
+        android:scaleType="fitStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gybraltor"/>

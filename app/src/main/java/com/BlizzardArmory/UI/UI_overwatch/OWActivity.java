@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -39,6 +40,8 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.caverock.androidsvg.SVG;
+import com.caverock.androidsvg.SVGImageView;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
@@ -64,9 +67,11 @@ public class OWActivity extends AppCompatActivity {
     private ImageView avatar;
     private TextView name;
     private ImageView levelIcon;
+    private ImageView prestigeIcon;
     private ImageView ratingIcon;
     private TextView level;
     private TextView rating;
+    private TextView gamesWon;
     private ImageView endorsementIcon;
     private TextView endorsement;
 
@@ -87,8 +92,11 @@ public class OWActivity extends AppCompatActivity {
         ratingIcon = findViewById(R.id.rating_icon);
         level = findViewById(R.id.level);
         rating = findViewById(R.id.rating);
-        endorsementIcon = findViewById(R.id.endorsement_icon);
-        endorsement = findViewById(R.id.endorsement_level);
+        gamesWon = findViewById(R.id.games_won);
+        /*endorsementIcon = findViewById(R.id.endorsement_icon);
+        endorsementIcon.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        endorsement = findViewById(R.id.endorsement_level);*/
+        prestigeIcon = findViewById(R.id.prestige_icon);
 
         btag.setText(UserInformation.getBattleTag());
 
@@ -118,11 +126,14 @@ public class OWActivity extends AppCompatActivity {
 
                             downloadAvatar(requestQueue);
                             int hashtag = accountInformation.getName().indexOf("#");
-                            String tempName = accountInformation.getName().substring(0, hashtag);
+                            String tempName = accountInformation.getName().substring(0, hashtag) + " ";
                             name.setText(tempName);
                             downloadLevelIcon(requestQueue);
                             level.setText(String.valueOf(accountInformation.getLevel()));
-                            endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
+                            //downloadEndorsementIcon(requestQueue);
+                            //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
+                            String tempGames = accountInformation.getGamesWon() + " games won";
+                            gamesWon.setText(tempGames);
                             if (accountInformation.getRating() != 0) {
                                 downloadRatingIcon(requestQueue);
                                 rating.setText(String.valueOf(accountInformation.getPrestige()));
@@ -178,14 +189,20 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void downloadEndorsementIcon(RequestQueue requestQueue) {
-        StringRequest imageRequest = new StringRequest(accountInformation.getEndorsementIcon(), string -> {
+        StringRequest stringRequest = new StringRequest(accountInformation.getEndorsementIcon(), string -> {
+            try {
+                SVG endorsement_icon = SVG.getFromString(string);
+                PictureDrawable  pd = new PictureDrawable(endorsement_icon.renderToPicture());
+                endorsementIcon.setImageDrawable(pd);
+            } catch (Exception e) {
+                Log.e("SVG Exception", e.toString());
+            }
 
-            //endorsementIcon.setImageDrawable();
         },
                 e -> {
                     showNoConnectionMessage(OWActivity.this, 0);
                 });
-        requestQueue.add(imageRequest);
+        requestQueue.add(stringRequest);
     }
 
     private void downloadRatingIcon(RequestQueue requestQueue) {
@@ -207,7 +224,7 @@ public class OWActivity extends AppCompatActivity {
 
             ImageRequest imageRequest2 = new ImageRequest(accountInformation.getPrestigeIcon(), bitmap2 -> {
                 BitmapDrawable avatarBM2 = new BitmapDrawable(getResources(), bitmap2);
-                levelIcon.setImageDrawable(avatarBM2);
+                prestigeIcon.setImageDrawable(avatarBM2);
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     e -> {
                         showNoConnectionMessage(OWActivity.this, 0);

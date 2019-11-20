@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.QuickPlay;
 
 import com.BlizzardArmory.overwatch.Games;
-import com.BlizzardArmory.overwatch.QuickPlay.TopHeroes.TopHeroes;
+import com.BlizzardArmory.overwatch.TopHeroes.TopHeroes;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
