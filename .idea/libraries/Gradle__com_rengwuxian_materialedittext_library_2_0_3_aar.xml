@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.rengwuxian.materialedittext:library:2.0.3@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb0bad7488125d2ea3813e978c69314e/jetified-library-2.0.3/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9a6c22d60ad875e9f25e66a7940d7ec5/jetified-library-2.0.3/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb0bad7488125d2ea3813e978c69314e/jetified-library-2.0.3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb0bad7488125d2ea3813e978c69314e/jetified-library-2.0.3/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9a6c22d60ad875e9f25e66a7940d7ec5/jetified-library-2.0.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9a6c22d60ad875e9f25e66a7940d7ec5/jetified-library-2.0.3/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rengwuxian.materialedittext/library/2.0.3/fc421f3c84e0808472fcd4e98eec1e951765322e/library-2.0.3-javadoc.jar!/" />

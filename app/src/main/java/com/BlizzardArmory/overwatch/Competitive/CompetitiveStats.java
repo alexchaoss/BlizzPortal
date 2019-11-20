@@ -1,5 +1,6 @@
 package com.BlizzardArmory.overwatch.Competitive;
 
+import com.BlizzardArmory.overwatch.TopHeroes.TopHeroes;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
