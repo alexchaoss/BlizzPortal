@@ -5,23 +5,31 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.UI.UI_diablo.D3Activity;
@@ -30,6 +38,7 @@ import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.overwatch.Profile;
+import com.BlizzardArmory.overwatch.TopHeroes.Hero;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -41,13 +50,15 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.caverock.androidsvg.SVG;
-import com.caverock.androidsvg.SVGImageView;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class OWActivity extends AppCompatActivity {
@@ -63,17 +74,37 @@ public class OWActivity extends AppCompatActivity {
     private TextView btag;
     private RelativeLayout loadingCircle;
     private Profile accountInformation;
+    private ArrayList<Hero> topHeroesQuickPlay;
 
     private ImageView avatar;
     private TextView name;
     private ImageView levelIcon;
     private ImageView prestigeIcon;
-    private ImageView ratingIcon;
     private TextView level;
-    private TextView rating;
+    private ImageView ratingIconTank;
+    private ImageView ratingRankIconTank;
+    private TextView ratingTank;
+    private ImageView ratingIconDamage;
+    private ImageView ratingRankIconDamage;
+    private TextView ratingDamage;
+    private ImageView ratingIconSupport;
+    private ImageView ratingRankIconSupport;
+    private TextView ratingSupport;
     private TextView gamesWon;
     private ImageView endorsementIcon;
     private TextView endorsement;
+    private ImageView topCharacter;
+
+    private final String TIME_PLAYED = "Time Played";
+    private final String GAMES_WON = "Games Won";
+    private final String WEAPON_ACCURACY = "Weapon Accuracy";
+    private final String ELIMINATIONS_PER_LIFE = "Eliminations per Life";
+    private final String MULTIKILL_BEST = "Multikill - Best";
+    private final String OBJECTIVE_KILLS = "Objective Kills";
+    private final String[] sortHeroList = {TIME_PLAYED, GAMES_WON, WEAPON_ACCURACY, ELIMINATIONS_PER_LIFE, MULTIKILL_BEST, OBJECTIVE_KILLS};
+
+    private LinearLayout heroList;
+    private int relativeLayoutWidth = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +120,24 @@ public class OWActivity extends AppCompatActivity {
         avatar = findViewById(R.id.avatar);
         name = findViewById(R.id.name);
         levelIcon = findViewById(R.id.level_icon);
-        ratingIcon = findViewById(R.id.rating_icon);
+        ratingIconTank = findViewById(R.id.rating_icon_tank);
+        ratingRankIconTank = findViewById(R.id.rating_icon_rank_tank);
+        ratingTank = findViewById(R.id.rating_tank);
+        ratingIconDamage = findViewById(R.id.rating_icon_damage);
+        ratingRankIconDamage = findViewById(R.id.rating_icon_rank_damage);
+        ratingDamage = findViewById(R.id.rating_damage);
+        ratingIconSupport = findViewById(R.id.rating_icon_support);
+        ratingRankIconSupport = findViewById(R.id.rating_icon_rank_support);
+        ratingSupport = findViewById(R.id.rating_support);
         level = findViewById(R.id.level);
-        rating = findViewById(R.id.rating);
         gamesWon = findViewById(R.id.games_won);
+        topCharacter = findViewById(R.id.top_character);
         /*endorsementIcon = findViewById(R.id.endorsement_icon);
         endorsementIcon.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         endorsement = findViewById(R.id.endorsement_level);*/
         prestigeIcon = findViewById(R.id.prestige_icon);
+        Spinner topHeroesListSpinner = findViewById(R.id.spinner);
+        heroList = findViewById(R.id.hero_list);
 
         btag.setText(UserInformation.getBattleTag());
 
@@ -116,8 +157,10 @@ public class OWActivity extends AppCompatActivity {
             RequestQueue requestQueue = new RequestQueue(cache, network);
             requestQueue.start();
 
+            String testURL = "https://ow-api.com/v1/stats/pc/us/FITS-31239/complete";
             Log.i("URL", URLConstants.getOWProfile());
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(), null,
+
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, testURL, null,
                     response -> {
 
                         try {
@@ -125,36 +168,41 @@ public class OWActivity extends AppCompatActivity {
                             Log.i("Games won", "" + accountInformation.getQuickPlayStats().getGames().getWon());
 
                             downloadAvatar(requestQueue);
-                            int hashtag = accountInformation.getName().indexOf("#");
-                            String tempName = accountInformation.getName().substring(0, hashtag) + " ";
-                            name.setText(tempName);
-                            downloadLevelIcon(requestQueue);
-                            level.setText(String.valueOf(accountInformation.getLevel()));
+                            setName(requestQueue);
+                            setGamesWon();
+                            setRatingInformation(requestQueue);
                             //downloadEndorsementIcon(requestQueue);
                             //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
-                            String tempGames = accountInformation.getGamesWon() + " games won";
-                            gamesWon.setText(tempGames);
-                            if (accountInformation.getRating() != 0) {
-                                downloadRatingIcon(requestQueue);
-                                rating.setText(String.valueOf(accountInformation.getPrestige()));
-                            } else {
-                                ratingIcon.setVisibility(View.GONE);
-                                rating.setVisibility(View.GONE);
-                                View view = findViewById(R.id.view2);
-                                view.setVisibility(View.GONE);
+
+                            topHeroesQuickPlay = accountInformation.getQuickPlayStats().getTopHeroes().getHeroList();
+                            Log.i("TEST", accountInformation.getQuickPlayStats().getTopHeroes().getBaptiste().getTimePlayed());
+
+                            for (int i = 0; i < topHeroesQuickPlay.size(); i++) {
+                                if (topHeroesQuickPlay.get(i) == null) {
+                                    topHeroesQuickPlay.remove(i);
+                                    i--;
+                                }
                             }
+
+                            sortList(topHeroesQuickPlay, sortHeroList[0]);
+                            Log.i("TOP CHARACTER QUICKPLAY", topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                            setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                            setSpinner(topHeroesListSpinner, topHeroesQuickPlay);
+
 
 
                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
 
                         } catch (Exception e) {
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
                             Log.e("Error", e.toString());
                         }
 
                     },
                     error -> {
-                        Log.e("Error", error.getMessage());
+                        Log.e("Error", error.toString());
                         showNoConnectionMessage(OWActivity.this, 0);
                     });
 
@@ -169,6 +217,666 @@ public class OWActivity extends AppCompatActivity {
         d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
+    }
+
+    private void setSpinner(Spinner topHeroesListSpinner, ArrayList<Hero> topHeroesQuickPlay) {
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, sortHeroList) {
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setAllCaps(true);
+                tv.setBackgroundColor(Color.WHITE);
+                tv.setTextSize(15);
+                tv.setGravity(Gravity.CENTER);
+                return view;
+            }
+        };
+
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        topHeroesListSpinner.setAdapter(arrayAdapter);
+
+        topHeroesListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) view).setTextColor(Color.parseColor("#CCCCCC"));
+                ((TextView) view).setTextSize(15);
+                ((TextView) view).setGravity(Gravity.CENTER_VERTICAL);
+                sortList(topHeroesQuickPlay, sortHeroList[position]);
+                setHeroList((String) parent.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                ((TextView) parent.getChildAt(0)).setTextColor(0);
+            }
+        });
+    }
+
+    private void setHeroList(String itemSelected) {
+        heroList.removeAllViews();
+
+        for (int i = 0; i < topHeroesQuickPlay.size(); i++) {
+            LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+            heroList.addView(linearLayout);
+
+            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(100, 100);
+            iconParams.setMarginEnd(5);
+
+            RelativeLayout.LayoutParams nameParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            nameParams.setMarginStart(10);
+            nameParams.addRule(RelativeLayout.CENTER_VERTICAL);
+
+            RelativeLayout.LayoutParams dataParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            dataParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            dataParams.addRule(RelativeLayout.CENTER_VERTICAL);
+            dataParams.setMarginEnd(10);
+
+            ImageView icon = new ImageView(getApplicationContext());
+            icon.setBackgroundResource(getHeroIcon(topHeroesQuickPlay.get(i).getClass().getSimpleName()));
+            GradientDrawable iconBorder = new GradientDrawable();
+            iconBorder.setCornerRadius(5);
+            iconBorder.setStroke(3, Color.parseColor("#CCCCCC"));
+            icon.setImageDrawable(iconBorder);
+
+            RelativeLayout relativeLayout = new RelativeLayout(getApplicationContext());
+            relativeLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            GradientDrawable layoutBackground = new GradientDrawable();
+            layoutBackground.setCornerRadius(5);
+            layoutBackground.setColor(Color.parseColor("#283655"));
+            relativeLayout.setBackground(layoutBackground);
+            relativeLayout.setPadding(5,5,5,5);
+
+            TextView name = new TextView(getApplicationContext());
+            name.setAllCaps(true);
+            name.setTextColor(Color.WHITE);
+            name.setTextSize(20);
+            String tempName;
+
+            if (topHeroesQuickPlay.get(i).getClass().getSimpleName().equals("WreckingBall")) {
+                tempName = "Wrecking Ball ";
+            } else if (topHeroesQuickPlay.get(i).getClass().getSimpleName().equals("Dva")) {
+                tempName = "D.Va ";
+            } else {
+                tempName = topHeroesQuickPlay.get(i).getClass().getSimpleName() + " ";
+            }
+            name.setText(tempName);
+            Typeface face = ResourcesCompat.getFont(this, R.font.bignoodletoo);
+            name.setTypeface(face);
+
+            TextView data = new TextView(getApplicationContext());
+            data.setTextColor(Color.WHITE);
+            data.setTextSize(15);
+
+            linearLayout.addView(icon, iconParams);
+            linearLayout.addView(relativeLayout);
+
+            View backgroundColor = new View(getApplicationContext());
+            RelativeLayout.LayoutParams barParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+
+            double viewWidth;
+
+            if(i > 0) {
+                switch (itemSelected) {
+                    case TIME_PLAYED:
+                        double fullWidth = getSeconds(topHeroesQuickPlay.get(0));
+                        viewWidth = (getSeconds(topHeroesQuickPlay.get(i)) * 100) / fullWidth;
+                        ////viewWidth = 100 - viewWidth;
+                        viewWidth = viewWidth;
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8 , RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                        data.setText(topHeroesQuickPlay.get(i).getTimePlayed());
+                        break;
+                    case GAMES_WON:
+                        fullWidth = topHeroesQuickPlay.get(0).getGamesWon();
+                        viewWidth = (topHeroesQuickPlay.get(i).getGamesWon() * 100) / fullWidth;
+                        //viewWidth = 100 - viewWidth;
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getGamesWon()));
+                        break;
+                    case WEAPON_ACCURACY:
+                        fullWidth = topHeroesQuickPlay.get(0).getWeaponAccuracy();
+                        viewWidth = (topHeroesQuickPlay.get(i).getWeaponAccuracy() * 100) / fullWidth;
+                        //viewWidth = 100 - viewWidth;
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getWeaponAccuracy()));
+                        break;
+                    case ELIMINATIONS_PER_LIFE:
+                        fullWidth = topHeroesQuickPlay.get(0).getEliminationsPerLife();
+                        viewWidth = (topHeroesQuickPlay.get(i).getEliminationsPerLife() * 100) / fullWidth;
+                        //viewWidth = 100 - viewWidth;
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getEliminationsPerLife()));
+                        break;
+                    case MULTIKILL_BEST:
+                        fullWidth = topHeroesQuickPlay.get(0).getMultiKillBest();
+                        viewWidth = (topHeroesQuickPlay.get(i).getMultiKillBest() * 100) / fullWidth;
+                        //viewWidth = 100 - viewWidth;
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getMultiKillBest()));
+                        break;
+                    case OBJECTIVE_KILLS:
+                        fullWidth = topHeroesQuickPlay.get(0).getObjectiveKills();
+                        viewWidth = (topHeroesQuickPlay.get(i).getObjectiveKills() * 100) / fullWidth;
+                        //viewWidth = 100 - viewWidth;
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getObjectiveKills()));
+                }
+            }else{
+                switch (itemSelected) {
+                    case TIME_PLAYED:
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getTimePlayed()));
+                        break;
+                    case GAMES_WON:
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getGamesWon()));
+                        break;
+                    case WEAPON_ACCURACY:
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getWeaponAccuracy()));
+                        break;
+                    case ELIMINATIONS_PER_LIFE:
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getEliminationsPerLife()));
+                        break;
+                    case MULTIKILL_BEST:
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getMultiKillBest()));
+                        break;
+                    case OBJECTIVE_KILLS:
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf(topHeroesQuickPlay.get(i).getObjectiveKills()));
+                }
+
+            }
+
+            setBackgroundColor(backgroundColor, topHeroesQuickPlay.get(i).getClass().getSimpleName());
+
+            relativeLayout.addView(backgroundColor);
+            relativeLayout.addView(name, nameParams);
+            relativeLayout.addView(data, dataParams);
+        }
+    }
+
+    private void setBackgroundColor(View backgroundColor, String topCharacterName){
+        GradientDrawable progressBar = new GradientDrawable();
+        progressBar.setCornerRadius(5);
+
+
+        switch (topCharacterName) {
+            case "Ana":
+                progressBar.setColor(Color.parseColor("#718ab3"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Ashe":
+                progressBar.setColor(Color.parseColor("#b3a05f"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Baptiste":
+                progressBar.setColor(Color.parseColor("#2892a8"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Bastion":
+                progressBar.setColor(Color.parseColor("#7c8f7b"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Brigitte":
+                progressBar.setColor(Color.parseColor("#be736e"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "DVa":
+                progressBar.setColor(Color.parseColor("#ed93c7"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Doomfist":
+                progressBar.setColor(Color.parseColor("#815049"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Genji":
+                progressBar.setColor(Color.parseColor("#97ef43"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Hanzo":
+                progressBar.setColor(Color.parseColor("#b9b48a"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Junkrat":
+                progressBar.setColor(Color.parseColor("#ecbd53"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Lucio":
+                progressBar.setColor(Color.parseColor("#85c952"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Mccree":
+                progressBar.setColor(Color.parseColor("#ae595c"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Mei":
+                progressBar.setColor(Color.parseColor("#6faced"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Mercy":
+                progressBar.setColor(Color.parseColor("#ebe8bb"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Moira":
+                progressBar.setColor(Color.parseColor("#803c51"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Orisa":
+                progressBar.setColor(Color.parseColor("#468c43"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Pharah":
+                progressBar.setColor(Color.parseColor("#3e7dca"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Reaper":
+                progressBar.setColor(Color.parseColor("#7d3e51"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Reinhardt":
+                progressBar.setColor(Color.parseColor("#929da3"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Roadhog":
+                progressBar.setColor(Color.parseColor("#b68c52"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Sigma":
+                progressBar.setColor(Color.parseColor("#33bbaa"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Soldier76":
+                progressBar.setColor(Color.parseColor("#697794"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Sombra":
+                progressBar.setColor(Color.parseColor("#7359ba"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Symmetra":
+                progressBar.setColor(Color.parseColor("#8ebccc"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Torbjörn":
+                progressBar.setColor(Color.parseColor("#c0726e"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Tracer":
+                progressBar.setColor(Color.parseColor("#d79342"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Widowmaker":
+                progressBar.setColor(Color.parseColor("#9e6aa8"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Winston":
+                progressBar.setColor(Color.parseColor("#a2a6bf"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "WreckingBall":
+                progressBar.setColor(Color.parseColor("#4a575f"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Zarya":
+                progressBar.setColor(Color.parseColor("#e77eb6"));
+                backgroundColor.setBackground(progressBar);
+                break;
+            case "Zenyatta":
+                progressBar.setColor(Color.parseColor("#ede582"));
+                backgroundColor.setBackground(progressBar);
+                break;
+        }
+    }
+
+    private int getHeroIcon(String topCharacterName) {
+        int id = 0;
+        switch (topCharacterName) {
+            case "Ana":
+                id = R.drawable.ana_icon;
+                break;
+            case "Ashe":
+                id = R.drawable.ashe_icon;
+                break;
+            case "Baptiste":
+                id = R.drawable.baptiste_icon;
+                break;
+            case "Bastion":
+                id = R.drawable.bastion_icon;
+                break;
+            case "Brigitte":
+                id = R.drawable.brigitte_icon;
+                break;
+            case "DVa":
+                id = R.drawable.dva_icon;
+                break;
+            case "Doomfist":
+                id = R.drawable.doomfist_icon;
+                break;
+            case "Genji":
+                id = R.drawable.genji_icon;
+                break;
+            case "Hanzo":
+                id = R.drawable.hanzo_icon;
+                break;
+            case "Junkrat":
+                id = R.drawable.junkrat_icon;
+                break;
+            case "Lucio":
+                id = R.drawable.lucio_icon;
+                break;
+            case "Mccree":
+                id = R.drawable.mccree_icon;
+                break;
+            case "Mei":
+                id = R.drawable.mei_icon;
+                break;
+            case "Mercy":
+                id = R.drawable.mercy_icon;
+                break;
+            case "Moira":
+                id = R.drawable.moira_icon;
+                break;
+            case "Orisa":
+                id = R.drawable.orisa_icon;
+                break;
+            case "Pharah":
+                id = R.drawable.pharah_icon;
+                break;
+            case "Reaper":
+                id = R.drawable.reaper_icon;
+                break;
+            case "Reinhardt":
+                id = R.drawable.reinhardt_icon;
+                break;
+            case "Roadhog":
+                id = R.drawable.roadhog_icon;
+                break;
+            case "Sigma":
+                id = R.drawable.sigma_icon;
+                break;
+            case "Soldier76":
+                id = R.drawable.soldier_icon;
+                break;
+            case "Sombra":
+                id = R.drawable.sombra_icon;
+                break;
+            case "Symmetra":
+                id = R.drawable.symmetra_icon;
+                break;
+            case "Torbjörn":
+                id = R.drawable.torbjorn_icon;
+                break;
+            case "Tracer":
+                id = R.drawable.tracer_icon;
+                break;
+            case "Widowmaker":
+                id = R.drawable.widow_icon;
+                break;
+            case "Winston":
+                id = R.drawable.winston_icon;
+                break;
+            case "WreckingBall":
+                id = R.drawable.wrecking_ball_icon;
+                break;
+            case "Zarya":
+                id = R.drawable.zarya_icon;
+                break;
+            case "Zenyatta":
+                id = R.drawable.zenyatta_icon;
+                break;
+        }
+        return id;
+    }
+
+    private void setTopCharacterImage(String topCharacterName) {
+        switch (topCharacterName) {
+            case "Ana":
+                topCharacter.setImageResource(R.drawable.ana_portrait);
+                break;
+            case "Ashe":
+                topCharacter.setImageResource(R.drawable.ashe_portrait);
+                break;
+            case "Baptiste":
+                topCharacter.setImageResource(R.drawable.baptiste_portrait);
+                break;
+            case "Bastion":
+                topCharacter.setImageResource(R.drawable.bastion_portrait);
+                break;
+            case "Brigitte":
+                topCharacter.setImageResource(R.drawable.brigitte_portrait);
+                break;
+            case "DVa":
+                topCharacter.setImageResource(R.drawable.dva_portrait);
+                break;
+            case "Doomfist":
+                topCharacter.setImageResource(R.drawable.doomfist_portrait);
+                break;
+            case "Genji":
+                topCharacter.setImageResource(R.drawable.genji_portrait);
+                break;
+            case "Hanzo":
+                topCharacter.setImageResource(R.drawable.hanzo_portrait);
+                break;
+            case "Junkrat":
+                topCharacter.setImageResource(R.drawable.junkrat_portrait);
+                break;
+            case "Lucio":
+                topCharacter.setImageResource(R.drawable.lucio_portrait);
+                break;
+            case "Mccree":
+                topCharacter.setImageResource(R.drawable.mccree_portrait);
+                break;
+            case "Mei":
+                topCharacter.setImageResource(R.drawable.mei_portrait);
+                break;
+            case "Mercy":
+                topCharacter.setImageResource(R.drawable.mercy_portrait);
+                break;
+            case "Moira":
+                topCharacter.setImageResource(R.drawable.moira_portrait);
+                break;
+            case "Orisa":
+                topCharacter.setImageResource(R.drawable.orisa_portrait);
+                break;
+            case "Pharah":
+                topCharacter.setImageResource(R.drawable.pharah_portrait);
+                break;
+            case "Reaper":
+                topCharacter.setImageResource(R.drawable.reaper_portrait);
+                break;
+            case "Reinhardt":
+                topCharacter.setImageResource(R.drawable.reinhardt_portrait);
+                break;
+            case "Roadhog":
+                topCharacter.setImageResource(R.drawable.roadhog_portrait);
+                break;
+            case "Sigma":
+                topCharacter.setImageResource(R.drawable.sigma_portrait);
+                break;
+            case "Soldier76":
+                topCharacter.setImageResource(R.drawable.soldier_portrait);
+                break;
+            case "Sombra":
+                topCharacter.setImageResource(R.drawable.sombra_portrait);
+                break;
+            case "Symmetra":
+                topCharacter.setImageResource(R.drawable.symmetra_portrait);
+                break;
+            case "Torbjörn":
+                topCharacter.setImageResource(R.drawable.torbjorn_portrait);
+                break;
+            case "Tracer":
+                topCharacter.setImageResource(R.drawable.tracer_portrait);
+                break;
+            case "Widowmaker":
+                topCharacter.setImageResource(R.drawable.widow_portrait);
+                break;
+            case "Winston":
+                topCharacter.setImageResource(R.drawable.winston_portrait);
+                break;
+            case "WreckingBall":
+                topCharacter.setImageResource(R.drawable.wrecking_ball_portrait);
+                break;
+            case "Zarya":
+                topCharacter.setImageResource(R.drawable.zarya_portrait);
+                break;
+            case "Zenyatta":
+                topCharacter.setImageResource(R.drawable.zenyatta_portrait);
+                break;
+        }
+    }
+
+    private void sortList(ArrayList<Hero> topHeroes, String howToSort) {
+        switch (howToSort) {
+            case TIME_PLAYED:
+                topHeroes.sort((hero1, hero2) -> {
+                    int secondsHero1 = getSeconds(hero1);
+                    int secondsHero2 = getSeconds(hero2);
+                    if (secondsHero1 > secondsHero2) {
+                        return -1;
+                    } else if (secondsHero1 < secondsHero2) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                break;
+            case GAMES_WON:
+                topHeroes.sort((hero1, hero2) -> {
+                    if (hero1.getGamesWon() > hero2.getGamesWon()) {
+                        return -1;
+                    } else if (hero1.getGamesWon() < hero2.getGamesWon()) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                break;
+            case WEAPON_ACCURACY:
+                topHeroes.sort((hero1, hero2) -> {
+                    if (hero1.getWeaponAccuracy() > hero2.getWeaponAccuracy()) {
+                        return -1;
+                    } else if (hero1.getWeaponAccuracy() < hero2.getWeaponAccuracy()) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                break;
+            case ELIMINATIONS_PER_LIFE:
+                topHeroes.sort((hero1, hero2) -> {
+                    if (hero1.getEliminationsPerLife() > hero2.getEliminationsPerLife()) {
+                        return -1;
+                    } else if (hero1.getEliminationsPerLife() < hero2.getEliminationsPerLife()) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                break;
+            case MULTIKILL_BEST:
+                topHeroes.sort((hero1, hero2) -> {
+                    if (hero1.getMultiKillBest() > hero2.getMultiKillBest()) {
+                        return -1;
+                    } else if (hero1.getMultiKillBest() < hero2.getMultiKillBest()) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                break;
+            case OBJECTIVE_KILLS:
+                topHeroes.sort((hero1, hero2) -> {
+                    if (hero1.getObjectiveKills() > hero2.getObjectiveKills()) {
+                        return -1;
+                    } else if (hero1.getObjectiveKills() < hero2.getObjectiveKills()) {
+                        return 1;
+                    }
+                    return 0;
+                });
+        }
+    }
+
+    private int getSeconds(Hero hero1) {
+        int secondsHero1 = 0;
+        if (StringUtils.countMatches(hero1.getTimePlayed(), ":") == 2) {
+            secondsHero1 += Integer.valueOf(hero1.getTimePlayed().substring(0, hero1.getTimePlayed().indexOf(":"))) * 3600;
+            secondsHero1 += Integer.valueOf(hero1.getTimePlayed().substring(hero1.getTimePlayed().indexOf(":") + 1, hero1.getTimePlayed().lastIndexOf(":"))) * 60;
+            secondsHero1 += Integer.valueOf(hero1.getTimePlayed().substring(hero1.getTimePlayed().lastIndexOf(":") + 1));
+        } else if (StringUtils.countMatches(hero1.getTimePlayed(), ":") == 1) {
+            secondsHero1 += Integer.valueOf(hero1.getTimePlayed().substring(0, hero1.getTimePlayed().indexOf(":"))) * 60;
+            secondsHero1 += Integer.valueOf(hero1.getTimePlayed().substring(hero1.getTimePlayed().lastIndexOf(":") + 1));
+        } else {
+            secondsHero1 = Integer.valueOf(hero1.getTimePlayed());
+        }
+        return secondsHero1;
+    }
+
+    private void setRatingInformation(RequestQueue requestQueue) {
+        if (accountInformation.getRating() > 0) {
+            for (int i = 0; i < accountInformation.getRatings().size(); i++) {
+                if (accountInformation.getRatings().get(i).getRole().equals("tank") && accountInformation.getRatings().get(i).getLevel() > 0) {
+                    ratingTank.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
+                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconTank);
+                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconTank);
+                } else {
+                    if (accountInformation.getRatings().get(i).getLevel() == 0) {
+                        ratingIconTank.setVisibility(View.GONE);
+                        ratingRankIconTank.setVisibility(View.GONE);
+                        ratingTank.setVisibility(View.GONE);
+                    }
+                }
+                if (accountInformation.getRatings().get(i).getRole().equals("damage") && accountInformation.getRatings().get(i).getLevel() > 0) {
+                    ratingDamage.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
+                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconDamage);
+                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconDamage);
+                } else {
+                    if (accountInformation.getRatings().get(i).getLevel() == 0) {
+                        ratingIconDamage.setVisibility(View.GONE);
+                        ratingRankIconDamage.setVisibility(View.GONE);
+                        ratingDamage.setVisibility(View.GONE);
+                    }
+                }
+                if (accountInformation.getRatings().get(i).getRole().equals("support") && accountInformation.getRatings().get(i).getLevel() > 0) {
+                    ratingSupport.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
+                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconSupport);
+                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconSupport);
+                } else {
+                    if (accountInformation.getRatings().get(i).getLevel() == 0) {
+                        ratingIconSupport.setVisibility(View.GONE);
+                        ratingRankIconSupport.setVisibility(View.GONE);
+                        ratingSupport.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+        } else {
+            ratingIconSupport.setVisibility(View.GONE);
+            ratingRankIconSupport.setVisibility(View.GONE);
+            ratingSupport.setVisibility(View.GONE);
+            ratingIconDamage.setVisibility(View.GONE);
+            ratingRankIconDamage.setVisibility(View.GONE);
+            ratingDamage.setVisibility(View.GONE);
+            ratingIconTank.setVisibility(View.GONE);
+            ratingRankIconTank.setVisibility(View.GONE);
+            ratingTank.setVisibility(View.GONE);
+            View view = findViewById(R.id.view2);
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    private void setGamesWon() {
+        String tempGames = accountInformation.getGamesWon() + " games won";
+        gamesWon.setText(tempGames);
+    }
+
+    private void setName(RequestQueue requestQueue) {
+        int hashtag = accountInformation.getName().indexOf("#");
+        String tempName = accountInformation.getName().substring(0, hashtag) + " ";
+        name.setText(tempName);
+        downloadLevelIcon(requestQueue);
+        level.setText(String.valueOf(accountInformation.getLevel()));
     }
 
     private void callNextActivity(Class activity) {
@@ -192,7 +900,7 @@ public class OWActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(accountInformation.getEndorsementIcon(), string -> {
             try {
                 SVG endorsement_icon = SVG.getFromString(string);
-                PictureDrawable  pd = new PictureDrawable(endorsement_icon.renderToPicture());
+                PictureDrawable pd = new PictureDrawable(endorsement_icon.renderToPicture());
                 endorsementIcon.setImageDrawable(pd);
             } catch (Exception e) {
                 Log.e("SVG Exception", e.toString());
@@ -205,10 +913,10 @@ public class OWActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void downloadRatingIcon(RequestQueue requestQueue) {
-        ImageRequest imageRequest = new ImageRequest(accountInformation.getRatingIcon(), bitmap -> {
-            BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
-            ratingIcon.setBackground(avatarBM);
+    private void downloadRatingIcon(RequestQueue requestQueue, String url, ImageView imageView) {
+        ImageRequest imageRequest = new ImageRequest(url, bitmap -> {
+            BitmapDrawable icon = new BitmapDrawable(getResources(), bitmap);
+            imageView.setImageDrawable(icon);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> {
                     showNoConnectionMessage(OWActivity.this, 0);

@@ -4,6 +4,8 @@ package com.BlizzardArmory.overwatch.TopHeroes;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class TopHeroes {
 
     @SerializedName("ana")
@@ -66,6 +68,9 @@ public class TopHeroes {
     @SerializedName("roadhog")
     @Expose
     private Roadhog roadhog;
+    @SerializedName("sigma")
+    @Expose
+    private Sigma sigma;
     @SerializedName("soldier76")
     @Expose
     private Soldier76 soldier76;
@@ -77,7 +82,7 @@ public class TopHeroes {
     private Symmetra symmetra;
     @SerializedName("torbjorn")
     @Expose
-    private Torbjorn torbjorn;
+    private Torbjörn torbjorn;
     @SerializedName("tracer")
     @Expose
     private Tracer tracer;
@@ -96,6 +101,8 @@ public class TopHeroes {
     @SerializedName("zenyatta")
     @Expose
     private Zenyatta zenyatta;
+
+    private ArrayList<Hero> heroList = new ArrayList<>();
 
     public Ana getAna() {
         return ana;
@@ -257,6 +264,14 @@ public class TopHeroes {
         this.roadhog = roadhog;
     }
 
+    public Sigma getSigma() {
+        return sigma;
+    }
+
+    public void setSigma(Sigma sigma) {
+        this.sigma = sigma;
+    }
+
     public Soldier76 getSoldier76() {
         return soldier76;
     }
@@ -281,11 +296,11 @@ public class TopHeroes {
         this.symmetra = symmetra;
     }
 
-    public Torbjorn getTorbjorn() {
+    public Torbjörn getTorbjorn() {
         return torbjorn;
     }
 
-    public void setTorbjorn(Torbjorn torbjorn) {
+    public void setTorbjorn(Torbjörn torbjorn) {
         this.torbjorn = torbjorn;
     }
 
@@ -337,4 +352,39 @@ public class TopHeroes {
         this.zenyatta = zenyatta;
     }
 
+    public ArrayList<Hero> getHeroList() {
+        heroList.add(ana);
+        heroList.add(ashe);
+        heroList.add(baptiste);
+        heroList.add(bastion);
+        heroList.add(brigitte);
+        heroList.add(dVa);
+        heroList.add(doomfist);
+        heroList.add(genji);
+        heroList.add(hanzo);
+        heroList.add(junkrat);
+        heroList.add(lucio);
+        heroList.add(mccree);
+        heroList.add(mei);
+        heroList.add(mercy);
+        heroList.add(moira);
+        heroList.add(orisa);
+        heroList.add(pharah);
+        heroList.add(reaper);
+        heroList.add(reinhardt);
+        heroList.add(roadhog);
+        heroList.add(sigma);
+        heroList.add(soldier76);
+        heroList.add(sombra);
+        heroList.add(symmetra);
+        heroList.add(torbjorn);
+        heroList.add(tracer);
+        heroList.add(widowmaker);
+        heroList.add(winston);
+        heroList.add(wreckingBall);
+        heroList.add(zarya);
+        heroList.add(zenyatta);
+
+        return heroList;
+    }
 }

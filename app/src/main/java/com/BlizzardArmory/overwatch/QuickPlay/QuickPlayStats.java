@@ -1,5 +1,7 @@
 package com.BlizzardArmory.overwatch.QuickPlay;
 
+import com.BlizzardArmory.overwatch.Awards;
+import com.BlizzardArmory.overwatch.CareerStats;
 import com.BlizzardArmory.overwatch.Games;
 import com.BlizzardArmory.overwatch.TopHeroes.TopHeroes;
 import com.google.gson.annotations.Expose;
