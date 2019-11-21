@@ -1,12 +1,12 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 import com.BlizzardArmory.overwatch.Average;
-import com.BlizzardArmory.overwatch.QuickPlay.Assists;
-import com.BlizzardArmory.overwatch.QuickPlay.Best;
-import com.BlizzardArmory.overwatch.QuickPlay.Combat;
-import com.BlizzardArmory.overwatch.QuickPlay.Game;
-import com.BlizzardArmory.overwatch.QuickPlay.MatchAwards;
-import com.BlizzardArmory.overwatch.QuickPlay.Miscellaneous;
+import com.BlizzardArmory.overwatch.Assists;
+import com.BlizzardArmory.overwatch.Best;
+import com.BlizzardArmory.overwatch.Combat;
+import com.BlizzardArmory.overwatch.Game;
+import com.BlizzardArmory.overwatch.MatchAwards;
+import com.BlizzardArmory.overwatch.Miscellaneous;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

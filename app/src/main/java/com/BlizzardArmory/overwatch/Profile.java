@@ -3,6 +3,8 @@ package com.BlizzardArmory.overwatch;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Profile {
 
     @SerializedName("icon")
@@ -35,6 +37,9 @@ public class Profile {
     @SerializedName("ratingIcon")
     @Expose
     private String ratingIcon;
+    @SerializedName("ratings")
+    @Expose
+    private List<Rating> ratings = null;
     @SerializedName("gamesWon")
     @Expose
     private int gamesWon;
@@ -107,6 +112,14 @@ public class Profile {
 
     public void setRatingIcon(String ratingIcon) {
         this.ratingIcon = ratingIcon;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
     }
 
     public int getGamesWon() {

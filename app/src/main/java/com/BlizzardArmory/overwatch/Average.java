@@ -7,10 +7,10 @@ public class Average {
 
     @SerializedName("allDamageDoneAvgPer10Min")
     @Expose
-    private int allDamageDoneAvgPer10Min;
+    private double allDamageDoneAvgPer10Min;
     @SerializedName("barrierDamageDoneAvgPer10Min")
     @Expose
-    private int barrierDamageDoneAvgPer10Min;
+    private double barrierDamageDoneAvgPer10Min;
     @SerializedName("deathsAvgPer10Min")
     @Expose
     private float deathsAvgPer10Min;
@@ -22,10 +22,10 @@ public class Average {
     private float finalBlowsAvgPer10Min;
     @SerializedName("healingDoneAvgPer10Min")
     @Expose
-    private int healingDoneAvgPer10Min;
+    private double healingDoneAvgPer10Min;
     @SerializedName("heroDamageDoneAvgPer10Min")
     @Expose
-    private int heroDamageDoneAvgPer10Min;
+    private double heroDamageDoneAvgPer10Min;
     @SerializedName("objectiveKillsAvgPer10Min")
     @Expose
     private float objectiveKillsAvgPer10Min;
@@ -39,19 +39,19 @@ public class Average {
     @Expose
     private String timeSpentOnFireAvgPer10Min;
 
-    public int getAllDamageDoneAvgPer10Min() {
+    public double getAllDamageDoneAvgPer10Min() {
         return allDamageDoneAvgPer10Min;
     }
 
-    public void setAllDamageDoneAvgPer10Min(int allDamageDoneAvgPer10Min) {
+    public void setAllDamageDoneAvgPer10Min(double allDamageDoneAvgPer10Min) {
         this.allDamageDoneAvgPer10Min = allDamageDoneAvgPer10Min;
     }
 
-    public int getBarrierDamageDoneAvgPer10Min() {
+    public double getBarrierDamageDoneAvgPer10Min() {
         return barrierDamageDoneAvgPer10Min;
     }
 
-    public void setBarrierDamageDoneAvgPer10Min(int barrierDamageDoneAvgPer10Min) {
+    public void setBarrierDamageDoneAvgPer10Min(double barrierDamageDoneAvgPer10Min) {
         this.barrierDamageDoneAvgPer10Min = barrierDamageDoneAvgPer10Min;
     }
 
@@ -79,19 +79,19 @@ public class Average {
         this.finalBlowsAvgPer10Min = finalBlowsAvgPer10Min;
     }
 
-    public int getHealingDoneAvgPer10Min() {
+    public double getHealingDoneAvgPer10Min() {
         return healingDoneAvgPer10Min;
     }
 
-    public void setHealingDoneAvgPer10Min(int healingDoneAvgPer10Min) {
+    public void setHealingDoneAvgPer10Min(double healingDoneAvgPer10Min) {
         this.healingDoneAvgPer10Min = healingDoneAvgPer10Min;
     }
 
-    public int getHeroDamageDoneAvgPer10Min() {
+    public double getHeroDamageDoneAvgPer10Min() {
         return heroDamageDoneAvgPer10Min;
     }
 
-    public void setHeroDamageDoneAvgPer10Min(int heroDamageDoneAvgPer10Min) {
+    public void setHeroDamageDoneAvgPer10Min(double heroDamageDoneAvgPer10Min) {
         this.heroDamageDoneAvgPer10Min = heroDamageDoneAvgPer10Min;
     }
 

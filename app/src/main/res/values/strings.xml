@@ -111,4 +111,6 @@
     <string name="legacy_of_the_void">Legacy of the Void</string>
     <string name="heart_of_the_swarm">Heart of the Swarm</string>
     <string name="campaign_not_complete">Campaign Not Complete</string>
+    <string name="top_heroes">Top Heroes</string>
+    <string name="time_played">Time Played</string>
 </resources>

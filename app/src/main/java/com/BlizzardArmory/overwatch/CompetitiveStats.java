@@ -10,7 +10,7 @@ public class CompetitiveStats {
     private float eliminationsAvg;
     @SerializedName("damageDoneAvg")
     @Expose
-    private int damageDoneAvg;
+    private double damageDoneAvg;
     @SerializedName("deathsAvg")
     @Expose
     private float deathsAvg;
@@ -19,7 +19,7 @@ public class CompetitiveStats {
     private float finalBlowsAvg;
     @SerializedName("healingDoneAvg")
     @Expose
-    private int healingDoneAvg;
+    private double healingDoneAvg;
     @SerializedName("objectiveKillsAvg")
     @Expose
     private float objectiveKillsAvg;
@@ -44,11 +44,11 @@ public class CompetitiveStats {
         this.eliminationsAvg = eliminationsAvg;
     }
 
-    public int getDamageDoneAvg() {
+    public double getDamageDoneAvg() {
         return damageDoneAvg;
     }
 
-    public void setDamageDoneAvg(int damageDoneAvg) {
+    public void setDamageDoneAvg(double damageDoneAvg) {
         this.damageDoneAvg = damageDoneAvg;
     }
 
@@ -68,11 +68,11 @@ public class CompetitiveStats {
         this.finalBlowsAvg = finalBlowsAvg;
     }
 
-    public int getHealingDoneAvg() {
+    public double getHealingDoneAvg() {
         return healingDoneAvg;
     }
 
-    public void setHealingDoneAvg(int healingDoneAvg) {
+    public void setHealingDoneAvg(double healingDoneAvg) {
         this.healingDoneAvg = healingDoneAvg;
     }
 

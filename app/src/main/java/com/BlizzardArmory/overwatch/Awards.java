@@ -7,57 +7,57 @@ public class Awards {
 
     @SerializedName("cards")
     @Expose
-    private int cards;
+    private double cards;
     @SerializedName("medals")
     @Expose
-    private int medals;
+    private double medals;
     @SerializedName("medalsBronze")
     @Expose
-    private int medalsBronze;
+    private double medalsBronze;
     @SerializedName("medalsSilver")
     @Expose
-    private int medalsSilver;
+    private double medalsSilver;
     @SerializedName("medalsGold")
     @Expose
-    private int medalsGold;
+    private double medalsGold;
 
-    public int getCards() {
+    public double getCards() {
         return cards;
     }
 
-    public void setCards(int cards) {
+    public void setCards(double cards) {
         this.cards = cards;
     }
 
-    public int getMedals() {
+    public double getMedals() {
         return medals;
     }
 
-    public void setMedals(int medals) {
+    public void setMedals(double medals) {
         this.medals = medals;
     }
 
-    public int getMedalsBronze() {
+    public double getMedalsBronze() {
         return medalsBronze;
     }
 
-    public void setMedalsBronze(int medalsBronze) {
+    public void setMedalsBronze(double medalsBronze) {
         this.medalsBronze = medalsBronze;
     }
 
-    public int getMedalsSilver() {
+    public double getMedalsSilver() {
         return medalsSilver;
     }
 
-    public void setMedalsSilver(int medalsSilver) {
+    public void setMedalsSilver(double medalsSilver) {
         this.medalsSilver = medalsSilver;
     }
 
-    public int getMedalsGold() {
+    public double getMedalsGold() {
         return medalsGold;
     }
 
-    public void setMedalsGold(int medalsGold) {
+    public void setMedalsGold(double medalsGold) {
         this.medalsGold = medalsGold;
     }
 

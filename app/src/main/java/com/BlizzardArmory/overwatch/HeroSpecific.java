@@ -7,79 +7,79 @@ public class HeroSpecific {
 
     @SerializedName("enemiesTrapped")
     @Expose
-    private int enemiesTrapped;
+    private double enemiesTrapped;
     @SerializedName("enemiesTrappedAvgPer10Min")
     @Expose
     private float enemiesTrappedAvgPer10Min;
     @SerializedName("enemiesTrappedMostInGame")
     @Expose
-    private int enemiesTrappedMostInGame;
+    private double enemiesTrappedMostInGame;
     @SerializedName("ripTireKills")
     @Expose
-    private int ripTireKills;
+    private double ripTireKills;
     @SerializedName("ripTireKillsAvgPer10Min")
     @Expose
     private float ripTireKillsAvgPer10Min;
     @SerializedName("ripTireKillsMostInGame")
     @Expose
-    private int ripTireKillsMostInGame;
+    private double ripTireKillsMostInGame;
     @SerializedName("dragonstrikeKills")
     @Expose
-    private int dragonstrikeKills;
+    private double dragonstrikeKills;
     @SerializedName("dragonstrikeKillsAvgPer10Min")
     @Expose
     private float dragonstrikeKillsAvgPer10Min;
     @SerializedName("dragonstrikeKillsMostInGame")
     @Expose
-    private int dragonstrikeKillsMostInGame;
+    private double dragonstrikeKillsMostInGame;
     @SerializedName("scatterArrowKills")
     @Expose
-    private int scatterArrowKills;
+    private double scatterArrowKills;
     @SerializedName("scatterArrowKillsAvgPer10Min")
     @Expose
     private float scatterArrowKillsAvgPer10Min;
     @SerializedName("scatterArrowKillsMostInGame")
     @Expose
-    private int scatterArrowKillsMostInGame;
+    private double scatterArrowKillsMostInGame;
     @SerializedName("stormArrowKills")
     @Expose
-    private int stormArrowKills;
+    private double stormArrowKills;
     @SerializedName("stormArrowKillsAvgPer10Min")
     @Expose
     private float stormArrowKillsAvgPer10Min;
     @SerializedName("stormArrowKillsMostInGame")
     @Expose
-    private int stormArrowKillsMostInGame;
+    private double stormArrowKillsMostInGame;
     @SerializedName("bioticGrenadeKills")
     @Expose
-    private int bioticGrenadeKills;
+    private double bioticGrenadeKills;
     @SerializedName("enemiesSlept")
     @Expose
-    private int enemiesSlept;
+    private double enemiesSlept;
     @SerializedName("enemiesSleptAvgPer10Min")
     @Expose
     private float enemiesSleptAvgPer10Min;
     @SerializedName("enemiesSleptMostInGame")
     @Expose
-    private int enemiesSleptMostInGame;
+    private double enemiesSleptMostInGame;
     @SerializedName("nanoBoostAssists")
     @Expose
-    private int nanoBoostAssists;
+    private double nanoBoostAssists;
     @SerializedName("nanoBoostAssistsAvgPer10Min")
     @Expose
     private float nanoBoostAssistsAvgPer10Min;
     @SerializedName("nanoBoostAssistsMostInGame")
     @Expose
-    private int nanoBoostAssistsMostInGame;
+    private double nanoBoostAssistsMostInGame;
     @SerializedName("nanoBoostsApplied")
     @Expose
-    private int nanoBoostsApplied;
+    private double nanoBoostsApplied;
     @SerializedName("nanoBoostsAppliedAvgPer10Min")
     @Expose
     private float nanoBoostsAppliedAvgPer10Min;
     @SerializedName("nanoBoostsAppliedMostInGame")
     @Expose
-    private int nanoBoostsAppliedMostInGame;
+    private double nanoBoostsAppliedMostInGame;
     @SerializedName("scopedAccuracy")
     @Expose
     private String scopedAccuracy;
@@ -88,13 +88,13 @@ public class HeroSpecific {
     private String scopedAccuracyBestInGame;
     @SerializedName("selfHealing")
     @Expose
-    private int selfHealing;
+    private double selfHealing;
     @SerializedName("selfHealingAvgPer10Min")
     @Expose
-    private int selfHealingAvgPer10Min;
+    private double selfHealingAvgPer10Min;
     @SerializedName("selfHealingMostInGame")
     @Expose
-    private int selfHealingMostInGame;
+    private double selfHealingMostInGame;
     @SerializedName("unscopedAccuracy")
     @Expose
     private String unscopedAccuracy;
@@ -103,34 +103,34 @@ public class HeroSpecific {
     private String unscopedAccuracyBestInGame;
     @SerializedName("bobKills")
     @Expose
-    private int bobKills;
+    private double bobKills;
     @SerializedName("bobKillsAvgPer10Min")
     @Expose
     private float bobKillsAvgPer10Min;
     @SerializedName("bobKillsMostInGame")
     @Expose
-    private int bobKillsMostInGame;
+    private double bobKillsMostInGame;
     @SerializedName("coachGunKills")
     @Expose
-    private int coachGunKills;
+    private double coachGunKills;
     @SerializedName("coachGunKillsAvgPer10Min")
     @Expose
     private float coachGunKillsAvgPer10Min;
     @SerializedName("coachGunKillsMostInGame")
     @Expose
-    private int coachGunKillsMostInGame;
+    private double coachGunKillsMostInGame;
     @SerializedName("dynamiteKills")
     @Expose
-    private int dynamiteKills;
+    private double dynamiteKills;
     @SerializedName("dynamiteKillsAvgPer10Min")
     @Expose
     private float dynamiteKillsAvgPer10Min;
     @SerializedName("dynamiteKillsMostInGame")
     @Expose
-    private int dynamiteKillsMostInGame;
+    private double dynamiteKillsMostInGame;
     @SerializedName("scopedCriticalHits")
     @Expose
-    private int scopedCriticalHits;
+    private double scopedCriticalHits;
     @SerializedName("scopedCriticalHitsAccuracy")
     @Expose
     private String scopedCriticalHitsAccuracy;
@@ -139,25 +139,25 @@ public class HeroSpecific {
     private float scopedCriticalHitsAvgPer10Min;
     @SerializedName("scopedCriticalHitsMostInGame")
     @Expose
-    private int scopedCriticalHitsMostInGame;
+    private double scopedCriticalHitsMostInGame;
     @SerializedName("amplificationMatrixCasts")
     @Expose
-    private int amplificationMatrixCasts;
+    private double amplificationMatrixCasts;
     @SerializedName("amplificationMatrixCastsAvgPer10Min")
     @Expose
     private float amplificationMatrixCastsAvgPer10Min;
     @SerializedName("amplificationMatrixCastsMostInGame")
     @Expose
-    private int amplificationMatrixCastsMostInGame;
+    private double amplificationMatrixCastsMostInGame;
     @SerializedName("damageAmplified")
     @Expose
-    private int damageAmplified;
+    private double damageAmplified;
     @SerializedName("damageAmplifiedAvgPer10Min")
     @Expose
-    private int damageAmplifiedAvgPer10Min;
+    private double damageAmplifiedAvgPer10Min;
     @SerializedName("damageAmplifiedMostInGame")
     @Expose
-    private int damageAmplifiedMostInGame;
+    private double damageAmplifiedMostInGame;
     @SerializedName("healingAccuracy")
     @Expose
     private String healingAccuracy;
@@ -166,292 +166,292 @@ public class HeroSpecific {
     private String healingAccuracyBestInGame;
     @SerializedName("immortalityFieldDeathsPrevented")
     @Expose
-    private int immortalityFieldDeathsPrevented;
+    private double immortalityFieldDeathsPrevented;
     @SerializedName("immortalityFieldDeathsPreventedAvgPer10Min")
     @Expose
     private float immortalityFieldDeathsPreventedAvgPer10Min;
     @SerializedName("immortalityFieldDeathsPreventedMostInGame")
     @Expose
-    private int immortalityFieldDeathsPreventedMostInGame;
+    private double immortalityFieldDeathsPreventedMostInGame;
     @SerializedName("reconKills")
     @Expose
-    private int reconKills;
+    private double reconKills;
     @SerializedName("reconKillsAvgPer10Min")
     @Expose
     private float reconKillsAvgPer10Min;
     @SerializedName("reconKillsMostInGame")
     @Expose
-    private int reconKillsMostInGame;
+    private double reconKillsMostInGame;
     @SerializedName("sentryKills")
     @Expose
-    private int sentryKills;
+    private double sentryKills;
     @SerializedName("sentryKillsAvgPer10Min")
     @Expose
     private float sentryKillsAvgPer10Min;
     @SerializedName("sentryKillsMostInGame")
     @Expose
-    private int sentryKillsMostInGame;
+    private double sentryKillsMostInGame;
     @SerializedName("tankKills")
     @Expose
-    private int tankKills;
+    private double tankKills;
     @SerializedName("tankKillsAvgPer10Min")
     @Expose
     private float tankKillsAvgPer10Min;
     @SerializedName("tankKillsMostInGame")
     @Expose
-    private int tankKillsMostInGame;
+    private double tankKillsMostInGame;
     @SerializedName("armorProvided")
     @Expose
-    private int armorProvided;
+    private double armorProvided;
     @SerializedName("armorProvidedAvgPer10Min")
     @Expose
-    private int armorProvidedAvgPer10Min;
+    private double armorProvidedAvgPer10Min;
     @SerializedName("armorProvidedMostInGame")
     @Expose
-    private int armorProvidedMostInGame;
+    private double armorProvidedMostInGame;
     @SerializedName("damageBlocked")
     @Expose
-    private int damageBlocked;
+    private double damageBlocked;
     @SerializedName("damageBlockedAvgPer10Min")
     @Expose
-    private int damageBlockedAvgPer10Min;
+    private double damageBlockedAvgPer10Min;
     @SerializedName("damageBlockedMostInGame")
     @Expose
-    private int damageBlockedMostInGame;
+    private double damageBlockedMostInGame;
     @SerializedName("inspireUptimePercentage")
     @Expose
     private String inspireUptimePercentage;
     @SerializedName("mechDeaths")
     @Expose
-    private int mechDeaths;
+    private double mechDeaths;
     @SerializedName("mechsCalled")
     @Expose
-    private int mechsCalled;
+    private double mechsCalled;
     @SerializedName("mechsCalledAvgPer10Min")
     @Expose
     private float mechsCalledAvgPer10Min;
     @SerializedName("mechsCalledMostInGame")
     @Expose
-    private int mechsCalledMostInGame;
+    private double mechsCalledMostInGame;
     @SerializedName("selfDestructKills")
     @Expose
-    private int selfDestructKills;
+    private double selfDestructKills;
     @SerializedName("selfDestructKillsAvgPer10Min")
     @Expose
     private float selfDestructKillsAvgPer10Min;
     @SerializedName("selfDestructKillsMostInGame")
     @Expose
-    private int selfDestructKillsMostInGame;
+    private double selfDestructKillsMostInGame;
     @SerializedName("abilityDamageDone")
     @Expose
-    private int abilityDamageDone;
+    private double abilityDamageDone;
     @SerializedName("abilityDamageDoneAvgPer10Min")
     @Expose
-    private int abilityDamageDoneAvgPer10Min;
+    private double abilityDamageDoneAvgPer10Min;
     @SerializedName("abilityDamageDoneMostInGame")
     @Expose
-    private int abilityDamageDoneMostInGame;
+    private double abilityDamageDoneMostInGame;
     @SerializedName("meteorStrikeKills")
     @Expose
-    private int meteorStrikeKills;
+    private double meteorStrikeKills;
     @SerializedName("meteorStrikeKillsAvgPer10Min")
     @Expose
     private float meteorStrikeKillsAvgPer10Min;
     @SerializedName("meteorStrikeKillsMostInGame")
     @Expose
-    private int meteorStrikeKillsMostInGame;
+    private double meteorStrikeKillsMostInGame;
     @SerializedName("shieldsCreated")
     @Expose
-    private int shieldsCreated;
+    private double shieldsCreated;
     @SerializedName("shieldsCreatedAvgPer10Min")
     @Expose
-    private int shieldsCreatedAvgPer10Min;
+    private double shieldsCreatedAvgPer10Min;
     @SerializedName("shieldsCreatedMostInGame")
     @Expose
-    private int shieldsCreatedMostInGame;
+    private double shieldsCreatedMostInGame;
     @SerializedName("damageReflected")
     @Expose
-    private int damageReflected;
+    private double damageReflected;
     @SerializedName("damageReflectedAvgPer10Min")
     @Expose
-    private int damageReflectedAvgPer10Min;
+    private double damageReflectedAvgPer10Min;
     @SerializedName("damageReflectedMostInGame")
     @Expose
-    private int damageReflectedMostInGame;
+    private double damageReflectedMostInGame;
     @SerializedName("deflectionKills")
     @Expose
-    private int deflectionKills;
+    private double deflectionKills;
     @SerializedName("dragonbladesKills")
     @Expose
-    private int dragonbladesKills;
+    private double dragonbladesKills;
     @SerializedName("dragonbladesKillsAvgPer10Min")
     @Expose
     private float dragonbladesKillsAvgPer10Min;
     @SerializedName("dragonbladesKillsMostInGame")
     @Expose
-    private int dragonbladesKillsMostInGame;
+    private double dragonbladesKillsMostInGame;
     @SerializedName("soundBarriersProvided")
     @Expose
-    private int soundBarriersProvided;
+    private double soundBarriersProvided;
     @SerializedName("soundBarriersProvidedAvgPer10Min")
     @Expose
     private float soundBarriersProvidedAvgPer10Min;
     @SerializedName("soundBarriersProvidedMostInGame")
     @Expose
-    private int soundBarriersProvidedMostInGame;
+    private double soundBarriersProvidedMostInGame;
     @SerializedName("deadeyeKills")
     @Expose
-    private int deadeyeKills;
+    private double deadeyeKills;
     @SerializedName("deadeyeKillsAvgPer10Min")
     @Expose
     private float deadeyeKillsAvgPer10Min;
     @SerializedName("deadeyeKillsMostInGame")
     @Expose
-    private int deadeyeKillsMostInGame;
+    private double deadeyeKillsMostInGame;
     @SerializedName("fanTheHammerKills")
     @Expose
-    private int fanTheHammerKills;
+    private double fanTheHammerKills;
     @SerializedName("fanTheHammerKillsAvgPer10Min")
     @Expose
     private float fanTheHammerKillsAvgPer10Min;
     @SerializedName("fanTheHammerKillsMostInGame")
     @Expose
-    private int fanTheHammerKillsMostInGame;
+    private double fanTheHammerKillsMostInGame;
     @SerializedName("blizzardKills")
     @Expose
-    private int blizzardKills;
+    private double blizzardKills;
     @SerializedName("blizzardKillsAvgPer10Min")
     @Expose
     private float blizzardKillsAvgPer10Min;
     @SerializedName("blizzardKillsMostInGame")
     @Expose
-    private int blizzardKillsMostInGame;
+    private double blizzardKillsMostInGame;
     @SerializedName("enemiesFrozen")
     @Expose
-    private int enemiesFrozen;
+    private double enemiesFrozen;
     @SerializedName("enemiesFrozenAvgPer10Min")
     @Expose
     private float enemiesFrozenAvgPer10Min;
     @SerializedName("enemiesFrozenMostInGame")
     @Expose
-    private int enemiesFrozenMostInGame;
+    private double enemiesFrozenMostInGame;
     @SerializedName("blasterKills")
     @Expose
-    private int blasterKills;
+    private double blasterKills;
     @SerializedName("blasterKillsAvgPer10Min")
     @Expose
     private float blasterKillsAvgPer10Min;
     @SerializedName("blasterKillsMostInGame")
     @Expose
-    private int blasterKillsMostInGame;
+    private double blasterKillsMostInGame;
     @SerializedName("playersResurrected")
     @Expose
-    private int playersResurrected;
+    private double playersResurrected;
     @SerializedName("playersResurrectedAvgPer10Min")
     @Expose
     private float playersResurrectedAvgPer10Min;
     @SerializedName("playersResurrectedMostInGame")
     @Expose
-    private int playersResurrectedMostInGame;
+    private double playersResurrectedMostInGame;
     @SerializedName("coalescenceHealing")
     @Expose
-    private int coalescenceHealing;
+    private double coalescenceHealing;
     @SerializedName("coalescenceHealingAvgPer10Min")
     @Expose
-    private int coalescenceHealingAvgPer10Min;
+    private double coalescenceHealingAvgPer10Min;
     @SerializedName("coalescenceHealingMostInGame")
     @Expose
-    private int coalescenceHealingMostInGame;
+    private double coalescenceHealingMostInGame;
     @SerializedName("coalescenceKills")
     @Expose
-    private int coalescenceKills;
+    private double coalescenceKills;
     @SerializedName("coalescenceKillsAvgPer10Min")
     @Expose
     private float coalescenceKillsAvgPer10Min;
     @SerializedName("coalescenceKillsMostInGame")
     @Expose
-    private int coalescenceKillsMostInGame;
+    private double coalescenceKillsMostInGame;
     @SerializedName("secondaryFireAccuracy")
     @Expose
     private String secondaryFireAccuracy;
     @SerializedName("superchargerAssists")
     @Expose
-    private int superchargerAssists;
+    private double superchargerAssists;
     @SerializedName("superchargerAssistsAvgPer10Min")
     @Expose
     private float superchargerAssistsAvgPer10Min;
     @SerializedName("superchargerAssistsMostInGame")
     @Expose
-    private int superchargerAssistsMostInGame;
+    private double superchargerAssistsMostInGame;
     @SerializedName("barrageKills")
     @Expose
-    private int barrageKills;
+    private double barrageKills;
     @SerializedName("barrageKillsAvgPer10Min")
     @Expose
     private float barrageKillsAvgPer10Min;
     @SerializedName("barrageKillsMostInGame")
     @Expose
-    private int barrageKillsMostInGame;
+    private double barrageKillsMostInGame;
     @SerializedName("directHitsAccuracy")
     @Expose
     private String directHitsAccuracy;
     @SerializedName("rocketDirectHits")
     @Expose
-    private int rocketDirectHits;
+    private double rocketDirectHits;
     @SerializedName("rocketDirectHitsAvgPer10Min")
     @Expose
     private float rocketDirectHitsAvgPer10Min;
     @SerializedName("rocketDirectHitsMostInGame")
     @Expose
-    private int rocketDirectHitsMostInGame;
+    private double rocketDirectHitsMostInGame;
     @SerializedName("deathsBlossomKills")
     @Expose
-    private int deathsBlossomKills;
+    private double deathsBlossomKills;
     @SerializedName("deathsBlossomKillsAvgPer10Min")
     @Expose
     private float deathsBlossomKillsAvgPer10Min;
     @SerializedName("deathsBlossomKillsMostInGame")
     @Expose
-    private int deathsBlossomKillsMostInGame;
+    private double deathsBlossomKillsMostInGame;
     @SerializedName("chargeKills")
     @Expose
-    private int chargeKills;
+    private double chargeKills;
     @SerializedName("chargeKillsAvgPer10Min")
     @Expose
     private float chargeKillsAvgPer10Min;
     @SerializedName("chargeKillsMostInGame")
     @Expose
-    private int chargeKillsMostInGame;
+    private double chargeKillsMostInGame;
     @SerializedName("earthshatterKills")
     @Expose
-    private int earthshatterKills;
+    private double earthshatterKills;
     @SerializedName("earthshatterKillsAvgPer10Min")
     @Expose
     private float earthshatterKillsAvgPer10Min;
     @SerializedName("earthshatterKillsMostInGame")
     @Expose
-    private int earthshatterKillsMostInGame;
+    private double earthshatterKillsMostInGame;
     @SerializedName("fireStrikeKills")
     @Expose
-    private int fireStrikeKills;
+    private double fireStrikeKills;
     @SerializedName("fireStrikeKillsAvgPer10Min")
     @Expose
     private float fireStrikeKillsAvgPer10Min;
     @SerializedName("fireStrikeKillsMostInGame")
     @Expose
-    private int fireStrikeKillsMostInGame;
+    private double fireStrikeKillsMostInGame;
     @SerializedName("rocketHammerMeleeAccuracy")
     @Expose
     private String rocketHammerMeleeAccuracy;
     @SerializedName("enemiesHooked")
     @Expose
-    private int enemiesHooked;
+    private double enemiesHooked;
     @SerializedName("enemiesHookedAvgPer10Min")
     @Expose
     private float enemiesHookedAvgPer10Min;
     @SerializedName("enemiesHookedMostInGame")
     @Expose
-    private int enemiesHookedMostInGame;
+    private double enemiesHookedMostInGame;
     @SerializedName("hookAccuracy")
     @Expose
     private String hookAccuracy;
@@ -460,67 +460,67 @@ public class HeroSpecific {
     private String hookAccuracyBestInGame;
     @SerializedName("hooksAttempted")
     @Expose
-    private int hooksAttempted;
+    private double hooksAttempted;
     @SerializedName("wholeHogKills")
     @Expose
-    private int wholeHogKills;
+    private double wholeHogKills;
     @SerializedName("wholeHogKillsAvgPer10Min")
     @Expose
     private float wholeHogKillsAvgPer10Min;
     @SerializedName("wholeHogKillsMostInGame")
     @Expose
-    private int wholeHogKillsMostInGame;
+    private double wholeHogKillsMostInGame;
     @SerializedName("bioticFieldHealingDone")
     @Expose
-    private int bioticFieldHealingDone;
+    private double bioticFieldHealingDone;
     @SerializedName("bioticFieldsDeployed")
     @Expose
-    private int bioticFieldsDeployed;
+    private double bioticFieldsDeployed;
     @SerializedName("helixRocketsKills")
     @Expose
-    private int helixRocketsKills;
+    private double helixRocketsKills;
     @SerializedName("helixRocketsKillsAvgPer10Min")
     @Expose
     private float helixRocketsKillsAvgPer10Min;
     @SerializedName("helixRocketsKillsMostInGame")
     @Expose
-    private int helixRocketsKillsMostInGame;
+    private double helixRocketsKillsMostInGame;
     @SerializedName("tacticalVisorKills")
     @Expose
-    private int tacticalVisorKills;
+    private double tacticalVisorKills;
     @SerializedName("tacticalVisorKillsAvgPer10Min")
     @Expose
     private float tacticalVisorKillsAvgPer10Min;
     @SerializedName("tacticalVisorKillsMostInGame")
     @Expose
-    private int tacticalVisorKillsMostInGame;
+    private double tacticalVisorKillsMostInGame;
     @SerializedName("enemiesEmpd")
     @Expose
-    private int enemiesEmpd;
+    private double enemiesEmpd;
     @SerializedName("enemiesEmpdAvgPer10Min")
     @Expose
     private float enemiesEmpdAvgPer10Min;
     @SerializedName("enemiesEmpdMostInGame")
     @Expose
-    private int enemiesEmpdMostInGame;
+    private double enemiesEmpdMostInGame;
     @SerializedName("enemiesHacked")
     @Expose
-    private int enemiesHacked;
+    private double enemiesHacked;
     @SerializedName("enemiesHackedAvgPer10Min")
     @Expose
     private float enemiesHackedAvgPer10Min;
     @SerializedName("enemiesHackedMostInGame")
     @Expose
-    private int enemiesHackedMostInGame;
+    private double enemiesHackedMostInGame;
     @SerializedName("playersTeleported")
     @Expose
-    private int playersTeleported;
+    private double playersTeleported;
     @SerializedName("playersTeleportedAvgPer10Min")
     @Expose
     private float playersTeleportedAvgPer10Min;
     @SerializedName("playersTeleportedMostInGame")
     @Expose
-    private int playersTeleportedMostInGame;
+    private double playersTeleportedMostInGame;
     @SerializedName("primaryFireAccuracy")
     @Expose
     private String primaryFireAccuracy;
@@ -529,133 +529,133 @@ public class HeroSpecific {
     private float secondaryDirectHitsAvgPer10Min;
     @SerializedName("sentryTurretsKills")
     @Expose
-    private int sentryTurretsKills;
+    private double sentryTurretsKills;
     @SerializedName("sentryTurretsKillsAvgPer10Min")
     @Expose
     private float sentryTurretsKillsAvgPer10Min;
     @SerializedName("sentryTurretsKillsMostInGame")
     @Expose
-    private int sentryTurretsKillsMostInGame;
+    private double sentryTurretsKillsMostInGame;
     @SerializedName("armorPacksCreated")
     @Expose
-    private int armorPacksCreated;
+    private double armorPacksCreated;
     @SerializedName("armorPacksCreatedAvgPer10Min")
     @Expose
     private float armorPacksCreatedAvgPer10Min;
     @SerializedName("armorPacksCreatedMostInGame")
     @Expose
-    private int armorPacksCreatedMostInGame;
+    private double armorPacksCreatedMostInGame;
     @SerializedName("moltenCoreKills")
     @Expose
-    private int moltenCoreKills;
+    private double moltenCoreKills;
     @SerializedName("moltenCoreKillsAvgPer10Min")
     @Expose
     private float moltenCoreKillsAvgPer10Min;
     @SerializedName("moltenCoreKillsMostInGame")
     @Expose
-    private int moltenCoreKillsMostInGame;
+    private double moltenCoreKillsMostInGame;
     @SerializedName("overloadKills")
     @Expose
-    private int overloadKills;
+    private double overloadKills;
     @SerializedName("overloadKillsMostInGame")
     @Expose
-    private int overloadKillsMostInGame;
+    private double overloadKillsMostInGame;
     @SerializedName("torbjornKills")
     @Expose
-    private int torbjornKills;
+    private double torbjornKills;
     @SerializedName("torbjornKillsAvgPer10Min")
     @Expose
     private float torbjornKillsAvgPer10Min;
     @SerializedName("torbjornKillsMostInGame")
     @Expose
-    private int torbjornKillsMostInGame;
+    private double torbjornKillsMostInGame;
     @SerializedName("turretsDamageAvgPer10Min")
     @Expose
-    private int turretsDamageAvgPer10Min;
+    private double turretsDamageAvgPer10Min;
     @SerializedName("turretsKills")
     @Expose
-    private int turretsKills;
+    private double turretsKills;
     @SerializedName("turretsKillsAvgPer10Min")
     @Expose
     private float turretsKillsAvgPer10Min;
     @SerializedName("turretsKillsMostInGame")
     @Expose
-    private int turretsKillsMostInGame;
+    private double turretsKillsMostInGame;
     @SerializedName("healthRecovered")
     @Expose
-    private int healthRecovered;
+    private double healthRecovered;
     @SerializedName("healthRecoveredAvgPer10Min")
     @Expose
-    private int healthRecoveredAvgPer10Min;
+    private double healthRecoveredAvgPer10Min;
     @SerializedName("healthRecoveredMostInGame")
     @Expose
-    private int healthRecoveredMostInGame;
+    private double healthRecoveredMostInGame;
     @SerializedName("pulseBombsAttached")
     @Expose
-    private int pulseBombsAttached;
+    private double pulseBombsAttached;
     @SerializedName("pulseBombsAttachedAvgPer10Min")
     @Expose
     private float pulseBombsAttachedAvgPer10Min;
     @SerializedName("pulseBombsAttachedMostInGame")
     @Expose
-    private int pulseBombsAttachedMostInGame;
+    private double pulseBombsAttachedMostInGame;
     @SerializedName("pulseBombsKills")
     @Expose
-    private int pulseBombsKills;
+    private double pulseBombsKills;
     @SerializedName("pulseBombsKillsAvgPer10Min")
     @Expose
     private float pulseBombsKillsAvgPer10Min;
     @SerializedName("pulseBombsKillsMostInGame")
     @Expose
-    private int pulseBombsKillsMostInGame;
+    private double pulseBombsKillsMostInGame;
     @SerializedName("venomMineKills")
     @Expose
-    private int venomMineKills;
+    private double venomMineKills;
     @SerializedName("venomMineKillsAvgPer10Min")
     @Expose
     private float venomMineKillsAvgPer10Min;
     @SerializedName("venomMineKillsMostInGame")
     @Expose
-    private int venomMineKillsMostInGame;
+    private double venomMineKillsMostInGame;
     @SerializedName("jumpKills")
     @Expose
-    private int jumpKills;
+    private double jumpKills;
     @SerializedName("jumpPackKills")
     @Expose
-    private int jumpPackKills;
+    private double jumpPackKills;
     @SerializedName("jumpPackKillsAvgPer10Min")
     @Expose
     private float jumpPackKillsAvgPer10Min;
     @SerializedName("jumpPackKillsMostInGame")
     @Expose
-    private int jumpPackKillsMostInGame;
+    private double jumpPackKillsMostInGame;
     @SerializedName("meleeKills")
     @Expose
-    private int meleeKills;
+    private double meleeKills;
     @SerializedName("meleeKillsAvgPer10Min")
     @Expose
     private float meleeKillsAvgPer10Min;
     @SerializedName("meleeKillsMostInGame")
     @Expose
-    private int meleeKillsMostInGame;
+    private double meleeKillsMostInGame;
     @SerializedName("playersKnockedBack")
     @Expose
-    private int playersKnockedBack;
+    private double playersKnockedBack;
     @SerializedName("playersKnockedBackAvgPer10Min")
     @Expose
     private float playersKnockedBackAvgPer10Min;
     @SerializedName("playersKnockedBackMostInGame")
     @Expose
-    private int playersKnockedBackMostInGame;
+    private double playersKnockedBackMostInGame;
     @SerializedName("primalRageKills")
     @Expose
-    private int primalRageKills;
+    private double primalRageKills;
     @SerializedName("primalRageKillsAvgPer10Min")
     @Expose
     private float primalRageKillsAvgPer10Min;
     @SerializedName("primalRageKillsMostInGame")
     @Expose
-    private int primalRageKillsMostInGame;
+    private double primalRageKillsMostInGame;
     @SerializedName("primalRageMeleeAccuracy")
     @Expose
     private String primalRageMeleeAccuracy;
@@ -664,25 +664,25 @@ public class HeroSpecific {
     private String teslaCannonAccuracy;
     @SerializedName("weaponKills")
     @Expose
-    private int weaponKills;
+    private double weaponKills;
     @SerializedName("grapplingClawKills")
     @Expose
-    private int grapplingClawKills;
+    private double grapplingClawKills;
     @SerializedName("grapplingClawKillsAvgPer10Min")
     @Expose
     private float grapplingClawKillsAvgPer10Min;
     @SerializedName("grapplingClawKillsMostInGame")
     @Expose
-    private int grapplingClawKillsMostInGame;
+    private double grapplingClawKillsMostInGame;
     @SerializedName("minefieldKills")
     @Expose
-    private int minefieldKills;
+    private double minefieldKills;
     @SerializedName("minefieldKillsAvgPer10Min")
     @Expose
     private float minefieldKillsAvgPer10Min;
     @SerializedName("minefieldKillsMostInGame")
     @Expose
-    private int minefieldKillsMostInGame;
+    private double minefieldKillsMostInGame;
     @SerializedName("averageEnergy")
     @Expose
     private String averageEnergy;
@@ -691,43 +691,43 @@ public class HeroSpecific {
     private String averageEnergyBestInGame;
     @SerializedName("gravitonSurgeKills")
     @Expose
-    private int gravitonSurgeKills;
+    private double gravitonSurgeKills;
     @SerializedName("gravitonSurgeKillsAvgPer10Min")
     @Expose
     private float gravitonSurgeKillsAvgPer10Min;
     @SerializedName("gravitonSurgeKillsMostInGame")
     @Expose
-    private int gravitonSurgeKillsMostInGame;
+    private double gravitonSurgeKillsMostInGame;
     @SerializedName("highEnergyKills")
     @Expose
-    private int highEnergyKills;
+    private double highEnergyKills;
     @SerializedName("highEnergyKillsAvgPer10Min")
     @Expose
     private float highEnergyKillsAvgPer10Min;
     @SerializedName("highEnergyKillsMostInGame")
     @Expose
-    private int highEnergyKillsMostInGame;
+    private double highEnergyKillsMostInGame;
     @SerializedName("projectedBarriersApplied")
     @Expose
-    private int projectedBarriersApplied;
+    private double projectedBarriersApplied;
     @SerializedName("projectedBarriersAppliedAvgPer10Min")
     @Expose
     private float projectedBarriersAppliedAvgPer10Min;
     @SerializedName("projectedBarriersAppliedMostInGame")
     @Expose
-    private int projectedBarriersAppliedMostInGame;
+    private double projectedBarriersAppliedMostInGame;
     @SerializedName("transcendenceHealing")
     @Expose
-    private int transcendenceHealing;
+    private double transcendenceHealing;
     @SerializedName("transcendenceHealingBest")
     @Expose
-    private int transcendenceHealingBest;
+    private double transcendenceHealingBest;
 
-    public int getEnemiesTrapped() {
+    public double getEnemiesTrapped() {
         return enemiesTrapped;
     }
 
-    public void setEnemiesTrapped(int enemiesTrapped) {
+    public void setEnemiesTrapped(double enemiesTrapped) {
         this.enemiesTrapped = enemiesTrapped;
     }
 
@@ -739,19 +739,19 @@ public class HeroSpecific {
         this.enemiesTrappedAvgPer10Min = enemiesTrappedAvgPer10Min;
     }
 
-    public int getEnemiesTrappedMostInGame() {
+    public double getEnemiesTrappedMostInGame() {
         return enemiesTrappedMostInGame;
     }
 
-    public void setEnemiesTrappedMostInGame(int enemiesTrappedMostInGame) {
+    public void setEnemiesTrappedMostInGame(double enemiesTrappedMostInGame) {
         this.enemiesTrappedMostInGame = enemiesTrappedMostInGame;
     }
 
-    public int getRipTireKills() {
+    public double getRipTireKills() {
         return ripTireKills;
     }
 
-    public void setRipTireKills(int ripTireKills) {
+    public void setRipTireKills(double ripTireKills) {
         this.ripTireKills = ripTireKills;
     }
 
@@ -763,19 +763,19 @@ public class HeroSpecific {
         this.ripTireKillsAvgPer10Min = ripTireKillsAvgPer10Min;
     }
 
-    public int getRipTireKillsMostInGame() {
+    public double getRipTireKillsMostInGame() {
         return ripTireKillsMostInGame;
     }
 
-    public void setRipTireKillsMostInGame(int ripTireKillsMostInGame) {
+    public void setRipTireKillsMostInGame(double ripTireKillsMostInGame) {
         this.ripTireKillsMostInGame = ripTireKillsMostInGame;
     }
 
-    public int getDragonstrikeKills() {
+    public double getDragonstrikeKills() {
         return dragonstrikeKills;
     }
 
-    public void setDragonstrikeKills(int dragonstrikeKills) {
+    public void setDragonstrikeKills(double dragonstrikeKills) {
         this.dragonstrikeKills = dragonstrikeKills;
     }
 
@@ -787,19 +787,19 @@ public class HeroSpecific {
         this.dragonstrikeKillsAvgPer10Min = dragonstrikeKillsAvgPer10Min;
     }
 
-    public int getDragonstrikeKillsMostInGame() {
+    public double getDragonstrikeKillsMostInGame() {
         return dragonstrikeKillsMostInGame;
     }
 
-    public void setDragonstrikeKillsMostInGame(int dragonstrikeKillsMostInGame) {
+    public void setDragonstrikeKillsMostInGame(double dragonstrikeKillsMostInGame) {
         this.dragonstrikeKillsMostInGame = dragonstrikeKillsMostInGame;
     }
 
-    public int getScatterArrowKills() {
+    public double getScatterArrowKills() {
         return scatterArrowKills;
     }
 
-    public void setScatterArrowKills(int scatterArrowKills) {
+    public void setScatterArrowKills(double scatterArrowKills) {
         this.scatterArrowKills = scatterArrowKills;
     }
 
@@ -811,19 +811,19 @@ public class HeroSpecific {
         this.scatterArrowKillsAvgPer10Min = scatterArrowKillsAvgPer10Min;
     }
 
-    public int getScatterArrowKillsMostInGame() {
+    public double getScatterArrowKillsMostInGame() {
         return scatterArrowKillsMostInGame;
     }
 
-    public void setScatterArrowKillsMostInGame(int scatterArrowKillsMostInGame) {
+    public void setScatterArrowKillsMostInGame(double scatterArrowKillsMostInGame) {
         this.scatterArrowKillsMostInGame = scatterArrowKillsMostInGame;
     }
 
-    public int getStormArrowKills() {
+    public double getStormArrowKills() {
         return stormArrowKills;
     }
 
-    public void setStormArrowKills(int stormArrowKills) {
+    public void setStormArrowKills(double stormArrowKills) {
         this.stormArrowKills = stormArrowKills;
     }
 
@@ -835,27 +835,27 @@ public class HeroSpecific {
         this.stormArrowKillsAvgPer10Min = stormArrowKillsAvgPer10Min;
     }
 
-    public int getStormArrowKillsMostInGame() {
+    public double getStormArrowKillsMostInGame() {
         return stormArrowKillsMostInGame;
     }
 
-    public void setStormArrowKillsMostInGame(int stormArrowKillsMostInGame) {
+    public void setStormArrowKillsMostInGame(double stormArrowKillsMostInGame) {
         this.stormArrowKillsMostInGame = stormArrowKillsMostInGame;
     }
 
-    public int getBioticGrenadeKills() {
+    public double getBioticGrenadeKills() {
         return bioticGrenadeKills;
     }
 
-    public void setBioticGrenadeKills(int bioticGrenadeKills) {
+    public void setBioticGrenadeKills(double bioticGrenadeKills) {
         this.bioticGrenadeKills = bioticGrenadeKills;
     }
 
-    public int getEnemiesSlept() {
+    public double getEnemiesSlept() {
         return enemiesSlept;
     }
 
-    public void setEnemiesSlept(int enemiesSlept) {
+    public void setEnemiesSlept(double enemiesSlept) {
         this.enemiesSlept = enemiesSlept;
     }
 
@@ -867,19 +867,19 @@ public class HeroSpecific {
         this.enemiesSleptAvgPer10Min = enemiesSleptAvgPer10Min;
     }
 
-    public int getEnemiesSleptMostInGame() {
+    public double getEnemiesSleptMostInGame() {
         return enemiesSleptMostInGame;
     }
 
-    public void setEnemiesSleptMostInGame(int enemiesSleptMostInGame) {
+    public void setEnemiesSleptMostInGame(double enemiesSleptMostInGame) {
         this.enemiesSleptMostInGame = enemiesSleptMostInGame;
     }
 
-    public int getNanoBoostAssists() {
+    public double getNanoBoostAssists() {
         return nanoBoostAssists;
     }
 
-    public void setNanoBoostAssists(int nanoBoostAssists) {
+    public void setNanoBoostAssists(double nanoBoostAssists) {
         this.nanoBoostAssists = nanoBoostAssists;
     }
 
@@ -891,19 +891,19 @@ public class HeroSpecific {
         this.nanoBoostAssistsAvgPer10Min = nanoBoostAssistsAvgPer10Min;
     }
 
-    public int getNanoBoostAssistsMostInGame() {
+    public double getNanoBoostAssistsMostInGame() {
         return nanoBoostAssistsMostInGame;
     }
 
-    public void setNanoBoostAssistsMostInGame(int nanoBoostAssistsMostInGame) {
+    public void setNanoBoostAssistsMostInGame(double nanoBoostAssistsMostInGame) {
         this.nanoBoostAssistsMostInGame = nanoBoostAssistsMostInGame;
     }
 
-    public int getNanoBoostsApplied() {
+    public double getNanoBoostsApplied() {
         return nanoBoostsApplied;
     }
 
-    public void setNanoBoostsApplied(int nanoBoostsApplied) {
+    public void setNanoBoostsApplied(double nanoBoostsApplied) {
         this.nanoBoostsApplied = nanoBoostsApplied;
     }
 
@@ -915,11 +915,11 @@ public class HeroSpecific {
         this.nanoBoostsAppliedAvgPer10Min = nanoBoostsAppliedAvgPer10Min;
     }
 
-    public int getNanoBoostsAppliedMostInGame() {
+    public double getNanoBoostsAppliedMostInGame() {
         return nanoBoostsAppliedMostInGame;
     }
 
-    public void setNanoBoostsAppliedMostInGame(int nanoBoostsAppliedMostInGame) {
+    public void setNanoBoostsAppliedMostInGame(double nanoBoostsAppliedMostInGame) {
         this.nanoBoostsAppliedMostInGame = nanoBoostsAppliedMostInGame;
     }
 
@@ -939,27 +939,27 @@ public class HeroSpecific {
         this.scopedAccuracyBestInGame = scopedAccuracyBestInGame;
     }
 
-    public int getSelfHealing() {
+    public double getSelfHealing() {
         return selfHealing;
     }
 
-    public void setSelfHealing(int selfHealing) {
+    public void setSelfHealing(double selfHealing) {
         this.selfHealing = selfHealing;
     }
 
-    public int getSelfHealingAvgPer10Min() {
+    public double getSelfHealingAvgPer10Min() {
         return selfHealingAvgPer10Min;
     }
 
-    public void setSelfHealingAvgPer10Min(int selfHealingAvgPer10Min) {
+    public void setSelfHealingAvgPer10Min(double selfHealingAvgPer10Min) {
         this.selfHealingAvgPer10Min = selfHealingAvgPer10Min;
     }
 
-    public int getSelfHealingMostInGame() {
+    public double getSelfHealingMostInGame() {
         return selfHealingMostInGame;
     }
 
-    public void setSelfHealingMostInGame(int selfHealingMostInGame) {
+    public void setSelfHealingMostInGame(double selfHealingMostInGame) {
         this.selfHealingMostInGame = selfHealingMostInGame;
     }
 
@@ -979,11 +979,11 @@ public class HeroSpecific {
         this.unscopedAccuracyBestInGame = unscopedAccuracyBestInGame;
     }
 
-    public int getBobKills() {
+    public double getBobKills() {
         return bobKills;
     }
 
-    public void setBobKills(int bobKills) {
+    public void setBobKills(double bobKills) {
         this.bobKills = bobKills;
     }
 
@@ -995,19 +995,19 @@ public class HeroSpecific {
         this.bobKillsAvgPer10Min = bobKillsAvgPer10Min;
     }
 
-    public int getBobKillsMostInGame() {
+    public double getBobKillsMostInGame() {
         return bobKillsMostInGame;
     }
 
-    public void setBobKillsMostInGame(int bobKillsMostInGame) {
+    public void setBobKillsMostInGame(double bobKillsMostInGame) {
         this.bobKillsMostInGame = bobKillsMostInGame;
     }
 
-    public int getCoachGunKills() {
+    public double getCoachGunKills() {
         return coachGunKills;
     }
 
-    public void setCoachGunKills(int coachGunKills) {
+    public void setCoachGunKills(double coachGunKills) {
         this.coachGunKills = coachGunKills;
     }
 
@@ -1019,19 +1019,19 @@ public class HeroSpecific {
         this.coachGunKillsAvgPer10Min = coachGunKillsAvgPer10Min;
     }
 
-    public int getCoachGunKillsMostInGame() {
+    public double getCoachGunKillsMostInGame() {
         return coachGunKillsMostInGame;
     }
 
-    public void setCoachGunKillsMostInGame(int coachGunKillsMostInGame) {
+    public void setCoachGunKillsMostInGame(double coachGunKillsMostInGame) {
         this.coachGunKillsMostInGame = coachGunKillsMostInGame;
     }
 
-    public int getDynamiteKills() {
+    public double getDynamiteKills() {
         return dynamiteKills;
     }
 
-    public void setDynamiteKills(int dynamiteKills) {
+    public void setDynamiteKills(double dynamiteKills) {
         this.dynamiteKills = dynamiteKills;
     }
 
@@ -1043,19 +1043,19 @@ public class HeroSpecific {
         this.dynamiteKillsAvgPer10Min = dynamiteKillsAvgPer10Min;
     }
 
-    public int getDynamiteKillsMostInGame() {
+    public double getDynamiteKillsMostInGame() {
         return dynamiteKillsMostInGame;
     }
 
-    public void setDynamiteKillsMostInGame(int dynamiteKillsMostInGame) {
+    public void setDynamiteKillsMostInGame(double dynamiteKillsMostInGame) {
         this.dynamiteKillsMostInGame = dynamiteKillsMostInGame;
     }
 
-    public int getScopedCriticalHits() {
+    public double getScopedCriticalHits() {
         return scopedCriticalHits;
     }
 
-    public void setScopedCriticalHits(int scopedCriticalHits) {
+    public void setScopedCriticalHits(double scopedCriticalHits) {
         this.scopedCriticalHits = scopedCriticalHits;
     }
 
@@ -1075,19 +1075,19 @@ public class HeroSpecific {
         this.scopedCriticalHitsAvgPer10Min = scopedCriticalHitsAvgPer10Min;
     }
 
-    public int getScopedCriticalHitsMostInGame() {
+    public double getScopedCriticalHitsMostInGame() {
         return scopedCriticalHitsMostInGame;
     }
 
-    public void setScopedCriticalHitsMostInGame(int scopedCriticalHitsMostInGame) {
+    public void setScopedCriticalHitsMostInGame(double scopedCriticalHitsMostInGame) {
         this.scopedCriticalHitsMostInGame = scopedCriticalHitsMostInGame;
     }
 
-    public int getAmplificationMatrixCasts() {
+    public double getAmplificationMatrixCasts() {
         return amplificationMatrixCasts;
     }
 
-    public void setAmplificationMatrixCasts(int amplificationMatrixCasts) {
+    public void setAmplificationMatrixCasts(double amplificationMatrixCasts) {
         this.amplificationMatrixCasts = amplificationMatrixCasts;
     }
 
@@ -1099,35 +1099,35 @@ public class HeroSpecific {
         this.amplificationMatrixCastsAvgPer10Min = amplificationMatrixCastsAvgPer10Min;
     }
 
-    public int getAmplificationMatrixCastsMostInGame() {
+    public double getAmplificationMatrixCastsMostInGame() {
         return amplificationMatrixCastsMostInGame;
     }
 
-    public void setAmplificationMatrixCastsMostInGame(int amplificationMatrixCastsMostInGame) {
+    public void setAmplificationMatrixCastsMostInGame(double amplificationMatrixCastsMostInGame) {
         this.amplificationMatrixCastsMostInGame = amplificationMatrixCastsMostInGame;
     }
 
-    public int getDamageAmplified() {
+    public double getDamageAmplified() {
         return damageAmplified;
     }
 
-    public void setDamageAmplified(int damageAmplified) {
+    public void setDamageAmplified(double damageAmplified) {
         this.damageAmplified = damageAmplified;
     }
 
-    public int getDamageAmplifiedAvgPer10Min() {
+    public double getDamageAmplifiedAvgPer10Min() {
         return damageAmplifiedAvgPer10Min;
     }
 
-    public void setDamageAmplifiedAvgPer10Min(int damageAmplifiedAvgPer10Min) {
+    public void setDamageAmplifiedAvgPer10Min(double damageAmplifiedAvgPer10Min) {
         this.damageAmplifiedAvgPer10Min = damageAmplifiedAvgPer10Min;
     }
 
-    public int getDamageAmplifiedMostInGame() {
+    public double getDamageAmplifiedMostInGame() {
         return damageAmplifiedMostInGame;
     }
 
-    public void setDamageAmplifiedMostInGame(int damageAmplifiedMostInGame) {
+    public void setDamageAmplifiedMostInGame(double damageAmplifiedMostInGame) {
         this.damageAmplifiedMostInGame = damageAmplifiedMostInGame;
     }
 
@@ -1147,11 +1147,11 @@ public class HeroSpecific {
         this.healingAccuracyBestInGame = healingAccuracyBestInGame;
     }
 
-    public int getImmortalityFieldDeathsPrevented() {
+    public double getImmortalityFieldDeathsPrevented() {
         return immortalityFieldDeathsPrevented;
     }
 
-    public void setImmortalityFieldDeathsPrevented(int immortalityFieldDeathsPrevented) {
+    public void setImmortalityFieldDeathsPrevented(double immortalityFieldDeathsPrevented) {
         this.immortalityFieldDeathsPrevented = immortalityFieldDeathsPrevented;
     }
 
@@ -1163,19 +1163,19 @@ public class HeroSpecific {
         this.immortalityFieldDeathsPreventedAvgPer10Min = immortalityFieldDeathsPreventedAvgPer10Min;
     }
 
-    public int getImmortalityFieldDeathsPreventedMostInGame() {
+    public double getImmortalityFieldDeathsPreventedMostInGame() {
         return immortalityFieldDeathsPreventedMostInGame;
     }
 
-    public void setImmortalityFieldDeathsPreventedMostInGame(int immortalityFieldDeathsPreventedMostInGame) {
+    public void setImmortalityFieldDeathsPreventedMostInGame(double immortalityFieldDeathsPreventedMostInGame) {
         this.immortalityFieldDeathsPreventedMostInGame = immortalityFieldDeathsPreventedMostInGame;
     }
 
-    public int getReconKills() {
+    public double getReconKills() {
         return reconKills;
     }
 
-    public void setReconKills(int reconKills) {
+    public void setReconKills(double reconKills) {
         this.reconKills = reconKills;
     }
 
@@ -1187,19 +1187,19 @@ public class HeroSpecific {
         this.reconKillsAvgPer10Min = reconKillsAvgPer10Min;
     }
 
-    public int getReconKillsMostInGame() {
+    public double getReconKillsMostInGame() {
         return reconKillsMostInGame;
     }
 
-    public void setReconKillsMostInGame(int reconKillsMostInGame) {
+    public void setReconKillsMostInGame(double reconKillsMostInGame) {
         this.reconKillsMostInGame = reconKillsMostInGame;
     }
 
-    public int getSentryKills() {
+    public double getSentryKills() {
         return sentryKills;
     }
 
-    public void setSentryKills(int sentryKills) {
+    public void setSentryKills(double sentryKills) {
         this.sentryKills = sentryKills;
     }
 
@@ -1211,19 +1211,19 @@ public class HeroSpecific {
         this.sentryKillsAvgPer10Min = sentryKillsAvgPer10Min;
     }
 
-    public int getSentryKillsMostInGame() {
+    public double getSentryKillsMostInGame() {
         return sentryKillsMostInGame;
     }
 
-    public void setSentryKillsMostInGame(int sentryKillsMostInGame) {
+    public void setSentryKillsMostInGame(double sentryKillsMostInGame) {
         this.sentryKillsMostInGame = sentryKillsMostInGame;
     }
 
-    public int getTankKills() {
+    public double getTankKills() {
         return tankKills;
     }
 
-    public void setTankKills(int tankKills) {
+    public void setTankKills(double tankKills) {
         this.tankKills = tankKills;
     }
 
@@ -1235,59 +1235,59 @@ public class HeroSpecific {
         this.tankKillsAvgPer10Min = tankKillsAvgPer10Min;
     }
 
-    public int getTankKillsMostInGame() {
+    public double getTankKillsMostInGame() {
         return tankKillsMostInGame;
     }
 
-    public void setTankKillsMostInGame(int tankKillsMostInGame) {
+    public void setTankKillsMostInGame(double tankKillsMostInGame) {
         this.tankKillsMostInGame = tankKillsMostInGame;
     }
 
-    public int getArmorProvided() {
+    public double getArmorProvided() {
         return armorProvided;
     }
 
-    public void setArmorProvided(int armorProvided) {
+    public void setArmorProvided(double armorProvided) {
         this.armorProvided = armorProvided;
     }
 
-    public int getArmorProvidedAvgPer10Min() {
+    public double getArmorProvidedAvgPer10Min() {
         return armorProvidedAvgPer10Min;
     }
 
-    public void setArmorProvidedAvgPer10Min(int armorProvidedAvgPer10Min) {
+    public void setArmorProvidedAvgPer10Min(double armorProvidedAvgPer10Min) {
         this.armorProvidedAvgPer10Min = armorProvidedAvgPer10Min;
     }
 
-    public int getArmorProvidedMostInGame() {
+    public double getArmorProvidedMostInGame() {
         return armorProvidedMostInGame;
     }
 
-    public void setArmorProvidedMostInGame(int armorProvidedMostInGame) {
+    public void setArmorProvidedMostInGame(double armorProvidedMostInGame) {
         this.armorProvidedMostInGame = armorProvidedMostInGame;
     }
 
-    public int getDamageBlocked() {
+    public double getDamageBlocked() {
         return damageBlocked;
     }
 
-    public void setDamageBlocked(int damageBlocked) {
+    public void setDamageBlocked(double damageBlocked) {
         this.damageBlocked = damageBlocked;
     }
 
-    public int getDamageBlockedAvgPer10Min() {
+    public double getDamageBlockedAvgPer10Min() {
         return damageBlockedAvgPer10Min;
     }
 
-    public void setDamageBlockedAvgPer10Min(int damageBlockedAvgPer10Min) {
+    public void setDamageBlockedAvgPer10Min(double damageBlockedAvgPer10Min) {
         this.damageBlockedAvgPer10Min = damageBlockedAvgPer10Min;
     }
 
-    public int getDamageBlockedMostInGame() {
+    public double getDamageBlockedMostInGame() {
         return damageBlockedMostInGame;
     }
 
-    public void setDamageBlockedMostInGame(int damageBlockedMostInGame) {
+    public void setDamageBlockedMostInGame(double damageBlockedMostInGame) {
         this.damageBlockedMostInGame = damageBlockedMostInGame;
     }
 
@@ -1299,19 +1299,19 @@ public class HeroSpecific {
         this.inspireUptimePercentage = inspireUptimePercentage;
     }
 
-    public int getMechDeaths() {
+    public double getMechDeaths() {
         return mechDeaths;
     }
 
-    public void setMechDeaths(int mechDeaths) {
+    public void setMechDeaths(double mechDeaths) {
         this.mechDeaths = mechDeaths;
     }
 
-    public int getMechsCalled() {
+    public double getMechsCalled() {
         return mechsCalled;
     }
 
-    public void setMechsCalled(int mechsCalled) {
+    public void setMechsCalled(double mechsCalled) {
         this.mechsCalled = mechsCalled;
     }
 
@@ -1323,19 +1323,19 @@ public class HeroSpecific {
         this.mechsCalledAvgPer10Min = mechsCalledAvgPer10Min;
     }
 
-    public int getMechsCalledMostInGame() {
+    public double getMechsCalledMostInGame() {
         return mechsCalledMostInGame;
     }
 
-    public void setMechsCalledMostInGame(int mechsCalledMostInGame) {
+    public void setMechsCalledMostInGame(double mechsCalledMostInGame) {
         this.mechsCalledMostInGame = mechsCalledMostInGame;
     }
 
-    public int getSelfDestructKills() {
+    public double getSelfDestructKills() {
         return selfDestructKills;
     }
 
-    public void setSelfDestructKills(int selfDestructKills) {
+    public void setSelfDestructKills(double selfDestructKills) {
         this.selfDestructKills = selfDestructKills;
     }
 
@@ -1347,43 +1347,43 @@ public class HeroSpecific {
         this.selfDestructKillsAvgPer10Min = selfDestructKillsAvgPer10Min;
     }
 
-    public int getSelfDestructKillsMostInGame() {
+    public double getSelfDestructKillsMostInGame() {
         return selfDestructKillsMostInGame;
     }
 
-    public void setSelfDestructKillsMostInGame(int selfDestructKillsMostInGame) {
+    public void setSelfDestructKillsMostInGame(double selfDestructKillsMostInGame) {
         this.selfDestructKillsMostInGame = selfDestructKillsMostInGame;
     }
 
-    public int getAbilityDamageDone() {
+    public double getAbilityDamageDone() {
         return abilityDamageDone;
     }
 
-    public void setAbilityDamageDone(int abilityDamageDone) {
+    public void setAbilityDamageDone(double abilityDamageDone) {
         this.abilityDamageDone = abilityDamageDone;
     }
 
-    public int getAbilityDamageDoneAvgPer10Min() {
+    public double getAbilityDamageDoneAvgPer10Min() {
         return abilityDamageDoneAvgPer10Min;
     }
 
-    public void setAbilityDamageDoneAvgPer10Min(int abilityDamageDoneAvgPer10Min) {
+    public void setAbilityDamageDoneAvgPer10Min(double abilityDamageDoneAvgPer10Min) {
         this.abilityDamageDoneAvgPer10Min = abilityDamageDoneAvgPer10Min;
     }
 
-    public int getAbilityDamageDoneMostInGame() {
+    public double getAbilityDamageDoneMostInGame() {
         return abilityDamageDoneMostInGame;
     }
 
-    public void setAbilityDamageDoneMostInGame(int abilityDamageDoneMostInGame) {
+    public void setAbilityDamageDoneMostInGame(double abilityDamageDoneMostInGame) {
         this.abilityDamageDoneMostInGame = abilityDamageDoneMostInGame;
     }
 
-    public int getMeteorStrikeKills() {
+    public double getMeteorStrikeKills() {
         return meteorStrikeKills;
     }
 
-    public void setMeteorStrikeKills(int meteorStrikeKills) {
+    public void setMeteorStrikeKills(double meteorStrikeKills) {
         this.meteorStrikeKills = meteorStrikeKills;
     }
 
@@ -1395,75 +1395,75 @@ public class HeroSpecific {
         this.meteorStrikeKillsAvgPer10Min = meteorStrikeKillsAvgPer10Min;
     }
 
-    public int getMeteorStrikeKillsMostInGame() {
+    public double getMeteorStrikeKillsMostInGame() {
         return meteorStrikeKillsMostInGame;
     }
 
-    public void setMeteorStrikeKillsMostInGame(int meteorStrikeKillsMostInGame) {
+    public void setMeteorStrikeKillsMostInGame(double meteorStrikeKillsMostInGame) {
         this.meteorStrikeKillsMostInGame = meteorStrikeKillsMostInGame;
     }
 
-    public int getShieldsCreated() {
+    public double getShieldsCreated() {
         return shieldsCreated;
     }
 
-    public void setShieldsCreated(int shieldsCreated) {
+    public void setShieldsCreated(double shieldsCreated) {
         this.shieldsCreated = shieldsCreated;
     }
 
-    public int getShieldsCreatedAvgPer10Min() {
+    public double getShieldsCreatedAvgPer10Min() {
         return shieldsCreatedAvgPer10Min;
     }
 
-    public void setShieldsCreatedAvgPer10Min(int shieldsCreatedAvgPer10Min) {
+    public void setShieldsCreatedAvgPer10Min(double shieldsCreatedAvgPer10Min) {
         this.shieldsCreatedAvgPer10Min = shieldsCreatedAvgPer10Min;
     }
 
-    public int getShieldsCreatedMostInGame() {
+    public double getShieldsCreatedMostInGame() {
         return shieldsCreatedMostInGame;
     }
 
-    public void setShieldsCreatedMostInGame(int shieldsCreatedMostInGame) {
+    public void setShieldsCreatedMostInGame(double shieldsCreatedMostInGame) {
         this.shieldsCreatedMostInGame = shieldsCreatedMostInGame;
     }
 
-    public int getDamageReflected() {
+    public double getDamageReflected() {
         return damageReflected;
     }
 
-    public void setDamageReflected(int damageReflected) {
+    public void setDamageReflected(double damageReflected) {
         this.damageReflected = damageReflected;
     }
 
-    public int getDamageReflectedAvgPer10Min() {
+    public double getDamageReflectedAvgPer10Min() {
         return damageReflectedAvgPer10Min;
     }
 
-    public void setDamageReflectedAvgPer10Min(int damageReflectedAvgPer10Min) {
+    public void setDamageReflectedAvgPer10Min(double damageReflectedAvgPer10Min) {
         this.damageReflectedAvgPer10Min = damageReflectedAvgPer10Min;
     }
 
-    public int getDamageReflectedMostInGame() {
+    public double getDamageReflectedMostInGame() {
         return damageReflectedMostInGame;
     }
 
-    public void setDamageReflectedMostInGame(int damageReflectedMostInGame) {
+    public void setDamageReflectedMostInGame(double damageReflectedMostInGame) {
         this.damageReflectedMostInGame = damageReflectedMostInGame;
     }
 
-    public int getDeflectionKills() {
+    public double getDeflectionKills() {
         return deflectionKills;
     }
 
-    public void setDeflectionKills(int deflectionKills) {
+    public void setDeflectionKills(double deflectionKills) {
         this.deflectionKills = deflectionKills;
     }
 
-    public int getDragonbladesKills() {
+    public double getDragonbladesKills() {
         return dragonbladesKills;
     }
 
-    public void setDragonbladesKills(int dragonbladesKills) {
+    public void setDragonbladesKills(double dragonbladesKills) {
         this.dragonbladesKills = dragonbladesKills;
     }
 
@@ -1476,19 +1476,19 @@ public class HeroSpecific {
         this.dragonbladesKillsAvgPer10Min = dragonbladesKillsAvgPer10Min;
     }
 
-    public int getDragonbladesKillsMostInGame() {
+    public double getDragonbladesKillsMostInGame() {
         return dragonbladesKillsMostInGame;
     }
 
-    public void setDragonbladesKillsMostInGame(int dragonbladesKillsMostInGame) {
+    public void setDragonbladesKillsMostInGame(double dragonbladesKillsMostInGame) {
         this.dragonbladesKillsMostInGame = dragonbladesKillsMostInGame;
     }
 
-    public int getSoundBarriersProvided() {
+    public double getSoundBarriersProvided() {
         return soundBarriersProvided;
     }
 
-    public void setSoundBarriersProvided(int soundBarriersProvided) {
+    public void setSoundBarriersProvided(double soundBarriersProvided) {
         this.soundBarriersProvided = soundBarriersProvided;
     }
 
@@ -1500,19 +1500,19 @@ public class HeroSpecific {
         this.soundBarriersProvidedAvgPer10Min = soundBarriersProvidedAvgPer10Min;
     }
 
-    public int getSoundBarriersProvidedMostInGame() {
+    public double getSoundBarriersProvidedMostInGame() {
         return soundBarriersProvidedMostInGame;
     }
 
-    public void setSoundBarriersProvidedMostInGame(int soundBarriersProvidedMostInGame) {
+    public void setSoundBarriersProvidedMostInGame(double soundBarriersProvidedMostInGame) {
         this.soundBarriersProvidedMostInGame = soundBarriersProvidedMostInGame;
     }
 
-    public int getDeadeyeKills() {
+    public double getDeadeyeKills() {
         return deadeyeKills;
     }
 
-    public void setDeadeyeKills(int deadeyeKills) {
+    public void setDeadeyeKills(double deadeyeKills) {
         this.deadeyeKills = deadeyeKills;
     }
 
@@ -1524,19 +1524,19 @@ public class HeroSpecific {
         this.deadeyeKillsAvgPer10Min = deadeyeKillsAvgPer10Min;
     }
 
-    public int getDeadeyeKillsMostInGame() {
+    public double getDeadeyeKillsMostInGame() {
         return deadeyeKillsMostInGame;
     }
 
-    public void setDeadeyeKillsMostInGame(int deadeyeKillsMostInGame) {
+    public void setDeadeyeKillsMostInGame(double deadeyeKillsMostInGame) {
         this.deadeyeKillsMostInGame = deadeyeKillsMostInGame;
     }
 
-    public int getFanTheHammerKills() {
+    public double getFanTheHammerKills() {
         return fanTheHammerKills;
     }
 
-    public void setFanTheHammerKills(int fanTheHammerKills) {
+    public void setFanTheHammerKills(double fanTheHammerKills) {
         this.fanTheHammerKills = fanTheHammerKills;
     }
 
@@ -1548,19 +1548,19 @@ public class HeroSpecific {
         this.fanTheHammerKillsAvgPer10Min = fanTheHammerKillsAvgPer10Min;
     }
 
-    public int getFanTheHammerKillsMostInGame() {
+    public double getFanTheHammerKillsMostInGame() {
         return fanTheHammerKillsMostInGame;
     }
 
-    public void setFanTheHammerKillsMostInGame(int fanTheHammerKillsMostInGame) {
+    public void setFanTheHammerKillsMostInGame(double fanTheHammerKillsMostInGame) {
         this.fanTheHammerKillsMostInGame = fanTheHammerKillsMostInGame;
     }
 
-    public int getBlizzardKills() {
+    public double getBlizzardKills() {
         return blizzardKills;
     }
 
-    public void setBlizzardKills(int blizzardKills) {
+    public void setBlizzardKills(double blizzardKills) {
         this.blizzardKills = blizzardKills;
     }
 
@@ -1572,19 +1572,19 @@ public class HeroSpecific {
         this.blizzardKillsAvgPer10Min = blizzardKillsAvgPer10Min;
     }
 
-    public int getBlizzardKillsMostInGame() {
+    public double getBlizzardKillsMostInGame() {
         return blizzardKillsMostInGame;
     }
 
-    public void setBlizzardKillsMostInGame(int blizzardKillsMostInGame) {
+    public void setBlizzardKillsMostInGame(double blizzardKillsMostInGame) {
         this.blizzardKillsMostInGame = blizzardKillsMostInGame;
     }
 
-    public int getEnemiesFrozen() {
+    public double getEnemiesFrozen() {
         return enemiesFrozen;
     }
 
-    public void setEnemiesFrozen(int enemiesFrozen) {
+    public void setEnemiesFrozen(double enemiesFrozen) {
         this.enemiesFrozen = enemiesFrozen;
     }
 
@@ -1596,19 +1596,19 @@ public class HeroSpecific {
         this.enemiesFrozenAvgPer10Min = enemiesFrozenAvgPer10Min;
     }
 
-    public int getEnemiesFrozenMostInGame() {
+    public double getEnemiesFrozenMostInGame() {
         return enemiesFrozenMostInGame;
     }
 
-    public void setEnemiesFrozenMostInGame(int enemiesFrozenMostInGame) {
+    public void setEnemiesFrozenMostInGame(double enemiesFrozenMostInGame) {
         this.enemiesFrozenMostInGame = enemiesFrozenMostInGame;
     }
 
-    public int getBlasterKills() {
+    public double getBlasterKills() {
         return blasterKills;
     }
 
-    public void setBlasterKills(int blasterKills) {
+    public void setBlasterKills(double blasterKills) {
         this.blasterKills = blasterKills;
     }
 
@@ -1620,19 +1620,19 @@ public class HeroSpecific {
         this.blasterKillsAvgPer10Min = blasterKillsAvgPer10Min;
     }
 
-    public int getBlasterKillsMostInGame() {
+    public double getBlasterKillsMostInGame() {
         return blasterKillsMostInGame;
     }
 
-    public void setBlasterKillsMostInGame(int blasterKillsMostInGame) {
+    public void setBlasterKillsMostInGame(double blasterKillsMostInGame) {
         this.blasterKillsMostInGame = blasterKillsMostInGame;
     }
 
-    public int getPlayersResurrected() {
+    public double getPlayersResurrected() {
         return playersResurrected;
     }
 
-    public void setPlayersResurrected(int playersResurrected) {
+    public void setPlayersResurrected(double playersResurrected) {
         this.playersResurrected = playersResurrected;
     }
 
@@ -1644,43 +1644,43 @@ public class HeroSpecific {
         this.playersResurrectedAvgPer10Min = playersResurrectedAvgPer10Min;
     }
 
-    public int getPlayersResurrectedMostInGame() {
+    public double getPlayersResurrectedMostInGame() {
         return playersResurrectedMostInGame;
     }
 
-    public void setPlayersResurrectedMostInGame(int playersResurrectedMostInGame) {
+    public void setPlayersResurrectedMostInGame(double playersResurrectedMostInGame) {
         this.playersResurrectedMostInGame = playersResurrectedMostInGame;
     }
 
-    public int getCoalescenceHealing() {
+    public double getCoalescenceHealing() {
         return coalescenceHealing;
     }
 
-    public void setCoalescenceHealing(int coalescenceHealing) {
+    public void setCoalescenceHealing(double coalescenceHealing) {
         this.coalescenceHealing = coalescenceHealing;
     }
 
-    public int getCoalescenceHealingAvgPer10Min() {
+    public double getCoalescenceHealingAvgPer10Min() {
         return coalescenceHealingAvgPer10Min;
     }
 
-    public void setCoalescenceHealingAvgPer10Min(int coalescenceHealingAvgPer10Min) {
+    public void setCoalescenceHealingAvgPer10Min(double coalescenceHealingAvgPer10Min) {
         this.coalescenceHealingAvgPer10Min = coalescenceHealingAvgPer10Min;
     }
 
-    public int getCoalescenceHealingMostInGame() {
+    public double getCoalescenceHealingMostInGame() {
         return coalescenceHealingMostInGame;
     }
 
-    public void setCoalescenceHealingMostInGame(int coalescenceHealingMostInGame) {
+    public void setCoalescenceHealingMostInGame(double coalescenceHealingMostInGame) {
         this.coalescenceHealingMostInGame = coalescenceHealingMostInGame;
     }
 
-    public int getCoalescenceKills() {
+    public double getCoalescenceKills() {
         return coalescenceKills;
     }
 
-    public void setCoalescenceKills(int coalescenceKills) {
+    public void setCoalescenceKills(double coalescenceKills) {
         this.coalescenceKills = coalescenceKills;
     }
 
@@ -1692,11 +1692,11 @@ public class HeroSpecific {
         this.coalescenceKillsAvgPer10Min = coalescenceKillsAvgPer10Min;
     }
 
-    public int getCoalescenceKillsMostInGame() {
+    public double getCoalescenceKillsMostInGame() {
         return coalescenceKillsMostInGame;
     }
 
-    public void setCoalescenceKillsMostInGame(int coalescenceKillsMostInGame) {
+    public void setCoalescenceKillsMostInGame(double coalescenceKillsMostInGame) {
         this.coalescenceKillsMostInGame = coalescenceKillsMostInGame;
     }
 
@@ -1708,11 +1708,11 @@ public class HeroSpecific {
         this.secondaryFireAccuracy = secondaryFireAccuracy;
     }
 
-    public int getSuperchargerAssists() {
+    public double getSuperchargerAssists() {
         return superchargerAssists;
     }
 
-    public void setSuperchargerAssists(int superchargerAssists) {
+    public void setSuperchargerAssists(double superchargerAssists) {
         this.superchargerAssists = superchargerAssists;
     }
 
@@ -1724,19 +1724,19 @@ public class HeroSpecific {
         this.superchargerAssistsAvgPer10Min = superchargerAssistsAvgPer10Min;
     }
 
-    public int getSuperchargerAssistsMostInGame() {
+    public double getSuperchargerAssistsMostInGame() {
         return superchargerAssistsMostInGame;
     }
 
-    public void setSuperchargerAssistsMostInGame(int superchargerAssistsMostInGame) {
+    public void setSuperchargerAssistsMostInGame(double superchargerAssistsMostInGame) {
         this.superchargerAssistsMostInGame = superchargerAssistsMostInGame;
     }
 
-    public int getBarrageKills() {
+    public double getBarrageKills() {
         return barrageKills;
     }
 
-    public void setBarrageKills(int barrageKills) {
+    public void setBarrageKills(double barrageKills) {
         this.barrageKills = barrageKills;
     }
 
@@ -1748,11 +1748,11 @@ public class HeroSpecific {
         this.barrageKillsAvgPer10Min = barrageKillsAvgPer10Min;
     }
 
-    public int getBarrageKillsMostInGame() {
+    public double getBarrageKillsMostInGame() {
         return barrageKillsMostInGame;
     }
 
-    public void setBarrageKillsMostInGame(int barrageKillsMostInGame) {
+    public void setBarrageKillsMostInGame(double barrageKillsMostInGame) {
         this.barrageKillsMostInGame = barrageKillsMostInGame;
     }
 
@@ -1764,11 +1764,11 @@ public class HeroSpecific {
         this.directHitsAccuracy = directHitsAccuracy;
     }
 
-    public int getRocketDirectHits() {
+    public double getRocketDirectHits() {
         return rocketDirectHits;
     }
 
-    public void setRocketDirectHits(int rocketDirectHits) {
+    public void setRocketDirectHits(double rocketDirectHits) {
         this.rocketDirectHits = rocketDirectHits;
     }
 
@@ -1780,19 +1780,19 @@ public class HeroSpecific {
         this.rocketDirectHitsAvgPer10Min = rocketDirectHitsAvgPer10Min;
     }
 
-    public int getRocketDirectHitsMostInGame() {
+    public double getRocketDirectHitsMostInGame() {
         return rocketDirectHitsMostInGame;
     }
 
-    public void setRocketDirectHitsMostInGame(int rocketDirectHitsMostInGame) {
+    public void setRocketDirectHitsMostInGame(double rocketDirectHitsMostInGame) {
         this.rocketDirectHitsMostInGame = rocketDirectHitsMostInGame;
     }
 
-    public int getDeathsBlossomKills() {
+    public double getDeathsBlossomKills() {
         return deathsBlossomKills;
     }
 
-    public void setDeathsBlossomKills(int deathsBlossomKills) {
+    public void setDeathsBlossomKills(double deathsBlossomKills) {
         this.deathsBlossomKills = deathsBlossomKills;
     }
 
@@ -1804,19 +1804,19 @@ public class HeroSpecific {
         this.deathsBlossomKillsAvgPer10Min = deathsBlossomKillsAvgPer10Min;
     }
 
-    public int getDeathsBlossomKillsMostInGame() {
+    public double getDeathsBlossomKillsMostInGame() {
         return deathsBlossomKillsMostInGame;
     }
 
-    public void setDeathsBlossomKillsMostInGame(int deathsBlossomKillsMostInGame) {
+    public void setDeathsBlossomKillsMostInGame(double deathsBlossomKillsMostInGame) {
         this.deathsBlossomKillsMostInGame = deathsBlossomKillsMostInGame;
     }
 
-    public int getChargeKills() {
+    public double getChargeKills() {
         return chargeKills;
     }
 
-    public void setChargeKills(int chargeKills) {
+    public void setChargeKills(double chargeKills) {
         this.chargeKills = chargeKills;
     }
 
@@ -1828,19 +1828,19 @@ public class HeroSpecific {
         this.chargeKillsAvgPer10Min = chargeKillsAvgPer10Min;
     }
 
-    public int getChargeKillsMostInGame() {
+    public double getChargeKillsMostInGame() {
         return chargeKillsMostInGame;
     }
 
-    public void setChargeKillsMostInGame(int chargeKillsMostInGame) {
+    public void setChargeKillsMostInGame(double chargeKillsMostInGame) {
         this.chargeKillsMostInGame = chargeKillsMostInGame;
     }
 
-    public int getEarthshatterKills() {
+    public double getEarthshatterKills() {
         return earthshatterKills;
     }
 
-    public void setEarthshatterKills(int earthshatterKills) {
+    public void setEarthshatterKills(double earthshatterKills) {
         this.earthshatterKills = earthshatterKills;
     }
 
@@ -1852,19 +1852,19 @@ public class HeroSpecific {
         this.earthshatterKillsAvgPer10Min = earthshatterKillsAvgPer10Min;
     }
 
-    public int getEarthshatterKillsMostInGame() {
+    public double getEarthshatterKillsMostInGame() {
         return earthshatterKillsMostInGame;
     }
 
-    public void setEarthshatterKillsMostInGame(int earthshatterKillsMostInGame) {
+    public void setEarthshatterKillsMostInGame(double earthshatterKillsMostInGame) {
         this.earthshatterKillsMostInGame = earthshatterKillsMostInGame;
     }
 
-    public int getFireStrikeKills() {
+    public double getFireStrikeKills() {
         return fireStrikeKills;
     }
 
-    public void setFireStrikeKills(int fireStrikeKills) {
+    public void setFireStrikeKills(double fireStrikeKills) {
         this.fireStrikeKills = fireStrikeKills;
     }
 
@@ -1876,11 +1876,11 @@ public class HeroSpecific {
         this.fireStrikeKillsAvgPer10Min = fireStrikeKillsAvgPer10Min;
     }
 
-    public int getFireStrikeKillsMostInGame() {
+    public double getFireStrikeKillsMostInGame() {
         return fireStrikeKillsMostInGame;
     }
 
-    public void setFireStrikeKillsMostInGame(int fireStrikeKillsMostInGame) {
+    public void setFireStrikeKillsMostInGame(double fireStrikeKillsMostInGame) {
         this.fireStrikeKillsMostInGame = fireStrikeKillsMostInGame;
     }
 
@@ -1892,11 +1892,11 @@ public class HeroSpecific {
         this.rocketHammerMeleeAccuracy = rocketHammerMeleeAccuracy;
     }
 
-    public int getEnemiesHooked() {
+    public double getEnemiesHooked() {
         return enemiesHooked;
     }
 
-    public void setEnemiesHooked(int enemiesHooked) {
+    public void setEnemiesHooked(double enemiesHooked) {
         this.enemiesHooked = enemiesHooked;
     }
 
@@ -1908,11 +1908,11 @@ public class HeroSpecific {
         this.enemiesHookedAvgPer10Min = enemiesHookedAvgPer10Min;
     }
 
-    public int getEnemiesHookedMostInGame() {
+    public double getEnemiesHookedMostInGame() {
         return enemiesHookedMostInGame;
     }
 
-    public void setEnemiesHookedMostInGame(int enemiesHookedMostInGame) {
+    public void setEnemiesHookedMostInGame(double enemiesHookedMostInGame) {
         this.enemiesHookedMostInGame = enemiesHookedMostInGame;
     }
 
@@ -1932,19 +1932,19 @@ public class HeroSpecific {
         this.hookAccuracyBestInGame = hookAccuracyBestInGame;
     }
 
-    public int getHooksAttempted() {
+    public double getHooksAttempted() {
         return hooksAttempted;
     }
 
-    public void setHooksAttempted(int hooksAttempted) {
+    public void setHooksAttempted(double hooksAttempted) {
         this.hooksAttempted = hooksAttempted;
     }
 
-    public int getWholeHogKills() {
+    public double getWholeHogKills() {
         return wholeHogKills;
     }
 
-    public void setWholeHogKills(int wholeHogKills) {
+    public void setWholeHogKills(double wholeHogKills) {
         this.wholeHogKills = wholeHogKills;
     }
 
@@ -1956,35 +1956,35 @@ public class HeroSpecific {
         this.wholeHogKillsAvgPer10Min = wholeHogKillsAvgPer10Min;
     }
 
-    public int getWholeHogKillsMostInGame() {
+    public double getWholeHogKillsMostInGame() {
         return wholeHogKillsMostInGame;
     }
 
-    public void setWholeHogKillsMostInGame(int wholeHogKillsMostInGame) {
+    public void setWholeHogKillsMostInGame(double wholeHogKillsMostInGame) {
         this.wholeHogKillsMostInGame = wholeHogKillsMostInGame;
     }
 
-    public int getBioticFieldHealingDone() {
+    public double getBioticFieldHealingDone() {
         return bioticFieldHealingDone;
     }
 
-    public void setBioticFieldHealingDone(int bioticFieldHealingDone) {
+    public void setBioticFieldHealingDone(double bioticFieldHealingDone) {
         this.bioticFieldHealingDone = bioticFieldHealingDone;
     }
 
-    public int getBioticFieldsDeployed() {
+    public double getBioticFieldsDeployed() {
         return bioticFieldsDeployed;
     }
 
-    public void setBioticFieldsDeployed(int bioticFieldsDeployed) {
+    public void setBioticFieldsDeployed(double bioticFieldsDeployed) {
         this.bioticFieldsDeployed = bioticFieldsDeployed;
     }
 
-    public int getHelixRocketsKills() {
+    public double getHelixRocketsKills() {
         return helixRocketsKills;
     }
 
-    public void setHelixRocketsKills(int helixRocketsKills) {
+    public void setHelixRocketsKills(double helixRocketsKills) {
         this.helixRocketsKills = helixRocketsKills;
     }
 
@@ -1996,19 +1996,19 @@ public class HeroSpecific {
         this.helixRocketsKillsAvgPer10Min = helixRocketsKillsAvgPer10Min;
     }
 
-    public int getHelixRocketsKillsMostInGame() {
+    public double getHelixRocketsKillsMostInGame() {
         return helixRocketsKillsMostInGame;
     }
 
-    public void setHelixRocketsKillsMostInGame(int helixRocketsKillsMostInGame) {
+    public void setHelixRocketsKillsMostInGame(double helixRocketsKillsMostInGame) {
         this.helixRocketsKillsMostInGame = helixRocketsKillsMostInGame;
     }
 
-    public int getTacticalVisorKills() {
+    public double getTacticalVisorKills() {
         return tacticalVisorKills;
     }
 
-    public void setTacticalVisorKills(int tacticalVisorKills) {
+    public void setTacticalVisorKills(double tacticalVisorKills) {
         this.tacticalVisorKills = tacticalVisorKills;
     }
 
@@ -2020,19 +2020,19 @@ public class HeroSpecific {
         this.tacticalVisorKillsAvgPer10Min = tacticalVisorKillsAvgPer10Min;
     }
 
-    public int getTacticalVisorKillsMostInGame() {
+    public double getTacticalVisorKillsMostInGame() {
         return tacticalVisorKillsMostInGame;
     }
 
-    public void setTacticalVisorKillsMostInGame(int tacticalVisorKillsMostInGame) {
+    public void setTacticalVisorKillsMostInGame(double tacticalVisorKillsMostInGame) {
         this.tacticalVisorKillsMostInGame = tacticalVisorKillsMostInGame;
     }
 
-    public int getEnemiesEmpd() {
+    public double getEnemiesEmpd() {
         return enemiesEmpd;
     }
 
-    public void setEnemiesEmpd(int enemiesEmpd) {
+    public void setEnemiesEmpd(double enemiesEmpd) {
         this.enemiesEmpd = enemiesEmpd;
     }
 
@@ -2044,19 +2044,19 @@ public class HeroSpecific {
         this.enemiesEmpdAvgPer10Min = enemiesEmpdAvgPer10Min;
     }
 
-    public int getEnemiesEmpdMostInGame() {
+    public double getEnemiesEmpdMostInGame() {
         return enemiesEmpdMostInGame;
     }
 
-    public void setEnemiesEmpdMostInGame(int enemiesEmpdMostInGame) {
+    public void setEnemiesEmpdMostInGame(double enemiesEmpdMostInGame) {
         this.enemiesEmpdMostInGame = enemiesEmpdMostInGame;
     }
 
-    public int getEnemiesHacked() {
+    public double getEnemiesHacked() {
         return enemiesHacked;
     }
 
-    public void setEnemiesHacked(int enemiesHacked) {
+    public void setEnemiesHacked(double enemiesHacked) {
         this.enemiesHacked = enemiesHacked;
     }
 
@@ -2068,19 +2068,19 @@ public class HeroSpecific {
         this.enemiesHackedAvgPer10Min = enemiesHackedAvgPer10Min;
     }
 
-    public int getEnemiesHackedMostInGame() {
+    public double getEnemiesHackedMostInGame() {
         return enemiesHackedMostInGame;
     }
 
-    public void setEnemiesHackedMostInGame(int enemiesHackedMostInGame) {
+    public void setEnemiesHackedMostInGame(double enemiesHackedMostInGame) {
         this.enemiesHackedMostInGame = enemiesHackedMostInGame;
     }
 
-    public int getPlayersTeleported() {
+    public double getPlayersTeleported() {
         return playersTeleported;
     }
 
-    public void setPlayersTeleported(int playersTeleported) {
+    public void setPlayersTeleported(double playersTeleported) {
         this.playersTeleported = playersTeleported;
     }
 
@@ -2092,11 +2092,11 @@ public class HeroSpecific {
         this.playersTeleportedAvgPer10Min = playersTeleportedAvgPer10Min;
     }
 
-    public int getPlayersTeleportedMostInGame() {
+    public double getPlayersTeleportedMostInGame() {
         return playersTeleportedMostInGame;
     }
 
-    public void setPlayersTeleportedMostInGame(int playersTeleportedMostInGame) {
+    public void setPlayersTeleportedMostInGame(double playersTeleportedMostInGame) {
         this.playersTeleportedMostInGame = playersTeleportedMostInGame;
     }
 
@@ -2116,11 +2116,11 @@ public class HeroSpecific {
         this.secondaryDirectHitsAvgPer10Min = secondaryDirectHitsAvgPer10Min;
     }
 
-    public int getSentryTurretsKills() {
+    public double getSentryTurretsKills() {
         return sentryTurretsKills;
     }
 
-    public void setSentryTurretsKills(int sentryTurretsKills) {
+    public void setSentryTurretsKills(double sentryTurretsKills) {
         this.sentryTurretsKills = sentryTurretsKills;
     }
 
@@ -2132,19 +2132,19 @@ public class HeroSpecific {
         this.sentryTurretsKillsAvgPer10Min = sentryTurretsKillsAvgPer10Min;
     }
 
-    public int getSentryTurretsKillsMostInGame() {
+    public double getSentryTurretsKillsMostInGame() {
         return sentryTurretsKillsMostInGame;
     }
 
-    public void setSentryTurretsKillsMostInGame(int sentryTurretsKillsMostInGame) {
+    public void setSentryTurretsKillsMostInGame(double sentryTurretsKillsMostInGame) {
         this.sentryTurretsKillsMostInGame = sentryTurretsKillsMostInGame;
     }
 
-    public int getArmorPacksCreated() {
+    public double getArmorPacksCreated() {
         return armorPacksCreated;
     }
 
-    public void setArmorPacksCreated(int armorPacksCreated) {
+    public void setArmorPacksCreated(double armorPacksCreated) {
         this.armorPacksCreated = armorPacksCreated;
     }
 
@@ -2156,19 +2156,19 @@ public class HeroSpecific {
         this.armorPacksCreatedAvgPer10Min = armorPacksCreatedAvgPer10Min;
     }
 
-    public int getArmorPacksCreatedMostInGame() {
+    public double getArmorPacksCreatedMostInGame() {
         return armorPacksCreatedMostInGame;
     }
 
-    public void setArmorPacksCreatedMostInGame(int armorPacksCreatedMostInGame) {
+    public void setArmorPacksCreatedMostInGame(double armorPacksCreatedMostInGame) {
         this.armorPacksCreatedMostInGame = armorPacksCreatedMostInGame;
     }
 
-    public int getMoltenCoreKills() {
+    public double getMoltenCoreKills() {
         return moltenCoreKills;
     }
 
-    public void setMoltenCoreKills(int moltenCoreKills) {
+    public void setMoltenCoreKills(double moltenCoreKills) {
         this.moltenCoreKills = moltenCoreKills;
     }
 
@@ -2180,35 +2180,35 @@ public class HeroSpecific {
         this.moltenCoreKillsAvgPer10Min = moltenCoreKillsAvgPer10Min;
     }
 
-    public int getMoltenCoreKillsMostInGame() {
+    public double getMoltenCoreKillsMostInGame() {
         return moltenCoreKillsMostInGame;
     }
 
-    public void setMoltenCoreKillsMostInGame(int moltenCoreKillsMostInGame) {
+    public void setMoltenCoreKillsMostInGame(double moltenCoreKillsMostInGame) {
         this.moltenCoreKillsMostInGame = moltenCoreKillsMostInGame;
     }
 
-    public int getOverloadKills() {
+    public double getOverloadKills() {
         return overloadKills;
     }
 
-    public void setOverloadKills(int overloadKills) {
+    public void setOverloadKills(double overloadKills) {
         this.overloadKills = overloadKills;
     }
 
-    public int getOverloadKillsMostInGame() {
+    public double getOverloadKillsMostInGame() {
         return overloadKillsMostInGame;
     }
 
-    public void setOverloadKillsMostInGame(int overloadKillsMostInGame) {
+    public void setOverloadKillsMostInGame(double overloadKillsMostInGame) {
         this.overloadKillsMostInGame = overloadKillsMostInGame;
     }
 
-    public int getTorbjornKills() {
+    public double getTorbjornKills() {
         return torbjornKills;
     }
 
-    public void setTorbjornKills(int torbjornKills) {
+    public void setTorbjornKills(double torbjornKills) {
         this.torbjornKills = torbjornKills;
     }
 
@@ -2220,27 +2220,27 @@ public class HeroSpecific {
         this.torbjornKillsAvgPer10Min = torbjornKillsAvgPer10Min;
     }
 
-    public int getTorbjornKillsMostInGame() {
+    public double getTorbjornKillsMostInGame() {
         return torbjornKillsMostInGame;
     }
 
-    public void setTorbjornKillsMostInGame(int torbjornKillsMostInGame) {
+    public void setTorbjornKillsMostInGame(double torbjornKillsMostInGame) {
         this.torbjornKillsMostInGame = torbjornKillsMostInGame;
     }
 
-    public int getTurretsDamageAvgPer10Min() {
+    public double getTurretsDamageAvgPer10Min() {
         return turretsDamageAvgPer10Min;
     }
 
-    public void setTurretsDamageAvgPer10Min(int turretsDamageAvgPer10Min) {
+    public void setTurretsDamageAvgPer10Min(double turretsDamageAvgPer10Min) {
         this.turretsDamageAvgPer10Min = turretsDamageAvgPer10Min;
     }
 
-    public int getTurretsKills() {
+    public double getTurretsKills() {
         return turretsKills;
     }
 
-    public void setTurretsKills(int turretsKills) {
+    public void setTurretsKills(double turretsKills) {
         this.turretsKills = turretsKills;
     }
 
@@ -2252,43 +2252,43 @@ public class HeroSpecific {
         this.turretsKillsAvgPer10Min = turretsKillsAvgPer10Min;
     }
 
-    public int getTurretsKillsMostInGame() {
+    public double getTurretsKillsMostInGame() {
         return turretsKillsMostInGame;
     }
 
-    public void setTurretsKillsMostInGame(int turretsKillsMostInGame) {
+    public void setTurretsKillsMostInGame(double turretsKillsMostInGame) {
         this.turretsKillsMostInGame = turretsKillsMostInGame;
     }
 
-    public int getHealthRecovered() {
+    public double getHealthRecovered() {
         return healthRecovered;
     }
 
-    public void setHealthRecovered(int healthRecovered) {
+    public void setHealthRecovered(double healthRecovered) {
         this.healthRecovered = healthRecovered;
     }
 
-    public int getHealthRecoveredAvgPer10Min() {
+    public double getHealthRecoveredAvgPer10Min() {
         return healthRecoveredAvgPer10Min;
     }
 
-    public void setHealthRecoveredAvgPer10Min(int healthRecoveredAvgPer10Min) {
+    public void setHealthRecoveredAvgPer10Min(double healthRecoveredAvgPer10Min) {
         this.healthRecoveredAvgPer10Min = healthRecoveredAvgPer10Min;
     }
 
-    public int getHealthRecoveredMostInGame() {
+    public double getHealthRecoveredMostInGame() {
         return healthRecoveredMostInGame;
     }
 
-    public void setHealthRecoveredMostInGame(int healthRecoveredMostInGame) {
+    public void setHealthRecoveredMostInGame(double healthRecoveredMostInGame) {
         this.healthRecoveredMostInGame = healthRecoveredMostInGame;
     }
 
-    public int getPulseBombsAttached() {
+    public double getPulseBombsAttached() {
         return pulseBombsAttached;
     }
 
-    public void setPulseBombsAttached(int pulseBombsAttached) {
+    public void setPulseBombsAttached(double pulseBombsAttached) {
         this.pulseBombsAttached = pulseBombsAttached;
     }
 
@@ -2300,19 +2300,19 @@ public class HeroSpecific {
         this.pulseBombsAttachedAvgPer10Min = pulseBombsAttachedAvgPer10Min;
     }
 
-    public int getPulseBombsAttachedMostInGame() {
+    public double getPulseBombsAttachedMostInGame() {
         return pulseBombsAttachedMostInGame;
     }
 
-    public void setPulseBombsAttachedMostInGame(int pulseBombsAttachedMostInGame) {
+    public void setPulseBombsAttachedMostInGame(double pulseBombsAttachedMostInGame) {
         this.pulseBombsAttachedMostInGame = pulseBombsAttachedMostInGame;
     }
 
-    public int getPulseBombsKills() {
+    public double getPulseBombsKills() {
         return pulseBombsKills;
     }
 
-    public void setPulseBombsKills(int pulseBombsKills) {
+    public void setPulseBombsKills(double pulseBombsKills) {
         this.pulseBombsKills = pulseBombsKills;
     }
 
@@ -2324,19 +2324,19 @@ public class HeroSpecific {
         this.pulseBombsKillsAvgPer10Min = pulseBombsKillsAvgPer10Min;
     }
 
-    public int getPulseBombsKillsMostInGame() {
+    public double getPulseBombsKillsMostInGame() {
         return pulseBombsKillsMostInGame;
     }
 
-    public void setPulseBombsKillsMostInGame(int pulseBombsKillsMostInGame) {
+    public void setPulseBombsKillsMostInGame(double pulseBombsKillsMostInGame) {
         this.pulseBombsKillsMostInGame = pulseBombsKillsMostInGame;
     }
 
-    public int getVenomMineKills() {
+    public double getVenomMineKills() {
         return venomMineKills;
     }
 
-    public void setVenomMineKills(int venomMineKills) {
+    public void setVenomMineKills(double venomMineKills) {
         this.venomMineKills = venomMineKills;
     }
 
@@ -2348,27 +2348,27 @@ public class HeroSpecific {
         this.venomMineKillsAvgPer10Min = venomMineKillsAvgPer10Min;
     }
 
-    public int getVenomMineKillsMostInGame() {
+    public double getVenomMineKillsMostInGame() {
         return venomMineKillsMostInGame;
     }
 
-    public void setVenomMineKillsMostInGame(int venomMineKillsMostInGame) {
+    public void setVenomMineKillsMostInGame(double venomMineKillsMostInGame) {
         this.venomMineKillsMostInGame = venomMineKillsMostInGame;
     }
 
-    public int getJumpKills() {
+    public double getJumpKills() {
         return jumpKills;
     }
 
-    public void setJumpKills(int jumpKills) {
+    public void setJumpKills(double jumpKills) {
         this.jumpKills = jumpKills;
     }
 
-    public int getJumpPackKills() {
+    public double getJumpPackKills() {
         return jumpPackKills;
     }
 
-    public void setJumpPackKills(int jumpPackKills) {
+    public void setJumpPackKills(double jumpPackKills) {
         this.jumpPackKills = jumpPackKills;
     }
 
@@ -2380,19 +2380,19 @@ public class HeroSpecific {
         this.jumpPackKillsAvgPer10Min = jumpPackKillsAvgPer10Min;
     }
 
-    public int getJumpPackKillsMostInGame() {
+    public double getJumpPackKillsMostInGame() {
         return jumpPackKillsMostInGame;
     }
 
-    public void setJumpPackKillsMostInGame(int jumpPackKillsMostInGame) {
+    public void setJumpPackKillsMostInGame(double jumpPackKillsMostInGame) {
         this.jumpPackKillsMostInGame = jumpPackKillsMostInGame;
     }
 
-    public int getMeleeKills() {
+    public double getMeleeKills() {
         return meleeKills;
     }
 
-    public void setMeleeKills(int meleeKills) {
+    public void setMeleeKills(double meleeKills) {
         this.meleeKills = meleeKills;
     }
 
@@ -2404,19 +2404,19 @@ public class HeroSpecific {
         this.meleeKillsAvgPer10Min = meleeKillsAvgPer10Min;
     }
 
-    public int getMeleeKillsMostInGame() {
+    public double getMeleeKillsMostInGame() {
         return meleeKillsMostInGame;
     }
 
-    public void setMeleeKillsMostInGame(int meleeKillsMostInGame) {
+    public void setMeleeKillsMostInGame(double meleeKillsMostInGame) {
         this.meleeKillsMostInGame = meleeKillsMostInGame;
     }
 
-    public int getPlayersKnockedBack() {
+    public double getPlayersKnockedBack() {
         return playersKnockedBack;
     }
 
-    public void setPlayersKnockedBack(int playersKnockedBack) {
+    public void setPlayersKnockedBack(double playersKnockedBack) {
         this.playersKnockedBack = playersKnockedBack;
     }
 
@@ -2428,19 +2428,19 @@ public class HeroSpecific {
         this.playersKnockedBackAvgPer10Min = playersKnockedBackAvgPer10Min;
     }
 
-    public int getPlayersKnockedBackMostInGame() {
+    public double getPlayersKnockedBackMostInGame() {
         return playersKnockedBackMostInGame;
     }
 
-    public void setPlayersKnockedBackMostInGame(int playersKnockedBackMostInGame) {
+    public void setPlayersKnockedBackMostInGame(double playersKnockedBackMostInGame) {
         this.playersKnockedBackMostInGame = playersKnockedBackMostInGame;
     }
 
-    public int getPrimalRageKills() {
+    public double getPrimalRageKills() {
         return primalRageKills;
     }
 
-    public void setPrimalRageKills(int primalRageKills) {
+    public void setPrimalRageKills(double primalRageKills) {
         this.primalRageKills = primalRageKills;
     }
 
@@ -2452,11 +2452,11 @@ public class HeroSpecific {
         this.primalRageKillsAvgPer10Min = primalRageKillsAvgPer10Min;
     }
 
-    public int getPrimalRageKillsMostInGame() {
+    public double getPrimalRageKillsMostInGame() {
         return primalRageKillsMostInGame;
     }
 
-    public void setPrimalRageKillsMostInGame(int primalRageKillsMostInGame) {
+    public void setPrimalRageKillsMostInGame(double primalRageKillsMostInGame) {
         this.primalRageKillsMostInGame = primalRageKillsMostInGame;
     }
 
@@ -2476,19 +2476,19 @@ public class HeroSpecific {
         this.teslaCannonAccuracy = teslaCannonAccuracy;
     }
 
-    public int getWeaponKills() {
+    public double getWeaponKills() {
         return weaponKills;
     }
 
-    public void setWeaponKills(int weaponKills) {
+    public void setWeaponKills(double weaponKills) {
         this.weaponKills = weaponKills;
     }
 
-    public int getGrapplingClawKills() {
+    public double getGrapplingClawKills() {
         return grapplingClawKills;
     }
 
-    public void setGrapplingClawKills(int grapplingClawKills) {
+    public void setGrapplingClawKills(double grapplingClawKills) {
         this.grapplingClawKills = grapplingClawKills;
     }
 
@@ -2500,19 +2500,19 @@ public class HeroSpecific {
         this.grapplingClawKillsAvgPer10Min = grapplingClawKillsAvgPer10Min;
     }
 
-    public int getGrapplingClawKillsMostInGame() {
+    public double getGrapplingClawKillsMostInGame() {
         return grapplingClawKillsMostInGame;
     }
 
-    public void setGrapplingClawKillsMostInGame(int grapplingClawKillsMostInGame) {
+    public void setGrapplingClawKillsMostInGame(double grapplingClawKillsMostInGame) {
         this.grapplingClawKillsMostInGame = grapplingClawKillsMostInGame;
     }
 
-    public int getMinefieldKills() {
+    public double getMinefieldKills() {
         return minefieldKills;
     }
 
-    public void setMinefieldKills(int minefieldKills) {
+    public void setMinefieldKills(double minefieldKills) {
         this.minefieldKills = minefieldKills;
     }
 
@@ -2524,11 +2524,11 @@ public class HeroSpecific {
         this.minefieldKillsAvgPer10Min = minefieldKillsAvgPer10Min;
     }
 
-    public int getMinefieldKillsMostInGame() {
+    public double getMinefieldKillsMostInGame() {
         return minefieldKillsMostInGame;
     }
 
-    public void setMinefieldKillsMostInGame(int minefieldKillsMostInGame) {
+    public void setMinefieldKillsMostInGame(double minefieldKillsMostInGame) {
         this.minefieldKillsMostInGame = minefieldKillsMostInGame;
     }
 
@@ -2548,11 +2548,11 @@ public class HeroSpecific {
         this.averageEnergyBestInGame = averageEnergyBestInGame;
     }
 
-    public int getGravitonSurgeKills() {
+    public double getGravitonSurgeKills() {
         return gravitonSurgeKills;
     }
 
-    public void setGravitonSurgeKills(int gravitonSurgeKills) {
+    public void setGravitonSurgeKills(double gravitonSurgeKills) {
         this.gravitonSurgeKills = gravitonSurgeKills;
     }
 
@@ -2564,19 +2564,19 @@ public class HeroSpecific {
         this.gravitonSurgeKillsAvgPer10Min = gravitonSurgeKillsAvgPer10Min;
     }
 
-    public int getGravitonSurgeKillsMostInGame() {
+    public double getGravitonSurgeKillsMostInGame() {
         return gravitonSurgeKillsMostInGame;
     }
 
-    public void setGravitonSurgeKillsMostInGame(int gravitonSurgeKillsMostInGame) {
+    public void setGravitonSurgeKillsMostInGame(double gravitonSurgeKillsMostInGame) {
         this.gravitonSurgeKillsMostInGame = gravitonSurgeKillsMostInGame;
     }
 
-    public int getHighEnergyKills() {
+    public double getHighEnergyKills() {
         return highEnergyKills;
     }
 
-    public void setHighEnergyKills(int highEnergyKills) {
+    public void setHighEnergyKills(double highEnergyKills) {
         this.highEnergyKills = highEnergyKills;
     }
 
@@ -2588,19 +2588,19 @@ public class HeroSpecific {
         this.highEnergyKillsAvgPer10Min = highEnergyKillsAvgPer10Min;
     }
 
-    public int getHighEnergyKillsMostInGame() {
+    public double getHighEnergyKillsMostInGame() {
         return highEnergyKillsMostInGame;
     }
 
-    public void setHighEnergyKillsMostInGame(int highEnergyKillsMostInGame) {
+    public void setHighEnergyKillsMostInGame(double highEnergyKillsMostInGame) {
         this.highEnergyKillsMostInGame = highEnergyKillsMostInGame;
     }
 
-    public int getProjectedBarriersApplied() {
+    public double getProjectedBarriersApplied() {
         return projectedBarriersApplied;
     }
 
-    public void setProjectedBarriersApplied(int projectedBarriersApplied) {
+    public void setProjectedBarriersApplied(double projectedBarriersApplied) {
         this.projectedBarriersApplied = projectedBarriersApplied;
     }
 
@@ -2612,27 +2612,27 @@ public class HeroSpecific {
         this.projectedBarriersAppliedAvgPer10Min = projectedBarriersAppliedAvgPer10Min;
     }
 
-    public int getProjectedBarriersAppliedMostInGame() {
+    public double getProjectedBarriersAppliedMostInGame() {
         return projectedBarriersAppliedMostInGame;
     }
 
-    public void setProjectedBarriersAppliedMostInGame(int projectedBarriersAppliedMostInGame) {
+    public void setProjectedBarriersAppliedMostInGame(double projectedBarriersAppliedMostInGame) {
         this.projectedBarriersAppliedMostInGame = projectedBarriersAppliedMostInGame;
     }
 
-    public int getTranscendenceHealing() {
+    public double getTranscendenceHealing() {
         return transcendenceHealing;
     }
 
-    public void setTranscendenceHealing(int transcendenceHealing) {
+    public void setTranscendenceHealing(double transcendenceHealing) {
         this.transcendenceHealing = transcendenceHealing;
     }
 
-    public int getTranscendenceHealingBest() {
+    public double getTranscendenceHealingBest() {
         return transcendenceHealingBest;
     }
 
-    public void setTranscendenceHealingBest(int transcendenceHealingBest) {
+    public void setTranscendenceHealingBest(double transcendenceHealingBest) {
         this.transcendenceHealingBest = transcendenceHealingBest;
     }
 }
