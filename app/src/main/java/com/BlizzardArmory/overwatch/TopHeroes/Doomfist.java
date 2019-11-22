@@ -1,10 +1,7 @@
 
 package com.BlizzardArmory.overwatch.TopHeroes;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class Doomfist extends Hero{
+public class Doomfist extends TopHero {
 
 
 }

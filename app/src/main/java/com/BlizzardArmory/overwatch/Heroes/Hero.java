@@ -1,18 +1,20 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
+import com.BlizzardArmory.overwatch.Assists;
 import com.BlizzardArmory.overwatch.Average;
 import com.BlizzardArmory.overwatch.HeroSpecific;
 import com.BlizzardArmory.overwatch.Best;
 import com.BlizzardArmory.overwatch.Combat;
 import com.BlizzardArmory.overwatch.Game;
 import com.BlizzardArmory.overwatch.MatchAwards;
+import com.BlizzardArmory.overwatch.Miscellaneous;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Hero {
     @SerializedName("assists")
     @Expose
-    private Object assists;
+    private Assists assists;
     @SerializedName("average")
     @Expose
     private Average average;
@@ -36,13 +38,13 @@ public class Hero {
     private MatchAwards matchAwards;
     @SerializedName("miscellaneous")
     @Expose
-    private Object miscellaneous;
+    private Miscellaneous miscellaneous;
 
     public Object getAssists() {
         return assists;
     }
 
-    public void setAssists(Object assists) {
+    public void setAssists(Assists assists) {
         this.assists = assists;
     }
 
@@ -106,7 +108,7 @@ public class Hero {
         return miscellaneous;
     }
 
-    public void setMiscellaneous(Object miscellaneous) {
+    public void setMiscellaneous(Miscellaneous miscellaneous) {
         this.miscellaneous = miscellaneous;
     }
 }

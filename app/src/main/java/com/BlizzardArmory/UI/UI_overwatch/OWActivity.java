@@ -37,8 +37,9 @@ import com.BlizzardArmory.UI.UI_starcraft.SC2Activity;
 import com.BlizzardArmory.UI.UI_warcraft.WoWActivity;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.overwatch.Heroes.Hero;
 import com.BlizzardArmory.overwatch.Profile;
-import com.BlizzardArmory.overwatch.TopHeroes.Hero;
+import com.BlizzardArmory.overwatch.TopHeroes.TopHero;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -59,6 +60,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class OWActivity extends AppCompatActivity {
@@ -74,8 +76,10 @@ public class OWActivity extends AppCompatActivity {
     private TextView btag;
     private RelativeLayout loadingCircle;
     private Profile accountInformation;
-    private ArrayList<Hero> topHeroesQuickPlay;
-    private ArrayList<Hero> topHeroesCompetitive;
+    private ArrayList<TopHero> topHeroesQuickPlay;
+    private ArrayList<TopHero> topHeroesCompetitive;
+    private ArrayList<Hero> careerQuickPlay;
+    private ArrayList<Hero> careerCompetitive;
 
     private ImageView avatar;
     private TextView name;
@@ -103,6 +107,7 @@ public class OWActivity extends AppCompatActivity {
     private final String MULTIKILL_BEST = "Multikill - Best";
     private final String OBJECTIVE_KILLS = "Objective Kills";
     private final String[] sortHeroList = {TIME_PLAYED, GAMES_WON, WEAPON_ACCURACY, ELIMINATIONS_PER_LIFE, MULTIKILL_BEST, OBJECTIVE_KILLS};
+    private ArrayList<String> sortCareerHeroes = new ArrayList<>();
 
     private LinearLayout heroList;
 
@@ -142,6 +147,7 @@ public class OWActivity extends AppCompatActivity {
         endorsement = findViewById(R.id.endorsement_level);*/
         prestigeIcon = findViewById(R.id.prestige_icon);
         Spinner topHeroesListSpinner = findViewById(R.id.spinner);
+        Spinner careerListSpinner = findViewById(R.id.spinner_career);
         heroList = findViewById(R.id.hero_list);
         competitive = findViewById(R.id.competitive);
         quickplay = findViewById(R.id.quickplay);
@@ -193,46 +199,40 @@ public class OWActivity extends AppCompatActivity {
                             //downloadEndorsementIcon(requestQueue);
                             //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
 
-                            topHeroesQuickPlay = accountInformation.getQuickPlayStats().getTopHeroes().getHeroList();
-                            topHeroesCompetitive = accountInformation.getCompetitiveStats().getTopHeroes().getHeroList();
-                            Log.i("TEST", accountInformation.getQuickPlayStats().getTopHeroes().getBaptiste().getTimePlayed());
-
-                            for (int i = 0; i < topHeroesQuickPlay.size(); i++) {
-                                if (topHeroesQuickPlay.get(i) == null) {
-                                    topHeroesQuickPlay.remove(i);
-                                    i--;
-                                }
-                            }
-
-                            for (int i = 0; i < topHeroesCompetitive.size(); i++) {
-                                if (topHeroesCompetitive.get(i) == null) {
-                                    topHeroesCompetitive.remove(i);
-                                    i--;
-                                }
-                            }
-
-                            sortList(topHeroesCompetitive, sortHeroList[0]);
-                            sortList(topHeroesQuickPlay, sortHeroList[0]);
-                            Log.i("TOP CHARACTER QUICKPLAY", topHeroesQuickPlay.get(0).getClass().getSimpleName());
-
+                            setTopHeroesLists();
+                            setCareerLists();
+                            setSpinnerCareerList(careerQuickPlay);
 
                             setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
-                            setSpinner(topHeroesListSpinner, topHeroesQuickPlay);
+                            setSpinnerTopHeroes(topHeroesListSpinner);
+                            setSpinnerCareer(careerListSpinner);
 
                             quickplay.setOnClickListener(v -> {
-                                comp = false;
-                                quickplay.setBackground(switchCompQuickRadius);
-                                competitive.setBackgroundColor(0);
-                                setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
-                                setSpinner(topHeroesListSpinner, topHeroesQuickPlay);
+                                if(comp) {
+                                    comp = false;
+                                    quickplay.setBackground(switchCompQuickRadius);
+                                    quickplay.setTextColor(Color.parseColor("#000000"));
+                                    competitive.setTextColor(Color.parseColor("#FFFFFF"));
+                                    competitive.setBackgroundColor(0);
+                                    setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                                    setSpinnerTopHeroes(topHeroesListSpinner);
+                                    setSpinnerCareerList(careerQuickPlay);
+                                    setSpinnerCareer(careerListSpinner);
+                                }
                             });
 
                             competitive.setOnClickListener(v -> {
-                                comp = true;
-                                competitive.setBackground(switchCompQuickRadius);
-                                quickplay.setBackgroundColor(0);
-                                setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
-                                setSpinner(topHeroesListSpinner, topHeroesCompetitive);
+                                if(!comp) {
+                                    comp = true;
+                                    competitive.setBackground(switchCompQuickRadius);
+                                    competitive.setTextColor(Color.parseColor("#000000"));
+                                    quickplay.setBackgroundColor(0);
+                                    quickplay.setTextColor(Color.parseColor("#FFFFFF"));
+                                    setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
+                                    setSpinnerTopHeroes(topHeroesListSpinner);
+                                    setSpinnerCareerList(careerCompetitive);
+                                    setSpinnerCareer(careerListSpinner);
+                                }
                             });
 
                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -241,7 +241,7 @@ public class OWActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
-                            Log.e("Error", e.toString());
+                            Log.e("Error", Arrays.toString(e.getStackTrace()));
                         }
 
                     },
@@ -263,7 +263,68 @@ public class OWActivity extends AppCompatActivity {
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
     }
 
-    private void setSpinner(Spinner topHeroesListSpinner, ArrayList<Hero> topHeroesQuickPlay) {
+    private void setCareerLists() {
+        careerQuickPlay = accountInformation.getQuickPlayStats().getCareerStats().getHeroList();
+        careerCompetitive = accountInformation.getCompetitiveStats().getCareerStats().getHeroList();
+
+        for (int i = 0; i < careerQuickPlay.size(); i++) {
+            if (careerQuickPlay.get(i) == null) {
+                careerQuickPlay.remove(i);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < careerCompetitive.size(); i++) {
+            if (careerCompetitive.get(i) == null) {
+                careerCompetitive.remove(i);
+                i--;
+            }
+        }
+    }
+
+    private void setSpinnerCareerList(ArrayList<Hero> list) {
+
+        for (int i = 0; i < list.size(); i++) {
+            String tempName;
+            if (list.get(i).getClass().getSimpleName().equals("WreckingBall")) {
+                tempName = "Wrecking Ball";
+            } else if (list.get(i).getClass().getSimpleName().equals("Dva")) {
+                tempName = "D.Va";
+            } else if(list.get(i).getClass().getSimpleName().equals("Soldier76")){
+                tempName = "Soldier: 76";
+            }else if(list.get(i).getClass().getSimpleName().equals("AllHeroes")){
+                tempName = "All Heroes";
+            }else{
+                tempName = list.get(i).getClass().getSimpleName() + " ";
+            }
+            sortCareerHeroes.add(tempName);
+        }
+
+    }
+
+    private void setTopHeroesLists() {
+        topHeroesQuickPlay = accountInformation.getQuickPlayStats().getTopHeroes().getHeroList();
+        topHeroesCompetitive = accountInformation.getCompetitiveStats().getTopHeroes().getHeroList();
+
+        for (int i = 0; i < topHeroesQuickPlay.size(); i++) {
+            if (topHeroesQuickPlay.get(i) == null) {
+                topHeroesQuickPlay.remove(i);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < topHeroesCompetitive.size(); i++) {
+            if (topHeroesCompetitive.get(i) == null) {
+                topHeroesCompetitive.remove(i);
+                i--;
+            }
+        }
+
+        sortList(topHeroesCompetitive, sortHeroList[0]);
+        sortList(topHeroesQuickPlay, sortHeroList[0]);
+    }
+
+    private void setSpinnerTopHeroes(Spinner spinner) {
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, sortHeroList) {
 
             @Override
@@ -275,21 +336,23 @@ public class OWActivity extends AppCompatActivity {
                 tv.setTextSize(15);
                 tv.setGravity(Gravity.CENTER);
                 return view;
+
+
             }
         };
 
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        topHeroesListSpinner.setAdapter(arrayAdapter);
+        spinner.setAdapter(arrayAdapter);
 
-        topHeroesListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ((TextView) view).setTextColor(Color.parseColor("#CCCCCC"));
                 ((TextView) view).setTextSize(15);
                 ((TextView) view).setGravity(Gravity.CENTER_VERTICAL);
 
+
                 if(comp) {
-                    sortList(topHeroesCompetitive, sortHeroList[position]);
                     setHeroList((String) parent.getItemAtPosition(position), topHeroesCompetitive);
                 }{
                     sortList(topHeroesQuickPlay, sortHeroList[position]);
@@ -305,7 +368,42 @@ public class OWActivity extends AppCompatActivity {
         });
     }
 
-    private void setHeroList(String itemSelected, ArrayList<Hero> heroes) {
+    private void setSpinnerCareer(Spinner spinner) {
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, sortCareerHeroes) {
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setAllCaps(true);
+                tv.setBackgroundColor(Color.WHITE);
+                tv.setTextSize(15);
+                tv.setGravity(Gravity.CENTER);
+                return view;
+            }
+        };
+
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) view).setTextColor(Color.parseColor("#CCCCCC"));
+                ((TextView) view).setTextSize(15);
+                ((TextView) view).setGravity(Gravity.CENTER_VERTICAL);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                ((TextView) parent.getChildAt(0)).setTextColor(0);
+            }
+        });
+    }
+
+    private void setHeroList(String itemSelected, ArrayList<TopHero> heroes) {
         heroList.removeAllViews();
 
         for (int i = 0; i < heroes.size(); i++) {
@@ -349,7 +447,9 @@ public class OWActivity extends AppCompatActivity {
                 tempName = "Wrecking Ball ";
             } else if (heroes.get(i).getClass().getSimpleName().equals("Dva")) {
                 tempName = "D.Va ";
-            } else {
+            } else if(heroes.get(i).getClass().getSimpleName().equals("Soldier76")){
+                tempName = "Soldier: 76 ";
+            }else{
                 tempName = heroes.get(i).getClass().getSimpleName() + " ";
             }
             name.setText(tempName);
@@ -372,44 +472,39 @@ public class OWActivity extends AppCompatActivity {
                     case TIME_PLAYED:
                         double fullWidth = getSeconds(heroes.get(0));
                         viewWidth = (getSeconds(heroes.get(i)) * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8 , RelativeLayout.LayoutParams.MATCH_PARENT));
-
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
                         data.setText(heroes.get(i).getTimePlayed());
                         break;
                     case GAMES_WON:
                         fullWidth = heroes.get(0).getGamesWon();
                         viewWidth = (heroes.get(i).getGamesWon() * 100) / fullWidth;
-                        //viewWidth = 100 - viewWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getGamesWon()));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf( (int) heroes.get(i).getGamesWon()));
                         break;
                     case WEAPON_ACCURACY:
                         fullWidth = heroes.get(0).getWeaponAccuracy();
                         viewWidth = (heroes.get(i).getWeaponAccuracy() * 100) / fullWidth;
-                        //viewWidth = 100 - viewWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getWeaponAccuracy()));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        String tempData = (int) heroes.get(i).getWeaponAccuracy() + "%";
+                        data.setText(tempData);
                         break;
                     case ELIMINATIONS_PER_LIFE:
                         fullWidth = heroes.get(0).getEliminationsPerLife();
                         viewWidth = (heroes.get(i).getEliminationsPerLife() * 100) / fullWidth;
-                        //viewWidth = 100 - viewWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
                         data.setText(String.valueOf(heroes.get(i).getEliminationsPerLife()));
                         break;
                     case MULTIKILL_BEST:
                         fullWidth = heroes.get(0).getMultiKillBest();
                         viewWidth = (heroes.get(i).getMultiKillBest() * 100) / fullWidth;
-                        //viewWidth = 100 - viewWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getMultiKillBest()));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf((int) heroes.get(i).getMultiKillBest()));
                         break;
                     case OBJECTIVE_KILLS:
                         fullWidth = heroes.get(0).getObjectiveKills();
                         viewWidth = (heroes.get(i).getObjectiveKills() * 100) / fullWidth;
-                        //viewWidth = 100 - viewWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) viewWidth * 8, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getObjectiveKills()));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
                 }
             }else{
                 switch (itemSelected) {
@@ -419,11 +514,12 @@ public class OWActivity extends AppCompatActivity {
                         break;
                     case GAMES_WON:
                         backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getGamesWon()));
+                        data.setText(String.valueOf((int) heroes.get(i).getGamesWon()));
                         break;
                     case WEAPON_ACCURACY:
                         backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getWeaponAccuracy()));
+                        String tempData = (int) heroes.get(i).getWeaponAccuracy() + "%";
+                        data.setText(tempData);
                         break;
                     case ELIMINATIONS_PER_LIFE:
                         backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
@@ -431,11 +527,11 @@ public class OWActivity extends AppCompatActivity {
                         break;
                     case MULTIKILL_BEST:
                         backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getMultiKillBest()));
+                        data.setText(String.valueOf((int) heroes.get(i).getMultiKillBest()));
                         break;
                     case OBJECTIVE_KILLS:
                         backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getObjectiveKills()));
+                        data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
                 }
 
             }
@@ -494,7 +590,7 @@ public class OWActivity extends AppCompatActivity {
                 progressBar.setColor(Color.parseColor("#ecbd53"));
                 backgroundColor.setBackground(progressBar);
                 break;
-            case "Lucio":
+            case "Lúcio":
                 progressBar.setColor(Color.parseColor("#85c952"));
                 backgroundColor.setBackground(progressBar);
                 break;
@@ -614,7 +710,7 @@ public class OWActivity extends AppCompatActivity {
             case "Junkrat":
                 id = R.drawable.junkrat_icon;
                 break;
-            case "Lucio":
+            case "Lúcio":
                 id = R.drawable.lucio_icon;
                 break;
             case "Mccree":
@@ -713,7 +809,7 @@ public class OWActivity extends AppCompatActivity {
             case "Junkrat":
                 topCharacter.setImageResource(R.drawable.junkrat_portrait);
                 break;
-            case "Lucio":
+            case "Lúcio":
                 topCharacter.setImageResource(R.drawable.lucio_portrait);
                 break;
             case "Mccree":
@@ -779,7 +875,7 @@ public class OWActivity extends AppCompatActivity {
         }
     }
 
-    private void sortList(ArrayList<Hero> topHeroes, String howToSort) {
+    private void sortList(ArrayList<TopHero> topHeroes, String howToSort) {
         switch (howToSort) {
             case TIME_PLAYED:
                 topHeroes.sort((hero1, hero2) -> {
@@ -845,7 +941,7 @@ public class OWActivity extends AppCompatActivity {
         }
     }
 
-    private int getSeconds(Hero hero) {
+    private int getSeconds(TopHero hero) {
         int secondsHero1 = 0;
         if (StringUtils.countMatches(hero.getTimePlayed(), ":") == 2) {
             secondsHero1 += Integer.valueOf(hero.getTimePlayed().substring(0, hero.getTimePlayed().indexOf(":"))) * 3600;

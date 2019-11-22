@@ -1,5 +1,6 @@
 package com.BlizzardArmory.overwatch;
 
+import com.BlizzardArmory.overwatch.Heroes.AllHeroes;
 import com.BlizzardArmory.overwatch.Heroes.Ana;
 import com.BlizzardArmory.overwatch.Heroes.Ashe;
 import com.BlizzardArmory.overwatch.Heroes.Baptiste;
@@ -11,7 +12,7 @@ import com.BlizzardArmory.overwatch.Heroes.Genji;
 import com.BlizzardArmory.overwatch.Heroes.Hanzo;
 import com.BlizzardArmory.overwatch.Heroes.Hero;
 import com.BlizzardArmory.overwatch.Heroes.Junkrat;
-import com.BlizzardArmory.overwatch.Heroes.Lucio;
+import com.BlizzardArmory.overwatch.Heroes.Lúcio;
 import com.BlizzardArmory.overwatch.Heroes.Mccree;
 import com.BlizzardArmory.overwatch.Heroes.Mei;
 import com.BlizzardArmory.overwatch.Heroes.Mercy;
@@ -39,6 +40,9 @@ import java.util.ArrayList;
 
 public class CareerStats {
 
+    @SerializedName("allHeroes")
+    @Expose
+    private AllHeroes allHeroes;
     @SerializedName("ana")
     @Expose
     private Ana ana;
@@ -71,7 +75,7 @@ public class CareerStats {
     private Junkrat junkrat;
     @SerializedName("lucio")
     @Expose
-    private Lucio lucio;
+    private Lúcio lucio;
     @SerializedName("mccree")
     @Expose
     private Mccree mccree;
@@ -215,11 +219,11 @@ public class CareerStats {
         this.junkrat = junkrat;
     }
 
-    public Lucio getLucio() {
+    public Lúcio getLucio() {
         return lucio;
     }
 
-    public void setLucio(Lucio lucio) {
+    public void setLucio(Lúcio lucio) {
         this.lucio = lucio;
     }
 
@@ -384,6 +388,7 @@ public class CareerStats {
     }
 
     public ArrayList<Hero> getHeroList() {
+        heroList.add(allHeroes);
         heroList.add(ana);
         heroList.add(ashe);
         heroList.add(baptiste);

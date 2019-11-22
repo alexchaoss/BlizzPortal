@@ -3,7 +3,7 @@ package com.BlizzardArmory.overwatch.TopHeroes;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Hero {
+public class TopHero {
 
     @SerializedName("timePlayed")
     @Expose

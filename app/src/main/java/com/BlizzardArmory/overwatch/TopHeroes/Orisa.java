@@ -1,10 +1,7 @@
 
 package com.BlizzardArmory.overwatch.TopHeroes;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class Orisa extends Hero{
+public class Orisa extends TopHero {
 
 
 

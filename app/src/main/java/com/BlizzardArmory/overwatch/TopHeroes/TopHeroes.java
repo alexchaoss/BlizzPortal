@@ -40,7 +40,7 @@ public class TopHeroes {
     private Junkrat junkrat;
     @SerializedName("lucio")
     @Expose
-    private Lucio lucio;
+    private Lúcio lucio;
     @SerializedName("mccree")
     @Expose
     private Mccree mccree;
@@ -102,7 +102,7 @@ public class TopHeroes {
     @Expose
     private Zenyatta zenyatta;
 
-    private ArrayList<Hero> heroList = new ArrayList<>();
+    private ArrayList<TopHero> heroList = new ArrayList<>();
 
     public Ana getAna() {
         return ana;
@@ -184,11 +184,11 @@ public class TopHeroes {
         this.junkrat = junkrat;
     }
 
-    public Lucio getLucio() {
+    public Lúcio getLucio() {
         return lucio;
     }
 
-    public void setLucio(Lucio lucio) {
+    public void setLucio(Lúcio lucio) {
         this.lucio = lucio;
     }
 
@@ -352,7 +352,7 @@ public class TopHeroes {
         this.zenyatta = zenyatta;
     }
 
-    public ArrayList<Hero> getHeroList() {
+    public ArrayList<TopHero> getHeroList() {
         heroList.add(ana);
         heroList.add(ashe);
         heroList.add(baptiste);
