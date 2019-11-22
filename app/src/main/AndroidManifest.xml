@@ -19,25 +19,36 @@
         android:theme="@style/AppTheme">
         <activity android:name="com.BlizzardArmory.UI.MainActivity">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.BlizzardArmory.UI.GamesActivity"
-            android:parentActivityName="com.BlizzardArmory.UI.MainActivity" />
+            android:parentActivityName="com.BlizzardArmory.UI.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.BlizzardArmory.UI.UI_warcraft.WoWActivity"
-            android:parentActivityName="com.BlizzardArmory.UI.MainActivity" />
+            android:parentActivityName="com.BlizzardArmory.UI.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.BlizzardArmory.UI.UI_starcraft.SC2Activity"
-            android:parentActivityName="com.BlizzardArmory.UI.MainActivity" />
+            android:parentActivityName="com.BlizzardArmory.UI.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.BlizzardArmory.UI.UI_overwatch.OWActivity"
-            android:parentActivityName="com.BlizzardArmory.UI.MainActivity" />
+            android:parentActivityName="com.BlizzardArmory.UI.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.BlizzardArmory.UI.UI_diablo.D3Activity"
-            android:parentActivityName="com.BlizzardArmory.UI.MainActivity" />
+            android:parentActivityName="com.BlizzardArmory.UI.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
