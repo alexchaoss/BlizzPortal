@@ -120,16 +120,20 @@
             android:contentDescription="@string/overwatch_button" />
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:background="@drawable/crystal_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:nestedScrollingEnabled="true">
 
             <ImageView
                 android:id="@+id/gybraltor"
@@ -352,7 +356,7 @@
                 android:fontFamily="@font/koverwatch"
                 android:textColor="#9daac8"
                 android:textSize="25sp"
-                app:layout_constraintBottom_toTopOf="@id/crystal"
+                app:layout_constraintBottom_toBottomOf="@id/gybraltor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/level_prestige" />
 
@@ -362,10 +366,10 @@
                 android:layout_height="150dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
-                app:layout_constraintBottom_toTopOf="@id/crystal"
+                app:layout_constraintBottom_toBottomOf="@id/gybraltor"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/crystal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -373,7 +377,7 @@
                 android:src="@drawable/crystal_bg"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/gybraltor" />
+                app:layout_constraintTop_toBottomOf="@id/gybraltor" />-->
 
             <LinearLayout
                 android:id="@+id/quick_comp"
@@ -383,7 +387,7 @@
                 android:layout_marginTop="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/crystal">
+                app:layout_constraintTop_toBottomOf="@id/gybraltor">
 
                 <TextView
                     android:id="@+id/quickplay"
@@ -402,6 +406,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:textStyle="bold"
+                    android:textColor="#FFFFFF"
                     android:gravity="center"
                     android:text="COMPETITIVE PLAY"
                     android:textSize="12sp"/>
@@ -450,14 +455,13 @@
                     android:background="#8092b6" />
             </RelativeLayout>
 
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/top_hero_list"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginTop="5dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:nestedScrollingEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/top_crystal">
@@ -466,13 +470,57 @@
                     android:id="@+id/hero_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true"
                     android:orientation="vertical">
 
                 </LinearLayout>
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
+
+            <RelativeLayout
+                android:id="@+id/career_stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_hero_list"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/career_stats_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:fontFamily="@font/koverwatch"
+                    android:text="@string/career_stats"
+                    android:textColor="#f6f6f6"
+                    android:textSize="35sp" />
+
+                <Spinner
+                    android:id="@+id/spinner_career"
+                    android:layout_width="185dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/ow_spinner"
+                    android:hint="@string/time_played"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="viewStart"
+                    android:textColorHint="#FFFFFF"
+                    android:textSize="25sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="40dp"
+                    android:background="#8092b6" />
+            </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
         android:id="@+id/loadingCircle"
