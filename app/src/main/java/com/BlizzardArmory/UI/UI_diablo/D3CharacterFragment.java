@@ -1180,11 +1180,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         String levelClass = "<font color=#d4a94e>" + characterInformation.getLevel() + "</font>" + "<font color=#555da5> (" + characterInformation.getParagonLevel()
                 + ")</font> <font color=#d4a94e>" + characterInformation.getClass_();
 
-        if (Build.VERSION.SDK_INT >= 24) {
-            lvl_class.setText(Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            lvl_class.setText(Html.fromHtml(levelClass));
-        }
+
+        lvl_class.setText(Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY));
         if (characterInformation.getName().length() > 7 && characterInformation.getName().length() < 10) {
             name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
         } else if (characterInformation.getName().length() > 9) {
