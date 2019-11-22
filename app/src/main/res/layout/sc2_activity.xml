@@ -400,12 +400,12 @@
                 android:id="@+id/statistics_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:fontFamily="@font/starcraft_normal"
                 android:text="@string/statistics"
                 android:textAlignment="center"
                 android:textColor="#FFF"
                 android:textSize="30sp"
-                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/statistics"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -614,12 +614,12 @@
                 android:id="@+id/race_levels_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:fontFamily="@font/starcraft_normal"
                 android:text="@string/race_levels"
                 android:textAlignment="center"
                 android:textColor="#FFF"
                 android:textSize="30sp"
-                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/races"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -776,12 +776,12 @@
                 android:id="@+id/campaign_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:fontFamily="@font/starcraft_normal"
                 android:text="@string/campaign"
                 android:textAlignment="center"
                 android:textColor="#FFF"
                 android:textSize="30sp"
-                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/campaign"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -830,8 +830,8 @@
                             android:id="@+id/campaign_wol"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#7aa3cc"
-                            android:text="@string/campaign_not_complete"/>
+                            android:text="@string/campaign_not_complete"
+                            android:textColor="#7aa3cc" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -877,8 +877,8 @@
                             android:id="@+id/campaign_hots"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#7aa3cc"
-                            android:text="@string/campaign_not_complete"/>
+                            android:text="@string/campaign_not_complete"
+                            android:textColor="#7aa3cc" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -924,8 +924,8 @@
                             android:id="@+id/campaign_lotv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#7aa3cc"
-                            android:text="@string/campaign_not_complete"/>
+                            android:text="@string/campaign_not_complete"
+                            android:textColor="#7aa3cc" />
                     </LinearLayout>
                 </LinearLayout>
 

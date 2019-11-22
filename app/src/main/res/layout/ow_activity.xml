@@ -124,16 +124,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/crystal_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            android:nestedScrollingEnabled="true">
+            android:nestedScrollingEnabled="true"
+            android:paddingBottom="20dp">
 
             <ImageView
                 android:id="@+id/gybraltor"
@@ -383,8 +383,8 @@
                 android:id="@+id/quick_comp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="5dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/gybraltor">
@@ -393,23 +393,24 @@
                     android:id="@+id/quickplay"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:textStyle="bold"
-                    android:textColor="#000"
                     android:background="#FFF"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:text="QUICK PLAY"
-                    android:textSize="12sp"/>
+                    android:textColor="#000"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/competitive"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:text="COMPETITIVE PLAY"
-                    android:textSize="12sp"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <RelativeLayout
@@ -420,10 +421,10 @@
                 android:orientation="horizontal"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
+                app:layout_constraintBottom_toTopOf="@id/top_hero_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/quick_comp"
-                app:layout_constraintBottom_toTopOf="@id/top_hero_list">
+                app:layout_constraintTop_toBottomOf="@id/quick_comp">
 
                 <TextView
                     android:id="@+id/top_heroes_title"
@@ -484,10 +485,10 @@
                 android:orientation="horizontal"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/top_hero_list"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/top_hero_list">
 
                 <TextView
                     android:id="@+id/career_stats_title"

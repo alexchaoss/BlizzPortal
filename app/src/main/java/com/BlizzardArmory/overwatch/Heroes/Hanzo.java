@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class Hanzo extends  Hero{
+public class Hanzo extends Hero {
 
 
 }

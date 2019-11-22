@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class Zenyatta extends  Hero{
+public class Zenyatta extends Hero {
 
 
 }

@@ -1,4 +1,3 @@
-
 package com.BlizzardArmory.overwatch.TopHeroes;
 
 import com.google.gson.annotations.Expose;

@@ -14,15 +14,7 @@ public enum RaceEnum {
     ZANDALARI_TROLL("Zandalari Troll", 1), KUL_TIRAN("Kul Tiran", 0), PLACEHOLDER33("", -1), DARK_IRON_DWARF("Dark Iron Dwarf", 0),
     PLACEHOLDER35("", -1), MAG_HAR_ORC("Mag'har Orc", 1);
 
-    private String race;
-    private int faction;
-
     private static final Map<Integer, RaceEnum> lookup = new HashMap<Integer, RaceEnum>();
-
-    RaceEnum(String race, int faction) {
-        this.race = race;
-        this.faction = faction;
-    }
 
     static {
         int ordinal = 0;
@@ -30,6 +22,14 @@ public enum RaceEnum {
             lookup.put(ordinal, raceEnum);
             ordinal += 1;
         }
+    }
+
+    private String race;
+    private int faction;
+
+    RaceEnum(String race, int faction) {
+        this.race = race;
+        this.faction = faction;
     }
 
     public static String fromOrdinal(int ordinal) {

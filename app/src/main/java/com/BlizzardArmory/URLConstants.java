@@ -83,11 +83,11 @@ public class URLConstants {
         return MainActivity.selectedRegion.toLowerCase();
     }
 
-    public static String getOWProfile(){
+    public static String getOWProfile() {
         String url = OW_PROFILE.replace(":battletag", UserInformation.getBattleTag().replace("#", "-"));
-        if(MainActivity.selectedRegion.toLowerCase().equals("cn") || MainActivity.selectedRegion.toLowerCase().equals("tw")){
+        if (MainActivity.selectedRegion.toLowerCase().equals("cn") || MainActivity.selectedRegion.toLowerCase().equals("tw")) {
             url = url.replace(":region", "asia");
-        }else{
+        } else {
             url = url.replace(":region", MainActivity.selectedRegion.toLowerCase());
         }
         return url;

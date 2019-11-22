@@ -9,13 +9,7 @@ public enum ClassEnum {
     PRIEST("Priest"), DEATHKNIGHT("Death Knight"), SHAMAN("Shaman"), MAGE("Mage"),
     WARLOCK("Warlock"), MONK("Monk"), DRUID("Druid"), DEMONHUNTER("Demon Hunter");
 
-    private String className;
-
     private static final Map<Integer, ClassEnum> lookup = new HashMap<Integer, ClassEnum>();
-
-    ClassEnum(String className) {
-        this.className = className;
-    }
 
     static {
         int ordinal = 0;
@@ -23,6 +17,12 @@ public enum ClassEnum {
             lookup.put(ordinal, woWClassEnum);
             ordinal += 1;
         }
+    }
+
+    private String className;
+
+    ClassEnum(String className) {
+        this.className = className;
     }
 
     public static ClassEnum fromOrdinal(int ordinal) {
