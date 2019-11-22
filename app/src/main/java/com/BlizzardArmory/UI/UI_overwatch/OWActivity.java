@@ -214,6 +214,7 @@ public class OWActivity extends AppCompatActivity {
                                     quickplay.setTextColor(Color.parseColor("#000000"));
                                     competitive.setTextColor(Color.parseColor("#FFFFFF"));
                                     competitive.setBackgroundColor(0);
+                                    sortList(topHeroesQuickPlay, sortHeroList[0]);
                                     setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
                                     setSpinnerTopHeroes(topHeroesListSpinner);
                                     setSpinnerCareerList(careerQuickPlay);
@@ -228,6 +229,7 @@ public class OWActivity extends AppCompatActivity {
                                     competitive.setTextColor(Color.parseColor("#000000"));
                                     quickplay.setBackgroundColor(0);
                                     quickplay.setTextColor(Color.parseColor("#FFFFFF"));
+                                    sortList(topHeroesCompetitive, sortHeroList[0]);
                                     setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
                                     setSpinnerTopHeroes(topHeroesListSpinner);
                                     setSpinnerCareerList(careerCompetitive);
@@ -283,7 +285,7 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void setSpinnerCareerList(ArrayList<Hero> list) {
-
+        sortCareerHeroes.clear();
         for (int i = 0; i < list.size(); i++) {
             String tempName;
             if (list.get(i).getClass().getSimpleName().equals("WreckingBall")) {
@@ -351,12 +353,12 @@ public class OWActivity extends AppCompatActivity {
                 ((TextView) view).setTextSize(15);
                 ((TextView) view).setGravity(Gravity.CENTER_VERTICAL);
 
-
                 if(comp) {
-                    setHeroList((String) parent.getItemAtPosition(position), topHeroesCompetitive);
-                }{
+                    sortList(topHeroesCompetitive, sortHeroList[position]);
+                    setProgressBarsTopHeroes((String) parent.getItemAtPosition(position), topHeroesCompetitive);
+                }else{
                     sortList(topHeroesQuickPlay, sortHeroList[position]);
-                    setHeroList((String) parent.getItemAtPosition(position), topHeroesQuickPlay);
+                    setProgressBarsTopHeroes((String) parent.getItemAtPosition(position), topHeroesQuickPlay);
                 }
             }
 
@@ -403,9 +405,10 @@ public class OWActivity extends AppCompatActivity {
         });
     }
 
-    private void setHeroList(String itemSelected, ArrayList<TopHero> heroes) {
+    private void setProgressBarsTopHeroes(String itemSelected, ArrayList<TopHero> heroes) {
         heroList.removeAllViews();
 
+        Log.i("test", heroes.get(0).getClass().getSimpleName());
         for (int i = 0; i < heroes.size(); i++) {
             LinearLayout linearLayout = new LinearLayout(getApplicationContext());
             heroList.addView(linearLayout);
