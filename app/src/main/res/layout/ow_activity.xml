@@ -387,18 +387,22 @@
 
                 <TextView
                     android:id="@+id/quickplay"
-                    android:layout_width="wrap_content"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
+                    android:padding="5dp"
                     android:textStyle="bold"
                     android:textColor="#000"
                     android:background="#FFF"
+                    android:gravity="center"
                     android:text="QUICK PLAY"
                     android:textSize="12sp"/>
                 <TextView
                     android:id="@+id/competitive"
-                    android:layout_width="wrap_content"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
+                    android:padding="5dp"
                     android:textStyle="bold"
+                    android:gravity="center"
                     android:text="COMPETITIVE PLAY"
                     android:textSize="12sp"/>
             </LinearLayout>
