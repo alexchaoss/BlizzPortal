@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class WreckingBall extends  Hero{
+public class WreckingBall extends Hero {
 
 
 }

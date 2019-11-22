@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class Mei extends  Hero{
+public class Mei extends Hero {
 
 
 }

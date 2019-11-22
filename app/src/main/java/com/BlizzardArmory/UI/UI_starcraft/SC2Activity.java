@@ -50,8 +50,6 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Text;
-
 import java.util.Objects;
 
 public class SC2Activity extends AppCompatActivity {
@@ -170,7 +168,6 @@ public class SC2Activity extends AppCompatActivity {
         campaign.setBackground(campaignBG);
 
 
-
         ones = findViewById(R.id.one_one);
         archon = findViewById(R.id.archon);
         twos = findViewById(R.id.two_two);
@@ -282,8 +279,7 @@ public class SC2Activity extends AppCompatActivity {
     }
 
     private void setCampaignInformation() {
-        if(sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty() != null)
-        {
+        if (sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty() != null) {
             switch (sc2Profile.getCampaign().getDifficultyCompleted().getWingsOfLiberty()) {
                 case "CASUAL":
                     wol.setImageResource(R.drawable.campaign_badge_wol_casual);
@@ -304,8 +300,7 @@ public class SC2Activity extends AppCompatActivity {
             }
         }
 
-        if(sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm() != null)
-        {
+        if (sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm() != null) {
             switch (sc2Profile.getCampaign().getDifficultyCompleted().getHeartOfTheSwarm()) {
                 case "CASUAL":
                     hots.setImageResource(R.drawable.campaign_badge_hots_casual);
@@ -326,8 +321,7 @@ public class SC2Activity extends AppCompatActivity {
             }
         }
 
-        if(sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid() != null)
-        {
+        if (sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid() != null) {
             switch (sc2Profile.getCampaign().getDifficultyCompleted().getLegacyOfTheVoid()) {
                 case "CASUAL":
                     lotv.setImageResource(R.drawable.campaign_badge_lotv_casual);
@@ -364,20 +358,20 @@ public class SC2Activity extends AppCompatActivity {
         protossWins.setText(String.valueOf(sc2Profile.getCareer().getProtossWins()));
         playedSeason.setText(String.valueOf(sc2Profile.getCareer().getTotalGamesThisSeason()));
         careerGames.setText(String.valueOf(sc2Profile.getCareer().getTotalCareerGames()));
-        if(sc2Profile.getCareer().getBest1v1Finish().getLeagueName() != null){
+        if (sc2Profile.getCareer().getBest1v1Finish().getLeagueName() != null) {
             setSnapshotIcons(sc2Profile.getCareer().getBest1v1Finish().getLeagueName(), 500, bestOneIcon);
             String temp = sc2Profile.getCareer().getBest1v1Finish().getLeagueName().substring(1).toLowerCase();
             temp = sc2Profile.getCareer().getBest1v1Finish().getLeagueName().substring(0, 1) + temp;
             bestOne.setText(temp);
-        }else{
+        } else {
             bestOne.setVisibility(View.GONE);
         }
-        if(sc2Profile.getCareer().getBestTeamFinish().getLeagueName() != null){
+        if (sc2Profile.getCareer().getBestTeamFinish().getLeagueName() != null) {
             setSnapshotIcons(sc2Profile.getCareer().getBestTeamFinish().getLeagueName(), 500, bestTeamIcon);
             String temp = sc2Profile.getCareer().getBestTeamFinish().getLeagueName().substring(1).toLowerCase();
             temp = sc2Profile.getCareer().getBestTeamFinish().getLeagueName().substring(0, 1) + temp;
             bestTeam.setText(temp);
-        }else{
+        } else {
             bestTeam.setVisibility(View.GONE);
         }
     }
@@ -396,7 +390,7 @@ public class SC2Activity extends AppCompatActivity {
     }
 
     private void setSnapshotText(int totalGames, int totalWins, TextView text) {
-        if(totalGames != 0){
+        if (totalGames != 0) {
             String tempText = " - " + totalGames + " Games | " + totalWins + " Wins";
             text.setText(tempText);
         }
@@ -404,7 +398,7 @@ public class SC2Activity extends AppCompatActivity {
     }
 
     private void setSnapshotIcons(String league, int rank, ImageView icon) {
-        if(league != null) {
+        if (league != null) {
             switch (league) {
                 case "GRANDMASTER":
                     if (rank <= 16) {
@@ -490,10 +484,10 @@ public class SC2Activity extends AppCompatActivity {
     private void setSummaryInformation() {
         totalLevel.setText(String.valueOf(sc2Profile.getSwarmLevels().getLevel()));
         name.setText(sc2Profile.getSummary().getDisplayName());
-        if(sc2Profile.getSummary().getClanName() != null) {
+        if (sc2Profile.getSummary().getClanName() != null) {
             String clanName = "[" + sc2Profile.getSummary().getClanTag() + "] " + sc2Profile.getSummary().getClanName();
             clan.setText(clanName);
-        }else{
+        } else {
             clan.setVisibility(View.GONE);
         }
         achievement.setText(Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile.getSummary().getTotalAchievementPoints(), Html.FROM_HTML_MODE_LEGACY, source -> {

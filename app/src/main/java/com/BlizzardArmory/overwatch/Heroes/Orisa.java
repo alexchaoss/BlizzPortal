@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class Orisa extends  Hero{
+public class Orisa extends Hero {
 
 
 }

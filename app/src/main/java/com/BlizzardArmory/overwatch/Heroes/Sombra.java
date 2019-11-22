@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class Sombra extends  Hero{
+public class Sombra extends Hero {
 
 
 }

@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class DVa extends  Hero{
+public class DVa extends Hero {
 
 
 }

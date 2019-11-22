@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
 
-public class Widowmaker extends  Hero{
+public class Widowmaker extends Hero {
 
 
 }

@@ -77,9 +77,9 @@
 
         <View
             android:layout_width="2dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@color/wowBackgroundColor" />
 
         <ImageButton
@@ -93,8 +93,8 @@
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@color/wowBackgroundColor" />
 
         <ImageButton
@@ -108,8 +108,8 @@
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@color/wowBackgroundColor" />
 
         <ImageButton
@@ -176,14 +176,14 @@
         android:id="@+id/loadingCircle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
 
         <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:indeterminate="true"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:indeterminateDrawable="@drawable/progress_bar" />
     </RelativeLayout>
 

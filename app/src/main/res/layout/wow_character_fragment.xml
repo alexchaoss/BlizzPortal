@@ -10,8 +10,8 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/background_character" />
+        android:contentDescription="@string/background_character"
+        android:scaleType="centerCrop" />
 
     <ScrollView
         android:id="@+id/scrollView3"
@@ -271,8 +271,8 @@
                     android:id="@+id/stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_marginTop="8dp"
+                    android:gravity="center"
                     android:text="@string/stats"
                     android:textColor="@color/owBackgroundColor"
                     android:textSize="18sp" />
@@ -288,9 +288,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginBottom="8dp">
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -487,8 +487,8 @@
                             android:id="@+id/fifteenTalent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start"
                             android:layout_marginStart="50dp"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -510,8 +510,8 @@
                             android:id="@+id/thirtyTalent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start"
                             android:layout_marginStart="50dp"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -533,8 +533,8 @@
                             android:id="@+id/forty_fiveTalent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start"
                             android:layout_marginStart="50dp"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -556,8 +556,8 @@
                             android:id="@+id/sixtyTalent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start"
                             android:layout_marginStart="50dp"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -579,8 +579,8 @@
                             android:id="@+id/seventy_fiveTalent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start"
                             android:layout_marginStart="50dp"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -602,8 +602,8 @@
                             android:id="@+id/ninetyTalent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start"
                             android:layout_marginStart="50dp"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -625,8 +625,8 @@
                             android:id="@+id/hundredTalent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start"
                             android:layout_marginStart="50dp"
+                            android:gravity="start"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -678,14 +678,14 @@
         android:id="@+id/loadingCircle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
 
         <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:indeterminate="true"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:indeterminateDrawable="@drawable/progress_bar" />
     </RelativeLayout>
 

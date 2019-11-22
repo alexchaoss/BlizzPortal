@@ -1,4 +1,4 @@
 package com.BlizzardArmory.overwatch.Heroes;
 
-public class Sigma extends Hero{
+public class Sigma extends Hero {
 }
