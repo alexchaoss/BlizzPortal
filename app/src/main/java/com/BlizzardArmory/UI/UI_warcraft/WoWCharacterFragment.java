@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -761,21 +760,14 @@ public class WoWCharacterFragment extends Fragment {
                 nameView.setText(nameList.get(equipment.getEquippedItems().get(index).getSlot().getType()));
                 nameView.setTextColor(getItemColor(equipment.getEquippedItems().get(index)));
                 nameView.setTextSize(20);
-                if (Build.VERSION.SDK_INT >= 24) {
-                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, source -> {
-                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        return drawable;
-                    }, null));
-                } else {
-                    statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), source -> {
-                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        return drawable;
-                    }, null));
-                }
+
+                statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, source -> {
+                    int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                    Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    return drawable;
+                }, null));
+
                 statsView.setTextColor(Color.WHITE);
                 statsView.setTextSize(13);
                 itemScrollView.setPadding(10, 10, 10, 10);
