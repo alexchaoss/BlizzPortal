@@ -17,7 +17,7 @@ This app doesn't have a license, which means I have the full copyright of the co
 
 ## Installation
 
-Google Play link: https://play.google.com/store/apps/details?id=com.BlizzardArmory
+Google Play link: <https://play.google.com/store/apps/details?id=com.BlizzardArmory>
 
 ## Support
 
