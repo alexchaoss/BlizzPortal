@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Torbjörn extends  Hero{
+public class Torbjörn extends Hero {
 
 
 }

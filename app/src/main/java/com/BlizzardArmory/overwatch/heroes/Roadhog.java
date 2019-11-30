@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Roadhog extends  Hero{
+public class Roadhog extends Hero {
 
 
 }

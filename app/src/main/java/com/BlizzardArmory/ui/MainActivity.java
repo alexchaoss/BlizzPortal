@@ -45,8 +45,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences sharedPreferences;
     public static String selectedRegion = "";
+    private SharedPreferences sharedPreferences;
     private BnOAuth2Params bnOAuth2Params;
     private String clientID = "";
     private String clientSecret = "";

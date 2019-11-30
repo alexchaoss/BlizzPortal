@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Reinhardt extends  Hero{
+public class Reinhardt extends Hero {
 
 
 }

@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -38,7 +37,6 @@ import androidx.fragment.app.Fragment;
 
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.ui.IOnBackPressed;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.diablo.character.Active;
 import com.BlizzardArmory.diablo.character.CharacterInformation;
@@ -46,6 +44,7 @@ import com.BlizzardArmory.diablo.character.Skill;
 import com.BlizzardArmory.diablo.item.SingleItem;
 import com.BlizzardArmory.diablo.items.Item;
 import com.BlizzardArmory.diablo.items.Items;
+import com.BlizzardArmory.ui.IOnBackPressed;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -1185,11 +1184,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         String levelClass = "<font color=#d4a94e>" + characterInformation.getLevel() + "</font>" + "<font color=#555da5> (" + characterInformation.getParagonLevel()
                 + ")</font> <font color=#d4a94e>" + characterInformation.getClass_();
 
-        if (Build.VERSION.SDK_INT >= 24) {
-            lvl_class.setText(Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            lvl_class.setText(Html.fromHtml(levelClass));
-        }
+
+        lvl_class.setText(Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY));
         if (characterInformation.getName().length() > 7 && characterInformation.getName().length() < 10) {
             name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
         } else if (characterInformation.getName().length() > 9) {

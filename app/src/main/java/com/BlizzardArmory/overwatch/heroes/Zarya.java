@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Zarya extends  Hero{
+public class Zarya extends Hero {
 
 
 }

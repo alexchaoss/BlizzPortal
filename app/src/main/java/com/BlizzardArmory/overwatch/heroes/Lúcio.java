@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Lúcio extends  Hero{
+public class Lúcio extends Hero {
 
 
 }

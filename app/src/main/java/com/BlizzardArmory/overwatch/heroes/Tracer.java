@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Tracer extends  Hero{
+public class Tracer extends Hero {
 
 
 }
