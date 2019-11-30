@@ -2,6 +2,8 @@ package com.BlizzardArmory.connection;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -14,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import com.BlizzardArmory.R;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 
 public class ConnectionService {
@@ -72,3 +76,5 @@ public class ConnectionService {
         button.setOnClickListener(v -> dialog.cancel());
     }
 }
+
+

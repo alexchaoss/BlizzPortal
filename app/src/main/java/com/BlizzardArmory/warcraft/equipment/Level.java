@@ -1,0 +1,31 @@
+package com.BlizzardArmory.warcraft.equipment;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class Level {
+
+    @SerializedName("value")
+    @Expose
+    private int value;
+    @SerializedName("display_string")
+    @Expose
+    private String displayString;
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public String getDisplayString() {
+        return displayString;
+    }
+
+    public void setDisplayString(String displayString) {
+        this.displayString = displayString;
+    }
+
+}

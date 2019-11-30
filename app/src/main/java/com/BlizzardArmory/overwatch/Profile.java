@@ -45,10 +45,10 @@ public class Profile {
     private int gamesWon;
     @SerializedName("quickPlayStats")
     @Expose
-    private com.BlizzardArmory.overwatch.QuickPlay.QuickPlayStats quickPlayStats;
+    private com.BlizzardArmory.overwatch.quickplay.QuickPlayStats quickPlayStats;
     @SerializedName("competitiveStats")
     @Expose
-    private com.BlizzardArmory.overwatch.Competitive.CompetitiveStats competitiveStats;
+    private com.BlizzardArmory.overwatch.competitive.CompetitiveStats competitiveStats;
 
     public String getIcon() {
         return icon;
@@ -130,19 +130,19 @@ public class Profile {
         this.gamesWon = gamesWon;
     }
 
-    public com.BlizzardArmory.overwatch.QuickPlay.QuickPlayStats getQuickPlayStats() {
+    public com.BlizzardArmory.overwatch.quickplay.QuickPlayStats getQuickPlayStats() {
         return quickPlayStats;
     }
 
-    public void setQuickPlayStats(com.BlizzardArmory.overwatch.QuickPlay.QuickPlayStats quickPlayStats) {
+    public void setQuickPlayStats(com.BlizzardArmory.overwatch.quickplay.QuickPlayStats quickPlayStats) {
         this.quickPlayStats = quickPlayStats;
     }
 
-    public com.BlizzardArmory.overwatch.Competitive.CompetitiveStats getCompetitiveStats() {
+    public com.BlizzardArmory.overwatch.competitive.CompetitiveStats getCompetitiveStats() {
         return competitiveStats;
     }
 
-    public void setCompetitiveStats(com.BlizzardArmory.overwatch.Competitive.CompetitiveStats competitiveStats) {
+    public void setCompetitiveStats(com.BlizzardArmory.overwatch.competitive.CompetitiveStats competitiveStats) {
         this.competitiveStats = competitiveStats;
     }
 
