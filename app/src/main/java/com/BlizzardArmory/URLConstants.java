@@ -1,6 +1,6 @@
 package com.BlizzardArmory;
 
-import com.BlizzardArmory.UI.MainActivity;
+import com.BlizzardArmory.ui.MainActivity;
 
 public class URLConstants {
     //Callback URL

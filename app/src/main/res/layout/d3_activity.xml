@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/diablo3_background"
     android:orientation="vertical"
-    tools:context=".UI.MainActivity">
+    tools:context=".ui.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -291,7 +291,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:gravity="center"
-                android:text="@string/wow_characters"
+                android:text="@string/heroes"
                 android:textColor="#FFFFFF"
                 android:textSize="25sp" />
 
