@@ -392,8 +392,8 @@
             android:id="@id/stats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="100dp"
             android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
             android:gravity="center"
             android:stretchColumns="0,1"
             app:layout_constraintBottom_toTopOf="@id/damage"
@@ -407,18 +407,18 @@
                     android:id="@+id/strength"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="start"
                     android:text="@string/strength"
                     android:textColor="#c7b377"
-                    android:layout_gravity="start"
                     android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/strength_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:textColor="#FFF"
-                    android:textSize="15sp"
-                    android:layout_gravity="end" />
+                    android:textSize="15sp" />
             </TableRow>
 
             <TableRow>
@@ -427,18 +427,18 @@
                     android:id="@+id/dexterity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="start"
                     android:text="@string/dexterity"
                     android:textColor="#c7b377"
-                    android:textSize="15sp"
-                    android:layout_gravity="start" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/dexterity_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:textColor="#FFF"
-                    android:textSize="15sp"
-                    android:layout_gravity="end" />
+                    android:textSize="15sp" />
             </TableRow>
 
             <TableRow>
@@ -447,18 +447,18 @@
                     android:id="@+id/intelligence"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="start"
                     android:text="@string/intelligence"
                     android:textColor="#c7b377"
-                    android:textSize="15sp"
-                    android:layout_gravity="start" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/intelligence_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:textColor="#FFF"
-                    android:textSize="15sp"
-                    android:layout_gravity="end" />
+                    android:textSize="15sp" />
             </TableRow>
 
             <TableRow>
@@ -467,18 +467,18 @@
                     android:id="@+id/vitality"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="start"
                     android:text="@string/vitality"
                     android:textColor="#c7b377"
-                    android:textSize="15sp"
-                    android:layout_gravity="start" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/vitality_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:textColor="#FFF"
-                    android:textSize="15sp"
-                    android:layout_gravity="end" />
+                    android:textSize="15sp" />
             </TableRow>
         </TableLayout>
 
@@ -511,10 +511,10 @@
             android:id="@+id/recovery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="125dp"
             android:textAlignment="center"
             android:textColor="#c7b377"
             android:textSize="15sp"
-            android:layout_marginBottom="125dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
