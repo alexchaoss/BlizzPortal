@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -54,8 +53,10 @@ import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -67,7 +68,7 @@ public class D3Activity extends AppCompatActivity {
     private BnOAuth2Params bnOAuth2Params;
     private RequestQueue requestQueue;
 
-    List<Drawable> portraits;
+    private List<Drawable> portraits;
 
     private ImageButton wowButton;
     private ImageButton sc2Button;
@@ -83,6 +84,7 @@ public class D3Activity extends AppCompatActivity {
     private TextView eliteKills;
 
     private LinearLayout linearLayoutCharacters;
+    private LinearLayout fallenCharacterLayout;
 
     private ImageView act1;
     private ImageView act2;
@@ -106,6 +108,7 @@ public class D3Activity extends AppCompatActivity {
         lifetimeKills = findViewById(R.id.lifetime_kills);
         eliteKills = findViewById(R.id.elite_kills);
         linearLayoutCharacters = findViewById(R.id.character_layout);
+        fallenCharacterLayout = findViewById(R.id.fallen_character_layout);
         act1 = findViewById(R.id.prog_act1);
         act2 = findViewById(R.id.prog_act2);
         act3 = findViewById(R.id.prog_act3);
@@ -155,7 +158,7 @@ public class D3Activity extends AppCompatActivity {
 
                         String paragon = accountInformation.getParagonLevel() +
                                 " | " +
-                                "<font color=#FF0000>" +
+                                "<font color=#b00000>" +
                                 accountInformation.getParagonLevelHardcore() +
                                 "</font>";
 
@@ -164,6 +167,8 @@ public class D3Activity extends AppCompatActivity {
                         lifetimeKills.setText(String.valueOf(accountInformation.getKills().getMonsters()));
 
                         setCharacterFrames();
+
+                        setFallenCharacterFrames();
 
                         double barbTime = accountInformation.getTimePlayed().getBarbarian();
                         double wizTime = accountInformation.getTimePlayed().getWizard();
@@ -198,6 +203,138 @@ public class D3Activity extends AppCompatActivity {
             Log.i("json", D3AccountInfo.toString());
         } catch (Exception e) {
             Log.e("Error", e.toString());
+        }
+    }
+
+    private void setFallenCharacterFrames() {
+        for (int i = 0; i < accountInformation.getFallenHeroes().size(); i++) {
+
+            ConstraintLayout frameLayout = new ConstraintLayout(getApplicationContext());
+            frameLayout.setId((i + 1) * 2);
+
+            ConstraintLayout.LayoutParams frameParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+            frameParams.setMarginEnd(20);
+            frameLayout.setLayoutParams(frameParams);
+
+            ImageView frame = new ImageView(getApplicationContext());
+            frame.setId((i + 10) * 2);
+            getFallenHeroFrame(i, frame);
+
+            ImageView levelFrame = new ImageView(getApplicationContext());
+            levelFrame.setId((i + 100) * 2);
+            levelFrame.setImageResource(R.drawable.fallen_hero_level);
+
+            TextView name = new TextView(getApplicationContext());
+            name.setTextColor(Color.parseColor("#a99877"));
+            name.setText(accountInformation.getFallenHeroes().get(i).getName());
+            name.setId((i + 1000) * 2);
+
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+            Date dateFormatted = new Date((long) accountInformation.getFallenHeroes().get(i).getDeath().getTime() * 1000L);
+            String dateString = format.format(dateFormatted);
+            TextView date = new TextView(getApplicationContext());
+            date.setTextColor(Color.parseColor("#937a51"));
+            date.setText(dateString);
+            date.setTextSize(12);
+            date.setId((i + 10000) * 2);
+
+            TextView level = new TextView(getApplicationContext());
+            level.setTextColor(Color.parseColor("#b00000"));
+            level.setTextSize(15);
+            level.setText(String.valueOf(accountInformation.getFallenHeroes().get(i).getLevel()));
+            level.setTypeface(null, Typeface.BOLD);
+            level.setId((i + 100000) * 2);
+
+            frameLayout.addView(frame);
+            frameLayout.addView(name);
+            frameLayout.addView(date);
+            frameLayout.addView(levelFrame);
+            frameLayout.addView(level);
+
+            ConstraintSet setFrame = new ConstraintSet();
+            setFrame.clone(frameLayout);
+            setFrame.connect(frame.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+            setFrame.connect(frame.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+            setFrame.connect(frame.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+            setFrame.connect(frame.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+
+            setFrame.connect(name.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 100);
+            setFrame.connect(name.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+            setFrame.connect(name.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+            setFrame.connect(name.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+
+            setFrame.connect(date.getId(), ConstraintSet.TOP, name.getId(), ConstraintSet.BOTTOM, 0);
+            setFrame.connect(date.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+            setFrame.connect(date.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+            setFrame.connect(date.getId(), ConstraintSet.BOTTOM, levelFrame.getId(), ConstraintSet.TOP, 0);
+
+            setFrame.connect(level.getId(), ConstraintSet.TOP, levelFrame.getId(), ConstraintSet.TOP, 0);
+            setFrame.connect(level.getId(), ConstraintSet.LEFT, levelFrame.getId(), ConstraintSet.LEFT, 0);
+            setFrame.connect(level.getId(), ConstraintSet.RIGHT, levelFrame.getId(), ConstraintSet.RIGHT, 0);
+            setFrame.connect(level.getId(), ConstraintSet.BOTTOM, levelFrame.getId(), ConstraintSet.BOTTOM, 0);
+
+            setFrame.connect(levelFrame.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+            setFrame.connect(levelFrame.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+            setFrame.connect(levelFrame.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -25);
+
+            setFrame.applyTo(frameLayout);
+
+            fallenCharacterLayout.addView(frameLayout);
+
+        }
+    }
+
+    private void getFallenHeroFrame(int i, ImageView frame) {
+        switch (accountInformation.getFallenHeroes().get(i).getClass_()) {
+            case "barbarian":
+                if (accountInformation.getFallenHeroes().get(i).getGender() == 0) {
+                    frame.setImageResource(R.drawable.d3_male_barb_dead);
+                } else if (accountInformation.getFallenHeroes().get(i).getGender() == 1) {
+                    frame.setImageResource(R.drawable.d3_female_barb_dead);
+                }
+                break;
+            case "wizard":
+                if (accountInformation.getFallenHeroes().get(i).getGender() == 0) {
+                    frame.setImageResource(R.drawable.d3_male_wizard_dead);
+                } else if (accountInformation.getFallenHeroes().get(i).getGender() == 1) {
+                    frame.setImageResource(R.drawable.d3_female_wizard_dead);
+                }
+                break;
+            case "demon-hunter":
+                if (accountInformation.getFallenHeroes().get(i).getGender() == 0) {
+                    frame.setImageResource(R.drawable.d3_male_dh_dead);
+                } else if (accountInformation.getFallenHeroes().get(i).getGender() == 1) {
+                    frame.setImageResource(R.drawable.d3_female_dh_dead);
+                }
+                break;
+            case "witch-doctor":
+                if (accountInformation.getFallenHeroes().get(i).getGender() == 0) {
+                    frame.setImageResource(R.drawable.d3_male_wd_dead);
+                } else if (accountInformation.getFallenHeroes().get(i).getGender() == 1) {
+                    frame.setImageResource(R.drawable.d3_female_wd_dead);
+                }
+                break;
+            case "necromancer":
+                if (accountInformation.getFallenHeroes().get(i).getGender() == 0) {
+                    frame.setImageResource(R.drawable.d3_male_necromancer_dead);
+                } else if (accountInformation.getFallenHeroes().get(i).getGender() == 1) {
+                    frame.setImageResource(R.drawable.d3_female_necromancer_dead);
+                }
+                break;
+            case "monk":
+                if (accountInformation.getFallenHeroes().get(i).getGender() == 0) {
+                    frame.setImageResource(R.drawable.d3_male_monk_dead);
+                } else if (accountInformation.getFallenHeroes().get(i).getGender() == 1) {
+                    frame.setImageResource(R.drawable.d3_female_monk_dead);
+                }
+                break;
+            case "crusader":
+                if (accountInformation.getFallenHeroes().get(i).getGender() == 0) {
+                    frame.setImageResource(R.drawable.d3_male_crusader_dead);
+                } else if (accountInformation.getFallenHeroes().get(i).getGender() == 1) {
+                    frame.setImageResource(R.drawable.d3_female_crusader_dead);
+                }
+                break;
         }
     }
 
@@ -255,12 +392,12 @@ public class D3Activity extends AppCompatActivity {
             TextView level = new TextView(getApplicationContext());
             level.setId(100000 + i);
             level.setText(String.valueOf(accountInformation.getHeroes().get(i).getLevel()));
-            level.setTextSize(13);
+            level.setTextSize(15);
             level.setGravity(Gravity.CENTER);
             level.setTypeface(null, Typeface.BOLD);
 
             if (accountInformation.getHeroes().get(i).getHardcore()) {
-                level.setTextColor(Color.RED);
+                level.setTextColor(Color.parseColor("#b00000"));
             } else {
                 level.setTextColor(Color.parseColor("#a99877"));
             }
@@ -303,25 +440,30 @@ public class D3Activity extends AppCompatActivity {
             setFrame.connect(eliteKills.getId(), ConstraintSet.TOP, linearLayoutSeasonal.getId(), ConstraintSet.BOTTOM, 0);
             setFrame.connect(eliteKills.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 10);
             setFrame.connect(eliteKills.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 50);
-            setFrame.connect(eliteKills.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 15);
+            setFrame.connect(eliteKills.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 20);
 
             setFrame.connect(level.getId(), ConstraintSet.TOP, linearLayoutSeasonal.getId(), ConstraintSet.BOTTOM, 0);
-            setFrame.connect(level.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 60);
-            setFrame.connect(level.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 20);
+            setFrame.connect(level.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 360);
+            setFrame.connect(level.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+            setFrame.connect(level.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 25);
 
             setFrame.applyTo(constraintLayoutCharacter);
 
             linearLayoutCharacters.addView(constraintLayoutCharacter);
 
-            constraintLayoutCharacter.setOnClickListener(v -> {
-                for (int j = 0; j < accountInformation.getHeroes().size(); j++) {
-                    if (j == constraintLayoutCharacter.getId()) {
-                        characterID = accountInformation.getHeroes().get(j).getId();
-                    }
-                }
-                displayFragment();
-            });
+            setOnClickCharacterFrame(constraintLayoutCharacter);
         }
+    }
+
+    private void setOnClickCharacterFrame(ConstraintLayout constraintLayoutCharacter) {
+        constraintLayoutCharacter.setOnClickListener(v -> {
+            for (int j = 0; j < accountInformation.getHeroes().size(); j++) {
+                if (j == constraintLayoutCharacter.getId()) {
+                    characterID = accountInformation.getHeroes().get(j).getId();
+                }
+            }
+            displayFragment();
+        });
     }
 
     private void setProgression() {

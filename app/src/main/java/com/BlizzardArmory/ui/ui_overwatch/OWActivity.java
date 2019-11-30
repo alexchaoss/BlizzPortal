@@ -32,14 +32,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.overwatch.Profile;
+import com.BlizzardArmory.overwatch.heroes.Hero;
+import com.BlizzardArmory.overwatch.topheroes.TopHero;
 import com.BlizzardArmory.ui.ui_diablo.D3Activity;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
-import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.UserInformation;
-import com.BlizzardArmory.overwatch.heroes.Hero;
-import com.BlizzardArmory.overwatch.Profile;
-import com.BlizzardArmory.overwatch.topheroes.TopHero;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -156,7 +156,7 @@ public class OWActivity extends AppCompatActivity {
         heroList = findViewById(R.id.hero_list);
         competitive = findViewById(R.id.competitive);
         quickplay = findViewById(R.id.quickplay);
-        quickComp  = findViewById(R.id.quick_comp);
+        quickComp = findViewById(R.id.quick_comp);
 
         GradientDrawable switchCompQuickBorder = new GradientDrawable();
         switchCompQuickBorder.setCornerRadius(5);
@@ -224,7 +224,7 @@ public class OWActivity extends AppCompatActivity {
                             setSpinnerCareer(careerListSpinner);
 
                             quickplay.setOnClickListener(v -> {
-                                if(comp) {
+                                if (comp) {
                                     comp = false;
                                     quickplay.setBackground(switchCompQuickRadius);
                                     quickplay.setTextColor(Color.parseColor("#000000"));
@@ -239,7 +239,7 @@ public class OWActivity extends AppCompatActivity {
                             });
 
                             competitive.setOnClickListener(v -> {
-                                if(!comp) {
+                                if (!comp) {
                                     comp = true;
                                     competitive.setBackground(switchCompQuickRadius);
                                     competitive.setTextColor(Color.parseColor("#000000"));
@@ -301,11 +301,11 @@ public class OWActivity extends AppCompatActivity {
                 tempName = "Wrecking Ball";
             } else if (list.get(i).getClass().getSimpleName().equals("Dva")) {
                 tempName = "D.Va";
-            } else if(list.get(i).getClass().getSimpleName().equals("Soldier76")){
+            } else if (list.get(i).getClass().getSimpleName().equals("Soldier76")) {
                 tempName = "Soldier: 76";
-            }else if(list.get(i).getClass().getSimpleName().equals("AllHeroes")){
+            } else if (list.get(i).getClass().getSimpleName().equals("AllHeroes")) {
                 tempName = "All Heroes";
-            }else{
+            } else {
                 tempName = list.get(i).getClass().getSimpleName() + " ";
             }
             sortCareerHeroes.add(tempName);
@@ -362,10 +362,10 @@ public class OWActivity extends AppCompatActivity {
                 ((TextView) view).setTextSize(15);
                 ((TextView) view).setGravity(Gravity.CENTER_VERTICAL);
 
-                if(comp) {
+                if (comp) {
                     sortList(topHeroesCompetitive, sortHeroList[position]);
                     setProgressBarsTopHeroes((String) parent.getItemAtPosition(position), topHeroesCompetitive);
-                }else{
+                } else {
                     sortList(topHeroesQuickPlay, sortHeroList[position]);
                     setProgressBarsTopHeroes((String) parent.getItemAtPosition(position), topHeroesQuickPlay);
                 }
@@ -447,7 +447,7 @@ public class OWActivity extends AppCompatActivity {
             layoutBackground.setCornerRadius(5);
             layoutBackground.setColor(Color.parseColor("#283655"));
             relativeLayout.setBackground(layoutBackground);
-            relativeLayout.setPadding(5,5,5,5);
+            relativeLayout.setPadding(5, 5, 5, 5);
 
             TextView name = new TextView(getApplicationContext());
             name.setAllCaps(true);
@@ -459,9 +459,9 @@ public class OWActivity extends AppCompatActivity {
                 tempName = "Wrecking Ball ";
             } else if (heroes.get(i).getClass().getSimpleName().equals("Dva")) {
                 tempName = "D.Va ";
-            } else if(heroes.get(i).getClass().getSimpleName().equals("Soldier76")){
+            } else if (heroes.get(i).getClass().getSimpleName().equals("Soldier76")) {
                 tempName = "Soldier: 76 ";
-            }else{
+            } else {
                 tempName = heroes.get(i).getClass().getSimpleName() + " ";
             }
             name.setText(tempName);
@@ -479,46 +479,46 @@ public class OWActivity extends AppCompatActivity {
 
             double viewWidth;
 
-            if(i > 0) {
+            if (i > 0) {
                 switch (itemSelected) {
                     case TIME_PLAYED:
                         double fullWidth = getSeconds(heroes.get(0));
                         viewWidth = (getSeconds(heroes.get(i)) * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
                         data.setText(heroes.get(i).getTimePlayed());
                         break;
                     case GAMES_WON:
                         fullWidth = heroes.get(0).getGamesWon();
                         viewWidth = (heroes.get(i).getGamesWon() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf( (int) heroes.get(i).getGamesWon()));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
+                        data.setText(String.valueOf((int) heroes.get(i).getGamesWon()));
                         break;
                     case WEAPON_ACCURACY:
                         fullWidth = heroes.get(0).getWeaponAccuracy();
                         viewWidth = (heroes.get(i).getWeaponAccuracy() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
                         String tempData = (int) heroes.get(i).getWeaponAccuracy() + "%";
                         data.setText(tempData);
                         break;
                     case ELIMINATIONS_PER_LIFE:
                         fullWidth = heroes.get(0).getEliminationsPerLife();
                         viewWidth = (heroes.get(i).getEliminationsPerLife() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
                         data.setText(String.valueOf(heroes.get(i).getEliminationsPerLife()));
                         break;
                     case MULTIKILL_BEST:
                         fullWidth = heroes.get(0).getMultiKillBest();
                         viewWidth = (heroes.get(i).getMultiKillBest() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
                         data.setText(String.valueOf((int) heroes.get(i).getMultiKillBest()));
                         break;
                     case OBJECTIVE_KILLS:
                         fullWidth = heroes.get(0).getObjectiveKills();
                         viewWidth = (heroes.get(i).getObjectiveKills() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5) , RelativeLayout.LayoutParams.MATCH_PARENT));
+                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
                         data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
                 }
-            }else{
+            } else {
                 switch (itemSelected) {
                     case TIME_PLAYED:
                         backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
@@ -556,7 +556,7 @@ public class OWActivity extends AppCompatActivity {
         }
     }
 
-    private void setBackgroundColor(View backgroundColor, String topCharacterName){
+    private void setBackgroundColor(View backgroundColor, String topCharacterName) {
         GradientDrawable progressBar = new GradientDrawable();
         progressBar.setCornerRadius(5);
 

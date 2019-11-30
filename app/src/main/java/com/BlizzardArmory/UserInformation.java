@@ -10,15 +10,15 @@ public class UserInformation {
         return battleTag;
     }
 
+    public static void setBattleTag(String battleTag) {
+        UserInformation.battleTag = battleTag;
+    }
+
     public static String getUserID() {
         return userID;
     }
 
     public static void setUserID(String userID) {
         UserInformation.userID = userID;
-    }
-
-    public static void setBattleTag(String battleTag) {
-        UserInformation.battleTag = battleTag;
     }
 }

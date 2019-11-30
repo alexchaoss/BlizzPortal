@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Symmetra extends  Hero{
+public class Symmetra extends Hero {
 
 
 }

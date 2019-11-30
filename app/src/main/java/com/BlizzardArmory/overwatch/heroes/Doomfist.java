@@ -1,7 +1,7 @@
 package com.BlizzardArmory.overwatch.heroes;
 
 
-public class Doomfist extends  Hero{
+public class Doomfist extends Hero {
 
 
 }
