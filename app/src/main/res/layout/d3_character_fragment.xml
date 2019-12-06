@@ -394,6 +394,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="100dp"
             android:layout_marginEnd="100dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:stretchColumns="0,1"
             app:layout_constraintBottom_toTopOf="@id/damage"
@@ -502,8 +503,8 @@
             android:textColor="#c7b377"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@id/recovery"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/damage" />
 
 
@@ -519,6 +520,50 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toughness" />
+
+        <ImageView
+            android:id="@+id/health_globe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/d3_life"
+            android:contentDescription="@string/life_glove"
+            app:layout_constraintBottom_toTopOf="@id/recovery"
+            app:layout_constraintEnd_toStartOf="@+id/ressource_globe"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/damage" />
+
+        <TextView
+            android:id="@+id/total_life"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/health_globe"
+            app:layout_constraintEnd_toEndOf="@+id/health_globe"
+            app:layout_constraintStart_toStartOf="@+id/health_globe"
+            app:layout_constraintTop_toTopOf="@id/health_globe" />
+
+        <ImageView
+            android:id="@+id/ressource_globe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/life_glove"
+            app:layout_constraintBottom_toTopOf="@id/recovery"
+            app:layout_constraintStart_toEndOf="@+id/health_globe"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/damage" />
+
+        <TextView
+            android:id="@+id/ressource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@id/ressource_globe"
+            app:layout_constraintEnd_toEndOf="@+id/ressource_globe"
+            app:layout_constraintStart_toStartOf="@+id/ressource_globe"
+            app:layout_constraintTop_toTopOf="@id/ressource_globe" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
