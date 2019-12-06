@@ -107,7 +107,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private ArrayList<Item> items = new ArrayList<>();
 
-
     private TextView strength;
     private TextView vitality;
     private TextView intelligence;
@@ -199,6 +198,9 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private View runeSeparator;
     private ScrollView skillToolTipScroll;
 
+    private TextView health;
+    private TextView ressource;
+    private ImageView ressourceGlobe;
 
     private RequestQueue requestQueue;
 
@@ -230,6 +232,9 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         damage = view.findViewById(R.id.damage);
         toughness = view.findViewById(R.id.toughness);
         recovery = view.findViewById(R.id.recovery);
+        health = view.findViewById(R.id.total_life);
+        ressource = view.findViewById(R.id.ressource);
+        ressourceGlobe = view.findViewById(R.id.ressource_globe);
 
         d3Nav = view.findViewById(R.id.d3_nav);
         stats_layout = view.findViewById(R.id.stats_layout);
@@ -439,6 +444,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         Log.i("Response", response.toString());
                         characterInfo = response;
                         characterInformation = gson.fromJson(characterInfo.toString(), CharacterInformation.class);
+                        setGlobes();
                         setName();
                         getCubeIcons();
                         downloadCubeItems(bnOAuth2Helper, gson);
@@ -501,6 +507,49 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         Log.i("time", String.valueOf(duration));
+    }
+
+    private void setGlobes() {
+        String life;
+        if (characterInformation.getStats().getLife() >= 1000) {
+            life = (int) (characterInformation.getStats().getLife() / 1000) + "K";
+        } else {
+            life = String.valueOf((int) characterInformation.getStats().getLife());
+        }
+        health.setText(life);
+        String ressourceText;
+        if (characterInformation.getClass_().equals("demon-hunter")) {
+            ressourceText = (int) characterInformation.getStats().getPrimaryResource() + "\n"
+                    + (int) characterInformation.getStats().getSecondaryResource();
+        } else {
+            ressourceText = String.valueOf((int) characterInformation.getStats().getPrimaryResource());
+        }
+        ressource.setText(ressourceText);
+        switch (characterInformation.getClass_()) {
+            case "barbarian":
+                ressourceGlobe.setImageResource(R.drawable.d3_fury);
+                break;
+            case "wizard":
+                ressourceGlobe.setImageResource(R.drawable.d3_arcane_power);
+                break;
+            case "demon-hunter":
+                ressourceGlobe.setImageResource(R.drawable.d3_hatred_disc);
+                break;
+            case "witch-doctor":
+                ressourceGlobe.setImageResource(R.drawable.d3_mana);
+                break;
+            case "necromancer":
+                ressourceGlobe.setImageResource(R.drawable.d3_essence);
+                break;
+            case "monk":
+                ressourceGlobe.setImageResource(R.drawable.d3_spirit);
+                ressource.setTextColor(Color.BLACK);
+                break;
+            case "crusader":
+                ressourceGlobe.setImageResource(R.drawable.d3_wrath);
+                ressource.setTextColor(Color.BLACK);
+                break;
+        }
     }
 
     private void closeViewsWithoutButton() {
