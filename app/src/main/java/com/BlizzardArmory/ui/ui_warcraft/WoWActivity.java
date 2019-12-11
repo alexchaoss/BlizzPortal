@@ -199,6 +199,12 @@ public class WoWActivity extends AppCompatActivity {
                     });
             requestQueueImage.add(imageRequest);
         }
+
+        if (characterList.getCharacterNamesList().size() == 0) {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setText("This account has no active characters.");
+            linearLayout.addView(textView);
+        }
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);
     }

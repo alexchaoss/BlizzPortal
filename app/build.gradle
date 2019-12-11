@@ -10,8 +10,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 12
-        versionName "2.0"
+        versionCode 14
+        versionName "2.11"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
