@@ -198,7 +198,7 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void downloadAccountInformation() {
-        String testURL = "https://ow-api.com/v1/stats/pc/us/FITS-31239/complete";
+        String testURL = "https://ow-api.com/v1/stats/pc/us/Avalon-11311/complete";//profile not found url
         Log.i("URL", URLConstants.getOWProfile());
         try {
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(), null,
@@ -206,7 +206,6 @@ public class OWActivity extends AppCompatActivity {
 
                         try {
                             accountInformation = gson.fromJson(response.toString(), Profile.class);
-                            Log.i("Games won", "" + accountInformation.getQuickPlayStats().getGames().getWon());
 
                             downloadAvatar(requestQueue);
                             setName(requestQueue);
@@ -257,6 +256,8 @@ public class OWActivity extends AppCompatActivity {
                             loadingCircle.setVisibility(View.GONE);
 
                         } catch (Exception e) {
+                            gamesWon.setText("This profile is private and the information unavailable");
+                            gamesWon.setTextSize(18);
                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
                             Log.e("Error", Arrays.toString(e.getStackTrace()));
@@ -1121,10 +1122,15 @@ public class OWActivity extends AppCompatActivity {
         button.setLayoutParams(layoutParams);
         button.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
-
-        titleText.setText("No Internet Connection");
-        messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-        button.setText("Retry");
+        if (responseCode == 404) {
+            titleText.setText("The account could not be found");
+            messageText.setText("There is no Overwatch profile associated with this account.");
+            button.setText("OK");
+        } else {
+            titleText.setText("No Internet Connection");
+            messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+            button.setText("Retry");
+        }
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -1141,7 +1147,11 @@ public class OWActivity extends AppCompatActivity {
 
         dialog.addContentView(linearLayout, layoutParams);
 
-        dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
+        if (responseCode == 404) {
+            dialog.setOnCancelListener(dialog1 -> OWActivity.this.finish());
+        } else {
+            dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
+        }
 
         button.setOnClickListener(v -> dialog.cancel());
     }

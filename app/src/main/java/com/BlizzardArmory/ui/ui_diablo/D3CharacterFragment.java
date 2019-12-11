@@ -101,7 +101,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private ImageView offhand;
     private HashMap<String, String> itemIconURL = new HashMap<>();
 
-
     private TextView name;
     private TextView lvl_class;
 
@@ -154,40 +153,12 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private HashMap<String, Pair<Integer, Skill>> passiveIcons = new HashMap<>();
     private ArrayList<ImageView> passiveList = new ArrayList<>();
-    private ImageView passive1;
-    private ImageView passive2;
-    private ImageView passive3;
-    private ImageView passive4;
 
     private HashMap<String, Pair<Integer, Active>> skillIcons = new HashMap<>();
     private ArrayList<ImageView> skillList = new ArrayList<>();
     private ArrayList<TextView> skillNameList = new ArrayList<>();
     private ArrayList<TextView> skillRuneList = new ArrayList<>();
     private ArrayList<ImageView> skillLayoutList = new ArrayList<>();
-    private TextView skill1Name;
-    private TextView skill2Name;
-    private TextView skill3Name;
-    private TextView skill4Name;
-    private TextView skill5Name;
-    private TextView skill6Name;
-    private TextView skill1Rune;
-    private TextView skill2Rune;
-    private TextView skill3Rune;
-    private TextView skill4Rune;
-    private TextView skill5Rune;
-    private TextView skill6Rune;
-    private ImageView skill1Icon;
-    private ImageView skill2Icon;
-    private ImageView skill3Icon;
-    private ImageView skill4Icon;
-    private ImageView skill5Icon;
-    private ImageView skill6Icon;
-    private ImageView skillLayout1;
-    private ImageView skillLayout2;
-    private ImageView skillLayout3;
-    private ImageView skillLayout4;
-    private ImageView skillLayout5;
-    private ImageView skillLayout6;
 
     private LinearLayout tooltipSkillLayout;
     private TextView skillName;
@@ -242,35 +213,35 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         cube_layout = view.findViewById(R.id.cube_layout);
         skills_layout = view.findViewById(R.id.skill_layout);
 
-        passive1 = view.findViewById(R.id.passive1);
-        passive2 = view.findViewById(R.id.passive2);
-        passive3 = view.findViewById(R.id.passive3);
-        passive4 = view.findViewById(R.id.passive4);
+        ImageView passive1 = view.findViewById(R.id.passive1);
+        ImageView passive2 = view.findViewById(R.id.passive2);
+        ImageView passive3 = view.findViewById(R.id.passive3);
+        ImageView passive4 = view.findViewById(R.id.passive4);
 
-        skill1Icon = view.findViewById(R.id.skill1_icon);
-        skill2Icon = view.findViewById(R.id.skill2_icon);
-        skill3Icon = view.findViewById(R.id.skill3_icon);
-        skill4Icon = view.findViewById(R.id.skill4_icon);
-        skill5Icon = view.findViewById(R.id.skill5_icon);
-        skill6Icon = view.findViewById(R.id.skill6_icon);
-        skill1Name = view.findViewById(R.id.skill1_name);
-        skill2Name = view.findViewById(R.id.skill2_name);
-        skill3Name = view.findViewById(R.id.skill3_name);
-        skill4Name = view.findViewById(R.id.skill4_name);
-        skill5Name = view.findViewById(R.id.skill5_name);
-        skill6Name = view.findViewById(R.id.skill6_name);
-        skill1Rune = view.findViewById(R.id.skill1_rune);
-        skill2Rune = view.findViewById(R.id.skill2_rune);
-        skill3Rune = view.findViewById(R.id.skill3_rune);
-        skill4Rune = view.findViewById(R.id.skill4_rune);
-        skill5Rune = view.findViewById(R.id.skill5_rune);
-        skill6Rune = view.findViewById(R.id.skill6_rune);
-        skillLayout1 = view.findViewById(R.id.skill1);
-        skillLayout2 = view.findViewById(R.id.skill2);
-        skillLayout3 = view.findViewById(R.id.skill3);
-        skillLayout4 = view.findViewById(R.id.skill4);
-        skillLayout5 = view.findViewById(R.id.skill5);
-        skillLayout6 = view.findViewById(R.id.skill6);
+        ImageView skill1Icon = view.findViewById(R.id.skill1_icon);
+        ImageView skill2Icon = view.findViewById(R.id.skill2_icon);
+        ImageView skill3Icon = view.findViewById(R.id.skill3_icon);
+        ImageView skill4Icon = view.findViewById(R.id.skill4_icon);
+        ImageView skill5Icon = view.findViewById(R.id.skill5_icon);
+        ImageView skill6Icon = view.findViewById(R.id.skill6_icon);
+        TextView skill1Name = view.findViewById(R.id.skill1_name);
+        TextView skill2Name = view.findViewById(R.id.skill2_name);
+        TextView skill3Name = view.findViewById(R.id.skill3_name);
+        TextView skill4Name = view.findViewById(R.id.skill4_name);
+        TextView skill5Name = view.findViewById(R.id.skill5_name);
+        TextView skill6Name = view.findViewById(R.id.skill6_name);
+        TextView skill1Rune = view.findViewById(R.id.skill1_rune);
+        TextView skill2Rune = view.findViewById(R.id.skill2_rune);
+        TextView skill3Rune = view.findViewById(R.id.skill3_rune);
+        TextView skill4Rune = view.findViewById(R.id.skill4_rune);
+        TextView skill5Rune = view.findViewById(R.id.skill5_rune);
+        TextView skill6Rune = view.findViewById(R.id.skill6_rune);
+        ImageView skillLayout1 = view.findViewById(R.id.skill1);
+        ImageView skillLayout2 = view.findViewById(R.id.skill2);
+        ImageView skillLayout3 = view.findViewById(R.id.skill3);
+        ImageView skillLayout4 = view.findViewById(R.id.skill4);
+        ImageView skillLayout5 = view.findViewById(R.id.skill5);
+        ImageView skillLayout6 = view.findViewById(R.id.skill6);
 
         skillToolTipScroll = view.findViewById(R.id.skill_tooltip_scroll);
         tooltipSkillLayout = view.findViewById(R.id.skill_tooltip);
@@ -371,27 +342,112 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         final ImageView chatgemActive = view.findViewById(R.id.chatgem_active);
         final ImageView chatgemStatue = view.findViewById(R.id.chatgem_statue);
 
-        chatgemInactive.setOnTouchListener((v, event) -> {
-            if (chatgemActive.getVisibility() == View.VISIBLE) {
-                Toast.makeText(getContext(), "Gem Deactivated", Toast.LENGTH_SHORT).show();
-                chatgemActive.setVisibility(View.GONE);
-            } else {
-                chatgemActive.setVisibility(View.VISIBLE);
-                double moo = Math.random();
-                double perfect = Math.random();
-                if (perfect >= 0.98) {
-                    Toast.makeText(getContext(), "Perfect Gem Activated", Toast.LENGTH_SHORT).show();
-                } else if (moo >= 0.95) {
-                    Toast.makeText(getContext(), "Mooooooooo!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Gem Activated", Toast.LENGTH_SHORT).show();
-                }
-            }
-            return false;
-        });
+        setChatGem(chatgemInactive, chatgemActive);
 
         addImageViewItemsToList();
 
+        setCloseButton();
+
+        navigateTabs(chatgemInactive, chatgemActive, chatgemStatue);
+
+        loadingCircle.setVisibility(View.VISIBLE);
+        Objects.requireNonNull(D3CharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+        long startTime = System.nanoTime();
+        final Gson gson = new GsonBuilder().create();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(getActivity()).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        assert bnOAuth2Params != null;
+        final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+
+        Cache cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5);
+        Log.i("Cache", getContext().getCacheDir().getAbsolutePath());
+        Network network = new BasicNetwork(new HurlStack());
+        requestQueue = new RequestQueue(cache, network);
+        requestQueue.start();
+
+        try {
+            setCharacterInformation(id, gson, bnOAuth2Helper);
+            setItemInformation(id, gson, bnOAuth2Helper);
+        } catch (Exception e) {
+            Log.e("Error", e.toString());
+        }
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1000000000;
+        Log.i("time", String.valueOf(duration));
+    }
+
+    private void setItemInformation(int id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
+        JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+                URLConstants.getD3HeroItemsURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                response -> {
+                    itemsInformation = gson.fromJson(response.toString(), Items.class);
+                    getItemInformation();
+                    setItemBackgroundColor();
+                    getItemIconURL();
+                    getItemIcons();
+                    for (int i = 0; i < items.size(); i++) {
+                        setItemInformation(i);
+                    }
+
+                }, error -> {
+            Log.e("Network error", error.getMessage());
+            if (error.networkResponse == null) {
+                callErrorAlertDialog(0);
+                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                loadingCircle.setVisibility(View.GONE);
+            } else {
+                callErrorAlertDialog(error.networkResponse.statusCode);
+                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                loadingCircle.setVisibility(View.GONE);
+            }
+        });
+        requestQueue.add(jsonRequest2);
+    }
+
+    private void setCharacterInformation(int id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+                URLConstants.getD3HeroURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                response -> {
+                    Log.i("Response", response.toString());
+                    characterInfo = response;
+                    characterInformation = gson.fromJson(characterInfo.toString(), CharacterInformation.class);
+                    setGlobes();
+                    setName();
+                    getCubeIcons();
+                    downloadCubeItems(bnOAuth2Helper, gson);
+                    downloadSkillIcons();
+                    downloadPssiveIcons();
+                    DecimalFormat primaryStats = new DecimalFormat("#0");
+
+                    strength.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getStrength())));
+                    dexterity.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getDexterity())));
+                    intelligence.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getIntelligence())));
+                    vitality.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getVitality())));
+
+                    damage.setText(Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getDamage()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
+                    toughness.setText(Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getToughness()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
+                    recovery.setText(Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getHealing()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
+
+                }, error -> {
+            Log.e("Network error", error.getMessage());
+            if (error.networkResponse == null) {
+                callErrorAlertDialog(0);
+                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                loadingCircle.setVisibility(View.GONE);
+            } else {
+                callErrorAlertDialog(error.networkResponse.statusCode);
+                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                loadingCircle.setVisibility(View.GONE);
+            }
+        });
+        requestQueue.add(jsonRequest);
+    }
+
+    private void setCloseButton() {
         closeButton.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 v.performClick();
@@ -414,99 +470,27 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
             }
             return false;
         });
+    }
 
-        navigateTabs(chatgemInactive, chatgemActive, chatgemStatue);
-
-
-        loadingCircle.setVisibility(View.VISIBLE);
-        Objects.requireNonNull(D3CharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-        long startTime = System.nanoTime();
-        final Gson gson = new GsonBuilder().create();
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(getActivity()).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
-        assert bnOAuth2Params != null;
-        final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
-
-        Cache cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5);
-        Log.i("Cache", getContext().getCacheDir().getAbsolutePath());
-        Network network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
-
-        try {
-
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
-                    URLConstants.getD3HeroURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
-                    response -> {
-                        Log.i("Response", response.toString());
-                        characterInfo = response;
-                        characterInformation = gson.fromJson(characterInfo.toString(), CharacterInformation.class);
-                        setGlobes();
-                        setName();
-                        getCubeIcons();
-                        downloadCubeItems(bnOAuth2Helper, gson);
-                        downloadSkillIcons();
-                        downloadPssiveIcons();
-                        DecimalFormat primaryStats = new DecimalFormat("#0");
-
-                        strength.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getStrength())));
-                        dexterity.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getDexterity())));
-                        intelligence.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getIntelligence())));
-                        vitality.setText(String.valueOf(primaryStats.format(characterInformation.getStats().getVitality())));
-
-                        damage.setText(Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getDamage()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
-                        toughness.setText(Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getToughness()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
-                        recovery.setText(Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getHealing()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
-
-                    }, error -> {
-                Log.e("Network error", error.getMessage());
-                if (error.networkResponse == null) {
-                    callErrorAlertDialog(0);
-                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    loadingCircle.setVisibility(View.GONE);
+    private void setChatGem(ImageView chatgemInactive, ImageView chatgemActive) {
+        chatgemInactive.setOnTouchListener((v, event) -> {
+            if (chatgemActive.getVisibility() == View.VISIBLE) {
+                Toast.makeText(getContext(), "Gem Deactivated", Toast.LENGTH_SHORT).show();
+                chatgemActive.setVisibility(View.GONE);
+            } else {
+                chatgemActive.setVisibility(View.VISIBLE);
+                double moo = Math.random();
+                double perfect = Math.random();
+                if (perfect >= 0.98) {
+                    Toast.makeText(getContext(), "Perfect Gem Activated", Toast.LENGTH_SHORT).show();
+                } else if (moo >= 0.95) {
+                    Toast.makeText(getContext(), "Mooooooooo!", Toast.LENGTH_SHORT).show();
                 } else {
-                    callErrorAlertDialog(error.networkResponse.statusCode);
-                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    loadingCircle.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Gem Activated", Toast.LENGTH_SHORT).show();
                 }
-            });
-            requestQueue.add(jsonRequest);
-
-            JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
-                    URLConstants.getD3HeroItemsURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
-                    response -> {
-                        itemsInformation = gson.fromJson(response.toString(), Items.class);
-                        getItemInformation();
-                        setItemBackgroundColor();
-                        getItemIconURL();
-                        getItemIcons();
-                        for (int i = 0; i < items.size(); i++) {
-                            setItemInformation(i);
-                        }
-
-                    }, error -> {
-                Log.e("Network error", error.getMessage());
-                if (error.networkResponse == null) {
-                    callErrorAlertDialog(0);
-                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    loadingCircle.setVisibility(View.GONE);
-                } else {
-                    callErrorAlertDialog(error.networkResponse.statusCode);
-                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    loadingCircle.setVisibility(View.GONE);
-                }
-            });
-            requestQueue.add(jsonRequest2);
-        } catch (Exception e) {
-            Log.e("Error", e.toString());
-        }
-
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime) / 1000000000;
-        Log.i("time", String.valueOf(duration));
+            }
+            return false;
+        });
     }
 
     private void setGlobes() {

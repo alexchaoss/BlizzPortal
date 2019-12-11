@@ -563,9 +563,15 @@ public class SC2Activity extends AppCompatActivity {
         button.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
 
-        titleText.setText("No Internet Connection");
-        messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-        button.setText("Retry");
+        if (responseCode == 404) {
+            titleText.setText("The account could not be found");
+            messageText.setText("There is no Starcraft 2 profile associated with this account.");
+            button.setText("OK");
+        } else {
+            titleText.setText("No Internet Connection");
+            messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+            button.setText("Retry");
+        }
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -582,7 +588,11 @@ public class SC2Activity extends AppCompatActivity {
 
         dialog.addContentView(linearLayout, layoutParams);
 
-        dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
+        if (responseCode == 404) {
+            dialog.setOnCancelListener(dialog1 -> SC2Activity.this.finish());
+        } else {
+            dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
+        }
 
         button.setOnClickListener(v -> dialog.cancel());
     }
