@@ -173,6 +173,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private TextView ressource;
     private ImageView ressourceGlobe;
 
+    private LinearLayout imageStatsBG;
+
     private RequestQueue requestQueue;
 
     @Override
@@ -195,6 +197,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
         params.setMargins(0, 0, 0, 20);
         closeButton.setLayoutParams(params);
+
+        imageStatsBG = view.findViewById(R.id.image_stats);
 
         strength = view.findViewById(R.id.strength_text);
         intelligence = view.findViewById(R.id.intelligence_text);
@@ -999,6 +1003,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 RelativeLayout.LayoutParams jewelleryParams = new RelativeLayout.LayoutParams((int) (60 * Resources.getSystem().getDisplayMetrics().density),
                         (int) (61 * Resources.getSystem().getDisplayMetrics().density));
                 getResources();
+                jewelleryParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 RelativeLayout.LayoutParams normalIconParams = new RelativeLayout.LayoutParams((int) (54 * Resources.getSystem().getDisplayMetrics().density),
                         (int) (103 * Resources.getSystem().getDisplayMetrics().density));
                 normalIconParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -1056,8 +1061,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 } catch (Exception e) {
                     Log.e("Error", "No TYPE");
                 }
-                RelativeLayout.LayoutParams effectParams = new RelativeLayout.LayoutParams((int) (95 * Resources.getSystem().getDisplayMetrics().density),
-                        (int) (140 * Resources.getSystem().getDisplayMetrics().density));
                 try {
                     if (items.get(index).getMinDamage() > 0 && items.get(index).getMaxDamage() > 0) {
                         NumberFormat formatter = new DecimalFormat("#0.0");
@@ -1070,35 +1073,32 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
                         switch (items.get(index).getElementalType()) {
                             case "fire":
-                                weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.fire_effect));
+                                imageStatsBG.setBackgroundResource(R.drawable.fire);
                                 break;
                             case "cold":
-                                weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.cold_effect));
+                                imageStatsBG.setBackgroundResource(R.drawable.cold);
                                 break;
                             case "holy":
-                                weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.holy_effect));
+                                imageStatsBG.setBackgroundResource(R.drawable.holy);
                                 break;
                             case "poison":
-                                weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.poison_effect));
+                                imageStatsBG.setBackgroundResource(R.drawable.poison);
                                 break;
                             case "lightning":
-                                weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.lightning_effect));
+                                imageStatsBG.setBackgroundResource(R.drawable.lightning);
                                 break;
                             case "arcane":
-                                weaponEffect.setLayoutParams(effectParams);
-                                weaponEffect.setImageDrawable(Objects.requireNonNull(getContext()).getDrawable(R.drawable.arcane_effect));
+                                imageStatsBG.setBackgroundResource(R.drawable.arcane);
                                 break;
+                            default:
+                                imageStatsBG.setBackgroundResource(0);
                         }
+
                     } else {
-                        RelativeLayout.LayoutParams noEffectParams = new RelativeLayout.LayoutParams(0, 0);
-                        weaponEffect.setLayoutParams(noEffectParams);
+                        imageStatsBG.setBackgroundResource(0);
                     }
                 } catch (Exception e) {
+                    imageStatsBG.setBackgroundResource(0);
                     dps.setText("");
                 }
 
