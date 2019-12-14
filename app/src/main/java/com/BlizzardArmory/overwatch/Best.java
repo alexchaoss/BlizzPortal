@@ -3,159 +3,163 @@ package com.BlizzardArmory.overwatch;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+
 public class Best {
 
     @SerializedName("allDamageDoneMostInGame")
     @Expose
-    private double allDamageDoneMostInGame;
+    private Double allDamageDoneMostInGame = (double) 0;
     @SerializedName("barrierDamageDoneMostInGame")
     @Expose
-    private double barrierDamageDoneMostInGame;
+    private Double barrierDamageDoneMostInGame = (double) 0;
     @SerializedName("defensiveAssistsMostInGame")
     @Expose
-    private double defensiveAssistsMostInGame;
+    private Double defensiveAssistsMostInGame = (double) 0;
     @SerializedName("eliminationsMostInGame")
     @Expose
-    private double eliminationsMostInGame;
+    private Double eliminationsMostInGame = (double) 0;
     @SerializedName("environmentalKillsMostInGame")
     @Expose
-    private double environmentalKillsMostInGame;
+    private Double environmentalKillsMostInGame = (double) 0;
     @SerializedName("finalBlowsMostInGame")
     @Expose
-    private double finalBlowsMostInGame;
+    private Double finalBlowsMostInGame = (double) 0;
     @SerializedName("healingDoneMostInGame")
     @Expose
-    private double healingDoneMostInGame;
+    private Double healingDoneMostInGame = (double) 0;
     @SerializedName("heroDamageDoneMostInGame")
     @Expose
-    private double heroDamageDoneMostInGame;
+    private Double heroDamageDoneMostInGame = (double) 0;
     @SerializedName("killsStreakBest")
     @Expose
-    private double killsStreakBest;
+    private Double killsStreakBest = (double) 0;
     @SerializedName("meleeFinalBlowsMostInGame")
     @Expose
-    private double meleeFinalBlowsMostInGame;
+    private Double meleeFinalBlowsMostInGame = (double) 0;
     @SerializedName("multikillsBest")
     @Expose
-    private double multikillsBest;
+    private Double multikillsBest = (double) 0;
     @SerializedName("objectiveKillsMostInGame")
     @Expose
-    private double objectiveKillsMostInGame;
+    private Double objectiveKillsMostInGame = (double) 0;
     @SerializedName("objectiveTimeMostInGame")
     @Expose
     private String objectiveTimeMostInGame;
     @SerializedName("offensiveAssistsMostInGame")
     @Expose
-    private double offensiveAssistsMostInGame;
+    private Double offensiveAssistsMostInGame = (double) 0;
     @SerializedName("reconAssistsMostInGame")
     @Expose
-    private double reconAssistsMostInGame;
+    private Double reconAssistsMostInGame = (double) 0;
     @SerializedName("soloKillsMostInGame")
     @Expose
-    private double soloKillsMostInGame;
+    private Double soloKillsMostInGame = (double) 0;
     @SerializedName("teleporterPadsDestroyedMostInGame")
     @Expose
-    private double teleporterPadsDestroyedMostInGame;
+    private Double teleporterPadsDestroyedMostInGame = (double) 0;
     @SerializedName("timeSpentOnFireMostInGame")
     @Expose
     private String timeSpentOnFireMostInGame;
     @SerializedName("turretsDestroyedMostInGame")
     @Expose
-    private double turretsDestroyedMostInGame;
+    private Double turretsDestroyedMostInGame = (double) 0;
 
-    public double getAllDamageDoneMostInGame() {
+    public Double getAllDamageDoneMostInGame() {
         return allDamageDoneMostInGame;
     }
 
-    public void setAllDamageDoneMostInGame(double allDamageDoneMostInGame) {
+    public void setAllDamageDoneMostInGame(Double allDamageDoneMostInGame) {
         this.allDamageDoneMostInGame = allDamageDoneMostInGame;
     }
 
-    public double getBarrierDamageDoneMostInGame() {
+    public Double getBarrierDamageDoneMostInGame() {
         return barrierDamageDoneMostInGame;
     }
 
-    public void setBarrierDamageDoneMostInGame(double barrierDamageDoneMostInGame) {
+    public void setBarrierDamageDoneMostInGame(Double barrierDamageDoneMostInGame) {
         this.barrierDamageDoneMostInGame = barrierDamageDoneMostInGame;
     }
 
-    public double getDefensiveAssistsMostInGame() {
+    public Double getDefensiveAssistsMostInGame() {
         return defensiveAssistsMostInGame;
     }
 
-    public void setDefensiveAssistsMostInGame(double defensiveAssistsMostInGame) {
+    public void setDefensiveAssistsMostInGame(Double defensiveAssistsMostInGame) {
         this.defensiveAssistsMostInGame = defensiveAssistsMostInGame;
     }
 
-    public double getEliminationsMostInGame() {
+    public Double getEliminationsMostInGame() {
         return eliminationsMostInGame;
     }
 
-    public void setEliminationsMostInGame(double eliminationsMostInGame) {
+    public void setEliminationsMostInGame(Double eliminationsMostInGame) {
         this.eliminationsMostInGame = eliminationsMostInGame;
     }
 
-    public double getEnvironmentalKillsMostInGame() {
+    public Double getEnvironmentalKillsMostInGame() {
         return environmentalKillsMostInGame;
     }
 
-    public void setEnvironmentalKillsMostInGame(double environmentalKillsMostInGame) {
+    public void setEnvironmentalKillsMostInGame(Double environmentalKillsMostInGame) {
         this.environmentalKillsMostInGame = environmentalKillsMostInGame;
     }
 
-    public double getFinalBlowsMostInGame() {
+    public Double getFinalBlowsMostInGame() {
         return finalBlowsMostInGame;
     }
 
-    public void setFinalBlowsMostInGame(double finalBlowsMostInGame) {
+    public void setFinalBlowsMostInGame(Double finalBlowsMostInGame) {
         this.finalBlowsMostInGame = finalBlowsMostInGame;
     }
 
-    public double getHealingDoneMostInGame() {
+    public Double getHealingDoneMostInGame() {
         return healingDoneMostInGame;
     }
 
-    public void setHealingDoneMostInGame(double healingDoneMostInGame) {
+    public void setHealingDoneMostInGame(Double healingDoneMostInGame) {
         this.healingDoneMostInGame = healingDoneMostInGame;
     }
 
-    public double getHeroDamageDoneMostInGame() {
+    public Double getHeroDamageDoneMostInGame() {
         return heroDamageDoneMostInGame;
     }
 
-    public void setHeroDamageDoneMostInGame(double heroDamageDoneMostInGame) {
+    public void setHeroDamageDoneMostInGame(Double heroDamageDoneMostInGame) {
         this.heroDamageDoneMostInGame = heroDamageDoneMostInGame;
     }
 
-    public double getKillsStreakBest() {
+    public Double getKillsStreakBest() {
         return killsStreakBest;
     }
 
-    public void setKillsStreakBest(double killsStreakBest) {
+    public void setKillsStreakBest(Double killsStreakBest) {
         this.killsStreakBest = killsStreakBest;
     }
 
-    public double getMeleeFinalBlowsMostInGame() {
+    public Double getMeleeFinalBlowsMostInGame() {
         return meleeFinalBlowsMostInGame;
     }
 
-    public void setMeleeFinalBlowsMostInGame(double meleeFinalBlowsMostInGame) {
+    public void setMeleeFinalBlowsMostInGame(Double meleeFinalBlowsMostInGame) {
         this.meleeFinalBlowsMostInGame = meleeFinalBlowsMostInGame;
     }
 
-    public double getMultikillsBest() {
+    public Double getMultikillsBest() {
         return multikillsBest;
     }
 
-    public void setMultikillsBest(double multikillsBest) {
+    public void setMultikillsBest(Double multikillsBest) {
         this.multikillsBest = multikillsBest;
     }
 
-    public double getObjectiveKillsMostInGame() {
+    public Double getObjectiveKillsMostInGame() {
         return objectiveKillsMostInGame;
     }
 
-    public void setObjectiveKillsMostInGame(double objectiveKillsMostInGame) {
+    public void setObjectiveKillsMostInGame(Double objectiveKillsMostInGame) {
         this.objectiveKillsMostInGame = objectiveKillsMostInGame;
     }
 
@@ -167,35 +171,35 @@ public class Best {
         this.objectiveTimeMostInGame = objectiveTimeMostInGame;
     }
 
-    public double getOffensiveAssistsMostInGame() {
+    public Double getOffensiveAssistsMostInGame() {
         return offensiveAssistsMostInGame;
     }
 
-    public void setOffensiveAssistsMostInGame(double offensiveAssistsMostInGame) {
+    public void setOffensiveAssistsMostInGame(Double offensiveAssistsMostInGame) {
         this.offensiveAssistsMostInGame = offensiveAssistsMostInGame;
     }
 
-    public double getReconAssistsMostInGame() {
+    public Double getReconAssistsMostInGame() {
         return reconAssistsMostInGame;
     }
 
-    public void setReconAssistsMostInGame(double reconAssistsMostInGame) {
+    public void setReconAssistsMostInGame(Double reconAssistsMostInGame) {
         this.reconAssistsMostInGame = reconAssistsMostInGame;
     }
 
-    public double getSoloKillsMostInGame() {
+    public Double getSoloKillsMostInGame() {
         return soloKillsMostInGame;
     }
 
-    public void setSoloKillsMostInGame(double soloKillsMostInGame) {
+    public void setSoloKillsMostInGame(Double soloKillsMostInGame) {
         this.soloKillsMostInGame = soloKillsMostInGame;
     }
 
-    public double getTeleporterPadsDestroyedMostInGame() {
+    public Double getTeleporterPadsDestroyedMostInGame() {
         return teleporterPadsDestroyedMostInGame;
     }
 
-    public void setTeleporterPadsDestroyedMostInGame(double teleporterPadsDestroyedMostInGame) {
+    public void setTeleporterPadsDestroyedMostInGame(Double teleporterPadsDestroyedMostInGame) {
         this.teleporterPadsDestroyedMostInGame = teleporterPadsDestroyedMostInGame;
     }
 
@@ -207,12 +211,38 @@ public class Best {
         this.timeSpentOnFireMostInGame = timeSpentOnFireMostInGame;
     }
 
-    public double getTurretsDestroyedMostInGame() {
+    public Double getTurretsDestroyedMostInGame() {
         return turretsDestroyedMostInGame;
     }
 
-    public void setTurretsDestroyedMostInGame(double turretsDestroyedMostInGame) {
+    public void setTurretsDestroyedMostInGame(Double turretsDestroyedMostInGame) {
         this.turretsDestroyedMostInGame = turretsDestroyedMostInGame;
+    }
+
+    public HashMap<String, String> getBestList() {
+        NumberFormat formatter = new DecimalFormat("#0");
+        HashMap<String, String> best = new HashMap<>();
+        best.put("ALL DAMAGE DONE ", formatter.format(allDamageDoneMostInGame));
+        best.put("BARRIER DAMAGE DONE ", formatter.format(barrierDamageDoneMostInGame));
+        best.put("DEFENSIVE ASSIST - MOST IN GAME ", formatter.format(defensiveAssistsMostInGame));
+        best.put("ELEMINATIONS - MOST IN GAME ", formatter.format(eliminationsMostInGame));
+        best.put("ENVIRONMENTAL KILL - MOST IN GAME ", formatter.format(environmentalKillsMostInGame));
+        best.put("FINAL BLOWS - MOST IN GAME ", formatter.format(finalBlowsMostInGame));
+        best.put("HEALING DONE - MOST IN GAME ", formatter.format(healingDoneMostInGame));
+        best.put("HERO DAMAGE DONE - MOST IN GAME ", formatter.format(heroDamageDoneMostInGame));
+        best.put("KILL STREAK BEST ", formatter.format(killsStreakBest));
+        best.put("MELEE FINAL BLOWS - MOST IN GAME ", formatter.format(meleeFinalBlowsMostInGame));
+        best.put("MULTIKILL BEST ", formatter.format(multikillsBest));
+        best.put("OBJECTIVE KILLS - MOST IN GAME ", formatter.format(objectiveKillsMostInGame));
+        best.put("OBJECTIVE TIME - MOST IN GAME ", objectiveTimeMostInGame);
+        best.put("OFFENSIVE ASSISTS - MOST IN GAME ", formatter.format(offensiveAssistsMostInGame));
+        best.put("RECON ASSISTS - MOST IN GAME ", formatter.format(reconAssistsMostInGame));
+        best.put("SOLO KILLS - MOST IN GAME ", formatter.format(soloKillsMostInGame));
+        best.put("TELEPORTER PADS DESTROYED - MOST IN GAME ", formatter.format(teleporterPadsDestroyedMostInGame));
+        best.put("TIME SPENT ON FIRE - MOST IN GAME ", timeSpentOnFireMostInGame);
+        best.put("TURRETS DESTROYED - MOST IN GAME ", formatter.format(turretsDestroyedMostInGame));
+
+        return best;
     }
 
 }

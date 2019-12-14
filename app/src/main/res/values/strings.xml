@@ -117,4 +117,13 @@
     <string name="heroes">Heroes</string>
     <string name="fallen_heroes">Fallen Heroes</string>
     <string name="life_glove">life glove</string>
+    <string name="competitive_play">COMPETITIVE PLAY</string>
+    <string name="quick_play">QUICK PLAY</string>
+    <string name="best">BEST</string>
+    <string name="assist">ASSISTS</string>
+    <string name="game">GAME</string>
+    <string name="average">AVERAGE</string>
+    <string name="match_awards">MATCH AWARDS</string>
+    <string name="miscellaneous">MISCELLANEOUS</string>
+    <string name="combat">COMBAT</string>
 </resources>

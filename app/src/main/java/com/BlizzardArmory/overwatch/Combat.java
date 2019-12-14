@@ -3,125 +3,129 @@ package com.BlizzardArmory.overwatch;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+
 public class Combat {
 
     @SerializedName("barrierDamageDone")
     @Expose
-    private double barrierDamageDone;
+    private Double barrierDamageDone = (double) 0;
     @SerializedName("damageDone")
     @Expose
-    private double damageDone;
+    private Double damageDone = (double) 0;
     @SerializedName("deaths")
     @Expose
-    private double deaths;
+    private Double deaths = (double) 0;
     @SerializedName("eliminations")
     @Expose
-    private double eliminations;
+    private Double eliminations = (double) 0;
     @SerializedName("environmentalKills")
     @Expose
-    private double environmentalKills;
+    private Double environmentalKills = (double) 0;
     @SerializedName("finalBlows")
     @Expose
-    private double finalBlows;
+    private Double finalBlows = (double) 0;
     @SerializedName("heroDamageDone")
     @Expose
-    private double heroDamageDone;
+    private Double heroDamageDone = (double) 0;
     @SerializedName("meleeFinalBlows")
     @Expose
-    private double meleeFinalBlows;
+    private Double meleeFinalBlows = (double) 0;
     @SerializedName("multikills")
     @Expose
-    private double multikills;
+    private Double multikills = (double) 0;
     @SerializedName("objectiveKills")
     @Expose
-    private double objectiveKills;
+    private Double objectiveKills = (double) 0;
     @SerializedName("objectiveTime")
     @Expose
     private String objectiveTime;
     @SerializedName("soloKills")
     @Expose
-    private double soloKills;
+    private Double soloKills = (double) 0;
     @SerializedName("timeSpentOnFire")
     @Expose
     private String timeSpentOnFire;
 
-    public double getBarrierDamageDone() {
+    public Double getBarrierDamageDone() {
         return barrierDamageDone;
     }
 
-    public void setBarrierDamageDone(double barrierDamageDone) {
+    public void setBarrierDamageDone(Double barrierDamageDone) {
         this.barrierDamageDone = barrierDamageDone;
     }
 
-    public double getDamageDone() {
+    public Double getDamageDone() {
         return damageDone;
     }
 
-    public void setDamageDone(double damageDone) {
+    public void setDamageDone(Double damageDone) {
         this.damageDone = damageDone;
     }
 
-    public double getDeaths() {
+    public Double getDeaths() {
         return deaths;
     }
 
-    public void setDeaths(double deaths) {
+    public void setDeaths(Double deaths) {
         this.deaths = deaths;
     }
 
-    public double getEliminations() {
+    public Double getEliminations() {
         return eliminations;
     }
 
-    public void setEliminations(double eliminations) {
+    public void setEliminations(Double eliminations) {
         this.eliminations = eliminations;
     }
 
-    public double getEnvironmentalKills() {
+    public Double getEnvironmentalKills() {
         return environmentalKills;
     }
 
-    public void setEnvironmentalKills(double environmentalKills) {
+    public void setEnvironmentalKills(Double environmentalKills) {
         this.environmentalKills = environmentalKills;
     }
 
-    public double getFinalBlows() {
+    public Double getFinalBlows() {
         return finalBlows;
     }
 
-    public void setFinalBlows(double finalBlows) {
+    public void setFinalBlows(Double finalBlows) {
         this.finalBlows = finalBlows;
     }
 
-    public double getHeroDamageDone() {
+    public Double getHeroDamageDone() {
         return heroDamageDone;
     }
 
-    public void setHeroDamageDone(double heroDamageDone) {
+    public void setHeroDamageDone(Double heroDamageDone) {
         this.heroDamageDone = heroDamageDone;
     }
 
-    public double getMeleeFinalBlows() {
+    public Double getMeleeFinalBlows() {
         return meleeFinalBlows;
     }
 
-    public void setMeleeFinalBlows(double meleeFinalBlows) {
+    public void setMeleeFinalBlows(Double meleeFinalBlows) {
         this.meleeFinalBlows = meleeFinalBlows;
     }
 
-    public double getMultikills() {
+    public Double getMultikills() {
         return multikills;
     }
 
-    public void setMultikills(double multikills) {
+    public void setMultikills(Double multikills) {
         this.multikills = multikills;
     }
 
-    public double getObjectiveKills() {
+    public Double getObjectiveKills() {
         return objectiveKills;
     }
 
-    public void setObjectiveKills(double objectiveKills) {
+    public void setObjectiveKills(Double objectiveKills) {
         this.objectiveKills = objectiveKills;
     }
 
@@ -133,11 +137,11 @@ public class Combat {
         this.objectiveTime = objectiveTime;
     }
 
-    public double getSoloKills() {
+    public Double getSoloKills() {
         return soloKills;
     }
 
-    public void setSoloKills(double soloKills) {
+    public void setSoloKills(Double soloKills) {
         this.soloKills = soloKills;
     }
 
@@ -147,6 +151,27 @@ public class Combat {
 
     public void setTimeSpentOnFire(String timeSpentOnFire) {
         this.timeSpentOnFire = timeSpentOnFire;
+    }
+
+    public HashMap<String, String> getCombat() {
+        HashMap<String, String> combatList = new HashMap<>();
+        NumberFormat formatter = new DecimalFormat("#0");
+
+        combatList.put("BARRIER DAMAGE DONE", formatter.format(barrierDamageDone));
+        combatList.put("DAMAGE DONE", formatter.format(damageDone));
+        combatList.put("DEATHS", formatter.format(deaths));
+        combatList.put("ELIMINATIONS", formatter.format(eliminations));
+        combatList.put("ENVIRONMENTAL KILLS", formatter.format(environmentalKills));
+        combatList.put("FINAL BLOWS", formatter.format(finalBlows));
+        combatList.put("HERO DAMAGE DONE", formatter.format(heroDamageDone));
+        combatList.put("MELEE FINAL BLOWS", formatter.format(meleeFinalBlows));
+        combatList.put("MULTIKILLS", formatter.format(multikills));
+        combatList.put("OBJECTIVE KILLS", formatter.format(objectiveKills));
+        combatList.put("OBJECTIVE TIME", objectiveTime);
+        combatList.put("SOLO KILLS", formatter.format(soloKills));
+        combatList.put("TIME SPENT ON FIRE", timeSpentOnFire);
+
+        return combatList;
     }
 
 }

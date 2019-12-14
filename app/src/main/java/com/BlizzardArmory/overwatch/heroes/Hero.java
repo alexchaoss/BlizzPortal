@@ -40,7 +40,7 @@ public class Hero {
     @Expose
     private Miscellaneous miscellaneous;
 
-    public Object getAssists() {
+    public Assists getAssists() {
         return assists;
     }
 
@@ -104,7 +104,7 @@ public class Hero {
         this.matchAwards = matchAwards;
     }
 
-    public Object getMiscellaneous() {
+    public Miscellaneous getMiscellaneous() {
         return miscellaneous;
     }
 

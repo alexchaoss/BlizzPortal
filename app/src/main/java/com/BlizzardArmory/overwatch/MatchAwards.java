@@ -3,6 +3,10 @@ package com.BlizzardArmory.overwatch;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+
 public class MatchAwards {
 
     @SerializedName("cards")
@@ -59,6 +63,19 @@ public class MatchAwards {
 
     public void setMedalsSilver(double medalsSilver) {
         this.medalsSilver = medalsSilver;
+    }
+
+    public HashMap<String, String> getMatch() {
+        HashMap<String, String> matchList = new HashMap<>();
+        NumberFormat formatter = new DecimalFormat("#0");
+
+        matchList.put("CARDS", formatter.format(cards));
+        matchList.put("MEDALS", formatter.format(medals));
+        matchList.put("MEDALS - GOLD", formatter.format(medalsGold));
+        matchList.put("MEDALS - SILVER", formatter.format(medalsSilver));
+        matchList.put("MEDALS - BRONZE", formatter.format(medalsBronze));
+
+        return matchList;
     }
 
 }

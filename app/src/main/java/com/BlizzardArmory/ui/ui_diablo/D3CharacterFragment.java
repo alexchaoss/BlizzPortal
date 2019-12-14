@@ -1000,12 +1000,12 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 iconTooltip.setBackground(layerList);
                 iconTooltip.setImageDrawable(imageView.getDrawable());
 
-                RelativeLayout.LayoutParams jewelleryParams = new RelativeLayout.LayoutParams((int) (60 * Resources.getSystem().getDisplayMetrics().density),
-                        (int) (61 * Resources.getSystem().getDisplayMetrics().density));
+                RelativeLayout.LayoutParams jewelleryParams = new RelativeLayout.LayoutParams((int) (67 * Resources.getSystem().getDisplayMetrics().density),
+                        (int) (67 * Resources.getSystem().getDisplayMetrics().density));
                 getResources();
                 jewelleryParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                RelativeLayout.LayoutParams normalIconParams = new RelativeLayout.LayoutParams((int) (54 * Resources.getSystem().getDisplayMetrics().density),
-                        (int) (103 * Resources.getSystem().getDisplayMetrics().density));
+                RelativeLayout.LayoutParams normalIconParams = new RelativeLayout.LayoutParams((int) (67 * Resources.getSystem().getDisplayMetrics().density),
+                        (int) (130 * Resources.getSystem().getDisplayMetrics().density));
                 normalIconParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 if (items.get(index).getSlots().equals("neck")
                         || items.get(index).getSlots().equals("leftFinger")
@@ -1035,7 +1035,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     int lastSpace2 = beforeLastSpace.lastIndexOf(" ");
                     typeNameString = typeNameString.substring(0, lastSpace2) + "<br>" + typeNameString.substring(lastSpace2);
                 }
-
                 typeName.setText(Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY));
                 typeName.setTextColor(Color.parseColor(selectColor(items.get(index).getDisplayColor())));
 
