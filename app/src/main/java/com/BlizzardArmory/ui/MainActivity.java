@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -103,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(0);
             }
         });
+
+        ImageView button = findViewById(R.id.settings);
+        OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title));
+        button.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OssLicensesMenuActivity.class)));
 
         login.setOnClickListener(view -> {
             if (selectedRegion.equals("Select Region")) {

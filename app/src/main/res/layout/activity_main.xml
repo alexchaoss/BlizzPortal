@@ -10,6 +10,17 @@
     android:animateLayoutChanges="true"
     tools:context=".ui.MainActivity">
 
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/cog_settings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/settings" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
