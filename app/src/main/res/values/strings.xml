@@ -126,4 +126,6 @@
     <string name="match_awards">MATCH AWARDS</string>
     <string name="miscellaneous">MISCELLANEOUS</string>
     <string name="combat">COMBAT</string>
+    <string name="settings">settings</string>
+    <string name="custom_license_title">Licenses</string>
 </resources>

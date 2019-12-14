@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
     configurations.all {
@@ -10,8 +11,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 15
-        versionName "2.2"
+        versionCode 16
+        versionName "2.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -31,6 +32,16 @@ android {
     }
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.9.5'
+    }
+}
+
 dependencies {
     implementation 'com.google.firebase:firebase-database:19.2.0'
     implementation 'org.apache.commons:commons-lang3:3.6'
@@ -46,4 +57,5 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.caverock:androidsvg-aar:1.4'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 }
