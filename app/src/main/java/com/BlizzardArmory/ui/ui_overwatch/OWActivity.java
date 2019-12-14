@@ -61,6 +61,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class OWActivity extends AppCompatActivity {
@@ -121,6 +122,14 @@ public class OWActivity extends AppCompatActivity {
     private LinearLayout quickComp;
     private boolean comp = false;
 
+    private LinearLayout best;
+    private LinearLayout assists;
+    private LinearLayout game;
+    private LinearLayout average;
+    private LinearLayout combat;
+    private LinearLayout misc;
+    private LinearLayout matchAwards;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +166,13 @@ public class OWActivity extends AppCompatActivity {
         competitive = findViewById(R.id.competitive);
         quickplay = findViewById(R.id.quickplay);
         quickComp = findViewById(R.id.quick_comp);
+        best = findViewById(R.id.best);
+        assists = findViewById(R.id.assist);
+        game = findViewById(R.id.game);
+        average = findViewById(R.id.average);
+        combat = findViewById(R.id.combat);
+        misc = findViewById(R.id.misc);
+        matchAwards = findViewById(R.id.match);
 
         GradientDrawable switchCompQuickBorder = new GradientDrawable();
         switchCompQuickBorder.setCornerRadius(5);
@@ -311,7 +327,6 @@ public class OWActivity extends AppCompatActivity {
             }
             sortCareerHeroes.add(tempName);
         }
-
     }
 
     private void setTopHeroesLists() {
@@ -405,6 +420,11 @@ public class OWActivity extends AppCompatActivity {
                 ((TextView) view).setTextSize(15);
                 ((TextView) view).setGravity(Gravity.CENTER_VERTICAL);
 
+                if (comp) {
+                    setCareerStats(position, careerCompetitive);
+                } else {
+                    setCareerStats(position, careerQuickPlay);
+                }
             }
 
             @Override
@@ -413,6 +433,87 @@ public class OWActivity extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(0);
             }
         });
+    }
+
+    private void setCareerStats(int position, ArrayList<Hero> career) {
+        best.removeViews(1, best.getChildCount() - 1);
+        assists.removeViews(1, assists.getChildCount() - 1);
+        game.removeViews(1, game.getChildCount() - 1);
+        average.removeViews(1, average.getChildCount() - 1);
+        combat.removeViews(1, combat.getChildCount() - 1);
+        misc.removeViews(1, misc.getChildCount() - 1);
+        matchAwards.removeViews(1, matchAwards.getChildCount() - 1);
+
+
+        try {
+            setSpecificCareerList(career.get(position).getBest().getBestList(), best, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            setSpecificCareerList(career.get(position).getAssists().getAssists(), assists, 5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            setSpecificCareerList(career.get(position).getAverage().getAverage(), average, 5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            setSpecificCareerList(career.get(position).getGame().getGame(), game, 5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            setSpecificCareerList(career.get(position).getMiscellaneous().getMisc(), misc, 5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            setSpecificCareerList(career.get(position).getMatchAwards().getMatch(), matchAwards, 5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            setSpecificCareerList(career.get(position).getCombat().getCombat(), combat, 5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setSpecificCareerList(HashMap<String, String> list, LinearLayout parentLayout, int marginStart) {
+        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+        int i = 0;
+        for (String key : list.keySet()) {
+            LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins((int) (marginStart * scale + 0.5f), 0, 0, 0);
+            linearLayout.setLayoutParams(layoutParams);
+
+            TextView value = new TextView(getApplicationContext());
+            value.setText(list.get(key));
+            value.setPadding(10, 10, 10, 10);
+            value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            value.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            TextView text = new TextView(getApplicationContext());
+            text.setText(key);
+            text.setPadding(10, 10, 10, 10);
+
+            if (i % 2 == 0) {
+                text.setBackgroundColor(Color.parseColor("#e5e7ed"));
+                value.setBackgroundColor(Color.parseColor("#e5e7ed"));
+            } else {
+                text.setBackgroundColor(Color.parseColor("#f6f6f6"));
+                value.setBackgroundColor(Color.parseColor("#f6f6f6"));
+            }
+            linearLayout.addView(text);
+            linearLayout.addView(value);
+            parentLayout.addView(linearLayout);
+            i++;
+        }
     }
 
     private void setProgressBarsTopHeroes(String itemSelected, ArrayList<TopHero> heroes) {

@@ -3,6 +3,8 @@ package com.BlizzardArmory.overwatch;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+
 public class Game {
 
     @SerializedName("gamesWon")
@@ -26,6 +28,15 @@ public class Game {
 
     public void setTimePlayed(String timePlayed) {
         this.timePlayed = timePlayed;
+    }
+
+    public HashMap<String, String> getGame() {
+        HashMap<String, String> gameList = new HashMap<>();
+
+        gameList.put("GAMES WON", String.valueOf(gamesWon));
+        gameList.put("TIME PLAYED", timePlayed);
+
+        return gameList;
     }
 
 }
