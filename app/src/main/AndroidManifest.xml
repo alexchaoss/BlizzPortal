@@ -18,38 +18,47 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="@xml/backup_descriptor">
-        <activity android:name="com.BlizzardArmory.ui.MainActivity">
+        <activity
+            android:name="com.BlizzardArmory.ui.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name="com.BlizzardArmory.ui.GamesActivity"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" />
         <activity
             android:name="com.BlizzardArmory.ui.ui_warcraft.WoWActivity"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" />
         <activity
             android:name="com.BlizzardArmory.ui.ui_starcraft.SC2Activity"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" />
         <activity
             android:name="com.BlizzardArmory.ui.ui_overwatch.OWActivity"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" />
         <activity
             android:name="com.BlizzardArmory.ui.ui_diablo.D3Activity"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

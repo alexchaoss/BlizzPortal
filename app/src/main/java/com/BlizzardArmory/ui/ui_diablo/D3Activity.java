@@ -33,6 +33,7 @@ import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.BlizzardArmory.diablo.account.Hero;
+import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.IOnBackPressed;
 import com.BlizzardArmory.ui.ui_overwatch.OWActivity;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
@@ -602,12 +603,20 @@ public class D3Activity extends AppCompatActivity {
         if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
             super.onBackPressed();
         }
+        if (fragment == null) {
+            Intent intent = new Intent(this, GamesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
     public void showNoConnectionMessage(final Context context, final int responseCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 20, 0, 0);
 
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonParams.setMargins(10, 20, 10, 0);
 
         TextView titleText = new TextView(context);
 
@@ -620,51 +629,67 @@ public class D3Activity extends AppCompatActivity {
         TextView messageText = new TextView(context);
 
         messageText.setGravity(Gravity.CENTER_HORIZONTAL);
-        messageText.setPadding(0, 0, 0, 20);
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
 
         Button button = new Button(context);
 
-        button.setTextSize(20);
+        button.setTextSize(18);
         button.setTextColor(Color.WHITE);
         button.setGravity(Gravity.CENTER);
         button.setWidth(200);
-        button.setHeight(100);
-        button.setLayoutParams(layoutParams);
+        button.setLayoutParams(buttonParams);
         button.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
+        Button button2 = new Button(context);
+
+        button2.setTextSize(20);
+        button2.setTextColor(Color.WHITE);
+        button2.setGravity(Gravity.CENTER);
+        button2.setWidth(200);
+        button2.setHeight(100);
+        button2.setLayoutParams(buttonParams);
+        button2.setBackground(context.getDrawable(R.drawable.buttonstyle));
+
         if (responseCode == 404) {
-            titleText.setText("The account could not be found");
-            messageText.setText("There is no Diablo profile associated with this account or the player hasn't logged in for too long.");
+            titleText.setText("Information Outdated");
+            messageText.setText("Please login in game to update this character's information.");
             button.setText("OK");
         } else {
             titleText.setText("No Internet Connection");
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
             button.setText("Retry");
+            button2.setText("Back");
         }
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.getWindow().setLayout(800, 450);
+        dialog.getWindow().setLayout(800, 500);
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setPadding(20, 20, 20, 20);
 
+        LinearLayout buttonLayout = new LinearLayout(context);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout.setGravity(Gravity.CENTER);
+        buttonLayout.addView(button);
+        buttonLayout.addView(button2);
+
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
-        linearLayout.addView(button);
+        linearLayout.addView(buttonLayout);
 
-        dialog.addContentView(linearLayout, layoutParams);
-        if (responseCode == 404) {
-            dialog.setOnCancelListener(dialog1 -> D3Activity.this.finish());
-        } else {
-            dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
-        }
+        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(20, 20, 20, 20);
+
+        dialog.addContentView(linearLayout, layoutParamsWindow);
+
+        dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
 
         button.setOnClickListener(v -> dialog.cancel());
+        button2.setOnClickListener(v -> onBackPressed());
     }
 
 }

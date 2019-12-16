@@ -17,12 +17,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.ui.ui_diablo.D3Activity;
 import com.BlizzardArmory.ui.ui_overwatch.OWActivity;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
-import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.UserInformation;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -53,6 +53,8 @@ public class GamesActivity extends AppCompatActivity {
 
     private JSONObject userInfo = new JSONObject();
 
+    private RequestQueue requestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,10 +79,16 @@ public class GamesActivity extends AppCompatActivity {
 
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5); // 1MB cap
         Network network = new BasicNetwork(new HurlStack());
-        RequestQueue requestQueue = new RequestQueue(cache, network);
+        requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
 
 
+        downloadUserInfo(requestQueue);
+
+
+    }
+
+    private void downloadUserInfo(RequestQueue requestQueue) {
         try {
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforUserInformation() +
                     URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
@@ -107,21 +115,20 @@ public class GamesActivity extends AppCompatActivity {
 
                         owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
                     },
-                    error -> callErrorAlertDialog(error.networkResponse.statusCode));
+                    error -> callErrorAlertDialog(0));
 
             requestQueue.add(jsonRequest);
 
         } catch (Exception e) {
             Log.e("Error-test", e.toString());
         }
-
-
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
@@ -181,7 +188,7 @@ public class GamesActivity extends AppCompatActivity {
 
         dialog.addContentView(linearLayout, layoutParamsWindow);
 
-        dialog.setOnCancelListener(dialog1 -> GamesActivity.this.recreate());
+        dialog.setOnCancelListener(dialog1 -> downloadUserInfo(requestQueue));
 
         button.setOnClickListener(v -> dialog.cancel());
     }
