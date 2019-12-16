@@ -128,4 +128,6 @@
     <string name="combat">COMBAT</string>
     <string name="settings">settings</string>
     <string name="custom_license_title">Licenses</string>
+    <string name="licenses">Licenses</string>
+    <string name="settingsTitle">Settings</string>
 </resources>

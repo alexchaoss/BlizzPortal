@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private BnOAuth2Params bnOAuth2Params;
     private String clientID = "";
     private String clientSecret = "";
+    private LinearLayout settingsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageView button = findViewById(R.id.settings);
+        ImageView settings = findViewById(R.id.settings);
+        settingsLayout = findViewById(R.id.settings_layout);
+        settings.setOnClickListener(v -> settingsLayout.setVisibility(View.VISIBLE));
+
+        ImageView closeButton = findViewById(R.id.close_button);
+        closeButton.setOnClickListener(v -> settingsLayout.setVisibility(View.GONE));
+
+        Button button = findViewById(R.id.licenses);
         OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title));
         button.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OssLicensesMenuActivity.class)));
 
@@ -204,6 +212,15 @@ public class MainActivity extends AppCompatActivity {
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (settingsLayout.getVisibility() == View.VISIBLE) {
+            settingsLayout.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
         }
     }
 

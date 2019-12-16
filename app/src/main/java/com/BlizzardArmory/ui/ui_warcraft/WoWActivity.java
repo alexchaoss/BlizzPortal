@@ -21,12 +21,15 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.ui.GamesActivity;
+import com.BlizzardArmory.ui.IOnBackPressed;
 import com.BlizzardArmory.ui.ui_diablo.D3Activity;
 import com.BlizzardArmory.ui.ui_overwatch.OWActivity;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
@@ -299,6 +302,18 @@ public class WoWActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
+            super.onBackPressed();
+        } else {
+            Intent intent = new Intent(this, GamesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    }
+
     private void displayFragment() {
         Bundle bundle = new Bundle();
         bundle.putString("name", characterClicked);
@@ -318,6 +333,9 @@ public class WoWActivity extends AppCompatActivity {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 20, 0, 0);
 
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonParams.setMargins(10, 20, 10, 0);
+
         TextView titleText = new TextView(WoWActivity.this);
 
         titleText.setTextSize(20);
@@ -334,6 +352,23 @@ public class WoWActivity extends AppCompatActivity {
 
         Button button = new Button(WoWActivity.this);
 
+        button.setTextSize(18);
+        button.setTextColor(Color.WHITE);
+        button.setGravity(Gravity.CENTER);
+        button.setWidth(200);
+        button.setLayoutParams(buttonParams);
+        button.setBackground(WoWActivity.this.getDrawable(R.drawable.buttonstyle));
+
+        Button button2 = new Button(WoWActivity.this);
+
+        button2.setTextSize(20);
+        button2.setTextColor(Color.WHITE);
+        button2.setGravity(Gravity.CENTER);
+        button2.setWidth(200);
+        button2.setHeight(100);
+        button2.setLayoutParams(buttonParams);
+        button2.setBackground(WoWActivity.this.getDrawable(R.drawable.buttonstyle));
+
         if (responseCode == 404) {
             titleText.setText("Information Outdated");
             messageText.setText("Please login in game to update this character's information.");
@@ -341,15 +376,9 @@ public class WoWActivity extends AppCompatActivity {
         } else {
             titleText.setText("No Internet Connection");
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-            button.setText("RETRY");
+            button.setText("Retry");
+            button2.setText("Back");
         }
-
-        button.setTextSize(18);
-        button.setTextColor(Color.WHITE);
-        button.setGravity(Gravity.CENTER);
-        button.setWidth(200);
-        button.setLayoutParams(layoutParams);
-        button.setBackground(WoWActivity.this.getDrawable(R.drawable.buttonstyle));
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -358,10 +387,17 @@ public class WoWActivity extends AppCompatActivity {
         LinearLayout linearLayout = new LinearLayout(WoWActivity.this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
+        linearLayout.setPadding(20, 20, 20, 20);
+
+        LinearLayout buttonLayout = new LinearLayout(WoWActivity.this);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout.setGravity(Gravity.CENTER);
+        buttonLayout.addView(button);
+        buttonLayout.addView(button2);
 
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
-        linearLayout.addView(button);
+        linearLayout.addView(buttonLayout);
 
         LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(20, 20, 20, 20);
@@ -371,5 +407,6 @@ public class WoWActivity extends AppCompatActivity {
         dialog.setOnCancelListener(dialog1 -> downloadWoWCharacters());
 
         button.setOnClickListener(v -> dialog.cancel());
+        button2.setOnClickListener(v -> onBackPressed());
     }
 }

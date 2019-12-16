@@ -33,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.ui.IOnBackPressed;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.equipment.Enchantment;
 import com.BlizzardArmory.warcraft.equipment.Equipment;
@@ -72,7 +73,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class WoWCharacterFragment extends Fragment {
+public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private String characterRealm;
     private String characterClicked;
@@ -1319,5 +1320,10 @@ public class WoWCharacterFragment extends Fragment {
             talentsTierContainer.get(i).setText("");
             talentsContainer.get(i).setText("");
         }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return false;
     }
 }
