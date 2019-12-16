@@ -15,10 +15,6 @@ __Currently supported games:__
 
 This app is currently only available on android phones of minimum SDK 24 and up. 
 
-## License
-
-This app doesn't have a license, which means I have the full copyright of the code. If you want some piece of code that could be useful to you, please send me a message first.
-
 ## Installation
 
 Google Play link: <https://play.google.com/store/apps/details?id=com.BlizzardArmory>
