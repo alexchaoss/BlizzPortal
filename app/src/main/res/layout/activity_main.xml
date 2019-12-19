@@ -110,10 +110,10 @@
                 android:layout_weight="1"
                 android:textColor="#FFF"
                 android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="50dp"
                 android:textAlignment="center"
                 android:textSize="25sp"
-                android:text="@string/settingsTitle" />
+                android:text="@string/information" />
 
             <ImageView
                 android:id="@+id/close_button"
@@ -124,15 +124,45 @@
                 android:layout_gravity="center" />
         </LinearLayout>
 
+
         <Button
             android:id="@+id/licenses"
             android:layout_margin="10dp"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:background="@drawable/buttonstyle"
+            android:layout_gravity="center"
             android:text="@string/licenses" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:text="@string/want_to_donate" />
+
+        <Button
+            android:id="@+id/donation"
+            android:layout_margin="10dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonstyle"
+            android:layout_gravity="center"
+            android:text="@string/paypal" />
 
     </LinearLayout>
 
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
