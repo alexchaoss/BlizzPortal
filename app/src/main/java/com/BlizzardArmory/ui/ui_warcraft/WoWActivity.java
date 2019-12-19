@@ -371,7 +371,7 @@ public class WoWActivity extends AppCompatActivity {
 
         if (responseCode == 404) {
             titleText.setText("Information Outdated");
-            messageText.setText("Please login in game to update this character's information.");
+            messageText.setText("Please login in game to update this account's information.");
             button.setText("OK");
         } else {
             titleText.setText("No Internet Connection");

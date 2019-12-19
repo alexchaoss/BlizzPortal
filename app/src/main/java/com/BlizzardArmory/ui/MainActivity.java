@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private String clientID = "";
     private String clientSecret = "";
     private LinearLayout settingsLayout;
+    private WebView paypalWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         Spinner regions = findViewById(R.id.spinner);
         Button login = findViewById(R.id.buttonLogin);
         Button clearCredentials = findViewById(R.id.clear_credentials);
+        paypalWebView = findViewById(R.id.webview);
         String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
         clearCacheOlderThan30Days();
 
@@ -118,6 +121,12 @@ public class MainActivity extends AppCompatActivity {
         OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title));
         button.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OssLicensesMenuActivity.class)));
 
+        Button donateButton = findViewById(R.id.donation);
+        donateButton.setOnClickListener(v -> {
+            String url = "https://paypal.me/astpierredev";
+            paypalWebView.loadUrl(url);
+        });
+
         login.setOnClickListener(view -> {
             if (selectedRegion.equals("Select Region")) {
                 Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
@@ -163,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             if (selectedRegion.equals("Select Region")) {
                 Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), "Login information cleared", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Credentials cleared", Toast.LENGTH_SHORT).show();
                 clearCredentials(bnOAuth2Params);
             }
         });
@@ -208,7 +217,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void clearCredentials(final BnOAuth2Params bnOAuth2Params) {
         try {
-            new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
+            if (bnOAuth2Params != null) {
+                new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
+            }
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         } catch (IOException e) {
             e.printStackTrace();

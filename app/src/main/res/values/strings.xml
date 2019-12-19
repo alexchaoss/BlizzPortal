@@ -130,4 +130,7 @@
     <string name="custom_license_title">Licenses</string>
     <string name="licenses">Licenses</string>
     <string name="settingsTitle">Settings</string>
+    <string name="information">Information</string>
+    <string name="want_to_donate">Want to donate?</string>
+    <string name="paypal">Paypal</string>
 </resources>
