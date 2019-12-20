@@ -331,10 +331,9 @@ public class WoWActivity extends AppCompatActivity {
     private void callErrorAlertDialog(int responseCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(WoWActivity.this, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 20, 0, 0);
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        buttonParams.setMargins(10, 20, 10, 0);
+        buttonParams.setMargins(10, 20, 10, 20);
 
         TextView titleText = new TextView(WoWActivity.this);
 
@@ -369,6 +368,12 @@ public class WoWActivity extends AppCompatActivity {
         button2.setLayoutParams(buttonParams);
         button2.setBackground(WoWActivity.this.getDrawable(R.drawable.buttonstyle));
 
+        LinearLayout buttonLayout = new LinearLayout(WoWActivity.this);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout.setGravity(Gravity.CENTER);
+        buttonLayout.addView(button);
+
+
         if (responseCode == 404) {
             titleText.setText("Information Outdated");
             messageText.setText("Please login in game to update this account's information.");
@@ -378,31 +383,23 @@ public class WoWActivity extends AppCompatActivity {
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
             button.setText("Retry");
             button2.setText("Back");
+            buttonLayout.addView(button2);
         }
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.getWindow().setLayout(800, 500);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         LinearLayout linearLayout = new LinearLayout(WoWActivity.this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setPadding(20, 20, 20, 20);
 
-        LinearLayout buttonLayout = new LinearLayout(WoWActivity.this);
-        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-        buttonLayout.setGravity(Gravity.CENTER);
-        buttonLayout.addView(button);
-        buttonLayout.addView(button2);
-
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
         linearLayout.addView(buttonLayout);
 
-        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(20, 20, 20, 20);
-
-        dialog.addContentView(linearLayout, layoutParamsWindow);
+        dialog.addContentView(linearLayout, layoutParams);
 
         dialog.setOnCancelListener(dialog1 -> downloadWoWCharacters());
 
