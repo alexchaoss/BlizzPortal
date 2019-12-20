@@ -32,10 +32,10 @@ public class AccountInformation {
     private List<Hero> heroes = null;
     @SerializedName("lastHeroPlayed")
     @Expose
-    private Integer lastHeroPlayed;
+    private float lastHeroPlayed;
     @SerializedName("lastUpdated")
     @Expose
-    private Integer lastUpdated;
+    private float lastUpdated;
     @SerializedName("kills")
     @Expose
     private Kills kills;
@@ -144,7 +144,7 @@ public class AccountInformation {
         this.heroes = heroes;
     }
 
-    public Integer getLastHeroPlayed() {
+    public float getLastHeroPlayed() {
         return lastHeroPlayed;
     }
 
@@ -152,7 +152,7 @@ public class AccountInformation {
         this.lastHeroPlayed = lastHeroPlayed;
     }
 
-    public Integer getLastUpdated() {
+    public float getLastUpdated() {
         return lastUpdated;
     }
 

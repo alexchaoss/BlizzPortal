@@ -147,8 +147,7 @@ public class MainActivity extends AppCompatActivity {
                                     bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
                                             URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
 
-                                    CreateToken(bnOAuth2Params);
-                                    setContentView(R.layout.activity_games);
+                                    startOauthFlow(bnOAuth2Params);
                                 }
 
                                 @Override
@@ -201,10 +200,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private void CreateToken(BnOAuth2Params bnOAuth2Params) {
-        startOauthFlow(bnOAuth2Params);
     }
 
     private void startOauthFlow(final BnOAuth2Params bnOAuth2Params) {

@@ -59,7 +59,7 @@ public class GamesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
-
+        Log.i("TEST", "TEST");
         wowButton = findViewById(R.id.wowButton);
         sc2Button = findViewById(R.id.starcraft2Button);
         d3Button = findViewById(R.id.diablo3Button);
@@ -82,10 +82,7 @@ public class GamesActivity extends AppCompatActivity {
         requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
 
-
         downloadUserInfo(requestQueue);
-
-
     }
 
     private void downloadUserInfo(RequestQueue requestQueue) {
@@ -141,9 +138,11 @@ public class GamesActivity extends AppCompatActivity {
     private void callErrorAlertDialog(int responseCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(GamesActivity.this, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 20, 0, 0);
 
         TextView titleText = new TextView(GamesActivity.this);
+
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonParams.setMargins(10, 20, 10, 20);
 
         titleText.setTextSize(20);
         titleText.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -161,19 +160,35 @@ public class GamesActivity extends AppCompatActivity {
 
         titleText.setText("No Internet Connection");
         messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-        button.setText("RETRY");
+        button.setText("Retry");
 
 
         button.setTextSize(18);
         button.setTextColor(Color.WHITE);
         button.setGravity(Gravity.CENTER);
         button.setWidth(200);
-        button.setLayoutParams(layoutParams);
+        button.setLayoutParams(buttonParams);
         button.setBackground(GamesActivity.this.getDrawable(R.drawable.buttonstyle));
+
+        Button button2 = new Button(GamesActivity.this);
+
+        button2.setTextSize(20);
+        button2.setTextColor(Color.WHITE);
+        button2.setGravity(Gravity.CENTER);
+        button2.setWidth(200);
+        button2.setLayoutParams(buttonParams);
+        button2.setBackground(GamesActivity.this.getDrawable(R.drawable.buttonstyle));
+        button2.setText("Back");
+
+        LinearLayout buttonLayout = new LinearLayout(GamesActivity.this);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout.setGravity(Gravity.CENTER);
+        buttonLayout.addView(button);
+        buttonLayout.addView(button2);
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.getWindow().setLayout(800, 500);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         LinearLayout linearLayout = new LinearLayout(GamesActivity.this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -181,15 +196,13 @@ public class GamesActivity extends AppCompatActivity {
 
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
-        linearLayout.addView(button);
+        linearLayout.addView(buttonLayout);
 
-        LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(20, 20, 20, 20);
-
-        dialog.addContentView(linearLayout, layoutParamsWindow);
+        dialog.addContentView(linearLayout, layoutParams);
 
         dialog.setOnCancelListener(dialog1 -> downloadUserInfo(requestQueue));
 
         button.setOnClickListener(v -> dialog.cancel());
+        button2.setOnClickListener(v -> dialog.dismiss());
     }
 }

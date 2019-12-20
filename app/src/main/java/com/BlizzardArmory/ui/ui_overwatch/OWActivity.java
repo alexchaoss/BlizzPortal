@@ -283,7 +283,11 @@ public class OWActivity extends AppCompatActivity {
                     },
                     error -> {
                         Log.e("Error", error.toString());
-                        showNoConnectionMessage(OWActivity.this, 0);
+                        if (error.networkResponse == null) {
+                            showNoConnectionMessage(OWActivity.this, 0);
+                        } else {
+                            showNoConnectionMessage(OWActivity.this, error.networkResponse.statusCode);
+                        }
                     });
 
             requestQueue.add(jsonRequest);
@@ -1206,7 +1210,7 @@ public class OWActivity extends AppCompatActivity {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        buttonParams.setMargins(10, 20, 10, 0);
+        buttonParams.setMargins(10, 20, 10, 20);
 
         TextView titleText = new TextView(context);
 
@@ -1243,31 +1247,32 @@ public class OWActivity extends AppCompatActivity {
         button2.setLayoutParams(buttonParams);
         button2.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
+        LinearLayout buttonLayout = new LinearLayout(context);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout.setGravity(Gravity.CENTER);
+        buttonLayout.addView(button);
+
         if (responseCode == 404) {
             titleText.setText("The account could not be found");
             messageText.setText("There is no Overwatch profile associated with this account.");
             button.setText("OK");
+            button2.setText("Back");
         } else {
             titleText.setText("No Internet Connection");
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
             button.setText("Retry");
             button2.setText("Back");
+            buttonLayout.addView(button2);
         }
 
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.getWindow().setLayout(800, 450);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setPadding(20, 20, 20, 20);
-
-        LinearLayout buttonLayout = new LinearLayout(context);
-        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-        buttonLayout.setGravity(Gravity.CENTER);
-        buttonLayout.addView(button);
-        buttonLayout.addView(button2);
 
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
