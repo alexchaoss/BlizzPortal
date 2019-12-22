@@ -9,7 +9,7 @@ public class Hero {
 
     @SerializedName("id")
     @Expose
-    private float id;
+    private long id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -42,9 +42,9 @@ public class Hero {
     private Boolean dead;
     @SerializedName("last-updated")
     @Expose
-    private float lastUpdated;
+    private long lastUpdated;
 
-    public float getId() {
+    public long getId() {
         return id;
     }
 
@@ -132,7 +132,7 @@ public class Hero {
         this.dead = dead;
     }
 
-    public float getLastUpdated() {
+    public long getLastUpdated() {
         return lastUpdated;
     }
 
