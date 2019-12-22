@@ -43,18 +43,20 @@ public class URLConstants {
     public final static String SC2_PROFILE_INFO = "/sc2/profile/region_id/realm_id/profile_id?locale=en_US&access_token=";
 
     //URL Overwwatch
-    public final static String OW_PROFILE = "https://ow-api.com/v1/stats/pc/:region/:battletag/complete";
+    public final static String OW_PROFILE = "https://ow-api.com/v1/stats/:platform/:region/:battletag/complete";
 
     public static String getD3URLBtagProfile() {
         return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
     }
 
-    public static String getD3HeroURL(int id) {
+    public static String getD3HeroURL(long id) {
+        //Log.i("ID", "" + id);
         String url = D3_CHARACTER.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
         return url.replace("id", String.valueOf(id));
     }
 
-    public static String getD3HeroItemsURL(int id) {
+    public static String getD3HeroItemsURL(long id) {
+        //Log.i("ID", "" + id);
         String url = D3_CHARACTER_ITEMS.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
         return url.replace("id", String.valueOf(id));
     }
@@ -83,12 +85,20 @@ public class URLConstants {
         return MainActivity.selectedRegion.toLowerCase();
     }
 
-    public static String getOWProfile() {
-        String url = OW_PROFILE.replace(":battletag", UserInformation.getBattleTag().replace("#", "-"));
-        if (MainActivity.selectedRegion.toLowerCase().equals("cn") || MainActivity.selectedRegion.toLowerCase().equals("tw")) {
-            url = url.replace(":region", "asia");
+    public static String getOWProfile(String username, String platform) {
+        String url;
+        if (platform.equalsIgnoreCase("PC")) {
+            url = OW_PROFILE.replace(":battletag", UserInformation.getBattleTag().replace("#", "-"));
+            url = url.replace(":platform", "pc");
+            if (MainActivity.selectedRegion.toLowerCase().equals("cn") || MainActivity.selectedRegion.toLowerCase().equals("tw")) {
+                url = url.replace(":region", "asia");
+            } else {
+                url = url.replace(":region", MainActivity.selectedRegion.toLowerCase());
+            }
         } else {
-            url = url.replace(":region", MainActivity.selectedRegion.toLowerCase());
+            url = OW_PROFILE.replace(":battletag", username);
+            url = url.replace(":platform", platform);
+            url = url.replace("/:region", "");
         }
         return url;
     }

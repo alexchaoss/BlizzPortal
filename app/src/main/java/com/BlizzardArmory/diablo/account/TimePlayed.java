@@ -15,7 +15,7 @@ public class TimePlayed {
     private Double barbarian;
     @SerializedName("witch-doctor")
     @Expose
-    private Integer witchDoctor;
+    private Double witchDoctor;
     @SerializedName("necromancer")
     @Expose
     private Double necromancer;
@@ -45,11 +45,11 @@ public class TimePlayed {
         this.barbarian = barbarian;
     }
 
-    public Integer getWitchDoctor() {
+    public Double getWitchDoctor() {
         return witchDoctor;
     }
 
-    public void setWitchDoctor(Integer witchDoctor) {
+    public void setWitchDoctor(Double witchDoctor) {
         this.witchDoctor = witchDoctor;
     }
 

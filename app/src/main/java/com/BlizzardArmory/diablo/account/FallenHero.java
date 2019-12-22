@@ -9,7 +9,7 @@ public class FallenHero {
 
     @SerializedName("heroId")
     @Expose
-    private Integer heroId;
+    private long heroId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -32,7 +32,7 @@ public class FallenHero {
     @Expose
     private Integer gender;
 
-    public Integer getHeroId() {
+    public double getHeroId() {
         return heroId;
     }
 

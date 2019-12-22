@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,7 +94,7 @@ public class D3Activity extends AppCompatActivity {
     private ImageView act4;
     private ImageView act5;
 
-    private float characterID;
+    private long characterID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,80 +215,87 @@ public class D3Activity extends AppCompatActivity {
     }
 
     private void setFallenCharacterFrames() {
-        for (int i = 0; i < accountInformation.getFallenHeroes().size(); i++) {
+        try {
+            for (int i = 0; i < accountInformation.getFallenHeroes().size(); i++) {
 
-            ConstraintLayout frameLayout = new ConstraintLayout(getApplicationContext());
-            frameLayout.setId((i + 1) * 2);
+                ConstraintLayout frameLayout = new ConstraintLayout(getApplicationContext());
+                frameLayout.setId((i + 1) * 2);
 
-            ConstraintLayout.LayoutParams frameParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-            frameParams.setMarginEnd(20);
-            frameLayout.setLayoutParams(frameParams);
+                ConstraintLayout.LayoutParams frameParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                frameParams.setMarginEnd(20);
+                frameLayout.setLayoutParams(frameParams);
 
-            ImageView frame = new ImageView(getApplicationContext());
-            frame.setId((i + 10) * 2);
-            getFallenHeroFrame(i, frame);
+                ImageView frame = new ImageView(getApplicationContext());
+                frame.setId((i + 10) * 2);
+                getFallenHeroFrame(i, frame);
 
-            ImageView levelFrame = new ImageView(getApplicationContext());
-            levelFrame.setId((i + 100) * 2);
-            levelFrame.setImageResource(R.drawable.fallen_hero_level);
+                ImageView levelFrame = new ImageView(getApplicationContext());
+                levelFrame.setId((i + 100) * 2);
+                levelFrame.setImageResource(R.drawable.fallen_hero_level);
 
-            TextView name = new TextView(getApplicationContext());
-            name.setTextColor(Color.parseColor("#a99877"));
-            name.setText(accountInformation.getFallenHeroes().get(i).getName());
-            name.setId((i + 1000) * 2);
+                TextView name = new TextView(getApplicationContext());
+                name.setTextColor(Color.parseColor("#a99877"));
+                name.setText(accountInformation.getFallenHeroes().get(i).getName());
+                name.setId((i + 1000) * 2);
 
-            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
-            Date dateFormatted = new Date((long) accountInformation.getFallenHeroes().get(i).getDeath().getTime() * 1000L);
-            String dateString = format.format(dateFormatted);
-            TextView date = new TextView(getApplicationContext());
-            date.setTextColor(Color.parseColor("#937a51"));
-            date.setText(dateString);
-            date.setTextSize(12);
-            date.setId((i + 10000) * 2);
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+                Date dateFormatted = new Date((long) accountInformation.getFallenHeroes().get(i).getDeath().getTime() * 1000L);
+                String dateString = format.format(dateFormatted);
+                TextView date = new TextView(getApplicationContext());
+                date.setTextColor(Color.parseColor("#937a51"));
+                date.setText(dateString);
+                date.setTextSize(12);
+                date.setId((i + 10000) * 2);
 
-            TextView level = new TextView(getApplicationContext());
-            level.setTextColor(Color.parseColor("#b00000"));
-            level.setTextSize(15);
-            level.setText(String.valueOf(accountInformation.getFallenHeroes().get(i).getLevel()));
-            level.setTypeface(null, Typeface.BOLD);
-            level.setId((i + 100000) * 2);
+                TextView level = new TextView(getApplicationContext());
+                level.setTextColor(Color.parseColor("#b00000"));
+                level.setTextSize(15);
+                level.setText(String.valueOf(accountInformation.getFallenHeroes().get(i).getLevel()));
+                level.setTypeface(null, Typeface.BOLD);
+                level.setId((i + 100000) * 2);
 
-            frameLayout.addView(frame);
-            frameLayout.addView(name);
-            frameLayout.addView(date);
-            frameLayout.addView(levelFrame);
-            frameLayout.addView(level);
+                frameLayout.addView(frame);
+                frameLayout.addView(name);
+                frameLayout.addView(date);
+                frameLayout.addView(levelFrame);
+                frameLayout.addView(level);
 
-            ConstraintSet setFrame = new ConstraintSet();
-            setFrame.clone(frameLayout);
-            setFrame.connect(frame.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
-            setFrame.connect(frame.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
-            setFrame.connect(frame.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
-            setFrame.connect(frame.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+                ConstraintSet setFrame = new ConstraintSet();
+                setFrame.clone(frameLayout);
+                setFrame.connect(frame.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+                setFrame.connect(frame.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+                setFrame.connect(frame.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+                setFrame.connect(frame.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
 
-            setFrame.connect(name.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 100);
-            setFrame.connect(name.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
-            setFrame.connect(name.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
-            setFrame.connect(name.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+                setFrame.connect(name.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 100);
+                setFrame.connect(name.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+                setFrame.connect(name.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+                setFrame.connect(name.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
 
-            setFrame.connect(date.getId(), ConstraintSet.TOP, name.getId(), ConstraintSet.BOTTOM, 0);
-            setFrame.connect(date.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
-            setFrame.connect(date.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
-            setFrame.connect(date.getId(), ConstraintSet.BOTTOM, levelFrame.getId(), ConstraintSet.TOP, 0);
+                setFrame.connect(date.getId(), ConstraintSet.TOP, name.getId(), ConstraintSet.BOTTOM, 0);
+                setFrame.connect(date.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+                setFrame.connect(date.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+                setFrame.connect(date.getId(), ConstraintSet.BOTTOM, levelFrame.getId(), ConstraintSet.TOP, 0);
 
-            setFrame.connect(level.getId(), ConstraintSet.TOP, levelFrame.getId(), ConstraintSet.TOP, 0);
-            setFrame.connect(level.getId(), ConstraintSet.LEFT, levelFrame.getId(), ConstraintSet.LEFT, 0);
-            setFrame.connect(level.getId(), ConstraintSet.RIGHT, levelFrame.getId(), ConstraintSet.RIGHT, 0);
-            setFrame.connect(level.getId(), ConstraintSet.BOTTOM, levelFrame.getId(), ConstraintSet.BOTTOM, 0);
+                setFrame.connect(level.getId(), ConstraintSet.TOP, levelFrame.getId(), ConstraintSet.TOP, 0);
+                setFrame.connect(level.getId(), ConstraintSet.LEFT, levelFrame.getId(), ConstraintSet.LEFT, 0);
+                setFrame.connect(level.getId(), ConstraintSet.RIGHT, levelFrame.getId(), ConstraintSet.RIGHT, 0);
+                setFrame.connect(level.getId(), ConstraintSet.BOTTOM, levelFrame.getId(), ConstraintSet.BOTTOM, 0);
 
-            setFrame.connect(levelFrame.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
-            setFrame.connect(levelFrame.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
-            setFrame.connect(levelFrame.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -25);
+                setFrame.connect(levelFrame.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+                setFrame.connect(levelFrame.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+                setFrame.connect(levelFrame.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -25);
 
-            setFrame.applyTo(frameLayout);
+                setFrame.applyTo(frameLayout);
 
-            fallenCharacterLayout.addView(frameLayout);
+                fallenCharacterLayout.addView(frameLayout);
 
+            }
+        } catch (Exception e) {
+            HorizontalScrollView fallenHeroContainer = findViewById(R.id.fallen_heroes_scroll);
+            fallenHeroContainer.setVisibility(View.GONE);
+            TextView fallenHeroTitle = findViewById(R.id.textView4);
+            fallenHeroTitle.setVisibility(View.GONE);
         }
     }
 
@@ -466,6 +474,7 @@ public class D3Activity extends AppCompatActivity {
         constraintLayoutCharacter.setOnClickListener(v -> {
             for (int j = 0; j < accountInformation.getHeroes().size(); j++) {
                 if (j == constraintLayoutCharacter.getId()) {
+                    Log.i("ID test", "" + accountInformation.getHeroes().get(j).getId());
                     characterID = accountInformation.getHeroes().get(j).getId();
                 }
             }
@@ -593,7 +602,7 @@ public class D3Activity extends AppCompatActivity {
 
     private void displayFragment() {
         Bundle bundle = new Bundle();
-        bundle.putFloat("id", characterID);
+        bundle.putLong("id", characterID);
         D3CharacterFragment d3CharacterFragment = new D3CharacterFragment();
         d3CharacterFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();

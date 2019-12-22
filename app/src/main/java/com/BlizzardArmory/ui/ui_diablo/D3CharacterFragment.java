@@ -187,7 +187,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         assert bundle != null;
-        int id = bundle.getInt("id");
+        long id = bundle.getLong("id");
 
         dialog = null;
         mainLayout = view.findViewById(R.id.item_d3_character);
@@ -384,7 +384,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         Log.i("time", String.valueOf(duration));
     }
 
-    private void setItemInformation(int id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
+    private void setItemInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
         JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
                 URLConstants.getD3HeroItemsURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {
@@ -412,7 +412,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         requestQueue.add(jsonRequest2);
     }
 
-    private void setCharacterInformation(int id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
+    private void setCharacterInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
                 URLConstants.getD3HeroURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {

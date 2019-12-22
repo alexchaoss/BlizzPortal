@@ -73,6 +73,9 @@ public class OWActivity extends AppCompatActivity {
     private Gson gson;
     private RequestQueue requestQueue;
 
+    private String username;
+    private String platform;
+
     private Spinner topHeroesListSpinner;
     private Spinner careerListSpinner;
     private GradientDrawable switchCompQuickRadius;
@@ -197,12 +200,13 @@ public class OWActivity extends AppCompatActivity {
 
         gson = new GsonBuilder().create();
 
+        username = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("username");
+        platform = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("platform");
 
-
-            Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5);
-            Network network = new BasicNetwork(new HurlStack());
-            requestQueue = new RequestQueue(cache, network);
-            requestQueue.start();
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5);
+        Network network = new BasicNetwork(new HurlStack());
+        requestQueue = new RequestQueue(cache, network);
+        requestQueue.start();
 
         downloadAccountInformation();
 
@@ -215,17 +219,18 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void downloadAccountInformation() {
-        String testURL = "https://ow-api.com/v1/stats/pc/us/Avalon-11311/complete";//profile not found url
-        Log.i("URL", URLConstants.getOWProfile());
+        String testURL = "https://ow-api.com/v1/stats/xbl/Hcpeful/complete";//profile not found url
+        Log.i("URL", URLConstants.getOWProfile(platform, username));
         try {
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(), null,
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(username, platform), null,
                     response -> {
 
                         try {
                             accountInformation = gson.fromJson(response.toString(), Profile.class);
 
                             downloadAvatar(requestQueue);
-                            setName(requestQueue);
+                            setName();
+                            downloadLevelIcon(requestQueue);
                             setGamesWon();
                             setRatingInformation(requestQueue);
                             //downloadEndorsementIcon(requestQueue);
@@ -235,7 +240,9 @@ public class OWActivity extends AppCompatActivity {
                             setCareerLists();
                             setSpinnerCareerList(careerQuickPlay);
 
-                            setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                            if (topHeroesQuickPlay.size() > 0) {
+                                setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                            }
                             setSpinnerTopHeroes(topHeroesListSpinner);
                             setSpinnerCareer(careerListSpinner);
 
@@ -247,7 +254,9 @@ public class OWActivity extends AppCompatActivity {
                                     competitive.setTextColor(Color.parseColor("#FFFFFF"));
                                     competitive.setBackgroundColor(0);
                                     sortList(topHeroesQuickPlay, sortHeroList[0]);
-                                    setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                                    if (topHeroesQuickPlay.size() > 0) {
+                                        setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                                    }
                                     setSpinnerTopHeroes(topHeroesListSpinner);
                                     setSpinnerCareerList(careerQuickPlay);
                                     setSpinnerCareer(careerListSpinner);
@@ -262,10 +271,13 @@ public class OWActivity extends AppCompatActivity {
                                     quickplay.setBackgroundColor(0);
                                     quickplay.setTextColor(Color.parseColor("#FFFFFF"));
                                     sortList(topHeroesCompetitive, sortHeroList[0]);
-                                    setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
+                                    if (topHeroesCompetitive.size() > 0) {
+                                        setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
+                                    }
                                     setSpinnerTopHeroes(topHeroesListSpinner);
                                     setSpinnerCareerList(careerCompetitive);
                                     setSpinnerCareer(careerListSpinner);
+
                                 }
                             });
 
@@ -1133,11 +1145,14 @@ public class OWActivity extends AppCompatActivity {
         gamesWon.setText(tempGames);
     }
 
-    private void setName(RequestQueue requestQueue) {
-        int hashtag = accountInformation.getName().indexOf("#");
-        String tempName = accountInformation.getName().substring(0, hashtag) + " ";
-        name.setText(tempName);
-        downloadLevelIcon(requestQueue);
+    private void setName() {
+        if (accountInformation.getName().contains("#")) {
+            int hashtag = accountInformation.getName().indexOf("#");
+            String tempName = accountInformation.getName().substring(0, hashtag) + " ";
+            name.setText(tempName);
+        } else {
+            name.setText(accountInformation.getName() + " ");
+        }
         level.setText(String.valueOf(accountInformation.getLevel()));
     }
 
@@ -1190,7 +1205,7 @@ public class OWActivity extends AppCompatActivity {
                 BitmapDrawable avatarBM2 = new BitmapDrawable(getResources(), bitmap2);
                 prestigeIcon.setImageDrawable(avatarBM2);
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    e -> showNoConnectionMessage(OWActivity.this, 0));
+                    e -> Log.i("Prestige Icon", "None"));
             requestQueue.add(imageRequest2);
 
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
