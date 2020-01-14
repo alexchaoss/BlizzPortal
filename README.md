@@ -2,7 +2,7 @@
 | :----- | :----- | :------ |
 | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/060c4a5fc578468cbfc43c0386900a3f)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alexchaoss/Blizzard-Armory&amp;utm_campaign=Badge_Grade) | [![donate](https://img.shields.io/badge/donate-PayPal-blue.svg)](https://paypal.me/astpierredev) | [![donate](https://img.shields.io/badge/donate-Patreon-blue.svg)](https://www.patreon.com/astpierredev)
 
-# BlizzardProfileApp  
+# Blizzard Games Profiles  
   
 __Blizzard Game's Profiles__ is an android application which lets your browse your profiles and characters from multiple Blizzard's games. 
 
