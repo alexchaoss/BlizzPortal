@@ -31,7 +31,7 @@ import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.IOnBackPressed;
 import com.BlizzardArmory.ui.ui_diablo.D3Activity;
-import com.BlizzardArmory.ui.ui_overwatch.OWActivity;
+import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.warcraft.WowCharacters;
 import com.android.volley.Cache;
@@ -118,7 +118,7 @@ public class WoWActivity extends AppCompatActivity {
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
-        owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
+        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(WoWActivity.this, bnOAuth2Params));
     }
 
     private void downloadWoWCharacters() {
@@ -196,7 +196,11 @@ public class WoWActivity extends AppCompatActivity {
 
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     error -> {
-                        callErrorAlertDialog(error.networkResponse.statusCode);
+                        try {
+                            callErrorAlertDialog(error.networkResponse.statusCode);
+                        } catch (Exception e) {
+                            callErrorAlertDialog(0);
+                        }
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                     });

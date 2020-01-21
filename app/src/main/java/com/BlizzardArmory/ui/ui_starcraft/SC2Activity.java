@@ -33,7 +33,7 @@ import com.BlizzardArmory.starcraft.Player;
 import com.BlizzardArmory.starcraft.profile.Profile;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.ui_diablo.D3Activity;
-import com.BlizzardArmory.ui.ui_overwatch.OWActivity;
+import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -228,7 +228,7 @@ public class SC2Activity extends AppCompatActivity {
 
         d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
 
-        owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
+        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(SC2Activity.this, bnOAuth2Params));
     }
 
     private void downloadAccountInformation() {
@@ -595,6 +595,10 @@ public class SC2Activity extends AppCompatActivity {
             titleText.setText("The account could not be found");
             messageText.setText("There is no Starcraft 2 profile associated with this account.");
             button.setText("OK");
+        } else if (responseCode == 403) {
+            titleText.setText("Unavailable");
+            messageText.setText("The Starcraft 2 community servers are down temporarily.");
+            button.setText("Back");
         } else {
             titleText.setText("No Internet Connection");
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
@@ -618,7 +622,7 @@ public class SC2Activity extends AppCompatActivity {
 
         dialog.addContentView(linearLayout, layoutParams);
 
-        if (responseCode == 404) {
+        if (responseCode == 404 || responseCode == 403) {
             dialog.setOnCancelListener(dialog1 -> SC2Activity.this.finish());
         } else {
             dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());

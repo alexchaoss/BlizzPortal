@@ -779,12 +779,13 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
         final String[] armorArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers"};
         final String[] ringArray = {"ring", "amulet"};
-        final String[] swordArray = {"shoulder", "spirit", "voodoo", "wizardhat", "gloves", "helm", "chest", "cloak", "belt", "pants", "boots", "bracers", "ring", "amulet"};
+        final String[] swordArray = {"axe", "dagger", "mace", "spear", "sword", "ceremonial", "fist", "flail", "mighty weapon",
+                "scythe", "polearm", "stave", "staff", "sword", "daibo", "bow", "crossbow", "wand"};
 
         cubeSword.setOnTouchListener((v, event) -> {
             String sword = "";
             for (int i = 0; i < singleItem.size(); i++) {
-                if (Arrays.stream(swordArray).parallel().noneMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)) {
+                if (Arrays.stream(swordArray).parallel().anyMatch(characterInformation.getLegendaryPowers().get(i).getIcon().toLowerCase()::contains)) {
                     for (int j = 0; j < singleItem.get(i).getAttributes().getSecondary().size(); j++) {
                         if (singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml().contains("d3-color-ffff8000")) {
                             sword = "<big>" + singleItem.get(i).getName() + "</big><br>" + singleItem.get(i).getAttributes().getSecondary().get(j).getTextHtml()
