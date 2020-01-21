@@ -88,7 +88,7 @@ public class URLConstants {
     public static String getOWProfile(String username, String platform) {
         String url;
         if (platform.equalsIgnoreCase("PC")) {
-            url = OW_PROFILE.replace(":battletag", UserInformation.getBattleTag().replace("#", "-"));
+            url = OW_PROFILE.replace(":battletag", username.replace("#", "-"));
             url = url.replace(":platform", "pc");
             if (MainActivity.selectedRegion.toLowerCase().equals("cn") || MainActivity.selectedRegion.toLowerCase().equals("tw")) {
                 url = url.replace(":region", "asia");

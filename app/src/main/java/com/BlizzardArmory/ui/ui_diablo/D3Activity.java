@@ -36,7 +36,7 @@ import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.BlizzardArmory.diablo.account.Hero;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.IOnBackPressed;
-import com.BlizzardArmory.ui.ui_overwatch.OWActivity;
+import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
 import com.android.volley.Cache;
@@ -141,7 +141,7 @@ public class D3Activity extends AppCompatActivity {
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
-        owButton.setOnClickListener(v -> callNextActivity(OWActivity.class));
+        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(D3Activity.this, bnOAuth2Params));
     }
 
     private void downloadAccountInformation() {
