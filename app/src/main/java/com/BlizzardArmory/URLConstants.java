@@ -22,6 +22,7 @@ public class URLConstants {
     //URLs for WoW images
     public final static String WOW_CHARACTER_THUMNAIL_URL = "http://render-zone.worldofwarcraft.com/character/";
     public final static String NOT_FOUND_URL_AVATAR = "?alt=/wow/static/images/2d/avatar/";
+    public final static String MAIN_BACKGROUND = "character-media?namespace=profile-us&locale=en_US&access_token=";
 
     //URLS for D3 characters and queries
     public final static String D3_PROFILE = "/d3/profile/btag/?locale=en_US&";
@@ -98,7 +99,7 @@ public class URLConstants {
         } else {
             url = OW_PROFILE.replace(":battletag", username);
             url = url.replace(":platform", platform);
-            url = url.replace("/:region", "");
+            url = url.replace(":region", "global");
         }
         return url;
     }

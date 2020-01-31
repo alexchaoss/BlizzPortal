@@ -47,7 +47,7 @@ public class WowCharacters {
                     long timestamp = Long.valueOf(characters.get("lastModified").toString());
 
                     long thirtyDays = 2592000000L;
-                    if (now - timestamp < thirtyDays) {
+                    //if (now - timestamp < thirtyDays) {
 
                         characterNamesList.add(characters.get("name").toString());
                         realmList.add(characters.get("realm").toString());
@@ -56,7 +56,7 @@ public class WowCharacters {
                         classListNumber.add(characters.get("class").toString());
                         genderList.add(characters.get("gender").toString());
                         raceListNumber.add(characters.get("race").toString());
-                    }
+                    //}
                 }
             } else {
                 characterNamesList.add(characterList.get("name").toString());

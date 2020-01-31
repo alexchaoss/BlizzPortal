@@ -57,6 +57,7 @@ public class WoWActivity extends AppCompatActivity {
     private String characterClicked;
     private String characterRealm;
     private String url;
+    private ImageView searchCharacterButton;
 
     private BnOAuth2Params bnOAuth2Params;
 
@@ -93,6 +94,7 @@ public class WoWActivity extends AppCompatActivity {
         TextView btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
         btag.setText(UserInformation.getBattleTag());
+        searchCharacterButton = findViewById(R.id.search);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.VISIBLE);
@@ -119,6 +121,8 @@ public class WoWActivity extends AppCompatActivity {
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
         owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(WoWActivity.this, bnOAuth2Params));
+
+        searchCharacterButton.setOnClickListener(v -> WoWCharacterSearchDialog.characterSearchPrompt(WoWActivity.this));
     }
 
     private void downloadWoWCharacters() {
@@ -289,11 +293,12 @@ public class WoWActivity extends AppCompatActivity {
     private void setOnClickCharacter(RelativeLayout relativeLayoutCharacters) {
         relativeLayoutCharacters.setClickable(true);
         relativeLayoutCharacters.setOnClickListener(v -> {
-            for (int i1 = 0; i1 < characterNames.size(); i1++) {
-                if (i1 == relativeLayoutCharacters.getId()) {
-                    characterClicked = characterNames.get(i1);
-                    characterRealm = realms.get(i1);
-                    url = characterList.getUrlThumbnail().get(i1).replace("-avatar.jpg", "-main.jpg");
+            for (int i = 0; i < characterNames.size(); i++) {
+                if (i == relativeLayoutCharacters.getId()) {
+                    characterClicked = characterNames.get(i);
+                    characterRealm = realms.get(i);
+                    url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
+                    Log.i("URL-thumbnail", url);
                 }
             }
             displayFragment();
@@ -327,6 +332,7 @@ public class WoWActivity extends AppCompatActivity {
         wowCharacterFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit);
         fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
         fragmentTransaction.addToBackStack(null).commit();
         getSupportFragmentManager().executePendingTransactions();
