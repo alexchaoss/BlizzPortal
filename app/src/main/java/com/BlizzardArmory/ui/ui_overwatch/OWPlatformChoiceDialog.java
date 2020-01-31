@@ -25,10 +25,12 @@ public class OWPlatformChoiceDialog {
 
     private static String username = "";
     private static String platform = "";
-    static private boolean myProfileChosen = false;
+    static public boolean myProfileChosen = false;
 
     private static void callOverWatchActivity(Activity activity, BnOAuth2Params bnOAuth2Params) {
-        activity.finish();
+        if (activity.getClass().getSimpleName().equalsIgnoreCase("OWActivity")) {
+            activity.finish();
+        }
         final Intent intent = new Intent(activity, OWActivity.class);
         intent.putExtra("username", username);
         intent.putExtra("platform", platform);

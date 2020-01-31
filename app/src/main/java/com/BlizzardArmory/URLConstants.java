@@ -46,19 +46,19 @@ public class URLConstants {
     //URL Overwwatch
     public final static String OW_PROFILE = "https://ow-api.com/v1/stats/:platform/:region/:battletag/complete";
 
-    public static String getD3URLBtagProfile() {
-        return URLConstants.D3_PROFILE.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+    public static String getD3URLBtagProfile(String btag) {
+        return URLConstants.D3_PROFILE.replace("btag", btag.replace("#", "-"));
     }
 
-    public static String getD3HeroURL(long id) {
+    public static String getD3HeroURL(long id, String btag) {
         //Log.i("ID", "" + id);
-        String url = D3_CHARACTER.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+        String url = D3_CHARACTER.replace("btag", btag.replace("#", "-"));
         return url.replace("id", String.valueOf(id));
     }
 
-    public static String getD3HeroItemsURL(long id) {
+    public static String getD3HeroItemsURL(long id, String btag) {
         //Log.i("ID", "" + id);
-        String url = D3_CHARACTER_ITEMS.replace("btag", UserInformation.getBattleTag().replace("#", "-"));
+        String url = D3_CHARACTER_ITEMS.replace("btag", btag.replace("#", "-"));
         return url.replace("id", String.valueOf(id));
     }
 

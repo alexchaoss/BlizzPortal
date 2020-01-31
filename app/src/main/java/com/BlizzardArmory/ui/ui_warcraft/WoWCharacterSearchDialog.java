@@ -112,8 +112,8 @@ public class WoWCharacterSearchDialog {
             if (characterField.getText().equals("") || realmField.getText().equals("")) {
                 Toast.makeText(activity.getApplicationContext(), "Please enter the character name and the realm", Toast.LENGTH_SHORT).show();
             } else {
-                characterClicked = characterField.getText().toString();
-                characterRealm = realmField.getText().toString();
+                characterClicked = characterField.getText().toString().toLowerCase();
+                characterRealm = realmField.getText().toString().toLowerCase();
                 dialogWoW.cancel();
                 callCharacterFragment(activity);
             }

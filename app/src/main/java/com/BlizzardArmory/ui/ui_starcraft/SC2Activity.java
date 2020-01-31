@@ -32,7 +32,7 @@ import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.starcraft.Player;
 import com.BlizzardArmory.starcraft.profile.Profile;
 import com.BlizzardArmory.ui.GamesActivity;
-import com.BlizzardArmory.ui.ui_diablo.D3Activity;
+import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
 import com.android.volley.Cache;
@@ -226,7 +226,7 @@ public class SC2Activity extends AppCompatActivity {
         //Button calls
         wowButton.setOnClickListener(v -> callNextActivity(WoWActivity.class));
 
-        d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
+        d3Button.setOnClickListener(v -> DiabloProfileSearchDialog.diabloPrompt(SC2Activity.this, bnOAuth2Params));
 
         owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(SC2Activity.this, bnOAuth2Params));
     }

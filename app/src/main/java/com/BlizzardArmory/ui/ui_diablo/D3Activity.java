@@ -75,6 +75,9 @@ public class D3Activity extends AppCompatActivity {
     private ImageButton wowButton;
     private ImageButton sc2Button;
     private ImageButton owButton;
+    private ImageView searchButton;
+
+    private String battleTag = "";
 
 
     private RelativeLayout loadingCircle;
@@ -103,6 +106,7 @@ public class D3Activity extends AppCompatActivity {
         wowButton = findViewById(R.id.wowButton);
         sc2Button = findViewById(R.id.starcraft2Button);
         owButton = findViewById(R.id.overwatchButton);
+        searchButton = findViewById(R.id.search);
         TextView btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
@@ -117,6 +121,8 @@ public class D3Activity extends AppCompatActivity {
         act4 = findViewById(R.id.prog_act4);
         act5 = findViewById(R.id.prog_act5);
         btag.setText(UserInformation.getBattleTag());
+
+        battleTag = Objects.requireNonNull(D3Activity.this.getIntent().getExtras()).getString("battletag");
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -142,13 +148,15 @@ public class D3Activity extends AppCompatActivity {
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
         owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(D3Activity.this, bnOAuth2Params));
+
+        searchButton.setOnClickListener(v -> DiabloProfileSearchDialog.diabloPrompt(D3Activity.this, bnOAuth2Params));
     }
 
     private void downloadAccountInformation() {
         try {
             final Gson gson = new GsonBuilder().create();
 
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtagProfile()
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtagProfile(battleTag)
                     + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response -> {
                         D3AccountInfo = response;
@@ -602,6 +610,7 @@ public class D3Activity extends AppCompatActivity {
 
     private void displayFragment() {
         Bundle bundle = new Bundle();
+        bundle.putString("battletag", battleTag);
         bundle.putLong("id", characterID);
         D3CharacterFragment d3CharacterFragment = new D3CharacterFragment();
         d3CharacterFragment.setArguments(bundle);
@@ -674,8 +683,9 @@ public class D3Activity extends AppCompatActivity {
         if (responseCode == 404) {
             titleText.setText("Information Outdated");
             messageText.setText("Please login in game to update your account's information.");
-            button.setText("OK");
             button2.setText("Back");
+            buttonLayout.removeView(button);
+            buttonLayout.addView(button2);
         } else {
             titleText.setText("No Internet Connection");
             messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
