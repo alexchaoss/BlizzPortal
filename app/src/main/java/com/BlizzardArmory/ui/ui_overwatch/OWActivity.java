@@ -83,6 +83,9 @@ public class OWActivity extends AppCompatActivity {
     private ImageButton wowButton;
     private ImageButton sc2Button;
     private ImageButton d3Button;
+    private ImageButton owButton;
+    private ImageView search;
+
     private TextView btag;
     private RelativeLayout loadingCircle;
     private Profile accountInformation;
@@ -141,6 +144,8 @@ public class OWActivity extends AppCompatActivity {
         wowButton = findViewById(R.id.wowButton);
         sc2Button = findViewById(R.id.starcraft2Button);
         d3Button = findViewById(R.id.diablo3Button);
+        owButton = findViewById(R.id.overwatchButton);
+        search = findViewById(R.id.search);
         btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
@@ -216,6 +221,10 @@ public class OWActivity extends AppCompatActivity {
         d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
+
+        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(OWActivity.this, bnOAuth2Params));
+
+        search.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(OWActivity.this, bnOAuth2Params));
     }
 
     private void downloadAccountInformation() {

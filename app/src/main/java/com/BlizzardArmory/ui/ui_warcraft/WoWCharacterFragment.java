@@ -151,6 +151,8 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     private Network network;
     private RequestQueue requestQueue;
 
+    private String urlMain = "";
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.wow_character_fragment, container, false);
@@ -163,7 +165,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         assert bundle != null;
         characterRealm = bundle.getString("realm");
         characterClicked = bundle.getString("name");
-        String urlMain = bundle.getString("url");
+        urlMain = bundle.getString("url");
 
         dialog = null;
 
@@ -291,7 +293,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
 
-        downloadBackground(urlMain);
+        downloadBackground(bnOAuth2Helper);
 
         downloadAndSetCharacterInformation(bnOAuth2Helper);
 
@@ -555,12 +557,37 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     }
 
-    private void downloadBackground(String urlMain) {
-        ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, bitmap -> {
-            backgroundMain = new BitmapDrawable(getResources(), bitmap);
-            background.setImageDrawable(backgroundMain);
-        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                e -> {
+    private void downloadBackground(BnOAuth2Helper bnOAuth2Helper) {
+        if (urlMain.equalsIgnoreCase("")) {
+            try {
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + "/profile/wow/character/" + characterRealm + "/" + characterClicked + "/" + URLConstants.MAIN_BACKGROUND + bnOAuth2Helper.getAccessToken(), null,
+                        response -> {
+                            try {
+                                urlMain = response.getString("render_url");
+
+                                ImageRequest imageRequest = new ImageRequest(urlMain, bitmap -> {
+                                    backgroundMain = new BitmapDrawable(getResources(), bitmap);
+                                    background.setImageDrawable(backgroundMain);
+                                }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                                        e -> {
+                                            Log.e("BAD URL BACKGROUND", urlMain);
+                    /*if (e.networkResponse == null) {
+                        callErrorAlertDialog(0);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    } else {
+                        callErrorAlertDialog(e.networkResponse.statusCode);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    }
+                    */
+                                        });
+
+                                requestQueue.add(imageRequest);
+                            } catch (Exception e) {
+
+                            }
+                        }, e -> {
                     if (e.networkResponse == null) {
                         callErrorAlertDialog(0);
                         Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -570,10 +597,32 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                     }
-
                 });
+                requestQueue.add(jsonRequest);
+            } catch (Exception e) {
+                Log.e("BAD URL BACKGROUND", URLConstants.getBaseURLforAPI() + "/profile/wow/character/" + characterRealm + "/" + characterClicked + "/" + URLConstants.MAIN_BACKGROUND);
+            }
+        } else {
+            ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, bitmap -> {
+                backgroundMain = new BitmapDrawable(getResources(), bitmap);
+                background.setImageDrawable(backgroundMain);
+            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
+                    e -> {
+                        Log.e("BAD URL BACKGROUND", urlMain);
+                    /*if (e.networkResponse == null) {
+                        callErrorAlertDialog(0);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    } else {
+                        callErrorAlertDialog(e.networkResponse.statusCode);
+                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                    }
+                    */
+                    });
 
-        requestQueue.add(imageRequest);
+            requestQueue.add(imageRequest);
+        }
     }
 
     private void downloadIcons(final Equipment equipment, final int index, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {

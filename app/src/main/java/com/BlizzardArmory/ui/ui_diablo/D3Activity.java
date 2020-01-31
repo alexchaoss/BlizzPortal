@@ -607,6 +607,7 @@ public class D3Activity extends AppCompatActivity {
         d3CharacterFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit);
         fragmentTransaction.replace(R.id.fragment, d3CharacterFragment);
         fragmentTransaction.addToBackStack(null).commit();
         getSupportFragmentManager().executePendingTransactions();

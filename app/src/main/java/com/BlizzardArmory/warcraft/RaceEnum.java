@@ -12,7 +12,7 @@ public enum RaceEnum {
     WORGEN("Worgen", 0), PLACEHOLDER23("", -1), PANDAREN1("Pandaren", -1), PANDAREN2("Pandaren", 0), PANDAREN3("Pandaren", 1),
     NIGHTBORNE("Nightborne", 1), HIGHMOUNTAIN_TAUREN("Highmountain Tauren", 1), VOID_ELF("Void Elf", 0), LIGHTFORGED_DRAENEI("Lightforged Draenei", 0),
     ZANDALARI_TROLL("Zandalari Troll", 1), KUL_TIRAN("Kul Tiran", 0), PLACEHOLDER33("", -1), DARK_IRON_DWARF("Dark Iron Dwarf", 0),
-    PLACEHOLDER35("", -1), MAG_HAR_ORC("Mag'har Orc", 1);
+    VULPERA("Vulpera", 1), MAG_HAR_ORC("Mag'har Orc", 1), MECHAGNOME("Mechagnome", 0);
 
     private static final Map<Integer, RaceEnum> lookup = new HashMap<Integer, RaceEnum>();
 

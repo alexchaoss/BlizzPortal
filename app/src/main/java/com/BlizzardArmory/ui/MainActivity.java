@@ -98,9 +98,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedRegion = (String) parent.getItemAtPosition(position);
-                ((TextView) view).setTextColor(Color.WHITE);
-                ((TextView) view).setTextSize(20);
-                ((TextView) view).setGravity(Gravity.CENTER);
+                try {
+                    ((TextView) view).setTextColor(Color.WHITE);
+                    ((TextView) view).setTextSize(20);
+                    ((TextView) view).setGravity(Gravity.CENTER);
+                } catch (Exception e) {
+                    Log.e("Error", e.toString());
+                }
             }
 
             @Override
