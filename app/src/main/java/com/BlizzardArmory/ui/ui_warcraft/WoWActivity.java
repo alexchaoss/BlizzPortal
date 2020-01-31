@@ -30,7 +30,7 @@ import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.IOnBackPressed;
-import com.BlizzardArmory.ui.ui_diablo.D3Activity;
+import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.warcraft.WowCharacters;
@@ -116,7 +116,7 @@ public class WoWActivity extends AppCompatActivity {
         downloadWoWCharacters();
 
         //Button calls
-        d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
+        d3Button.setOnClickListener(v -> DiabloProfileSearchDialog.diabloPrompt(WoWActivity.this, bnOAuth2Params));
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 

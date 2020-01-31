@@ -81,6 +81,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private int imageIndex = 0;
 
+    private String battletag = "";
+
     private RelativeLayout loadingCircle;
 
     private ConstraintLayout mainLayout;
@@ -188,6 +190,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         Bundle bundle = getArguments();
         assert bundle != null;
         long id = bundle.getLong("id");
+        battletag = bundle.getString("battletag");
 
         dialog = null;
         mainLayout = view.findViewById(R.id.item_d3_character);
@@ -386,7 +389,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private void setItemInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
         JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
-                URLConstants.getD3HeroItemsURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                URLConstants.getD3HeroItemsURL(id, battletag) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {
                     itemsInformation = gson.fromJson(response.toString(), Items.class);
                     getItemInformation();
@@ -398,7 +401,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     }
 
                 }, error -> {
-            Log.e("Network error", error.getMessage());
             if (error.networkResponse == null) {
                 callErrorAlertDialog(0);
                 Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -414,7 +416,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private void setCharacterInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
-                URLConstants.getD3HeroURL(id) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                URLConstants.getD3HeroURL(id, battletag) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {
                     Log.i("Response", response.toString());
                     characterInfo = response;
@@ -437,7 +439,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     recovery.setText(Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getHealing()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
 
                 }, error -> {
-            Log.e("Network error", error.getMessage());
             if (error.networkResponse == null) {
                 callErrorAlertDialog(0);
                 Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);

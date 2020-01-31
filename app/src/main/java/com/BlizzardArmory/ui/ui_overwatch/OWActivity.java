@@ -38,7 +38,7 @@ import com.BlizzardArmory.overwatch.Profile;
 import com.BlizzardArmory.overwatch.heroes.Hero;
 import com.BlizzardArmory.overwatch.topheroes.TopHero;
 import com.BlizzardArmory.ui.GamesActivity;
-import com.BlizzardArmory.ui.ui_diablo.D3Activity;
+import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
 import com.android.volley.Cache;
@@ -218,17 +218,18 @@ public class OWActivity extends AppCompatActivity {
         //Button calls
         wowButton.setOnClickListener(v -> callNextActivity(WoWActivity.class));
 
-        d3Button.setOnClickListener(v -> callNextActivity(D3Activity.class));
+        d3Button.setOnClickListener(v -> DiabloProfileSearchDialog.diabloPrompt(OWActivity.this, bnOAuth2Params));
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
-        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(OWActivity.this, bnOAuth2Params));
-
-        search.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(OWActivity.this, bnOAuth2Params));
+        search.setOnClickListener(v -> {
+            OWPlatformChoiceDialog.myProfileChosen = false;
+            OWPlatformChoiceDialog.overwatchPrompt(OWActivity.this, bnOAuth2Params);
+        });
     }
 
     private void downloadAccountInformation() {
-        String testURL = "https://ow-api.com/v1/stats/xbl/Hcpeful/complete";//profile not found url
+        String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
         Log.i("URL", URLConstants.getOWProfile(platform, username));
         try {
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(username, platform), null,
