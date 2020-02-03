@@ -11,8 +11,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 34
-        versionName "3.13"
+        versionCode 36
+        versionName "3.21"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -24,20 +24,15 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
-    allprojects {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-        }
-    }
 }
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         google()
     }
     dependencies {
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.9.5'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.1'
     }
 }
 

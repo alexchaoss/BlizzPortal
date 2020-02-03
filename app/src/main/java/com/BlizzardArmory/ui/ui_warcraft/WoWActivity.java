@@ -120,7 +120,10 @@ public class WoWActivity extends AppCompatActivity {
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
-        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(WoWActivity.this, bnOAuth2Params));
+        owButton.setOnClickListener(v -> {
+            OWPlatformChoiceDialog.myProfileChosen = false;
+            OWPlatformChoiceDialog.overwatchPrompt(WoWActivity.this, bnOAuth2Params);
+        });
 
         searchCharacterButton.setOnClickListener(v -> WoWCharacterSearchDialog.characterSearchPrompt(WoWActivity.this));
     }
@@ -161,15 +164,20 @@ public class WoWActivity extends AppCompatActivity {
         }
     }
 
+    private int getDPMetric(int size) {
+        final float scale = this.getResources().getDisplayMetrics().density;
+        return (int) (size * scale + 0.5f);
+    }
+
     private void createCharacterListUI() {
         linearLayoutCharacterList = new ArrayList<>();
 
-        layoutParamsImage = new RelativeLayout.LayoutParams(150, 150);
+        layoutParamsImage = new RelativeLayout.LayoutParams(getDPMetric(50), getDPMetric(50));
         layoutParamsImage.setMargins(15, 0, 0, 0);
         layoutParamsImage.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
         layoutParamsImage.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
 
-        layoutParamsLogo = new RelativeLayout.LayoutParams(150, 150);
+        layoutParamsLogo = new RelativeLayout.LayoutParams(getDPMetric(50), getDPMetric(50));
         layoutParamsLogo.setMargins(15, 0, 0, 0);
         layoutParamsLogo.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
         layoutParamsLogo.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
@@ -188,7 +196,7 @@ public class WoWActivity extends AppCompatActivity {
                 final RelativeLayout relativeLayoutCharacters = createCharacterLayout(portrait);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(100, 0, 100, 75);
+                layoutParams.setMargins(getDPMetric(25), 0, getDPMetric(25), getDPMetric(20));
 
 
                 relativeLayoutCharacters.setId(index);

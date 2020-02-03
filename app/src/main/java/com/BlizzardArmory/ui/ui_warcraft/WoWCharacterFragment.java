@@ -484,6 +484,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                             equipmentURL = equipmentURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
                             JsonObjectRequest jsonRequest1 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + equipmentURL, null,
                                     response1 -> {
+                                        System.out.println(response1);
                                         final Gson gsonEquipment = new GsonBuilder().registerTypeAdapter(EquippedItem.class, new EquippedItem.NameDescriptionDeserializer()).create();
                                         equipment = gsonEquipment.fromJson(response1.toString(), Equipment.class);
 
@@ -750,8 +751,8 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             case "FEET":
                 Objects.requireNonNull(gearImageView.get(itemSlot)).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_feet));
                 break;
-            case "RING_1":
-            case "RING_2":
+            case "FINGER_1":
+            case "FINGER_2":
                 Objects.requireNonNull(gearImageView.get(itemSlot)).setImageDrawable(ContextCompat.getDrawable(context, R.drawable.empty_ring));
                 break;
             case "TRINKET_1":
@@ -1104,21 +1105,25 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         } catch (Exception e) {
             Log.e("Item sub class", "none");
         }
+
         try {
             transmog = "<font color=#f57bf5>" + equippedItem.getTransmog().getDisplayString().replace("\n", "<br>") + "</font><br>";
         } catch (Exception e) {
             Log.e("Transmog", "none");
         }
+
         try {
             armor = equippedItem.getArmor().getDisplayString() + "<br>";
         } catch (Exception e) {
             Log.e("Armor", "none");
         }
+
         try {
             requiredLevel = equippedItem.getRequirements().getLevel().getDisplayString();
         } catch (Exception e) {
             Log.e("Level", "none");
         }
+
         try {
             description = "<font color=#edc201>" + equippedItem.getDescription() + "</font>";
         } catch (Exception e) {
@@ -1137,11 +1142,13 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                 Log.e("Name description", "none");
             }
         }
+
         try {
             trigger = "<font color=#00ff00>" + equippedItem.getSpells().get(0).getDescription() + "</font>";
         } catch (Exception e) {
             Log.e("trigger", "none");
         }
+
         try {
             if (equippedItem.getName().equals("Heart of Azeroth")) {
                 azeriteSpells.append("<br>");
@@ -1205,13 +1212,20 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             damageInfo.append(equippedItem.getWeapon().getAttackSpeed().getDisplayString()).append("<br>").append(equippedItem.getWeapon().getDps().getDisplayString()).append("<br>");
         }
 
-        for (int i = 0; i < equippedItem.getStats().size(); i++) {
-            if (equippedItem.getStats().get(i).isIsEquipBonus()) {
-                statsString.append("<font color=#00ff00>").append(equippedItem.getStats().get(i).getDisplayString()).append("</font>").append("<br>");
-            } else {
-                statsString.append(equippedItem.getStats().get(i).getDisplayString()).append("<br>");
+        try {
+            for (int i = 0; i < equippedItem.getStats().size(); i++) {
+                statsString.append("<font color=#" + RGBToHexHTML(equippedItem.getStats().get(i).getDisplayString().getColor()) + ">").append(equippedItem.getStats().get(i).getDisplayString().getDisplayString()).append("</font>").append("<br>");
+            }
+        } catch (Exception e) {
+            for (int i = 0; i < equippedItem.getStats().size(); i++) {
+                if (equippedItem.getStats().get(i).isIsEquipBonus()) {
+                    statsString.append("<font color=#00ff00>").append(equippedItem.getStats().get(i).getDisplay_string()).append("</font>").append("<br>");
+                } else {
+                    statsString.append(equippedItem.getStats().get(i).getDisplay_string()).append("<br>");
+                }
             }
         }
+
 
         stats.put(equippedItem.getSlot().getType(), String.format("%s%s%s%s%s%s%s%s%s", nameDescription, itemLvl, transmog, HoALevel, bind, slot.toString(), damageInfo.toString(), armor, statsString.toString()));
 
@@ -1289,6 +1303,11 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             }
         }
         return setInfo;
+    }
+
+    private String RGBToHexHTML(com.BlizzardArmory.warcraft.equipment.Color color) {
+
+        return String.format("#%X", Color.rgb(color.getR(), color.getG(), color.getB())).substring(3);
     }
 
     private String getNameDescriptionColor(EquippedItem equippedItem) {
