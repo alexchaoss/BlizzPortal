@@ -57,7 +57,6 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -147,7 +146,10 @@ public class D3Activity extends AppCompatActivity {
 
         sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
 
-        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(D3Activity.this, bnOAuth2Params));
+        owButton.setOnClickListener(v -> {
+            OWPlatformChoiceDialog.myProfileChosen = false;
+            OWPlatformChoiceDialog.overwatchPrompt(D3Activity.this, bnOAuth2Params);
+        });
 
         searchButton.setOnClickListener(v -> DiabloProfileSearchDialog.diabloPrompt(D3Activity.this, bnOAuth2Params));
     }
@@ -180,7 +182,7 @@ public class D3Activity extends AppCompatActivity {
 
                         setFallenCharacterFrames();
 
-                        double barbTime = accountInformation.getTimePlayed().getBarbarian();
+                        /*double barbTime = accountInformation.getTimePlayed().getBarbarian();
                         double wizTime = accountInformation.getTimePlayed().getWizard();
                         double wdTime = accountInformation.getTimePlayed().getWitchDoctor();
                         double necroTime = accountInformation.getTimePlayed().getNecromancer();
@@ -199,7 +201,7 @@ public class D3Activity extends AppCompatActivity {
 
                         for (int i = 0; i < timePlayed.size(); i++) {
                             timePlayedPercent.add((100 * timePlayed.get(i) / total));
-                        }
+                        }*/
 
 
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);

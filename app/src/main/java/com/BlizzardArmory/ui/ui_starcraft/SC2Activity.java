@@ -228,7 +228,10 @@ public class SC2Activity extends AppCompatActivity {
 
         d3Button.setOnClickListener(v -> DiabloProfileSearchDialog.diabloPrompt(SC2Activity.this, bnOAuth2Params));
 
-        owButton.setOnClickListener(v -> OWPlatformChoiceDialog.overwatchPrompt(SC2Activity.this, bnOAuth2Params));
+        owButton.setOnClickListener(v -> {
+            OWPlatformChoiceDialog.myProfileChosen = false;
+            OWPlatformChoiceDialog.overwatchPrompt(SC2Activity.this, bnOAuth2Params);
+        });
     }
 
     private void downloadAccountInformation() {
