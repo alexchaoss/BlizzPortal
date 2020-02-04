@@ -11,6 +11,17 @@ public class Armor {
     @SerializedName("display_string")
     @Expose
     private String displayString;
+    @SerializedName("display")
+    @Expose
+    private Display display;
+
+    public Display getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(Display display) {
+        this.display = display;
+    }
 
     public int getValue() {
         return value;
