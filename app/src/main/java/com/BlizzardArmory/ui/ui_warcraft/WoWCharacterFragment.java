@@ -1113,7 +1113,11 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         }
 
         try {
-            armor = equippedItem.getArmor().getDisplayString() + "<br>";
+            if (equippedItem.getArmor().getDisplayString() == null) {
+                armor = ("<font color=#" + RGBToHexHTML(equippedItem.getArmor().getDisplay().getColor()) + ">") + equippedItem.getArmor().getDisplay().getDisplayString() + "</font><br>";
+            } else {
+                armor = equippedItem.getArmor().getDisplayString() + "<br>";
+            }
         } catch (Exception e) {
             Log.e("Armor", "none");
         }

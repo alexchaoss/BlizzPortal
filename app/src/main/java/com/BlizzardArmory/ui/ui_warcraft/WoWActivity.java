@@ -125,7 +125,10 @@ public class WoWActivity extends AppCompatActivity {
             OWPlatformChoiceDialog.overwatchPrompt(WoWActivity.this, bnOAuth2Params);
         });
 
-        searchCharacterButton.setOnClickListener(v -> WoWCharacterSearchDialog.characterSearchPrompt(WoWActivity.this));
+        searchCharacterButton.setOnClickListener(v -> {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+            WoWCharacterSearchDialog.characterSearchPrompt(WoWActivity.this, fragment);
+        });
     }
 
     private void downloadWoWCharacters() {

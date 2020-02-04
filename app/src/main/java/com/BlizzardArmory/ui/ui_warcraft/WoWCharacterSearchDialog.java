@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,7 +28,10 @@ public class WoWCharacterSearchDialog {
     private static String characterRealm = "";
     private static String url = "";
 
-    private static void callCharacterFragment(Activity activity) {
+    private static void callCharacterFragment(Activity activity, Fragment fragment) {
+        if (fragment != null && fragment.isVisible()) {
+            fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
+        }
         Bundle bundle = new Bundle();
         bundle.putString("name", characterClicked);
         bundle.putString("realm", characterRealm);
@@ -42,7 +46,7 @@ public class WoWCharacterSearchDialog {
         ((FragmentActivity) activity).getSupportFragmentManager().executePendingTransactions();
     }
 
-    public static void characterSearchPrompt(Activity activity) {
+    public static void characterSearchPrompt(Activity activity, Fragment fragment) {
         AlertDialog.Builder builderOW = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
@@ -115,7 +119,7 @@ public class WoWCharacterSearchDialog {
                 characterClicked = characterField.getText().toString().toLowerCase();
                 characterRealm = realmField.getText().toString().toLowerCase();
                 dialogWoW.cancel();
-                callCharacterFragment(activity);
+                callCharacterFragment(activity, fragment);
             }
         });
 
