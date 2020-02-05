@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -188,6 +189,47 @@ public class WoWActivity extends AppCompatActivity {
         layoutParamsClass = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParamsClass.setMargins(15, 0, 0, 0);
 
+        ArrayList<LinearLayout> realmListContainer = new ArrayList<>();
+
+        LinearLayout.LayoutParams navbarParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        for (int i = 0; i < characterList.getRealmsList().size(); i++) {
+            if (i == 0) {
+                LinearLayout linearLayout = new LinearLayout(this);
+                linearLayout.setLayoutParams(navbarParams);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                TextView textView = new TextView(this);
+                String tempString = "+ " + realms.get(i);
+                textView.setText(tempString);
+                textView.setTextSize(20);
+                textView.setPadding(40, 0, 0, 0);
+                textView.setTextColor(Color.WHITE);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+                textView.setBackgroundResource(R.drawable.wodnav);
+                linearLayout.addView(textView);
+                realmListContainer.add(linearLayout);
+            } else if (!characterList.getRealmsList().get(i).equalsIgnoreCase(realms.get(i - 1))) {
+                LinearLayout linearLayout = new LinearLayout(this);
+                linearLayout.setLayoutParams(navbarParams);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                TextView textView = new TextView(this);
+                String tempString = "+ " + realms.get(i);
+                textView.setText(tempString);
+                textView.setTextSize(20);
+                textView.setTextColor(Color.WHITE);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+                textView.setBackgroundResource(R.drawable.wodnav);
+                textView.setPadding(40, 0, 0, 0);
+                linearLayout.addView(textView);
+                realmListContainer.add(linearLayout);
+            }
+        }
+
+        ArrayList<ArrayList<RelativeLayout>> characterContainer = new ArrayList<>();
+
+        for (int i = 0; i < realmListContainer.size(); i++) {
+            characterContainer.add(new ArrayList<>());
+        }
 
         for (int i = 0; i < characterList.getUrlThumbnail().size(); i++) {
 
@@ -198,16 +240,41 @@ public class WoWActivity extends AppCompatActivity {
 
                 final RelativeLayout relativeLayoutCharacters = createCharacterLayout(portrait);
 
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(getDPMetric(25), 0, getDPMetric(25), getDPMetric(20));
-
+                for (int j = 0; j < realmListContainer.size(); j++) {
+                    if (realms.get(index).equalsIgnoreCase(((TextView) realmListContainer.get(j).getChildAt(0)).getText().toString().substring(2))) {
+                        characterContainer.get(j).add(relativeLayoutCharacters);
+                    }
+                }
 
                 relativeLayoutCharacters.setId(index);
-                linearLayout.addView(relativeLayoutCharacters);
-                relativeLayoutCharacters.setLayoutParams(layoutParams);
                 relativeLayoutCharacters.setBackground(getResources().getDrawable(R.drawable.inputstyle, getTheme()));
                 setOnClickCharacter(relativeLayoutCharacters);
                 index++;
+
+                if (index == characterList.getUrlThumbnail().size() - 1) {
+                    for (int j = 0; j < realmListContainer.size(); j++) {
+                        linearLayout.addView(realmListContainer.get(j));
+                        final int tempIndex = j;
+
+                        realmListContainer.get(j).getChildAt(0).setOnClickListener(v -> {
+                            if (((TextView) realmListContainer.get(tempIndex).getChildAt(0)).getText().toString().charAt(0) == '-') {
+                                ((TextView) realmListContainer.get(tempIndex).getChildAt(0)).setText(((TextView) realmListContainer.get(tempIndex).getChildAt(0)).getText().toString().replace("-", "+"));
+                                for (int k = 1; k < realmListContainer.get(tempIndex).getChildCount(); k++) {
+                                    realmListContainer.get(tempIndex).removeViewAt(k);
+                                    k--;
+                                }
+                            } else {
+                                ((TextView) realmListContainer.get(tempIndex).getChildAt(0)).setText(((TextView) realmListContainer.get(tempIndex).getChildAt(0)).getText().toString().replace("+", "-"));
+                                for (int k = 0; k < characterContainer.get(tempIndex).size(); k++) {
+                                    realmListContainer.get(tempIndex).addView(characterContainer.get(tempIndex).get(k));
+                                }
+                            }
+                        });
+                    }
+
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    loadingCircle.setVisibility(View.GONE);
+                }
 
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     error -> {
@@ -224,15 +291,17 @@ public class WoWActivity extends AppCompatActivity {
 
         if (characterList.getCharacterNamesList().size() == 0) {
             TextView textView = new TextView(getApplicationContext());
+            textView.setTextColor(Color.WHITE);
+            textView.setTextSize(17);
             textView.setText("This account has no active characters.");
+            textView.setGravity(Gravity.CENTER);
             linearLayout.addView(textView);
         }
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        loadingCircle.setVisibility(View.GONE);
     }
 
     private RelativeLayout createCharacterLayout(Drawable portrait) {
         final RelativeLayout relativeLayoutCharacters = new RelativeLayout(getApplicationContext());
+        relativeLayoutCharacters.setPadding(getDPMetric(30), 0, getDPMetric(30), 0);
         LinearLayout linearLayoutText = new LinearLayout(getApplicationContext());
         LinearLayout linearLayoutLevelClass = new LinearLayout(getApplicationContext());
         linearLayoutText.setOrientation(LinearLayout.VERTICAL);
@@ -273,9 +342,9 @@ public class WoWActivity extends AppCompatActivity {
         linearLayoutLevelClass.addView(textViewLevel);
         linearLayoutLevelClass.addView(textViewClass, layoutParamsClass);
 
-        layoutParamsInfo = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParamsInfo = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParamsInfo.addRule(RelativeLayout.RIGHT_OF, index + 1);
-        layoutParamsInfo.setMargins(30, 0, 0, 0);
+        layoutParamsInfo.setMargins(getDPMetric(60), 0, 0, 0);
 
         //Add layouts of texts to parent layout
         linearLayoutText.addView(textViewName);

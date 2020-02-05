@@ -126,7 +126,7 @@ public class WowCharacters {
         return factionList;
     }
 
-    public JSONArray sortInfo(JSONArray characterInfo) {
+    private JSONArray sortInfo(JSONArray characterInfo) {
         JSONArray sortedJsonArray = new JSONArray();
         List<JSONObject> jsonValues = new ArrayList<>();
         try {
@@ -155,6 +155,29 @@ public class WowCharacters {
                     return -1;
                 }
 
+                return 0;
+            }
+        });
+
+        Collections.sort(jsonValues, new Comparator<JSONObject>() {
+            private static final String REALM = "realm";
+
+            @Override
+            public int compare(JSONObject rm1, JSONObject rm2) {
+
+                String realm1 = "";
+                String realm2 = "";
+
+                try {
+                    realm1 = rm1.get(REALM).toString();
+                    realm2 = rm2.get(REALM).toString();
+                } catch (JSONException e) {
+                    Log.e("Error", e.toString());
+                }
+
+                if (realm1.compareTo(realm2) < 0) {
+                    return -1;
+                }
                 return 0;
             }
         });
