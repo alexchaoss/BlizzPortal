@@ -211,8 +211,8 @@ public class SC2Activity extends AppCompatActivity {
 
         avatar.setImageDrawable(avatarShadow);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        URLConstants.loading = true;
 
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -242,7 +242,7 @@ public class SC2Activity extends AppCompatActivity {
             RequestQueue requestQueue = new RequestQueue(cache, network);
             requestQueue.start();
 
-            JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + URLConstants.SC2_PROFILE.replace("id", UserInformation.getUserID())
+            JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") + URLConstants.SC2_PROFILE.replace("id", UserInformation.getUserID())
                     + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response0 -> {
 
@@ -265,7 +265,7 @@ public class SC2Activity extends AppCompatActivity {
 
                                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         loadingCircle.setVisibility(View.GONE);
-
+                                        URLConstants.loading = false;
                                     },
                                     error -> showNoConnectionMessage(SC2Activity.this, 0));
 
@@ -515,7 +515,7 @@ public class SC2Activity extends AppCompatActivity {
     }
 
     private String getProfileURL() {
-        String url = URLConstants.getBaseURLforAPI() + URLConstants.SC2_PROFILE_INFO;
+        String url = URLConstants.getBaseURLforAPI("") + URLConstants.SC2_PROFILE_INFO;
         url = url.replace("region_id", String.valueOf(accountInformation.getRegionId()));
         url = url.replace("realm_id", String.valueOf(accountInformation.getRealmId()));
         url = url.replace("profile_id", accountInformation.getProfileId());
@@ -542,12 +542,17 @@ public class SC2Activity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, GamesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        if (!URLConstants.loading) {
+            Intent intent = new Intent(this, GamesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
     public void showNoConnectionMessage(final Context context, final int responseCode) {
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        loadingCircle.setVisibility(View.GONE);
+        URLConstants.loading = false;
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 

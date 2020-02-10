@@ -125,6 +125,7 @@ public class D3Activity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        URLConstants.loading = true;
 
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -158,7 +159,7 @@ public class D3Activity extends AppCompatActivity {
         try {
             final Gson gson = new GsonBuilder().create();
 
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() + URLConstants.getD3URLBtagProfile(battleTag)
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") + URLConstants.getD3URLBtagProfile(battleTag)
                     + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response -> {
                         D3AccountInfo = response;
@@ -206,6 +207,7 @@ public class D3Activity extends AppCompatActivity {
 
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
+                        URLConstants.loading = false;
                     },
                     error -> {
                         if (error.networkResponse == null) {
@@ -524,10 +526,11 @@ public class D3Activity extends AppCompatActivity {
         }
     }
 
-    protected void onResume() {
+    /*protected void onResume() {
         super.onResume();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-    }
+        URLConstants.loading = false;
+    }*/
 
     private void callNextActivity(Class activity) {
         final Intent intent = new Intent(this, activity);
@@ -626,18 +629,23 @@ public class D3Activity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
-        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
-            super.onBackPressed();
-        }
-        if (fragment == null) {
-            Intent intent = new Intent(this, GamesActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        if (!URLConstants.loading) {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+            if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
+                super.onBackPressed();
+            }
+            if (fragment == null) {
+                Intent intent = new Intent(this, GamesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         }
     }
 
     public void showNoConnectionMessage(final Context context, final int responseCode) {
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        loadingCircle.setVisibility(View.GONE);
+        URLConstants.loading = false;
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
