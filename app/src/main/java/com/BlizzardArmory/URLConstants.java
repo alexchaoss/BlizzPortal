@@ -3,6 +3,9 @@ package com.BlizzardArmory;
 import com.BlizzardArmory.ui.MainActivity;
 
 public class URLConstants {
+    //Loading boolean
+    public static boolean loading = false;
+
     //Callback URL
     public final static String CALLBACK_URL = "https://alexchaoss.github.io/BnetAuthorize";
 
@@ -70,11 +73,15 @@ public class URLConstants {
         }
     }
 
-    public static String getBaseURLforAPI() {
-        if (MainActivity.selectedRegion.equals("cn")) {
-            return URLConstants.BASE_URL_CN_API;
+    public static String getBaseURLforAPI(String region) {
+        if (region == null || "".equalsIgnoreCase(region)) {
+            if (MainActivity.selectedRegion.equals("cn")) {
+                return URLConstants.BASE_URL_CN_API;
+            } else {
+                return URLConstants.BASE_URL_API.replace("zone", MainActivity.selectedRegion.toLowerCase());
+            }
         } else {
-            return URLConstants.BASE_URL_API.replace("zone", MainActivity.selectedRegion.toLowerCase());
+            return URLConstants.BASE_URL_API.replace("zone", region.toLowerCase());
         }
     }
 

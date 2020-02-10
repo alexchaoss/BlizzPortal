@@ -195,8 +195,8 @@ public class OWActivity extends AppCompatActivity {
 
         btag.setText(UserInformation.getBattleTag());
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        URLConstants.loading = true;
 
         prefs = PreferenceManager.getDefaultSharedPreferences(OWActivity.this);
         bnOAuth2Params = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
@@ -293,12 +293,14 @@ public class OWActivity extends AppCompatActivity {
 
                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
+                            URLConstants.loading = false;
 
                         } catch (Exception e) {
                             gamesWon.setText("This profile is private and the information unavailable");
                             gamesWon.setTextSize(18);
                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
+                            URLConstants.loading = false;
                             Log.e("Error", Arrays.toString(e.getStackTrace()));
                         }
 
@@ -1225,12 +1227,17 @@ public class OWActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, GamesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        if (!URLConstants.loading) {
+            Intent intent = new Intent(this, GamesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
     public void showNoConnectionMessage(final Context context, final int responseCode) {
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        loadingCircle.setVisibility(View.GONE);
+        URLConstants.loading = false;
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 

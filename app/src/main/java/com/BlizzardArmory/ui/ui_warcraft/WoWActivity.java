@@ -99,6 +99,7 @@ public class WoWActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.VISIBLE);
+        URLConstants.loading = true;
 
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -134,7 +135,7 @@ public class WoWActivity extends AppCompatActivity {
 
     private void downloadWoWCharacters() {
         try {
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
                     URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response -> {
                         wowCharacters = response;
@@ -274,6 +275,7 @@ public class WoWActivity extends AppCompatActivity {
 
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     loadingCircle.setVisibility(View.GONE);
+                    URLConstants.loading = false;
                 }
 
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
@@ -285,6 +287,7 @@ public class WoWActivity extends AppCompatActivity {
                         }
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
+                        URLConstants.loading = false;
                     });
             requestQueueImage.add(imageRequest);
         }
@@ -296,6 +299,9 @@ public class WoWActivity extends AppCompatActivity {
             textView.setText("This account has no active characters.");
             textView.setGravity(Gravity.CENTER);
             linearLayout.addView(textView);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            loadingCircle.setVisibility(View.GONE);
+            URLConstants.loading = false;
         }
     }
 
@@ -393,13 +399,15 @@ public class WoWActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
-        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
-            super.onBackPressed();
-        } else {
-            Intent intent = new Intent(this, GamesActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        if (!URLConstants.loading) {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+            if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, GamesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         }
     }
 
@@ -419,6 +427,7 @@ public class WoWActivity extends AppCompatActivity {
     }
 
     private void callErrorAlertDialog(int responseCode) {
+        URLConstants.loading = false;
         AlertDialog.Builder builder = new AlertDialog.Builder(WoWActivity.this, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 

@@ -360,6 +360,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         loadingCircle.setVisibility(View.VISIBLE);
         Objects.requireNonNull(D3CharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        URLConstants.loading = true;
 
         long startTime = System.nanoTime();
         final Gson gson = new GsonBuilder().create();
@@ -388,7 +389,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void setItemInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
-        JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+        JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
                 URLConstants.getD3HeroItemsURL(id, battletag) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {
                     itemsInformation = gson.fromJson(response.toString(), Items.class);
@@ -403,19 +404,15 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 }, error -> {
             if (error.networkResponse == null) {
                 callErrorAlertDialog(0);
-                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                loadingCircle.setVisibility(View.GONE);
             } else {
                 callErrorAlertDialog(error.networkResponse.statusCode);
-                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                loadingCircle.setVisibility(View.GONE);
             }
         });
         requestQueue.add(jsonRequest2);
     }
 
     private void setCharacterInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
                 URLConstants.getD3HeroURL(id, battletag) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {
                     Log.i("Response", response.toString());
@@ -441,12 +438,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 }, error -> {
             if (error.networkResponse == null) {
                 callErrorAlertDialog(0);
-                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                loadingCircle.setVisibility(View.GONE);
             } else {
                 callErrorAlertDialog(error.networkResponse.statusCode);
-                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                loadingCircle.setVisibility(View.GONE);
             }
         });
         requestQueue.add(jsonRequest);
@@ -595,12 +588,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         Log.e("Network error", error.getMessage());
                         if (error.networkResponse == null) {
                             callErrorAlertDialog(0);
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
                         } else {
                             callErrorAlertDialog(error.networkResponse.statusCode);
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
                         }
                     });
             requestQueue.add(imageRequest);
@@ -696,12 +685,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         Log.e("Network error", error.getMessage());
                         if (error.networkResponse == null) {
                             callErrorAlertDialog(0);
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
                         } else {
                             callErrorAlertDialog(error.networkResponse.statusCode);
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
                         }
                     });
             requestQueue.add(imageRequest);
@@ -746,7 +731,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         try {
             for (int i = 0; i < characterInformation.getLegendaryPowers().size(); i++) {
                 final int index = i;
-                JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI() +
+                JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
                         URLConstants.D3_ITEM.replace("item", characterInformation.getLegendaryPowers().get(i).getTooltipParams()) + URLConstants.ACCESS_TOKEN_QUERY
                         + bnOAuth2Helper.getAccessToken(), null,
                         response -> {
@@ -760,12 +745,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     Log.e("Network error", error.getMessage());
                     if (error.networkResponse == null) {
                         callErrorAlertDialog(0);
-                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        loadingCircle.setVisibility(View.GONE);
                     } else {
                         callErrorAlertDialog(error.networkResponse.statusCode);
-                        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        loadingCircle.setVisibility(View.GONE);
                     }
                 });
                 requestQueue.add(jsonRequest2);
@@ -1240,20 +1221,19 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 if (imageIndex == itemIconURL.size()) {
                     Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     loadingCircle.setVisibility(View.GONE);
+                    URLConstants.loading = false;
                 }
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     error -> {
                         Log.e("Network error", error.getMessage());
                             if (error.networkResponse != null && error.networkResponse.statusCode == 400) {
                                 callErrorAlertDialog(error.networkResponse.statusCode);
-                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                loadingCircle.setVisibility(View.GONE);
-
                             } else {
                                 imageIndex++;
                                 if (imageIndex == itemIconURL.size()) {
                                     Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     loadingCircle.setVisibility(View.GONE);
+                                    URLConstants.loading = false;
                                 }
                                 //Log.e("Error", error.toString());
                             }
@@ -1304,12 +1284,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         Log.e("Network error", error.getMessage());
                         if (error.networkResponse == null) {
                             callErrorAlertDialog(0);
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
                         } else {
                             callErrorAlertDialog(error.networkResponse.statusCode);
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
                         }
                     });
             requestQueue.add(imageRequest);
@@ -1439,6 +1415,9 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void callErrorAlertDialog(int responseCode) {
+        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        loadingCircle.setVisibility(View.GONE);
+        URLConstants.loading = false;
         if (dialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

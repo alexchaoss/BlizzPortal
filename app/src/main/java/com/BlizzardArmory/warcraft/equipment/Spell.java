@@ -15,6 +15,7 @@ public class Spell {
     @Expose
     private int id;
 
+
     public Key getKey() {
         return key;
     }

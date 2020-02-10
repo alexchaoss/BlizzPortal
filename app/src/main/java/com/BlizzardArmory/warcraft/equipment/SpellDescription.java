@@ -11,6 +11,9 @@ public class SpellDescription {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("display_color")
+    @Expose
+    private Color color;
 
     public Spell getSpell() {
         return spell;
@@ -26,6 +29,14 @@ public class SpellDescription {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
 }

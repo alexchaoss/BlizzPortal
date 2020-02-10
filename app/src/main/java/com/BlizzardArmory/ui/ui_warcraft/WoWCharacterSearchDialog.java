@@ -4,14 +4,21 @@ import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -19,6 +26,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.ui.MetricConversion;
 
 import java.util.Objects;
 
@@ -27,6 +35,7 @@ public class WoWCharacterSearchDialog {
     private static String characterClicked = "";
     private static String characterRealm = "";
     private static String url = "";
+    private static String selectedRegion = "";
 
     private static void callCharacterFragment(Activity activity, Fragment fragment) {
         if (fragment != null && fragment.isVisible()) {
@@ -36,6 +45,7 @@ public class WoWCharacterSearchDialog {
         bundle.putString("name", characterClicked);
         bundle.putString("realm", characterRealm);
         bundle.putString("url", url);
+        bundle.putString("region", selectedRegion);
         WoWCharacterFragment wowCharacterFragment = new WoWCharacterFragment();
         wowCharacterFragment.setArguments(bundle);
         FragmentManager fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
@@ -50,6 +60,59 @@ public class WoWCharacterSearchDialog {
         AlertDialog.Builder builderOW = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
+
+        Spinner.LayoutParams layoutParamsSpinner = new Spinner.LayoutParams(Spinner.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(40, activity));
+
+        String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
+        Spinner regions = new Spinner(activity);
+        regions.setBackgroundResource(R.drawable.wow_spinner);
+        regions.setGravity(Gravity.CENTER);
+        regions.setLayoutParams(layoutParamsSpinner);
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setBackgroundColor(Color.BLACK);
+                tv.setTextSize(18);
+                tv.setGravity(Gravity.CENTER);
+                if (position == 0) {
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.WHITE);
+                }
+                return view;
+            }
+        };
+
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        regions.setAdapter(arrayAdapter);
+
+        regions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedRegion = (String) parent.getItemAtPosition(position);
+                try {
+                    ((TextView) view).setTextColor(Color.WHITE);
+                    ((TextView) view).setTextSize(18);
+                    ((TextView) view).setGravity(Gravity.CENTER);
+                } catch (Exception e) {
+                    Log.e("Error", e.toString());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                ((TextView) parent.getChildAt(0)).setTextColor(0);
+            }
+        });
 
         TextView titleText = new TextView(activity);
 
@@ -108,16 +171,21 @@ public class WoWCharacterSearchDialog {
         linearLayout.addView(characterField);
         linearLayout.addView(messageText);
         linearLayout.addView(realmField);
+        linearLayout.addView(regions);
         linearLayout.addView(searchForCharacterButton);
 
         dialogWoW.addContentView(linearLayout, layoutParams);
 
         searchForCharacterButton.setOnClickListener(v -> {
-            if (characterField.getText().equals("") || realmField.getText().equals("")) {
-                Toast.makeText(activity.getApplicationContext(), "Please enter the character name and the realm", Toast.LENGTH_SHORT).show();
+            if (characterField.getText().toString().equals("")) {
+                Toast.makeText(activity.getApplicationContext(), "Please enter the character name", Toast.LENGTH_SHORT).show();
+            } else if (realmField.getText().toString().equals("")) {
+                Toast.makeText(activity.getApplicationContext(), "Please enter the realm", Toast.LENGTH_SHORT).show();
+            } else if (regions.getSelectedItem().toString().equalsIgnoreCase("Select Region")) {
+                Toast.makeText(activity.getApplicationContext(), "Please enter the region", Toast.LENGTH_SHORT).show();
             } else {
                 characterClicked = characterField.getText().toString().toLowerCase();
-                characterRealm = realmField.getText().toString().toLowerCase();
+                characterRealm = realmField.getText().toString().toLowerCase().replace(" ", "-");
                 dialogWoW.cancel();
                 callCharacterFragment(activity, fragment);
             }
