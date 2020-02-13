@@ -41,6 +41,7 @@ public class URLConstants {
     public final static String WOW_STATS_QUERY = "/profile/wow/character/realm/characterName/statistics?namespace=profile-zone&locale=en_US&access_token=TOKEN";
     public final static String WOW_TALENT_QUERY = "/profile/wow/character/realm/characterName/specializations?namespace=profile-zone&locale=en_US&access_token=TOKEN";
     public final static String WOW_CHARACTER_QUERY = "/profile/wow/character/realm/characterName?namespace=profile-zone&locale=en_US&access_token=TOKEN";
+    public final static String NEW_WOW_ACCOUNT = "/profile/user/wow?namespace=profile-zone&locale=en_US&access_token=TOKEN";
 
     //URLs for SC2
     public final static String SC2_PROFILE = "/sc2/player/id?";

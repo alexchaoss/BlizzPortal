@@ -31,10 +31,11 @@ import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.IOnBackPressed;
+import com.BlizzardArmory.ui.MainActivity;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
-import com.BlizzardArmory.warcraft.WowCharacters;
+import com.BlizzardArmory.warcraft.account.Characters;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -47,8 +48,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
-
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -58,26 +59,19 @@ public class WoWActivity extends AppCompatActivity {
     private String characterClicked;
     private String characterRealm;
     private String url;
-    private ImageView searchCharacterButton;
+    private Characters charaters;
 
     private BnOAuth2Params bnOAuth2Params;
 
-    public JSONObject wowCharacters;
     private LinearLayout linearLayout;
 
     private RelativeLayout loadingCircle;
 
     private BnOAuth2Helper bnOAuth2Helper;
 
-    private WowCharacters characterList;
-    private ArrayList<String> characterNames;
-    private ArrayList<String> realms;
     private ArrayList<RelativeLayout> linearLayoutCharacterList;
-    private ArrayList<String> levels;
-    private ArrayList<String> className;
     private RequestQueue requestQueue;
     private RequestQueue requestQueueImage;
-    private ArrayList<String> faction;
     private RelativeLayout.LayoutParams layoutParamsImage;
     private RelativeLayout.LayoutParams layoutParamsLogo;
     private RelativeLayout.LayoutParams layoutParamsInfo;
@@ -95,7 +89,7 @@ public class WoWActivity extends AppCompatActivity {
         TextView btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
         btag.setText(UserInformation.getBattleTag());
-        searchCharacterButton = findViewById(R.id.search);
+        ImageView searchCharacterButton = findViewById(R.id.search);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.VISIBLE);
@@ -136,34 +130,22 @@ public class WoWActivity extends AppCompatActivity {
     private void downloadWoWCharacters() {
         try {
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
-                    URLConstants.WOW_CHAR_URL + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
+                    URLConstants.WOW_CHAR_URL.replace("zone", MainActivity.selectedRegion) + "?" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response -> {
-                        wowCharacters = response;
-
-                        Log.i("json", wowCharacters.toString());
-                        linearLayout = findViewById(R.id.linear_wow_characters);
-
-                        characterList = new WowCharacters(wowCharacters);
-                        characterNames = characterList.getCharacterNamesList();
-                        realms = characterList.getRealmsList();
-                        levels = characterList.getLevelList();
-                        className = characterList.getClassList();
-                        faction = characterList.getFactionList();
-
+                        final int chunkSize = 2048;
+                        for (int i = 0; i < response.toString().length(); i += chunkSize) {
+                            Log.d("ACCOUNT", response.toString().substring(i, Math.min(response.toString().length(), i + chunkSize)));
+                        }
+                        final Gson gsonCharacters = new GsonBuilder().create();
+                        charaters = gsonCharacters.fromJson(response.toString(), Characters.class);
+                        charaters.sortInfo();
                         createCharacterListUI();
+                        linearLayout = findViewById(R.id.linear_wow_characters);
                     },
                     error -> {
-                        try {
-                            callErrorAlertDialog(error.networkResponse.statusCode);
-                        } catch (Exception e) {
-                            callErrorAlertDialog(0);
-                        }
 
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        loadingCircle.setVisibility(View.GONE);
                     });
             requestQueue.add(jsonRequest);
-
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
@@ -194,13 +176,13 @@ public class WoWActivity extends AppCompatActivity {
 
         LinearLayout.LayoutParams navbarParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        for (int i = 0; i < characterList.getRealmsList().size(); i++) {
+        for (int i = 0; i < charaters.getCharacters().size(); i++) {
             if (i == 0) {
                 LinearLayout linearLayout = new LinearLayout(this);
                 linearLayout.setLayoutParams(navbarParams);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 TextView textView = new TextView(this);
-                String tempString = "+ " + realms.get(i);
+                String tempString = "+ " + charaters.getCharacters().get(i).getRealm();
                 textView.setText(tempString);
                 textView.setTextSize(20);
                 textView.setPadding(40, 0, 0, 0);
@@ -209,12 +191,12 @@ public class WoWActivity extends AppCompatActivity {
                 textView.setBackgroundResource(R.drawable.wodnav);
                 linearLayout.addView(textView);
                 realmListContainer.add(linearLayout);
-            } else if (!characterList.getRealmsList().get(i).equalsIgnoreCase(realms.get(i - 1))) {
+            } else if (!charaters.getCharacters().get(i).getRealm().equalsIgnoreCase(charaters.getCharacters().get(i - 1).getRealm())) {
                 LinearLayout linearLayout = new LinearLayout(this);
                 linearLayout.setLayoutParams(navbarParams);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 TextView textView = new TextView(this);
-                String tempString = "+ " + realms.get(i);
+                String tempString = "+ " + charaters.getCharacters().get(i).getRealm();
                 textView.setText(tempString);
                 textView.setTextSize(20);
                 textView.setTextColor(Color.WHITE);
@@ -232,17 +214,20 @@ public class WoWActivity extends AppCompatActivity {
             characterContainer.add(new ArrayList<>());
         }
 
-        for (int i = 0; i < characterList.getUrlThumbnail().size(); i++) {
+        for (int i = 0; i < charaters.getCharacters().size(); i++) {
+            Log.i("THUMBNAIL", URLConstants.getRenderZoneURL() + charaters.getCharacters().get(i).getThumbnail() /*+
+                    URLConstants.NOT_FOUND_URL_AVATAR + charaters.getCharacters().get(i).getRaceNumber() + "-"
+                    + charaters.getCharacters().get(i).getGender() + ".jpg"*/);
 
-            ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + characterList.getUrlThumbnail().get(i) +
-                    URLConstants.NOT_FOUND_URL_AVATAR + characterList.getRaceList().get(i) + "-"
-                    + characterList.getGenderList().get(i) + ".jpg", bitmap -> {
+            ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + charaters.getCharacters().get(i).getThumbnail() +
+                    URLConstants.NOT_FOUND_URL_AVATAR + charaters.getCharacters().get(i).getRaceNumber() + "-"
+                    + charaters.getCharacters().get(i).getGender() + ".jpg", bitmap -> {
                 Drawable portrait = new BitmapDrawable(getResources(), bitmap);
 
                 final RelativeLayout relativeLayoutCharacters = createCharacterLayout(portrait);
 
                 for (int j = 0; j < realmListContainer.size(); j++) {
-                    if (realms.get(index).equalsIgnoreCase(((TextView) realmListContainer.get(j).getChildAt(0)).getText().toString().substring(2))) {
+                    if (charaters.getCharacters().get(index).getRealm().equalsIgnoreCase(((TextView) realmListContainer.get(j).getChildAt(0)).getText().toString().substring(2))) {
                         characterContainer.get(j).add(relativeLayoutCharacters);
                     }
                 }
@@ -252,7 +237,7 @@ public class WoWActivity extends AppCompatActivity {
                 setOnClickCharacter(relativeLayoutCharacters);
                 index++;
 
-                if (index == characterList.getUrlThumbnail().size() - 1) {
+                if (index == charaters.getCharacters().size() - 1) {
                     for (int j = 0; j < realmListContainer.size(); j++) {
                         linearLayout.addView(realmListContainer.get(j));
                         final int tempIndex = j;
@@ -292,7 +277,7 @@ public class WoWActivity extends AppCompatActivity {
             requestQueueImage.add(imageRequest);
         }
 
-        if (characterList.getCharacterNamesList().size() == 0) {
+        if (charaters.getCharacters().size() == 0) {
             TextView textView = new TextView(getApplicationContext());
             textView.setTextColor(Color.WHITE);
             textView.setTextSize(17);
@@ -315,26 +300,26 @@ public class WoWActivity extends AppCompatActivity {
 
         //Add character name to view
         TextView textViewName = new TextView(getApplicationContext());
-        textViewName.setText(characterNames.get(index));
+        textViewName.setText(charaters.getCharacters().get(index).getName());
         textViewName.setTextColor(Color.WHITE);
         textViewName.setTextSize(17);
 
         //Add level to view
         TextView textViewLevel = new TextView(getApplicationContext());
-        textViewLevel.setText(levels.get(index));
+        textViewLevel.setText(String.valueOf(charaters.getCharacters().get(index).getLevel()));
         textViewLevel.setTextColor(Color.WHITE);
         textViewLevel.setTextSize(15);
 
         //Add class to view
         TextView textViewClass = new TextView(getApplicationContext());
-        textViewClass.setText(className.get(index));
+        textViewClass.setText(charaters.getCharacters().get(index).getClass_());
         textViewClass.setTextColor(Color.WHITE);
         textViewClass.setTextSize(15);
 
 
         //Add realm to view
         TextView textViewRealm = new TextView(getApplicationContext());
-        textViewRealm.setText(realms.get(index));
+        textViewRealm.setText(charaters.getCharacters().get(index).getRealm());
         textViewRealm.setTextColor(Color.WHITE);
         textViewRealm.setTextSize(15);
 
@@ -360,9 +345,9 @@ public class WoWActivity extends AppCompatActivity {
 
         //Add faction logo
         ImageView factionImage = new ImageView(getApplicationContext());
-        if (faction.get(index).equals("Horde")) {
+        if (charaters.getCharacters().get(index).getFaction().equals("Horde")) {
             factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.horde_logo, getTheme()));
-        } else if (faction.get(index).equals("Alliance")) {
+        } else if (charaters.getCharacters().get(index).getFaction().equals("Alliance")) {
             factionImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.alliance_logo, getTheme()));
         }
         factionImage.setLayoutParams(layoutParamsLogo);
@@ -379,11 +364,11 @@ public class WoWActivity extends AppCompatActivity {
     private void setOnClickCharacter(RelativeLayout relativeLayoutCharacters) {
         relativeLayoutCharacters.setClickable(true);
         relativeLayoutCharacters.setOnClickListener(v -> {
-            for (int i = 0; i < characterNames.size(); i++) {
+            for (int i = 0; i < charaters.getCharacters().size(); i++) {
                 if (i == relativeLayoutCharacters.getId()) {
-                    characterClicked = characterNames.get(i);
-                    characterRealm = realms.get(i);
-                    url = characterList.getUrlThumbnail().get(i).replace("-avatar.jpg", "-main.jpg");
+                    characterClicked = charaters.getCharacters().get(i).getName();
+                    characterRealm = charaters.getCharacters().get(i).getRealm();
+                    url = charaters.getCharacters().get(i).getThumbnail().replace("-avatar.jpg", "-main.jpg");
                     Log.i("URL-thumbnail", url);
                 }
             }
