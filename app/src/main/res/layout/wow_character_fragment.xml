@@ -96,15 +96,15 @@
                         android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
-                    <ImageView
-                        android:id="@+id/back"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                    <ImageView
+                <ImageView
                         android:id="@+id/chest"
                         android:layout_width="56dp"
                         android:layout_height="56dp"

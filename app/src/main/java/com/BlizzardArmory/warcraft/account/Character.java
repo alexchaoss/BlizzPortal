@@ -6,45 +6,52 @@ import com.google.gson.annotations.SerializedName;
 
 public class Character {
 
+    @SerializedName("character")
+    @Expose
+    private Character_ character;
+    @SerializedName("protected_character")
+    @Expose
+    private ProtectedCharacter protectedCharacter;
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("id")
+    @Expose
+    private long id;
     @SerializedName("realm")
     @Expose
-    private String realm;
-    @SerializedName("battlegroup")
+    private Realm realm;
+    @SerializedName("playable_class")
     @Expose
-    private String battlegroup;
-    @SerializedName("class")
+    private PlayableClass playableClass;
+    @SerializedName("playable_race")
     @Expose
-    private int _class;
-    @SerializedName("race")
-    @Expose
-    private int race;
+    private PlayableRace playableRace;
     @SerializedName("gender")
     @Expose
-    private int gender;
+    private Gender gender;
+    @SerializedName("faction")
+    @Expose
+    private Faction faction;
     @SerializedName("level")
     @Expose
-    private int level;
-    @SerializedName("achievementPoints")
-    @Expose
-    private int achievementPoints;
-    @SerializedName("thumbnail")
-    @Expose
-    private String thumbnail;
-    @SerializedName("spec")
-    @Expose
-    private Spec spec;
-    @SerializedName("guild")
-    @Expose
-    private String guild;
-    @SerializedName("guildRealm")
-    @Expose
-    private String guildRealm;
-    @SerializedName("lastModified")
-    @Expose
-    private long lastModified;
+    private long level;
+
+    public Character_ getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character_ character) {
+        this.character = character;
+    }
+
+    public ProtectedCharacter getProtectedCharacter() {
+        return protectedCharacter;
+    }
+
+    public void setProtectedCharacter(ProtectedCharacter protectedCharacter) {
+        this.protectedCharacter = protectedCharacter;
+    }
 
     public String getName() {
         return name;
@@ -54,114 +61,60 @@ public class Character {
         this.name = name;
     }
 
-    public String getRealm() {
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Realm getRealm() {
         return realm;
     }
 
-    public void setRealm(String realm) {
+    public void setRealm(Realm realm) {
         this.realm = realm;
     }
 
-    public String getBattlegroup() {
-        return battlegroup;
+    public PlayableClass getPlayableClass() {
+        return playableClass;
     }
 
-    public void setBattlegroup(String battlegroup) {
-        this.battlegroup = battlegroup;
+    public void setPlayableClass(PlayableClass playableClass) {
+        this.playableClass = playableClass;
     }
 
-    public String getClass_() {
-        return ClassEnum.fromOrdinal(_class - 1).toString();
+    public PlayableRace getPlayableRace() {
+        return playableRace;
     }
 
-    public void setClass_(int _class) {
-        this._class = _class;
+    public void setPlayableRace(PlayableRace playableRace) {
+        this.playableRace = playableRace;
     }
 
-    public int getRaceNumber() {
-        return race;
-    }
-
-    public String getRace() {
-        return RaceEnum.fromOrdinal(race - 1);
-    }
-
-    public void setRace(int race) {
-        this.race = race;
-    }
-
-    public int getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    public int getLevel() {
+    public Faction getFaction() {
+        return faction;
+    }
+
+    public void setFaction(Faction faction) {
+        this.faction = faction;
+    }
+
+    public long getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(long level) {
         this.level = level;
     }
 
-    public int getAchievementPoints() {
-        return achievementPoints;
-    }
-
-    public void setAchievementPoints(int achievementPoints) {
-        this.achievementPoints = achievementPoints;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public Spec getSpec() {
-        return spec;
-    }
-
-    public void setSpec(Spec spec) {
-        this.spec = spec;
-    }
-
-    public String getGuild() {
-        return guild;
-    }
-
-    public void setGuild(String guild) {
-        this.guild = guild;
-    }
-
-    public String getGuildRealm() {
-        return guildRealm;
-    }
-
-    public void setGuildRealm(String guildRealm) {
-        this.guildRealm = guildRealm;
-    }
-
-    public long getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(long lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    public String getFaction() {
-        int tempNum = RaceEnum.fromOrdinalFaction(race - 1);
-        if (tempNum == 0) {
-            return "Alliance";
-        } else if (tempNum == 1) {
-            return "Horde";
-        } else {
-            return "Neutral";
-        }
-    }
 }
