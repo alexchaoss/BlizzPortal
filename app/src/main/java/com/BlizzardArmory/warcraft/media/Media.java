@@ -1,18 +1,26 @@
+
 package com.BlizzardArmory.warcraft.media;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 public class Media {
 
     @SerializedName("_links")
     @Expose
     private Links links;
-    @SerializedName("assets")
+    @SerializedName("character")
     @Expose
-    private List<Asset> assets = null;
+    private Character character;
+    @SerializedName("avatar_url")
+    @Expose
+    private String avatarUrl;
+    @SerializedName("bust_url")
+    @Expose
+    private String bustUrl;
+    @SerializedName("render_url")
+    @Expose
+    private String renderUrl;
 
     public Links getLinks() {
         return links;
@@ -22,12 +30,36 @@ public class Media {
         this.links = links;
     }
 
-    public List<Asset> getAssets() {
-        return assets;
+    public Character getCharacter() {
+        return character;
     }
 
-    public void setAssets(List<Asset> assets) {
-        this.assets = assets;
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getBustUrl() {
+        return bustUrl;
+    }
+
+    public void setBustUrl(String bustUrl) {
+        this.bustUrl = bustUrl;
+    }
+
+    public String getRenderUrl() {
+        return renderUrl;
+    }
+
+    public void setRenderUrl(String renderUrl) {
+        this.renderUrl = renderUrl;
     }
 
 }

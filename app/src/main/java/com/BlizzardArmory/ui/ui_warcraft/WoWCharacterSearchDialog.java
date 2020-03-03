@@ -1,9 +1,11 @@
 package com.BlizzardArmory.ui.ui_warcraft;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -26,24 +28,45 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.ui.MainActivity;
 import com.BlizzardArmory.ui.MetricConversion;
+import com.BlizzardArmory.warcraft.media.Media;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.dementh.lib.battlenet_oauth2.BnConstants;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
+import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class WoWCharacterSearchDialog {
 
     private static String characterClicked = "";
     private static String characterRealm = "";
+    private static Media media;
     private static String url = "";
     private static String selectedRegion = "";
+    private static RequestQueue requestQueue;
 
     private static void callCharacterFragment(Activity activity, Fragment fragment) {
         if (fragment != null && fragment.isVisible()) {
             fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
         }
+        String mediaString = new Gson().toJson(media);
         Bundle bundle = new Bundle();
-        bundle.putString("name", characterClicked);
+        bundle.putString("character", characterClicked);
         bundle.putString("realm", characterRealm);
+        bundle.putString("media", mediaString);
         bundle.putString("url", url);
         bundle.putString("region", selectedRegion);
         WoWCharacterFragment wowCharacterFragment = new WoWCharacterFragment();
@@ -186,8 +209,31 @@ public class WoWCharacterSearchDialog {
             } else {
                 characterClicked = characterField.getText().toString().toLowerCase();
                 characterRealm = realmField.getText().toString().toLowerCase().replace(" ", "-");
-                dialogWoW.cancel();
-                callCharacterFragment(activity, fragment);
+
+                Cache cache = new DiskBasedCache(Objects.requireNonNull(activity).getCacheDir(), 1024 * 1024 * 5); // 1MB cap
+                Network network = new BasicNetwork(new HurlStack());
+                requestQueue = new RequestQueue(cache, network);
+                requestQueue.start();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+                BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(activity).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+                assert bnOAuth2Params != null;
+                final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+                try {
+                    JsonObjectRequest jsonRequestMedia = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(MainActivity.selectedRegion.toLowerCase())
+                            + URLConstants.MEDIA_QUERY.replace("zone", MainActivity.selectedRegion.toLowerCase()).replace("realm", characterRealm.toLowerCase())
+                            .replace("charactername", characterClicked) + bnOAuth2Helper.getAccessToken(), null,
+                            response -> {
+                                Gson gsonMedia = new GsonBuilder().create();
+                                media = gsonMedia.fromJson(response.toString(), Media.class);
+                                dialogWoW.cancel();
+                                callCharacterFragment(activity, fragment);
+                            }, error -> {
+                        callCharacterFragment(activity, fragment);
+                    });
+                    requestQueue.add(jsonRequestMedia);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 

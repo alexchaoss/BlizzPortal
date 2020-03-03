@@ -1,3 +1,4 @@
+
 package com.BlizzardArmory.warcraft.media;
 
 import com.google.gson.annotations.Expose;

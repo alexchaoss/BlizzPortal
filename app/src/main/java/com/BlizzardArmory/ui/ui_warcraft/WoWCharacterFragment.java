@@ -43,7 +43,7 @@ import com.BlizzardArmory.warcraft.equipment.SelectedEssence;
 import com.BlizzardArmory.warcraft.equipment.SelectedPower;
 import com.BlizzardArmory.warcraft.equipment.Set;
 import com.BlizzardArmory.warcraft.equipment.Socket;
-import com.BlizzardArmory.warcraft.media.Media;
+import com.BlizzardArmory.warcraft.equipment.media.Media;
 import com.BlizzardArmory.warcraft.statistic.Statistic;
 import com.BlizzardArmory.warcraft.talents.Specialization;
 import com.BlizzardArmory.warcraft.talents.Talent;
@@ -83,6 +83,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     //Character information
     private CharacterSummary characterSummary;
+    private com.BlizzardArmory.warcraft.media.Media media;
     private Statistic statistic;
     private Talents talentsInfo;
     private Equipment equipment;
@@ -164,7 +165,8 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         Bundle bundle = getArguments();
         assert bundle != null;
         characterRealm = bundle.getString("realm");
-        characterClicked = bundle.getString("name");
+        characterClicked = bundle.getString("character");
+        media = new Gson().fromJson(bundle.getString("media"), com.BlizzardArmory.warcraft.media.Media.class);
         urlMain = bundle.getString("url");
         region = bundle.getString("region");
         URLConstants.loading = true;
@@ -211,14 +213,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         ninetyTalent = view.findViewById(R.id.ninetyTalent);
         hundredTalent = view.findViewById(R.id.hundredTalent);
 
-        closeButton.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                v.performClick();
-                Log.i("CLOSE", "CLICKED");
-                itemScrollView.setVisibility(View.GONE);
-            }
-            return false;
-        });
+        activateCloseButton();
 
         Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -294,7 +289,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
 
-        downloadBackground(bnOAuth2Helper);
+        downloadBackground();
 
         downloadAndSetCharacterInformation(bnOAuth2Helper);
 
@@ -307,6 +302,18 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         Log.i("time", String.valueOf(duration));
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private void activateCloseButton() {
+        closeButton.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                v.performClick();
+                Log.i("CLOSE", "CLICKED");
+                itemScrollView.setVisibility(View.GONE);
+            }
+            return false;
+        });
+    }
+
     private void downloadTalents(final BnOAuth2Helper bnOAuth2Helper) {
         final Gson gson = new GsonBuilder().create();
         try {
@@ -314,6 +321,10 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             talentsURL = talentsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(region) + talentsURL, null,
                     response -> {
+                        final int chunkSize = 2048;
+                        for (int i = 0; i < response.toString().length(); i += chunkSize) {
+                            Log.d("talent", response.toString().substring(i, Math.min(response.toString().length(), i + chunkSize)));
+                        }
                         talentsInfo = gson.fromJson(response.toString(), Talents.class);
 
                         for (final Specialization specialization : talentsInfo.getSpecializations()) {
@@ -326,11 +337,8 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                             }
                                         },
                                         e -> {
-                                            if (e.networkResponse == null) {
-                                                callErrorAlertDialog(0);
-                                            } else {
-                                                callErrorAlertDialog(e.networkResponse.statusCode);
-                                            }
+                                            noTalent.setVisibility(View.VISIBLE);
+                                            noTalent.setText("Talent information outdated");
                                         });
                                 requestQueue.add(jsonRequest1);
                             } catch (Exception e) {
@@ -339,11 +347,8 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         }
                     },
                     e -> {
-                        if (e.networkResponse == null) {
-                            callErrorAlertDialog(0);
-                        } else {
-                            callErrorAlertDialog(e.networkResponse.statusCode);
-                        }
+                        noTalent.setVisibility(View.VISIBLE);
+                        noTalent.setText("Talent information outdated");
                     });
 
             requestQueue.add(jsonRequest);
@@ -543,51 +548,18 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             }
         }
 
+
     }
 
-    private void downloadBackground(BnOAuth2Helper bnOAuth2Helper) {
-        if (urlMain.equalsIgnoreCase("")) {
-            try {
-                String URL = URLConstants.getBaseURLforAPI(region) + "/profile/wow/character/" + characterRealm + "/" + characterClicked + "/" + URLConstants.MAIN_BACKGROUND.replace("profile-us", "profile-" + region.toLowerCase()) + bnOAuth2Helper.getAccessToken();
-                if ("".equalsIgnoreCase(region)) {
-                    URL = URLConstants.getBaseURLforAPI(region) + "/profile/wow/character/" + characterRealm + "/" + characterClicked + "/" + URLConstants.MAIN_BACKGROUND + bnOAuth2Helper.getAccessToken();
-                }
-                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
-                        response -> {
-                            try {
-                                urlMain = response.getString("render_url");
-
-                                ImageRequest imageRequest = new ImageRequest(urlMain, bitmap -> {
-                                    backgroundMain = new BitmapDrawable(getResources(), bitmap);
-                                    background.setImageDrawable(backgroundMain);
-                                }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                        e -> {
-                                            Log.e("BAD URL BACKGROUND", urlMain);
-                                        });
-                                requestQueue.add(imageRequest);
-                            } catch (Exception e) {
-
-                            }
-                        }, e -> {
-                    if (e.networkResponse == null) {
-                        callErrorAlertDialog(0);
-                    } else {
-                        callErrorAlertDialog(e.networkResponse.statusCode);
-                    }
-                });
-                requestQueue.add(jsonRequest);
-            } catch (Exception e) {
-                Log.e("BAD URL BACKGROUND", URLConstants.getBaseURLforAPI(region) + "/profile/wow/character/" + characterRealm + "/" + characterClicked + "/" + URLConstants.MAIN_BACKGROUND);
-            }
-        } else {
-            ImageRequest imageRequest = new ImageRequest(URLConstants.getRenderZoneURL() + urlMain, bitmap -> {
+    private void downloadBackground() {
+        if (media != null) {
+            ImageRequest imageRequest = new ImageRequest(media.getRenderUrl(), bitmap -> {
                 backgroundMain = new BitmapDrawable(getResources(), bitmap);
                 background.setImageDrawable(backgroundMain);
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     e -> {
                         Log.e("BAD URL BACKGROUND", urlMain);
                     });
-
             requestQueue.add(imageRequest);
         }
     }
@@ -621,11 +593,13 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         requestQueue.add(imageRequest);
                     },
                     e -> {
-                        if (e.networkResponse == null) {
-                            callErrorAlertDialog(0);
-                        } else {
-                            callErrorAlertDialog(e.networkResponse.statusCode);
+                        if (index == equipment.getEquippedItems().size() - 1) {
+                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                            URLConstants.loading = false;
                         }
+                        Drawable errorIcon = getResources().getDrawable(R.drawable.error_icon, Objects.requireNonNull(getContext()).getTheme());
+                        setIcons(itemSlot, equipment, errorIcon);
                     });
 
             requestQueue.add(jsonRequest);
@@ -660,7 +634,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         } else {
             newURL = newURL.replace("zone", region.toLowerCase());
         }
-        newURL = newURL.replace("realm", characterRealm.toLowerCase());
+        newURL = newURL.replace("realm", characterRealm);
         newURL = newURL.replace("characterName", characterClicked.toLowerCase());
         return newURL;
     }
@@ -813,38 +787,28 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             }
         }
 
-        try {
+        if (talentsInfo.getSpecializations().size() == 4) {
             specs.addTab(specs.newTab());
             specs.getTabAt(3).setText(talentsInfo.getSpecializations().get(3).getSpecialization().getName());
-        } catch (Exception e) {
-            Log.e("Talents", "No fourth spec");
-            specs.removeTab(specs.getTabAt(3));
         }
 
         for (int i = 0; i < talentsInfo.getSpecializations().size(); i++) {
             TabLayout.Tab tab = specs.getTabAt(i);
-            try {
-                assert tab != null;
-                tab.setText(talentsInfo.getSpecializations().get(i).getSpecialization().getName());
-            } catch (Exception e) {
-                for (int j = 0; j < e.getStackTrace().length; j++) {
-                    Log.e("Error", e.getStackTrace()[j].toString() + "\n");
-                }
-                tab.setText("Unavailable");
-            }
+            Objects.requireNonNull(tab).setText(talentsInfo.getSpecializations().get(i).getSpecialization().getName());
+            Log.i("spec", talentsInfo.getSpecializations().get(i).getSpecialization().getName());
         }
 
-        if (talentsInfo.getSpecializations().size() < 3) {
+        if (talentsInfo.getSpecializations().size() == 2) {
+            TabLayout.Tab tab3 = specs.getTabAt(2);
+            assert tab3 != null;
+            tab3.setText("Unavailable");
+        } else if (talentsInfo.getSpecializations().size() == 1) {
             TabLayout.Tab tab2 = specs.getTabAt(1);
             assert tab2 != null;
             tab2.setText("Unavailable");
             TabLayout.Tab tab3 = specs.getTabAt(2);
             assert tab3 != null;
             tab3.setText("Unavailable");
-        } else if (talentsInfo.getSpecializations().size() < 2) {
-            TabLayout.Tab tab2 = specs.getTabAt(1);
-            assert tab2 != null;
-            tab2.setText("Unavailable");
         }
 
 
@@ -865,9 +829,9 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                     noTalent.setVisibility(View.INVISIBLE);
                     talentsTierContainer.get(i).setGravity(Gravity.CENTER);
                     talentsTierContainer.get(i).setText(talentsTier.get(i));
-                    try {
+                    if (talents.get(i).getTalent().getName() != null) {
                         talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
-                    } catch (Exception e) {
+                    } else {
                         removeTalents();
                         noTalent.setVisibility(View.VISIBLE);
                     }
@@ -960,7 +924,10 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void getTalentsForSpecificSpec(int position) {
-        try {
+        if (talentsInfo.getSpecializations().get(position).getTalents() == null) {
+            removeTalents();
+            noTalent.setVisibility(View.VISIBLE);
+        } else {
             talents.clear();
             talents.addAll(talentsInfo.getSpecializations().get(position).getTalents());
             noTalent.setVisibility(View.INVISIBLE);
@@ -976,14 +943,13 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                 talentsTierContainer.get(i).setText(talentsTier.get(i));
                 talentsContainer.get(i).setText(talents.get(i).getTalent().getName());
             }
-        } catch (NullPointerException e) {
-            removeTalents();
-            noTalent.setVisibility(View.VISIBLE);
+        }
+    }
 
-            Log.e("Error", e.toString() + "\n");
-            for (int i = 0; i < e.getStackTrace().length; i++) {
-                Log.e("Error", e.getStackTrace()[i].toString() + "\n");
-            }
+    private void removeTalents() {
+        for (int i = 0; i < talentsContainer.size(); i++) {
+            talentsTierContainer.get(i).setText("");
+            talentsContainer.get(i).setText("");
         }
     }
 
@@ -1353,13 +1319,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         haste.setText(String.format(Locale.ENGLISH, "Haste: %.2f%%", (double) statistic.getMeleeHaste().getValue()));
         mastery.setText(String.format(Locale.ENGLISH, "Mastery: %.2f%%", (double) statistic.getMastery().getValue()));
         versatility.setText(String.format(Locale.ENGLISH, "Versatility: %.2f%%", (double) statistic.getVersatilityDamageDoneBonus()));
-    }
-
-    private void removeTalents() {
-        for (int i = 0; i < talentsContainer.size(); i++) {
-            talentsTierContainer.get(i).setText("");
-            talentsContainer.get(i).setText("");
-        }
     }
 
     @Override
