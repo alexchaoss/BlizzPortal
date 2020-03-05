@@ -133,4 +133,9 @@
     <string name="information">Information</string>
     <string name="want_to_donate">Want to donate?</string>
     <string name="paypal">Paypal</string>
+    <string name="achievements">Achievements</string>
+    <string name="character">Character</string>
+    <string name="progress">Progress</string>
+    <string name="pvp">PvP</string>
+    <string name="achievs">Achievs</string>
 </resources>
