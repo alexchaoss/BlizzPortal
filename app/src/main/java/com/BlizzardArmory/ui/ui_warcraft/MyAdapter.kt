@@ -17,13 +17,19 @@ class MyAdapter(private val myContext: Context, fm: FragmentManager, internal va
                 return wowCharacterFragment
             }
             1 -> {
-                return AchievementsFragment()
+                val achievementsFragment = AchievementsFragment()
+                achievementsFragment.arguments = bundle
+                return achievementsFragment
             }
             2 -> {
-                return ProgressFragment()
+                val progressFragment = ProgressFragment()
+                progressFragment.arguments = bundle
+                return progressFragment
             }
             3 -> {
-                return PvPFragment()
+                val pvPFragment = PvPFragment()
+                pvPFragment.arguments = bundle
+                return pvPFragment
             }
             else -> return WoWCharacterFragment()
         }

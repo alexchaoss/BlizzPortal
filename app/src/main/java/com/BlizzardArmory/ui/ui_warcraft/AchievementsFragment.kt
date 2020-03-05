@@ -10,23 +10,23 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.IOnBackPressed
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val CHARACTER = "character"
+private const val REALM = "realm"
+private const val MEDIA = "media"
 
 
 class AchievementsFragment : Fragment(), IOnBackPressed {
 
-    private var param1: String? = null
-    private var param2: String? = null
-
+    private var character: String? = null
+    private var realm: String? = null
+    private var media: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            character = it.getString(CHARACTER)
+            realm = it.getString(REALM)
+            media = it.getString(MEDIA)
         }
     }
 
@@ -37,11 +37,12 @@ class AchievementsFragment : Fragment(), IOnBackPressed {
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                AchievementsFragment().apply {
+        fun newInstance(character: String, realm: String, media: String) =
+                WoWNavFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+                        putString(CHARACTER, character)
+                        putString(REALM, realm)
+                        putString(MEDIA, media)
                     }
                 }
     }

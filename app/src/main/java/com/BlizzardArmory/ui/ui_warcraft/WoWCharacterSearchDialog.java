@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -54,7 +53,6 @@ public class WoWCharacterSearchDialog {
     private static String characterClicked = "";
     private static String characterRealm = "";
     private static Media media;
-    private static String url = "";
     private static String selectedRegion = "";
     private static RequestQueue requestQueue;
 
@@ -63,18 +61,11 @@ public class WoWCharacterSearchDialog {
             fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
         }
         String mediaString = new Gson().toJson(media);
-        Bundle bundle = new Bundle();
-        bundle.putString("character", characterClicked);
-        bundle.putString("realm", characterRealm);
-        bundle.putString("media", mediaString);
-        bundle.putString("url", url);
-        bundle.putString("region", selectedRegion);
-        WoWCharacterFragment wowCharacterFragment = new WoWCharacterFragment();
-        wowCharacterFragment.setArguments(bundle);
+        WoWNavFragment woWNavFragment = WoWNavFragment.Companion.newInstance(characterClicked, characterRealm, mediaString, selectedRegion);
         FragmentManager fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit);
-        fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
+        fragmentTransaction.replace(R.id.fragment, woWNavFragment);
         fragmentTransaction.addToBackStack(null).commit();
         ((FragmentActivity) activity).getSupportFragmentManager().executePendingTransactions();
     }

@@ -36,7 +36,7 @@ public class URLConstants {
     public final static String D3_ICON_SKILLS = "http://media.blizzard.com/d3/icons/skills/64/url.png";
 
     //URLs for WoW characters and queries
-    public final static String WOW_CHAR_URL = "/wow/user/characters";
+    public final static String WOW_ENCOUNTERS = "/profile/wow/character/realm/characterName/encounters/raids?namespace=profile-zone&locale=en_US&access_token=";
     public final static String WOW_ITEM_QUERY = "/profile/wow/character/realm/characterName/equipment?namespace=profile-zone&locale=en_US&access_token=TOKEN";
     public final static String WOW_STATS_QUERY = "/profile/wow/character/realm/characterName/statistics?namespace=profile-zone&locale=en_US&access_token=TOKEN";
     public final static String WOW_TALENT_QUERY = "/profile/wow/character/realm/characterName/specializations?namespace=profile-zone&locale=en_US&access_token=TOKEN";
