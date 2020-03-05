@@ -171,15 +171,15 @@ public class WoWActivity extends AppCompatActivity {
     }
 
     private void sortCharacterList() {
-        Collections.sort(characterList, (a, b) -> {
-            if (a.getLevel() > b.getLevel()) {
+        Collections.sort(characterList, (rm1, rm2) -> {
+            if (rm1.getRealm().getSlug().compareTo(rm2.getRealm().getSlug()) < 0) {
                 return -1;
             }
             return 0;
         });
 
-        Collections.sort(characterList, (rm1, rm2) -> {
-            if (rm1.getRealm().getName().compareTo(rm2.getRealm().getName()) < 0) {
+        Collections.sort(characterList, (a, b) -> {
+            if (a.getLevel() > b.getLevel() && a.getRealm().getSlug().compareTo(b.getRealm().getSlug()) == 0) {
                 return -1;
             }
             return 0;
@@ -453,17 +453,12 @@ public class WoWActivity extends AppCompatActivity {
     }
 
     private void displayFragment() {
-        Bundle bundle = new Bundle();
         String media = new Gson().toJson(characterClickedMedia);
-        bundle.putString("character", characterClicked);
-        bundle.putString("realm", realmClicked);
-        bundle.putString("media", media);
-        WoWCharacterFragment wowCharacterFragment = new WoWCharacterFragment();
-        wowCharacterFragment.setArguments(bundle);
+        WoWNavFragment woWNavFragment = WoWNavFragment.Companion.newInstance(characterClicked, realmClicked, media);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit);
-        fragmentTransaction.replace(R.id.fragment, wowCharacterFragment);
+        fragmentTransaction.replace(R.id.fragment, woWNavFragment);
         fragmentTransaction.addToBackStack(null).commit();
         getSupportFragmentManager().executePendingTransactions();
     }

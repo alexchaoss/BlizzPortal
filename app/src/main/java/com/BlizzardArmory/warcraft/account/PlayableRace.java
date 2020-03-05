@@ -8,7 +8,7 @@ public class PlayableRace {
 
     @SerializedName("key")
     @Expose
-    private Key__ key;
+    private Key key;
     @SerializedName("name")
     @Expose
     private String name;
@@ -16,11 +16,11 @@ public class PlayableRace {
     @Expose
     private long id;
 
-    public Key__ getKey() {
+    public Key getKey() {
         return key;
     }
 
-    public void setKey(Key__ key) {
+    public void setKey(Key key) {
         this.key = key;
     }
 
