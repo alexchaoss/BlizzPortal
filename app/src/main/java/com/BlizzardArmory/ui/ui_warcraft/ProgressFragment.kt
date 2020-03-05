@@ -75,7 +75,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
                     val encounters = Gson().fromJson(response.toString(), EncountersInformation::class.java)
                     progress_recycler_view.apply {
                         layoutManager = LinearLayoutManager(activity)
-                        // adapter = ListAdapter(encounters.expansions)
+                        adapter = EncounterAdapter(encounters.expansions[6].instances, "100")
                     }
                 }, Response.ErrorListener {
             Log.e("ERROR", it.stackTrace.toString())
