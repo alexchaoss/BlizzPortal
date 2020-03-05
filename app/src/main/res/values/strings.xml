@@ -138,4 +138,9 @@
     <string name="progress">Progress</string>
     <string name="pvp">PvP</string>
     <string name="achievs">Achievs</string>
+    <string name="banner">banner</string>
+    <string name="lfr">LFR</string>
+    <string name="normal">NORMAL</string>
+    <string name="heroic">HEROIC</string>
+    <string name="mythic">MYTHIC</string>
 </resources>

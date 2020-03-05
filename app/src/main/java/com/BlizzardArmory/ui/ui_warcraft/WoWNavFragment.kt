@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.IOnBackPressed
-import com.BlizzardArmory.ui.MainActivity
 import com.google.android.material.tabs.TabLayout
 
 
 private const val CHARACTER = "character"
 private const val REALM = "realm"
 private const val MEDIA = "media"
+private const val REGION = "region"
 
 
 class WoWNavFragment : Fragment(), IOnBackPressed {
@@ -23,6 +23,7 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
     private var character: String? = null
     private var realm: String? = null
     private var media: String? = null
+    private var region: String? = null
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
@@ -33,19 +34,20 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
             character = it.getString(CHARACTER)
             realm = it.getString(REALM)
             media = it.getString(MEDIA)
+            region = it.getString(REGION)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.wow_navbar_fragment, container, false)
         val activity = activity as Context
-        tabLayout = view.findViewById<TabLayout>(R.id.nav_bar)
-        viewPager = view.findViewById<ViewPager>(R.id.wow_pager)
+        tabLayout = view.findViewById(R.id.nav_bar)
+        viewPager = view.findViewById(R.id.wow_pager)
         val bundle = Bundle()
         bundle.putString("character", character)
         bundle.putString("realm", realm)
         bundle.putString("media", media)
-        bundle.putString("region", MainActivity.selectedRegion)
+        bundle.putString("region", region)
         val adapter = MyAdapter(view.context, childFragmentManager, tabLayout!!.tabCount, bundle)
         viewPager!!.adapter = adapter
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
@@ -68,12 +70,13 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
 
     companion object {
         @JvmStatic
-        fun newInstance(character: String, realm: String, media: String) =
+        fun newInstance(character: String, realm: String, media: String, region: String) =
                 WoWNavFragment().apply {
                     arguments = Bundle().apply {
                         putString(CHARACTER, character)
                         putString(REALM, realm)
                         putString(MEDIA, media)
+                        putString(REGION, region)
                     }
                 }
     }

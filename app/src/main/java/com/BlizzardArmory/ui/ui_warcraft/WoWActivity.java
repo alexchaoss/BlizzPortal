@@ -454,7 +454,7 @@ public class WoWActivity extends AppCompatActivity {
 
     private void displayFragment() {
         String media = new Gson().toJson(characterClickedMedia);
-        WoWNavFragment woWNavFragment = WoWNavFragment.Companion.newInstance(characterClicked, realmClicked, media);
+        WoWNavFragment woWNavFragment = WoWNavFragment.Companion.newInstance(characterClicked, realmClicked, media, MainActivity.selectedRegion);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit);
