@@ -6,6 +6,6 @@ data class Character(
 
         @SerializedName("key") val key: Key,
         @SerializedName("name") val name: String,
-        @SerializedName("id") val id: Int,
+        @SerializedName("id") val id: Long,
         @SerializedName("realm") val realm: Realm
 )

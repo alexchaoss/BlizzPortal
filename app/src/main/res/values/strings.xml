@@ -143,4 +143,6 @@
     <string name="normal">NORMAL</string>
     <string name="heroic">HEROIC</string>
     <string name="mythic">MYTHIC</string>
+    <string name="raid_name">raid name</string>
+    <string name="level">level</string>
 </resources>

@@ -605,7 +605,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             requestQueue.add(jsonRequest);
         } catch (Exception e) {
             try {
-                Log.e("Error Image URL Download", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
+                Log.e("Error Image URL", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
                         + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
             } catch (Exception f) {
                 Log.e("Error", f.toString());
