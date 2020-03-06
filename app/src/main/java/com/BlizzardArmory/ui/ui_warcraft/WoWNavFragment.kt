@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.ui_warcraft.progress.MyAdapter
 import com.google.android.material.tabs.TabLayout
 
 

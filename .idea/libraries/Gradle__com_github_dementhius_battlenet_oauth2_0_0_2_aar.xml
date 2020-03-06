@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.dementhius:battlenet-oauth2:0.0.2@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9ae51b9b978e93df84727c4cf726e670/jetified-battlenet-oauth2-0.0.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9ae51b9b978e93df84727c4cf726e670/jetified-battlenet-oauth2-0.0.2/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.dementhius/battlenet-oauth2/0.0.2/a18505ce8ef1274cf27dedcca2473cdc07aa5bd9/battlenet-oauth2-0.0.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.dementhius/battlenet-oauth2/0.0.2/ab8421c328e568df920875597a8ecb669893bac3/battlenet-oauth2-0.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
