@@ -1,7 +1,7 @@
 package com.BlizzardArmory.ui.ui_warcraft.progress
 
 import android.content.Context
-import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.warcraft.encounters.Expansion
@@ -133,63 +132,65 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
                     progressCountLFR?.text = count
                     progressBarLFR?.max = mode.progress.total_count
                     progressBarLFR?.progress = maxCount
-                    setProgressColor(mode, progressBarLFR)
+                    setProgressColor(mode, progressBarLFR, maxCount)
                 }
                 "Normal" -> {
                     progressCountNormal?.text = count
                     progressBarNormal?.max = mode.progress.total_count
                     progressBarNormal?.progress = maxCount
-                    setProgressColor(mode, progressBarNormal)
+                    setProgressColor(mode, progressBarNormal, maxCount)
                 }
                 "10 Player" -> {
                     progressCountNormal?.text = count
                     progressBarNormal?.max = mode.progress.total_count
                     progressBarNormal?.progress = maxCount
-                    setProgressColor(mode, progressBarNormal)
+                    setProgressColor(mode, progressBarNormal, maxCount)
 
                 }
                 "25 Player" -> {
                     progressCountNormal?.text = count
                     progressBarNormal?.max = mode.progress.total_count
                     progressBarNormal?.progress = maxCount
-                    setProgressColor(mode, progressBarNormal)
+                    setProgressColor(mode, progressBarNormal, maxCount)
 
                 }
                 "10 Player (Heroic)" -> {
                     progressCountHeroic?.text = count
                     progressBarHeroic?.max = mode.progress.total_count
                     progressBarHeroic?.progress = maxCount
-                    setProgressColor(mode, progressBarHeroic)
+                    setProgressColor(mode, progressBarHeroic, maxCount)
                 }
                 "25 Player (Heroic)" -> {
                     progressCountHeroic?.text = count
                     progressBarHeroic?.max = mode.progress.total_count
                     progressBarHeroic?.progress = maxCount
-                    setProgressColor(mode, progressBarHeroic)
+                    setProgressColor(mode, progressBarHeroic, maxCount)
                 }
                 "Heroic" -> {
                     progressCountHeroic?.text = count
                     progressBarHeroic?.max = mode.progress.total_count
                     progressBarHeroic?.progress = maxCount
-                    setProgressColor(mode, progressBarHeroic)
+                    setProgressColor(mode, progressBarHeroic, maxCount)
                 }
                 "Mythic" -> {
                     progressCountMythic?.text = count
                     progressBarMythic?.max = mode.progress.total_count
                     progressBarMythic?.progress = maxCount
-                    setProgressColor(mode, progressBarMythic)
+                    setProgressColor(mode, progressBarMythic, maxCount)
                 }
             }
         }
     }
 
-    private fun setProgressColor(mode: Modes, progressBar: ProgressBar?) {
-        if (mode.progress.total_count == 1 && mode.progress.completed_count > 1) {
-            val drawable: Drawable? = ResourcesCompat.getDrawable(context.resources, R.drawable.progress_bar_raid_1, context.theme)
-            progressBar?.progressDrawable = drawable
-        } else if (mode.progress.total_count > 1 && mode.progress.total_count < mode.progress.completed_count) {
-            val drawable: Drawable? = ResourcesCompat.getDrawable(context.resources, R.drawable.progress_bar_raid_half, context.theme)
-            progressBar?.progressDrawable = drawable
+    private fun setProgressColor(mode: Modes, progressBar: ProgressBar?, maxCount: Int) {
+        val percent = (maxCount * 100) / mode.progress.total_count
+        Log.i("PROGRESS", "percent: " + percent + " count: " + maxCount + " total: " + mode.progress.total_count)
+        if (percent < 40) {
+            progressBar?.progressDrawable = context.getDrawable(R.drawable.progress_bar_raid_1)
+        } else if (percent < 100) {
+            progressBar?.progressDrawable = context.getDrawable(R.drawable.progress_bar_raid_half)
+        } else if (percent == 100) {
+            progressBar?.progressDrawable = context.getDrawable(R.drawable.progress_bar_raid_full)
         }
     }
 
@@ -212,7 +213,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             "Heart of Fear" -> return R.drawable.heart_of_fear_small
             "Terrace of Endless Spring" -> return R.drawable.terrace_of_endless_spring_small
             "Throne of Thunder" -> return R.drawable.throne_of_thunder_small
-            "Siege of Ogrimmar" -> return R.drawable.siege_of_orgrimmar_small
+            "Siege of Orgrimmar" -> return R.drawable.siege_of_orgrimmar_small
             "Baradin Hold" -> return R.drawable.baradin_hold_small
             "Blackwing Descent" -> return R.drawable.blackwing_descent_small
             "The Bastion of Twilight" -> return R.drawable.the_bastion_of_twilight_small

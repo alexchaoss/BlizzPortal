@@ -4,11 +4,12 @@ package com.BlizzardArmory.ui.ui_warcraft.progress
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -81,10 +82,11 @@ class ProgressFragment : Fragment(), IOnBackPressed {
 
                     for (expansion in encounters.expansions.reversed()) run {
                         val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        val button = Button(context)
-                        button.setBackgroundResource(R.drawable.wodnav)
+                        val button = TextView(context)
+                        button.setBackgroundResource(R.drawable.progress_collapse_header)
                         button.setTextColor(android.graphics.Color.WHITE)
                         button.text = "+ " + expansion.expansion.name
+                        button.textSize = 18F
                         button.layoutParams = paramsButton
                         progress_container.addView(button)
 
@@ -114,7 +116,13 @@ class ProgressFragment : Fragment(), IOnBackPressed {
                         }
                     }
                 }, Response.ErrorListener {
-            Log.e("ERROR", it.stackTrace.toString())
+            val outdatedInfo = TextView(context)
+            outdatedInfo.text = "Outdated information\nPlease login in game to refresh data"
+            outdatedInfo.setTextColor(android.graphics.Color.WHITE)
+            outdatedInfo.gravity = Gravity.CENTER
+            outdatedInfo.textSize = 20F
+            outdatedInfo.setPadding(0, 50, 0, 0)
+            progress_container.addView(outdatedInfo)
         })
         requestQueue.add(jsonObjectRequest)
     }
@@ -137,7 +145,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
             "Burning Crusade" -> return "Level 70"
             "Wrath of the Lich King" -> return "Level 80"
             "Cataclysm" -> return "Level 85"
-            "Mist of Pandaria" -> return "Level 90"
+            "Mists of Pandaria" -> return "Level 90"
             "Warlords of Draenor" -> return "Level 100"
             "Legion" -> return "Level 110"
             "Battle for Azeroth" -> return "Level 120"
