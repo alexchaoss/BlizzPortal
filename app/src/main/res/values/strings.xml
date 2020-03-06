@@ -145,4 +145,5 @@
     <string name="mythic">MYTHIC</string>
     <string name="raid_name">raid name</string>
     <string name="level">level</string>
+    <string name="background">background</string>
 </resources>

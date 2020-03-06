@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_warcraft
+package com.BlizzardArmory.ui.ui_warcraft.progress
 
 
 import android.os.Bundle
@@ -7,12 +7,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation
+import com.BlizzardArmory.warcraft.encounters.Expansions
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -73,9 +78,40 @@ class ProgressFragment : Fragment(), IOnBackPressed {
                 Response.Listener { response ->
                     Log.i("TEST", response.toString())
                     val encounters = Gson().fromJson(response.toString(), EncountersInformation::class.java)
-                    progress_recycler_view.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = EncounterAdapter(encounters.expansions[6].instances, "100")
+
+                    for (expansion in encounters.expansions.reversed()) run {
+                        val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                        val button = Button(context)
+                        button.setBackgroundResource(R.drawable.wodnav)
+                        button.setTextColor(android.graphics.Color.WHITE)
+                        button.text = "+ " + expansion.expansion.name
+                        button.layoutParams = paramsButton
+                        progress_container.addView(button)
+
+                        var expand = false
+                        val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                        val recyclerView = context?.let { RecyclerView(it) }
+                        recyclerView?.layoutParams = paramsRecyclerView
+                        progress_container.addView(recyclerView)
+
+                        recyclerView?.apply {
+                            val raidLevel = getRaidLevel(expansion)
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = EncounterAdapter(expansion.instances, raidLevel, context, expansion.expansion)
+                        }
+                        recyclerView?.visibility = View.GONE
+
+                        button.setOnClickListener {
+                            if (!expand) {
+                                expand = true
+                                recyclerView?.visibility = View.VISIBLE
+                                button.text = "- " + expansion.expansion.name
+                            } else {
+                                expand = false
+                                recyclerView?.visibility = View.GONE
+                                button.text = "+ " + expansion.expansion.name
+                            }
+                        }
                     }
                 }, Response.ErrorListener {
             Log.e("ERROR", it.stackTrace.toString())
@@ -94,6 +130,20 @@ class ProgressFragment : Fragment(), IOnBackPressed {
                         putString(REGION, region)
                     }
                 }
+    }
+
+    private fun getRaidLevel(expansion: Expansions): String {
+        when (expansion.expansion.name) {
+            "Burning Crusade" -> return "Level 70"
+            "Wrath of the Lich King" -> return "Level 80"
+            "Cataclysm" -> return "Level 85"
+            "Mist of Pandaria" -> return "Level 90"
+            "Warlords of Draenor" -> return "Level 100"
+            "Legion" -> return "Level 110"
+            "Battle for Azeroth" -> return "Level 120"
+            "Classic" -> return "Level 60"
+            else -> return ""
+        }
     }
 
     override fun onBackPressed(): Boolean {
