@@ -44,6 +44,7 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
         val activity = activity as Context
         tabLayout = view.findViewById(R.id.nav_bar)
         viewPager = view.findViewById(R.id.wow_pager)
+        viewPager?.offscreenPageLimit = 3
         val bundle = Bundle()
         bundle.putString("character", character)
         bundle.putString("realm", realm)
