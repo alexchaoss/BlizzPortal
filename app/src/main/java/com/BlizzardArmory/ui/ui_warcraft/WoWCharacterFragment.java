@@ -329,7 +329,12 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
                         for (final Specialization specialization : talentsInfo.getSpecializations()) {
                             try {
-                                JsonObjectRequest jsonRequest1 = new JsonObjectRequest(Request.Method.GET, specialization.getSpecialization().getKey().getHref() + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper.getAccessToken(), null,
+                                String specURL = specialization.getSpecialization().getKey().getHref();
+                                if(specURL.contains("static")){
+                                    specURL = specURL.replaceAll("static-[0-9].[0-9].[0-9]_[0-9]*-" + region.toLowerCase(), "static-" + region.toLowerCase());
+                                    Log.i("IMAGE", specURL);
+                                }
+                                JsonObjectRequest jsonRequest1 = new JsonObjectRequest(Request.Method.GET, specURL + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper.getAccessToken(), null,
                                         response1 -> {
                                             specializationData.add(gson.fromJson(response1.toString(), SpecializationData.class));
                                             if (specializationData.size() == talentsInfo.getSpecializations().size()) {
@@ -566,8 +571,12 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private void downloadIcons(final Equipment equipment, final int index, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
         try {
-
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
+            String url = equipment.getEquippedItems().get(index).getMedia().getKey().getHref();
+            if(url.contains("static")){
+                url = url.replaceAll("static-[0-9].[0-9].[0-9]_[0-9]*-" + region.toLowerCase(), "static-" + region.toLowerCase());
+                Log.i("IMAGE", url);
+            }
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url
                     + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response -> {
                         Media media = gson.fromJson(response.toString(), Media.class);
