@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.ui_warcraft.progress
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -68,63 +69,82 @@ class ProgressFragment : Fragment(), IOnBackPressed {
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
+        downloadEncounterInformation(view)
+    }
+
+    private fun downloadEncounterInformation(view: View) {
         val requestQueue = Volley.newRequestQueue(view.context)
 
         val url = URLConstants.getBaseURLforAPI(region) +
                 URLConstants.WOW_ENCOUNTERS.replace("zone", toLowerCase(region))
                         .replace("realm", toLowerCase(realm!!)).replace("characterName", toLowerCase(character!!)) + bnOAuth2Helper!!.accessToken
 
-
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->
                     Log.i("TEST", response.toString())
                     val encounters = Gson().fromJson(response.toString(), EncountersInformation::class.java)
 
-                    for (expansion in encounters.expansions.reversed()) run {
-                        val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        val button = TextView(context)
-                        button.setBackgroundResource(R.drawable.progress_collapse_header)
-                        button.setTextColor(android.graphics.Color.WHITE)
-                        button.text = "+ " + expansion.expansion.name
-                        button.textSize = 18F
-                        button.layoutParams = paramsButton
-                        progress_container.addView(button)
-
-                        var expand = false
-                        val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        val recyclerView = context?.let { RecyclerView(it) }
-                        recyclerView?.layoutParams = paramsRecyclerView
-                        progress_container.addView(recyclerView)
-
-                        recyclerView?.apply {
-                            val raidLevel = getRaidLevel(expansion)
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = EncounterAdapter(expansion.instances, raidLevel, context, expansion.expansion)
-                        }
-                        recyclerView?.visibility = View.GONE
-
-                        button.setOnClickListener {
-                            if (!expand) {
-                                expand = true
-                                recyclerView?.visibility = View.VISIBLE
-                                button.text = "- " + expansion.expansion.name
-                            } else {
-                                expand = false
-                                recyclerView?.visibility = View.GONE
-                                button.text = "+ " + expansion.expansion.name
-                            }
-                        }
-                    }
+                    setRecyclerViewForEachExpansion(encounters)
                 }, Response.ErrorListener {
-            val outdatedInfo = TextView(context)
-            outdatedInfo.text = "Outdated information\nPlease login in game to refresh data"
-            outdatedInfo.setTextColor(android.graphics.Color.WHITE)
-            outdatedInfo.gravity = Gravity.CENTER
-            outdatedInfo.textSize = 20F
-            outdatedInfo.setPadding(0, 50, 0, 0)
-            progress_container.addView(outdatedInfo)
+            showOutdatedTextView()
         })
         requestQueue.add(jsonObjectRequest)
+    }
+
+    private fun setRecyclerViewForEachExpansion(encounters: EncountersInformation) {
+        var expansions: List<Expansions>? = null
+        if (!encounters.expansions.isNullOrEmpty()) {
+            expansions = encounters.expansions.reversed();
+        }
+        if (expansions != null) {
+            for (expansion in expansions) run {
+                val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                val button = TextView(context)
+                button.setBackgroundResource(R.drawable.progress_collapse_header)
+                button.setTextColor(Color.WHITE)
+                button.text = "+ " + expansion.expansion.name
+                button.textSize = 18F
+                button.layoutParams = paramsButton
+                progress_container.addView(button)
+
+                var expand = false
+                val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                val recyclerView = context?.let { RecyclerView(it) }
+                recyclerView?.layoutParams = paramsRecyclerView
+                progress_container.addView(recyclerView)
+
+                recyclerView?.apply {
+                    val raidLevel = getRaidLevel(expansion)
+                    layoutManager = LinearLayoutManager(activity)
+                    adapter = EncounterAdapter(expansion.instances, raidLevel, context, expansion.expansion)
+                }
+                recyclerView?.visibility = View.GONE
+
+                button.setOnClickListener {
+                    if (!expand) {
+                        expand = true
+                        recyclerView?.visibility = View.VISIBLE
+                        button.text = "- " + expansion.expansion.name
+                    } else {
+                        expand = false
+                        recyclerView?.visibility = View.GONE
+                        button.text = "+ " + expansion.expansion.name
+                    }
+                }
+            }
+        } else {
+            showOutdatedTextView()
+        }
+    }
+
+    private fun showOutdatedTextView() {
+        val outdatedInfo = TextView(context)
+        outdatedInfo.text = "Outdated information\nPlease login in game to refresh data"
+        outdatedInfo.setTextColor(Color.WHITE)
+        outdatedInfo.gravity = Gravity.CENTER
+        outdatedInfo.textSize = 20F
+        outdatedInfo.setPadding(0, 50, 0, 0)
+        progress_container.addView(outdatedInfo)
     }
 
     companion object {
