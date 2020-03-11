@@ -5,15 +5,22 @@
     android:layout_width="match_parent"
     android:background="#080812">
 
+
     <ImageView
+        android:id="@+id/background_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/background_progress"
         android:scaleType="fitStart"
+        android:src="@drawable/background_progress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/background" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#10000000" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"

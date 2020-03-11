@@ -66,6 +66,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -78,6 +80,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     private String characterRealm;
     private String characterClicked;
     private String region;
+    public static String faction;
 
     private AlertDialog dialog;
 
@@ -215,7 +218,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
         activateCloseButton();
 
-        Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+        WoWCharacterFragment.this.requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
 
@@ -280,11 +283,11 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         long startTime = System.nanoTime();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(getActivity()).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(requireActivity().getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
         assert bnOAuth2Params != null;
         final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-        cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5); // 1MB cap
+        cache = new DiskBasedCache(requireContext().getCacheDir(), 1024 * 1024 * 5); // 1MB cap
         network = new BasicNetwork(new HurlStack());
         requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
@@ -364,11 +367,11 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void callErrorAlertDialog(int responseCode) {
-        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);
         URLConstants.loading = false;
         if (dialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.DialogTransparent);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 20, 0, 0);
 
@@ -426,14 +429,14 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                 if (responseCode != 404) {
                     dialog.hide();
                     WoWCharacterFragment fragment = (WoWCharacterFragment)
-                            Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.fragment);
+                            requireFragmentManager().findFragmentById(R.id.fragment);
 
                     getFragmentManager().beginTransaction()
                             .detach(Objects.requireNonNull(fragment))
                             .attach(fragment)
                             .commit();
                 } else {
-                    Objects.requireNonNull(getFragmentManager()).beginTransaction().remove(WoWCharacterFragment.this).commit();
+                    requireFragmentManager().beginTransaction().remove(WoWCharacterFragment.this).commit();
                 }
             });
 
@@ -476,6 +479,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                     response -> {
                         characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
                         characterName.setText(characterSummary.getName());
+                        EventBus.getDefault().post(new FactionEvent(characterSummary.getFaction().getName().toLowerCase()));
                         itemLVL.setText(String.format("Item Level : %s", characterSummary.getEquippedItemLevel()));
                         String levelRaceClassString = characterSummary.getLevel() + " " + characterSummary.getRace().getName() + " " + characterSummary.getCharacterClass().getName();
                         levelRaceClass.setText(levelRaceClassString);
@@ -585,7 +589,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
                         ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), bitmap -> {
                             if (index == equipment.getEquippedItems().size() - 1) {
-                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 loadingCircle.setVisibility(View.GONE);
                                 URLConstants.loading = false;
                             }
@@ -603,11 +607,11 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                     },
                     e -> {
                         if (index == equipment.getEquippedItems().size() - 1) {
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
                             URLConstants.loading = false;
                         }
-                        Drawable errorIcon = getResources().getDrawable(R.drawable.error_icon, Objects.requireNonNull(getContext()).getTheme());
+                        Drawable errorIcon = getResources().getDrawable(R.drawable.error_icon, requireContext().getTheme());
                         setIcons(itemSlot, equipment, errorIcon);
                     });
 
@@ -760,7 +764,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
                 statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, source -> {
                     int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                    Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                    Drawable drawable = getResources().getDrawable(resourceId, WoWCharacterFragment.this.requireContext().getTheme());
                     drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                     return drawable;
                 }, null));

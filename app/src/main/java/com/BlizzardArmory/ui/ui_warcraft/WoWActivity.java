@@ -136,7 +136,7 @@ public class WoWActivity extends AppCompatActivity {
     private void downloadWoWCharacters() {
         try {
             JsonObjectRequest jsonRequestCharacters = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
-                    URLConstants.NEW_WOW_ACCOUNT.replace("zone", MainActivity.selectedRegion.toLowerCase()).replace("TOKEN", bnOAuth2Helper.getAccessToken()), null,
+                    URLConstants.WOW_ACCOUNT.replace("zone", MainActivity.selectedRegion.toLowerCase()).replace("TOKEN", bnOAuth2Helper.getAccessToken()), null,
                     response -> {
                         final int chunkSize = 2048;
                         for (int i = 0; i < response.toString().length(); i += chunkSize) {

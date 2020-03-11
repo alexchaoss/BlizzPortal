@@ -1,6 +1,5 @@
 package com.BlizzardArmory.ui.ui_warcraft
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.IOnBackPressed
-import com.BlizzardArmory.ui.ui_warcraft.progress.MyAdapter
 import com.google.android.material.tabs.TabLayout
 
 
@@ -41,10 +39,11 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.wow_navbar_fragment, container, false)
-        val activity = activity as Context
+
         tabLayout = view.findViewById(R.id.nav_bar)
         viewPager = view.findViewById(R.id.wow_pager)
         viewPager?.offscreenPageLimit = 3
+
         val bundle = Bundle()
         bundle.putString("character", character)
         bundle.putString("realm", realm)
