@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.ui_warcraft.pvp
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.FactionEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics
@@ -171,7 +173,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     kills.text = pvpSummary.honorable_kills.toString()
                     level.text = "LEVEL " + pvpSummary.honor_level.toString()
                     setHonorRankIcon(pvpSummary)
-                    if (pvpSummary != null) {
+                    if (pvpSummary.pvp_map_statistics != null) {
                         recyclerviewbg.apply {
                             layoutManager = LinearLayoutManager(activity)
                             adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
@@ -197,7 +199,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 MotionEvent.ACTION_UP -> bracketinfo?.visibility = View.GONE
             }
 
-            scrollviewpvp.setOnScrollChangeListener { view: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            layout_pvp.setOnScrollChangeListener { view: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
                 if (scrollX != oldScrollY) {
                     bracketinfo?.visibility = View.GONE
                 }
@@ -241,9 +243,64 @@ class PvPFragment : Fragment(), IOnBackPressed {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun classEventReceived(classEvent: ClassEvent) {
+        when (classEvent.data) {
+            "Death Knight" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#080812"))
+                background_pvp.setBackgroundResource(R.drawable.dk_bg)
+            }
+            "Demon Hunter" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#000900"))
+                background_pvp.setBackgroundResource(R.drawable.dh_bg)
+            }
+            "Druid" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#04100a"))
+                background_pvp.setBackgroundResource(R.drawable.druid_bg)
+            }
+            "Hunter" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#0f091b"))
+                background_pvp.setBackgroundResource(R.drawable.hunter_bg)
+            }
+            "Mage" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#110617"))
+                background_pvp.setBackgroundResource(R.drawable.mage_bg)
+            }
+            "Monk" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#040b17"))
+                background_pvp.setBackgroundResource(R.drawable.monk_bg)
+            }
+            "Paladin" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#13040a"))
+                background_pvp.setBackgroundResource(R.drawable.paladin_bg)
+            }
+            "Priest" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#15060e"))
+                background_pvp.setBackgroundResource(R.drawable.priest_bg)
+            }
+            "Rogue" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#160720"))
+                background_pvp.setBackgroundResource(R.drawable.rogue_bg)
+            }
+            "Shaman" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#050414"))
+                background_pvp.setBackgroundResource(R.drawable.shaman_bg)
+            }
+            "Warlock" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#080516"))
+                background_pvp.setBackgroundResource(R.drawable.warlock_bg)
+            }
+            "Warrior" -> {
+                layout_pvp.setBackgroundColor(Color.parseColor("#1a0407"))
+                background_pvp.setBackgroundResource(R.drawable.warrior_bg)
+            }
+        }
+        EventBus.getDefault().unregister(this)
+    }
+
     companion object {
         @JvmStatic
-        fun newInstance(character: String, realm: String, media: String, region: String, faction: String) =
+        fun newInstance(character: String, realm: String, media: String, region: String) =
                 WoWNavFragment().apply {
                     arguments = Bundle().apply {
                         putString(CHARACTER, character)
