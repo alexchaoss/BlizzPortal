@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.warcraft.encounters.Expansions
@@ -29,6 +30,9 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
 import com.google.common.base.Ascii.toLowerCase
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.wow_progress_fragment.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 private const val CHARACTER = "character"
@@ -54,6 +58,16 @@ class ProgressFragment : Fragment(), IOnBackPressed {
             media = it.getString(MEDIA)
             region = it.getString(REGION)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -168,6 +182,61 @@ class ProgressFragment : Fragment(), IOnBackPressed {
             "Classic" -> return "Level 60"
             else -> return ""
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun classEventReceived(classEvent: ClassEvent) {
+        when (classEvent.data) {
+            "Death Knight" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#080812"))
+                background_progress.setBackgroundResource(R.drawable.dk_bg)
+            }
+            "Demon Hunter" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#000900"))
+                background_progress.setBackgroundResource(R.drawable.dh_bg)
+            }
+            "Druid" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#04100a"))
+                background_progress.setBackgroundResource(R.drawable.druid_bg)
+            }
+            "Hunter" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#0f091b"))
+                background_progress.setBackgroundResource(R.drawable.hunter_bg)
+            }
+            "Mage" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#110617"))
+                background_progress.setBackgroundResource(R.drawable.mage_bg)
+            }
+            "Monk" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#040b17"))
+                background_progress.setBackgroundResource(R.drawable.monk_bg)
+            }
+            "Paladin" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#13040a"))
+                background_progress.setBackgroundResource(R.drawable.paladin_bg)
+            }
+            "Priest" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#15060e"))
+                background_progress.setBackgroundResource(R.drawable.priest_bg)
+            }
+            "Rogue" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#160720"))
+                background_progress.setBackgroundResource(R.drawable.rogue_bg)
+            }
+            "Shaman" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#050414"))
+                background_progress.setBackgroundResource(R.drawable.shaman_bg)
+            }
+            "Warlock" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#080516"))
+                background_progress.setBackgroundResource(R.drawable.warlock_bg)
+            }
+            "Warrior" -> {
+                progress_layout.setBackgroundColor(Color.parseColor("#1a0407"))
+                background_progress.setBackgroundResource(R.drawable.warrior_bg)
+            }
+        }
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed(): Boolean {

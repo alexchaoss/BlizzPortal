@@ -366,84 +366,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     }
 
-    private void callErrorAlertDialog(int responseCode) {
-        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        loadingCircle.setVisibility(View.GONE);
-        URLConstants.loading = false;
-        if (dialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.DialogTransparent);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, 20, 0, 0);
-
-            TextView titleText = new TextView(getContext());
-
-            titleText.setTextSize(20);
-            titleText.setGravity(Gravity.CENTER_HORIZONTAL);
-            titleText.setPadding(0, 20, 0, 20);
-            titleText.setLayoutParams(layoutParams);
-            titleText.setTextColor(Color.WHITE);
-
-            TextView messageText = new TextView(getContext());
-
-            messageText.setGravity(Gravity.CENTER_HORIZONTAL);
-            messageText.setLayoutParams(layoutParams);
-            messageText.setTextColor(Color.WHITE);
-
-            Button button = new Button(getContext());
-
-            if (responseCode == 404) {
-                titleText.setText("Information Outdated");
-                messageText.setText("Please login in game to update this character's information.");
-                button.setText("OK");
-            } else {
-                titleText.setText("No Internet Connection");
-                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-                button.setText("RETRY");
-            }
-
-            button.setTextSize(18);
-            button.setTextColor(Color.WHITE);
-            button.setGravity(Gravity.CENTER);
-            button.setWidth(200);
-            button.setLayoutParams(layoutParams);
-            button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
-
-            dialog = builder.show();
-            Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            dialog.getWindow().setLayout(800, 500);
-
-            LinearLayout linearLayout = new LinearLayout(getContext());
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setGravity(Gravity.CENTER);
-
-            linearLayout.addView(titleText);
-            linearLayout.addView(messageText);
-            linearLayout.addView(button);
-
-            LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 20, 20, 20);
-
-            dialog.addContentView(linearLayout, layoutParamsWindow);
-
-            dialog.setOnCancelListener(dialog1 -> {
-                if (responseCode != 404) {
-                    dialog.hide();
-                    WoWCharacterFragment fragment = (WoWCharacterFragment)
-                            requireFragmentManager().findFragmentById(R.id.fragment);
-
-                    getFragmentManager().beginTransaction()
-                            .detach(Objects.requireNonNull(fragment))
-                            .attach(fragment)
-                            .commit();
-                } else {
-                    requireFragmentManager().beginTransaction().remove(WoWCharacterFragment.this).commit();
-                }
-            });
-
-            button.setOnClickListener(v -> dialog.cancel());
-        }
-    }
-
     private void downloadStats(BnOAuth2Helper bnOAuth2Helper) {
         final Gson gson = new GsonBuilder().create();
         try {
@@ -480,6 +402,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
                         characterName.setText(characterSummary.getName());
                         EventBus.getDefault().post(new FactionEvent(characterSummary.getFaction().getName().toLowerCase()));
+                        EventBus.getDefault().post(new ClassEvent(characterSummary.getCharacterClass().getName()));
                         itemLVL.setText(String.format("Item Level : %s", characterSummary.getEquippedItemLevel()));
                         String levelRaceClassString = characterSummary.getLevel() + " " + characterSummary.getRace().getName() + " " + characterSummary.getCharacterClass().getName();
                         levelRaceClass.setText(levelRaceClassString);
@@ -1337,5 +1260,83 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     @Override
     public boolean onBackPressed() {
         return false;
+    }
+
+    private void callErrorAlertDialog(int responseCode) {
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        loadingCircle.setVisibility(View.GONE);
+        URLConstants.loading = false;
+        if (dialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.DialogTransparent);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 20, 0, 0);
+
+            TextView titleText = new TextView(getContext());
+
+            titleText.setTextSize(20);
+            titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+            titleText.setPadding(0, 20, 0, 20);
+            titleText.setLayoutParams(layoutParams);
+            titleText.setTextColor(Color.WHITE);
+
+            TextView messageText = new TextView(getContext());
+
+            messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+            messageText.setLayoutParams(layoutParams);
+            messageText.setTextColor(Color.WHITE);
+
+            Button button = new Button(getContext());
+
+            if (responseCode == 404) {
+                titleText.setText("Information Outdated");
+                messageText.setText("Please login in game to update this character's information.");
+                button.setText("OK");
+            } else {
+                titleText.setText("No Internet Connection");
+                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                button.setText("RETRY");
+            }
+
+            button.setTextSize(18);
+            button.setTextColor(Color.WHITE);
+            button.setGravity(Gravity.CENTER);
+            button.setWidth(200);
+            button.setLayoutParams(layoutParams);
+            button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            dialog = builder.show();
+            Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            dialog.getWindow().setLayout(800, 500);
+
+            LinearLayout linearLayout = new LinearLayout(getContext());
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setGravity(Gravity.CENTER);
+
+            linearLayout.addView(titleText);
+            linearLayout.addView(messageText);
+            linearLayout.addView(button);
+
+            LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(20, 20, 20, 20);
+
+            dialog.addContentView(linearLayout, layoutParamsWindow);
+
+            dialog.setOnCancelListener(dialog1 -> {
+                if (responseCode != 404) {
+                    dialog.hide();
+                    WoWNavFragment fragment = (WoWNavFragment)
+                            getParentFragmentManager().findFragmentById(R.id.fragment);
+
+                    getParentFragmentManager().beginTransaction()
+                            .detach(Objects.requireNonNull(fragment))
+                            .attach(fragment)
+                            .commit();
+                } else {
+                    ((WoWActivity) getContext()).onBackPressed();
+                }
+            });
+
+            button.setOnClickListener(v -> dialog.cancel());
+        }
     }
 }
