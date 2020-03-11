@@ -35,11 +35,12 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.1'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.2'
     }
 }
 
 dependencies {
+    implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.google.firebase:firebase-database:19.2.1'
     implementation 'com.google.firebase:firebase-analytics:17.2.3'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
@@ -59,5 +60,5 @@ dependencies {
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.fragment:fragment-ktx:1.0.0'
+    implementation 'androidx.fragment:fragment-ktx:1.2.2'
 }

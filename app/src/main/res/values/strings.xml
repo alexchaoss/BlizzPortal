@@ -146,4 +146,8 @@
     <string name="raid_name">raid name</string>
     <string name="level">level</string>
     <string name="background">background</string>
+    <string name="honor">Honor</string>
+    <string name="arena">ARENA</string>
+    <string name="battlegrounds">BATTLEGROUNDS</string>
+    <string name="_10v10">10v10</string>
 </resources>

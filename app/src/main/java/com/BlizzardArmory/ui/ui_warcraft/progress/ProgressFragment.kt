@@ -4,7 +4,6 @@ package com.BlizzardArmory.ui.ui_warcraft.progress
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -64,7 +63,6 @@ class ProgressFragment : Fragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
@@ -81,9 +79,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
 
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->
-                    Log.i("TEST", response.toString())
                     val encounters = Gson().fromJson(response.toString(), EncountersInformation::class.java)
-
                     setRecyclerViewForEachExpansion(encounters)
                 }, Response.ErrorListener {
             showOutdatedTextView()
