@@ -172,6 +172,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
 
     private fun getRaidLevel(expansion: Expansions): String {
         when (expansion.expansion.name) {
+            "Classic" -> return "Level 60"
             "Burning Crusade" -> return "Level 70"
             "Wrath of the Lich King" -> return "Level 80"
             "Cataclysm" -> return "Level 85"
@@ -179,7 +180,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
             "Warlords of Draenor" -> return "Level 100"
             "Legion" -> return "Level 110"
             "Battle for Azeroth" -> return "Level 120"
-            "Classic" -> return "Level 60"
+            "Shadowlands" -> return "Level 60"
             else -> return ""
         }
     }

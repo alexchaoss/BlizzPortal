@@ -34,6 +34,7 @@ import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.ui.IOnBackPressed;
+import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.equipment.Enchantment;
 import com.BlizzardArmory.warcraft.equipment.Equipment;

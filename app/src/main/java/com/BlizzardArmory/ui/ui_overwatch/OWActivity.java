@@ -40,7 +40,7 @@ import com.BlizzardArmory.overwatch.topheroes.TopHero;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
-import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
+import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
