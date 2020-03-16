@@ -32,6 +32,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.BlizzardArmory.diablo.account.Hero;
 import com.BlizzardArmory.ui.GamesActivity;
@@ -39,13 +40,7 @@ import com.BlizzardArmory.ui.IOnBackPressed;
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -67,7 +62,6 @@ public class D3Activity extends AppCompatActivity {
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
-    private RequestQueue requestQueue;
 
     private List<Drawable> portraits;
 
@@ -133,14 +127,7 @@ public class D3Activity extends AppCompatActivity {
         assert bnOAuth2Params != null;
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5); // 1MB cap
-        Network network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
-
         downloadAccountInformation();
-
 
         //Button calls
         wowButton.setOnClickListener(v -> callNextActivity(WoWActivity.class));
@@ -217,7 +204,7 @@ public class D3Activity extends AppCompatActivity {
                         }
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
 
 
             Log.i("json", D3AccountInfo.toString());

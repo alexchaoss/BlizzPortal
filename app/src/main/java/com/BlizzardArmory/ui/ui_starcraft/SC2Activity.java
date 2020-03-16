@@ -29,19 +29,14 @@ import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.starcraft.Player;
 import com.BlizzardArmory.starcraft.profile.Profile;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -236,12 +231,6 @@ public class SC2Activity extends AppCompatActivity {
 
     private void downloadAccountInformation() {
         try {
-
-            Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5);
-            Network network = new BasicNetwork(new HurlStack());
-            RequestQueue requestQueue = new RequestQueue(cache, network);
-            requestQueue.start();
-
             JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") + URLConstants.SC2_PROFILE.replace("id", UserInformation.getUserID())
                     + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response0 -> {
@@ -269,13 +258,13 @@ public class SC2Activity extends AppCompatActivity {
                                     },
                                     error -> showNoConnectionMessage(SC2Activity.this, 0));
 
-                            requestQueue.add(profileRequest);
+                            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(profileRequest);
 
                         } catch (Exception e) {
                             Log.e("Error", e.toString());
                         }
                         try {
-                            downloadAvatar(requestQueue);
+                            downloadAvatar();
                         }catch (Exception e){
                             Log.e("Avatar", "No avatar");
                         }
@@ -288,7 +277,7 @@ public class SC2Activity extends AppCompatActivity {
                         }
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
@@ -523,7 +512,7 @@ public class SC2Activity extends AppCompatActivity {
         return url;
     }
 
-    private void downloadAvatar(RequestQueue requestQueue) {
+    private void downloadAvatar() {
         ImageRequest imageRequest = new ImageRequest(accountInformation.getAvatarUrl(), bitmap -> {
             BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
             avatar.setBackground(avatarBM);
@@ -531,7 +520,7 @@ public class SC2Activity extends AppCompatActivity {
                 e -> {
                     showNoConnectionMessage(SC2Activity.this, 0);
                 });
-        requestQueue.add(imageRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
     private void callNextActivity(Class activity) {

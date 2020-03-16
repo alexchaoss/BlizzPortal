@@ -34,6 +34,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.overwatch.Profile;
 import com.BlizzardArmory.overwatch.heroes.Hero;
 import com.BlizzardArmory.overwatch.topheroes.TopHero;
@@ -41,13 +42,7 @@ import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -71,7 +66,6 @@ public class OWActivity extends AppCompatActivity {
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
     private Gson gson;
-    private RequestQueue requestQueue;
 
     private String username;
     private String platform;
@@ -208,11 +202,6 @@ public class OWActivity extends AppCompatActivity {
         username = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("username");
         platform = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("platform");
 
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5);
-        Network network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
-
         downloadAccountInformation();
 
         //Button calls
@@ -238,11 +227,11 @@ public class OWActivity extends AppCompatActivity {
                         try {
                             accountInformation = gson.fromJson(response.toString(), Profile.class);
 
-                            downloadAvatar(requestQueue);
+                            downloadAvatar();
                             setName();
-                            downloadLevelIcon(requestQueue);
+                            downloadLevelIcon();
                             setGamesWon();
-                            setRatingInformation(requestQueue);
+                            setRatingInformation();
                             //downloadEndorsementIcon(requestQueue);
                             //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
 
@@ -314,7 +303,7 @@ public class OWActivity extends AppCompatActivity {
                         }
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
@@ -1099,13 +1088,13 @@ public class OWActivity extends AppCompatActivity {
         return secondsHero1;
     }
 
-    private void setRatingInformation(RequestQueue requestQueue) {
+    private void setRatingInformation() {
         if (accountInformation.getRating() > 0) {
             for (int i = 0; i < accountInformation.getRatings().size(); i++) {
                 if (accountInformation.getRatings().get(i).getRole().equals("tank") && accountInformation.getRatings().get(i).getLevel() > 0) {
                     ratingTank.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconTank);
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconTank);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRoleIcon(), ratingIconTank);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconTank);
                 } else {
                     if (accountInformation.getRatings().get(i).getLevel() == 0) {
                         ratingIconTank.setVisibility(View.GONE);
@@ -1115,8 +1104,8 @@ public class OWActivity extends AppCompatActivity {
                 }
                 if (accountInformation.getRatings().get(i).getRole().equals("damage") && accountInformation.getRatings().get(i).getLevel() > 0) {
                     ratingDamage.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconDamage);
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconDamage);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRoleIcon(), ratingIconDamage);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconDamage);
                 } else {
                     if (accountInformation.getRatings().get(i).getLevel() == 0) {
                         ratingIconDamage.setVisibility(View.GONE);
@@ -1126,8 +1115,8 @@ public class OWActivity extends AppCompatActivity {
                 }
                 if (accountInformation.getRatings().get(i).getRole().equals("support") && accountInformation.getRatings().get(i).getLevel() > 0) {
                     ratingSupport.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconSupport);
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconSupport);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRoleIcon(), ratingIconSupport);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconSupport);
                 } else {
                     if (accountInformation.getRatings().get(i).getLevel() == 0) {
                         ratingIconSupport.setVisibility(View.GONE);
@@ -1174,16 +1163,16 @@ public class OWActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void downloadAvatar(RequestQueue requestQueue) {
+    private void downloadAvatar() {
         ImageRequest imageRequest = new ImageRequest(accountInformation.getIcon(), bitmap -> {
             BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
             avatar.setBackground(avatarBM);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(imageRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
-    private void downloadEndorsementIcon(RequestQueue requestQueue) {
+    private void downloadEndorsementIcon() {
         StringRequest stringRequest = new StringRequest(accountInformation.getEndorsementIcon(), string -> {
             try {
                 SVG endorsement_icon = SVG.getFromString(string);
@@ -1195,19 +1184,19 @@ public class OWActivity extends AppCompatActivity {
 
         },
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(stringRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(stringRequest);
     }
 
-    private void downloadRatingIcon(RequestQueue requestQueue, String url, ImageView imageView) {
+    private void downloadRatingIcon(String url, ImageView imageView) {
         ImageRequest imageRequest = new ImageRequest(url, bitmap -> {
             BitmapDrawable icon = new BitmapDrawable(getResources(), bitmap);
             imageView.setImageDrawable(icon);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(imageRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
-    private void downloadLevelIcon(RequestQueue requestQueue) {
+    private void downloadLevelIcon() {
         ImageRequest imageRequest = new ImageRequest(accountInformation.getLevelIcon(), bitmap -> {
 
             BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
@@ -1218,11 +1207,11 @@ public class OWActivity extends AppCompatActivity {
                 prestigeIcon.setImageDrawable(avatarBM2);
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     e -> Log.i("Prestige Icon", "None"));
-            requestQueue.add(imageRequest2);
+            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest2);
 
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(imageRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
     @Override

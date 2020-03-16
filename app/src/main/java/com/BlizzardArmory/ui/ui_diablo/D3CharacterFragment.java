@@ -38,6 +38,7 @@ import androidx.fragment.app.Fragment;
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.diablo.character.Active;
 import com.BlizzardArmory.diablo.character.CharacterInformation;
 import com.BlizzardArmory.diablo.character.Skill;
@@ -45,13 +46,7 @@ import com.BlizzardArmory.diablo.item.SingleItem;
 import com.BlizzardArmory.diablo.items.Item;
 import com.BlizzardArmory.diablo.items.Items;
 import com.BlizzardArmory.ui.IOnBackPressed;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
@@ -177,8 +172,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private LinearLayout imageStatsBG;
 
-    private RequestQueue requestQueue;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.d3_character_fragment, container, false);
@@ -196,7 +189,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         mainLayout = view.findViewById(R.id.item_d3_character);
 
         closeButton = new ImageButton(view.getContext());
-        closeButton.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.close_button_d3));
+        closeButton.setBackground(requireContext().getDrawable(R.drawable.close_button_d3));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
         params.setMargins(0, 0, 0, 20);
         closeButton.setLayoutParams(params);
@@ -358,7 +351,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         navigateTabs(chatgemInactive, chatgemActive, chatgemStatue);
 
         loadingCircle.setVisibility(View.VISIBLE);
-        Objects.requireNonNull(D3CharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+        D3CharacterFragment.this.requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         URLConstants.loading = true;
 
@@ -366,15 +359,9 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         final Gson gson = new GsonBuilder().create();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(getActivity()).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(requireActivity().getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
         assert bnOAuth2Params != null;
         final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
-
-        Cache cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5);
-        Log.i("Cache", getContext().getCacheDir().getAbsolutePath());
-        Network network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
 
         try {
             setCharacterInformation(id, gson, bnOAuth2Helper);
@@ -408,7 +395,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 callErrorAlertDialog(error.networkResponse.statusCode);
             }
         });
-        requestQueue.add(jsonRequest2);
+        RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest2);
     }
 
     private void setCharacterInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
@@ -442,7 +429,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 callErrorAlertDialog(error.networkResponse.statusCode);
             }
         });
-        requestQueue.add(jsonRequest);
+        RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest);
     }
 
     private void setCloseButton() {
@@ -575,7 +562,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     skillRuneList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setText(Html.fromHtml("<img src=\"" + smallRune + "\">" +
                             Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getName(), Html.FROM_HTML_MODE_LEGACY, source -> {
                         int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        Drawable drawable = getResources().getDrawable(resourceId, D3CharacterFragment.this.requireContext().getTheme());
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         return drawable;
                     }, null));
@@ -592,7 +579,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                             callErrorAlertDialog(error.networkResponse.statusCode);
                         }
                     });
-            requestQueue.add(imageRequest);
+            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
         }
     }
 
@@ -689,7 +676,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                             callErrorAlertDialog(error.networkResponse.statusCode);
                         }
                     });
-            requestQueue.add(imageRequest);
+            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
         }
     }
 
@@ -749,7 +736,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         callErrorAlertDialog(error.networkResponse.statusCode);
                     }
                 });
-                requestQueue.add(jsonRequest2);
+                RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest2);
             }
         } catch (IOException e) {
             Log.e("Error", e.toString());
@@ -1087,21 +1074,21 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 try {
                     primarystats.setText(Html.fromHtml("Primary<br>" + primaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, source -> {
                         int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        Drawable drawable = getResources().getDrawable(resourceId, D3CharacterFragment.this.requireContext().getTheme());
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         return drawable;
                     }, null));
                     linearLayoutItemStats.addView(primarystats, layoutParamsStats);
                     secondarystats.setText(Html.fromHtml("Secondary<br>" + secondaryStatsMap.get(index), Html.FROM_HTML_MODE_LEGACY, source -> {
                         int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        Drawable drawable = getResources().getDrawable(resourceId, D3CharacterFragment.this.requireContext().getTheme());
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         return drawable;
                     }, null));
                     linearLayoutItemStats.addView(secondarystats, layoutParamsStats);
                     gems.setText(Html.fromHtml(gemsMap.get(index), Html.FROM_HTML_MODE_LEGACY, source -> {
                         int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        Drawable drawable = getResources().getDrawable(resourceId, D3CharacterFragment.this.requireContext().getTheme());
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         return drawable;
                     }, null));
@@ -1128,7 +1115,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     Log.i("TEST", setText);
                     set.setText(Html.fromHtml(setText, Html.FROM_HTML_MODE_LEGACY, source -> {
                         int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(D3CharacterFragment.this.getContext()).getTheme());
+                        Drawable drawable = getResources().getDrawable(resourceId, D3CharacterFragment.this.requireContext().getTheme());
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         return drawable;
                     }, null));
@@ -1219,7 +1206,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 imageIndex++;
 
                 if (imageIndex == itemIconURL.size()) {
-                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     loadingCircle.setVisibility(View.GONE);
                     URLConstants.loading = false;
                 }
@@ -1231,7 +1218,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                             } else {
                                 imageIndex++;
                                 if (imageIndex == itemIconURL.size()) {
-                                    Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     loadingCircle.setVisibility(View.GONE);
                                     URLConstants.loading = false;
                                 }
@@ -1239,7 +1226,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                             }
                     });
 
-            requestQueue.add(imageRequest);
+            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
         }
     }
 
@@ -1288,7 +1275,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                             callErrorAlertDialog(error.networkResponse.statusCode);
                         }
                     });
-            requestQueue.add(imageRequest);
+            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
         }
     }
 
@@ -1335,18 +1322,18 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private Drawable selectBackgroundColor(String color) {
         switch (color) {
             case "blue":
-                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.blue_bg_item_d3);
+                return requireContext().getDrawable(R.drawable.blue_bg_item_d3);
             case "yellow":
-                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.yellow_bg_item_d3);
+                return requireContext().getDrawable(R.drawable.yellow_bg_item_d3);
             case "orange":
-                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.orange_bg_item_d3);
+                return requireContext().getDrawable(R.drawable.orange_bg_item_d3);
             case "green":
-                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.green_bg_item_d3);
+                return requireContext().getDrawable(R.drawable.green_bg_item_d3);
             case "white":
-                return Objects.requireNonNull(getContext()).getDrawable(R.drawable.brown_bg_item_d3);
+                return requireContext().getDrawable(R.drawable.brown_bg_item_d3);
             default:
         }
-        return Objects.requireNonNull(getContext()).getDrawable(R.drawable.brown_bg_item_d3);
+        return requireContext().getDrawable(R.drawable.brown_bg_item_d3);
     }
 
     private String selectColor(String color) {
@@ -1368,19 +1355,19 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private Drawable getHeaderBackground(int index) {
         if (items.get(index).getTypeName().contains("Primal Legendary")) {
-            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_legendary_primal);
+            return requireContext().getDrawable(R.drawable.d3_item_header_legendary_primal);
         } else if (items.get(index).getTypeName().contains("Primal Set")) {
-            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_legendary_primal);
+            return requireContext().getDrawable(R.drawable.d3_item_header_legendary_primal);
         } else if (items.get(index).getTypeName().contains("Set")) {
-            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_set);
+            return requireContext().getDrawable(R.drawable.d3_item_header_set);
         } else if (items.get(index).getTypeName().contains("Legendary")) {
-            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_legendary);
+            return requireContext().getDrawable(R.drawable.d3_item_header_legendary);
         } else if (items.get(index).getTypeName().contains("Rare")) {
-            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_rare);
+            return requireContext().getDrawable(R.drawable.d3_item_header_rare);
         } else if (items.get(index).getTypeName().contains("Magic")) {
-            return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header_magic);
+            return requireContext().getDrawable(R.drawable.d3_item_header_magic);
         }
-        return Objects.requireNonNull(getContext()).getDrawable(R.drawable.d3_item_header);
+        return requireContext().getDrawable(R.drawable.d3_item_header);
     }
 
     private String getItemBorderColor(int index) {
@@ -1415,11 +1402,11 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void callErrorAlertDialog(int responseCode) {
-        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);
         URLConstants.loading = false;
         if (dialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.DialogTransparent);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 20, 0, 0);
 
@@ -1474,13 +1461,13 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
             dialog.setOnCancelListener(dialog1 -> {
                 if (responseCode != 404) {
-                    D3CharacterFragment fragment = (D3CharacterFragment) Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.fragment);
-                    getFragmentManager().beginTransaction()
+                    D3CharacterFragment fragment = (D3CharacterFragment) getParentFragmentManager().findFragmentById(R.id.fragment);
+                    getParentFragmentManager().beginTransaction()
                             .detach(Objects.requireNonNull(fragment))
                             .attach(fragment)
                             .commit();
                 } else {
-                    Objects.requireNonNull(getFragmentManager()).beginTransaction().remove(D3CharacterFragment.this).commit();
+                    getParentFragmentManager().beginTransaction().remove(D3CharacterFragment.this).commit();
                 }
             });
 

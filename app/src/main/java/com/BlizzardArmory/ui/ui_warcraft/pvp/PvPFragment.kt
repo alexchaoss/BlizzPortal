@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
+import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.FactionEvent
@@ -22,10 +23,8 @@ import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.warcraft.pvp.tiers.Tier
 import com.android.volley.Request
-import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
@@ -84,15 +83,15 @@ class PvPFragment : Fragment(), IOnBackPressed {
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
-        val requestQueue = Volley.newRequestQueue(view.context)
 
-        downloadPvPSummary(requestQueue)
-        download2v2Info(requestQueue)
-        download3v3Info(requestQueue)
-        downloadRBGInfo(requestQueue)
+
+        downloadPvPSummary()
+        download2v2Info()
+        download3v3Info()
+        downloadRBGInfo()
     }
 
-    private fun downloadRBGInfo(requestQueue: RequestQueue) {
+    private fun downloadRBGInfo() {
         val urlRBG = URLConstants.getBaseURLforAPI(region) +
                 URLConstants.WOW_PVP_BRACKETS.replace("zone", Ascii.toLowerCase(region)).replace("BRACKET", "rbg")
                         .replace("realm", Ascii.toLowerCase(realm!!)).replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
@@ -108,15 +107,15 @@ class PvPFragment : Fragment(), IOnBackPressed {
 
                             }, Response.ErrorListener {
                     })
-                    requestQueue.add(tierRequest)
+                    activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(tierRequest)
 
                 }, Response.ErrorListener {
             layoutrbg.alpha = 0.4f
         })
-        requestQueue.add(pvpRBGRequest)
+        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvpRBGRequest)
     }
 
-    private fun download3v3Info(requestQueue: RequestQueue) {
+    private fun download3v3Info() {
         val url3v3 = URLConstants.getBaseURLforAPI(region) +
                 URLConstants.WOW_PVP_BRACKETS.replace("zone", Ascii.toLowerCase(region)).replace("BRACKET", "3v3")
                         .replace("realm", Ascii.toLowerCase(realm!!)).replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
@@ -131,14 +130,14 @@ class PvPFragment : Fragment(), IOnBackPressed {
                                 showBracketInformationOnTouch(layout3v3, tier, pvp3v3)
                             }, Response.ErrorListener {
                     })
-                    requestQueue.add(tierRequest)
+                    activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(tierRequest)
                 }, Response.ErrorListener {
             layout3v3.alpha = 0.4f
         })
-        requestQueue.add(pvp3v3Request)
+        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvp3v3Request)
     }
 
-    private fun download2v2Info(requestQueue: RequestQueue) {
+    private fun download2v2Info() {
         val url2v2 = URLConstants.getBaseURLforAPI(region) +
                 URLConstants.WOW_PVP_BRACKETS.replace("zone", Ascii.toLowerCase(region)).replace("BRACKET", "2v2")
                         .replace("realm", Ascii.toLowerCase(realm!!)).replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
@@ -155,14 +154,14 @@ class PvPFragment : Fragment(), IOnBackPressed {
 
                             }, Response.ErrorListener {
                     })
-                    requestQueue.add(tierRequest)
+                    activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(tierRequest)
                 }, Response.ErrorListener {
             layout2v2.alpha = 0.4f
         })
-        requestQueue.add(pvp2v2Request)
+        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvp2v2Request)
     }
 
-    private fun downloadPvPSummary(requestQueue: RequestQueue) {
+    private fun downloadPvPSummary() {
         val urlPvPSummary = URLConstants.getBaseURLforAPI(region) +
                 URLConstants.WOW_PVP_SUM.replace("zone", Ascii.toLowerCase(region)).replace("realm", Ascii.toLowerCase(realm!!))
                         .replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
@@ -181,7 +180,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     }
                 }, Response.ErrorListener {
         })
-        requestQueue.add(pvpSummaryRequest)
+        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvpSummaryRequest)
     }
 
     private fun showBracketInformationOnTouch(layout: View, tier: Tier, bracket: BracketStatistics) {

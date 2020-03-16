@@ -3,12 +3,12 @@
     <item android:id="@android:id/background">
         <shape>
             <stroke
-                android:color="#666"
+                android:color="#333"
                 android:width="1dp" />
             <solid android:color="#fff" />
             <gradient
                 android:type="radial"
-                android:gradientRadius="700"
+                android:gradientRadius="666"
                 android:startColor="#171717"
                 android:endColor="#000" />
         </shape>
@@ -22,8 +22,8 @@
                     android:width="1dp" />
                 <solid android:color="#fff" />
                 <gradient
-                    android:startColor="#6e5442"
-                    android:endColor="#98745b" />
+                    android:startColor="#a17f02"
+                    android:endColor="#edba03" />
             </shape>
         </clip>
     </item>

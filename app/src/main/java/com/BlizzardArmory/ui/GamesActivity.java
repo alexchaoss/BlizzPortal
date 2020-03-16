@@ -19,17 +19,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -53,8 +48,6 @@ public class GamesActivity extends AppCompatActivity {
 
     private JSONObject userInfo = new JSONObject();
 
-    private RequestQueue requestQueue;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,15 +70,10 @@ public class GamesActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5); // 1MB cap
-        Network network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
-
-        downloadUserInfo(requestQueue);
+        downloadUserInfo();
     }
 
-    private void downloadUserInfo(RequestQueue requestQueue) {
+    private void downloadUserInfo() {
         try {
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforUserInformation() +
                     URLConstants.END_USER_INFO_URL + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
@@ -114,7 +102,7 @@ public class GamesActivity extends AppCompatActivity {
                     },
                     error -> callErrorAlertDialog());
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
 
         } catch (Exception e) {
             Log.e("Error-test", e.toString());
@@ -202,7 +190,7 @@ public class GamesActivity extends AppCompatActivity {
 
         dialog.addContentView(linearLayout, layoutParams);
 
-        dialog.setOnCancelListener(dialog1 -> downloadUserInfo(requestQueue));
+        dialog.setOnCancelListener(dialog1 -> downloadUserInfo());
 
         button.setOnClickListener(v -> dialog.cancel());
         button2.setOnClickListener(v -> dialog.dismiss());

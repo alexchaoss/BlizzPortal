@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
+import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.account.Character
@@ -77,19 +78,19 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
                     val media: Media = gsonMedia.fromJson(response.toString(), Media::class.java)
 
                     onClickCharacter(character, response.toString(), fragmentManager)
-                    downloadAvatar(media, character, requestQueue)
+                    downloadAvatar(media, character)
 
                 }, Response.ErrorListener {
             val media: Media? = null
-            downloadAvatar(media, character, requestQueue)
+            downloadAvatar(media, character)
             onClickCharacter(character, "", fragmentManager)
         })
-        requestQueue.add(jsonRequestMedia)
+        RequestQueueSingleton.getInstance(context).addToRequestQueue(jsonRequestMedia)
 
         return null
     }
 
-    private fun downloadAvatar(media: Media?, character: Character, requestQueue: RequestQueue) {
+    private fun downloadAvatar(media: Media?, character: Character) {
         var mediaUrl: String?
         if (media == null) {
             mediaUrl = "https://render-us.worldofwarcraft.com/character/auchindoun/0/0-main.jpg"
@@ -106,7 +107,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
 
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 Response.ErrorListener { })
-        requestQueue.add(imageRequest)
+        RequestQueueSingleton.getInstance(context).addToRequestQueue(imageRequest)
     }
 
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {
