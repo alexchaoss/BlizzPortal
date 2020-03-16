@@ -9,7 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.warcraft.reputations.characterreputions.Reputations
+import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputations
 
 class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_rep_list, parent, false)) {
