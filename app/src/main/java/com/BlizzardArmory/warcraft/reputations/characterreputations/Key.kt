@@ -1,9 +1,8 @@
-package com.BlizzardArmory.warcraft.reputations.characterreputions
+package com.BlizzardArmory.warcraft.reputations.characterreputations
 
 import com.google.gson.annotations.SerializedName
 
-
-data class Self(
+data class Key(
 
         @SerializedName("href") val href: String
 )

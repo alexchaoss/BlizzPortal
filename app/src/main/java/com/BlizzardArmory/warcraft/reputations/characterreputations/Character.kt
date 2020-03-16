@@ -1,11 +1,11 @@
-package com.BlizzardArmory.warcraft.reputations.characterreputions
+package com.BlizzardArmory.warcraft.reputations.characterreputations
 
 import com.google.gson.annotations.SerializedName
 
-data class Realm(
+data class Character(
 
         @SerializedName("key") val key: Key,
         @SerializedName("name") val name: String,
         @SerializedName("id") val id: Int,
-        @SerializedName("slug") val slug: String
+        @SerializedName("realm") val realm: Realm
 )

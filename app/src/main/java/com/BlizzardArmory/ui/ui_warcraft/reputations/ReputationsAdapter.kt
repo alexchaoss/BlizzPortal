@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.warcraft.reputations.characterreputions.Reputations
+import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputations
 
 class ReputationsAdapter(private val list: List<Reputations>, private val context: Context)
     : RecyclerView.Adapter<ReputationsViewHolder>() {

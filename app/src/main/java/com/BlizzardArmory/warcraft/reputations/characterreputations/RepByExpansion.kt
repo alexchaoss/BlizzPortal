@@ -1,6 +1,8 @@
-package com.BlizzardArmory.warcraft.reputations.characterreputions
+package com.BlizzardArmory.warcraft.reputations.characterreputations
 
 enum class RepByExpansion(expansion: String, name: String, faction: String) {
+    RAJANI("Battle for Azeroth", "Rajani", ""),
+    ULDUM_ACCORD("Battle for Azeroth", "Uldum Accord", ""),
     WAVEBLADE_ANKOAN("Battle for Azeroth", "Waveblade Ankoan", ""),
     SEVENTH_LEGION("Battle for Azeroth", "7th Legion", ""),
     STORMS_WAKE("Battle for Azeroth", "Storm's Wake", ""),
@@ -24,6 +26,7 @@ enum class RepByExpansion(expansion: String, name: String, faction: String) {
     THE_NIGHTFALLEN("Legion", "The Nightfallen", ""),
     THE_WARDENS("Legion", "The Wardens", ""),
     VALARJAR("Legion", "Valarjar", ""),
+    CONJURER_MARGOSS("Legion", "Conjurer Margoss", ""),
     WRYNNS_VANGUARD("Warlords of Draenor", "Wrynn's Vanguard", ""),
     VOLJINS_SPEAR("Warlords of Draenor", "Vol'jin's Spear", ""),
     HAND_OF_THE_PROPHET("Warlords of Draenor", "Hand of the Prophet", ""),

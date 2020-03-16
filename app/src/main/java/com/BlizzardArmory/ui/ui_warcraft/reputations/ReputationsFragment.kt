@@ -19,9 +19,9 @@ import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
-import com.BlizzardArmory.warcraft.reputations.characterreputions.RepByExpansion
-import com.BlizzardArmory.warcraft.reputations.characterreputions.Reputation
-import com.BlizzardArmory.warcraft.reputations.characterreputions.Reputations
+import com.BlizzardArmory.warcraft.reputations.characterreputations.RepByExpansion
+import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation
+import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputations
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
