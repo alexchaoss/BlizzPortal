@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.UserInformation
+import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
@@ -27,10 +28,9 @@ import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.WoWCharacterSearchDialog
 import com.BlizzardArmory.warcraft.account.Account
 import com.BlizzardArmory.warcraft.account.Character
-import com.android.volley.*
-import com.android.volley.toolbox.BasicNetwork
-import com.android.volley.toolbox.DiskBasedCache
-import com.android.volley.toolbox.HurlStack
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
@@ -46,8 +46,6 @@ class WoWActivity : AppCompatActivity() {
     private val characterList = ArrayList<Character>()
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
-    private var requestQueue: RequestQueue? = null
-    private var requestQueueImage: RequestQueue? = null
     private val charactersByRealm = arrayListOf<List<Character>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,12 +61,6 @@ class WoWActivity : AppCompatActivity() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         bnOAuth2Params = Objects.requireNonNull(intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
-        val cache: Cache = DiskBasedCache(cacheDir, 1024 * 1024 * 5) // 1MB cap
-        val network: Network = BasicNetwork(HurlStack())
-        requestQueue = RequestQueue(cache, network)
-        requestQueue!!.start()
-        requestQueueImage = RequestQueue(cache, network, 1)
-        requestQueueImage!!.start()
         downloadWoWCharacters()
 
         //Button calls
@@ -146,7 +138,7 @@ class WoWActivity : AppCompatActivity() {
                             callErrorAlertDialog(0)
                         }
                     })
-            requestQueue!!.add(jsonRequestCharacters)
+            RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonRequestCharacters)
         } catch (e: Exception) {
             Log.e("Error", e.toString())
         }

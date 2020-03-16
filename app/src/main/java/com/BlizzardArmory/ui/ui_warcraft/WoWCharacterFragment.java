@@ -33,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.ui.IOnBackPressed;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
@@ -51,13 +52,7 @@ import com.BlizzardArmory.warcraft.talents.Talent;
 import com.BlizzardArmory.warcraft.talents.Talents;
 import com.BlizzardArmory.warcraft.talents.specializationdata.SpecializationData;
 import com.BlizzardArmory.warcraft.talents.specializationdata.TalentTier;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
@@ -152,10 +147,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private HashMap<String, String> stats = new HashMap<>();
     private HashMap<String, String> nameList = new HashMap<>();
-
-    private Cache cache;
-    private Network network;
-    private RequestQueue requestQueue;
 
     private String urlMain = "";
 
@@ -288,11 +279,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         assert bnOAuth2Params != null;
         final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-        cache = new DiskBasedCache(requireContext().getCacheDir(), 1024 * 1024 * 5); // 1MB cap
-        network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
-
         downloadBackground();
 
         downloadAndSetCharacterInformation(bnOAuth2Helper);
@@ -349,7 +335,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                             noTalent.setVisibility(View.VISIBLE);
                                             noTalent.setText("Talent information outdated");
                                         });
-                                requestQueue.add(jsonRequest1);
+                                RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest1);
                             } catch (Exception e) {
                                 Log.e("Error Spec Download", e.toString());
                             }
@@ -360,7 +346,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         noTalent.setText("Talent information outdated");
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error Talents Download", e.toString());
         }
@@ -385,7 +371,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         }
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error Stats Download", e.toString());
         }
@@ -458,7 +444,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                         }
                                     });
 
-                            requestQueue.add(jsonRequest1);
+                            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest1);
                         } catch (Exception e) {
                             Log.e("Error Equipment Download", e.toString());
                         }
@@ -473,7 +459,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         }
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error", e.toString() + "\n");
             for (int i = 0; i < e.getStackTrace().length; i++) {
@@ -493,7 +479,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                     e -> {
                         Log.e("BAD URL BACKGROUND", urlMain);
                     });
-            requestQueue.add(imageRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(imageRequest);
         }
     }
 
@@ -527,7 +513,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                         callErrorAlertDialog(e.networkResponse.statusCode);
                                     }
                                 });
-                        requestQueue.add(imageRequest);
+                        RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(imageRequest);
                     },
                     e -> {
                         if (index == equipment.getEquippedItems().size() - 1) {
@@ -539,7 +525,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         setIcons(itemSlot, equipment, errorIcon);
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             try {
                 Log.e("Error Image URL", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()

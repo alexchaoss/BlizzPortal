@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
+import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
@@ -23,7 +24,6 @@ import com.BlizzardArmory.warcraft.encounters.Expansions
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
@@ -85,8 +85,6 @@ class ProgressFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadEncounterInformation(view: View) {
-        val requestQueue = Volley.newRequestQueue(view.context)
-
         val url = URLConstants.getBaseURLforAPI(region) +
                 URLConstants.WOW_ENCOUNTERS.replace("zone", toLowerCase(region))
                         .replace("realm", toLowerCase(realm!!)).replace("characterName", toLowerCase(character!!)) + bnOAuth2Helper!!.accessToken
@@ -98,7 +96,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
                 }, Response.ErrorListener {
             showOutdatedTextView()
         })
-        requestQueue.add(jsonObjectRequest)
+        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it).addToRequestQueue(jsonObjectRequest) }
     }
 
     private fun setRecyclerViewForEachExpansion(encounters: EncountersInformation) {
