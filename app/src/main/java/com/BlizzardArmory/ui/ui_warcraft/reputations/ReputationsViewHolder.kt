@@ -34,7 +34,17 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
         }
         when (reputations.standing.name) {
             "Rank 8",
+            "Timelord",
+            "Best Friend",
             "Exalted" -> repTier?.setTextColor(Color.parseColor("#28a586"))
+            "Whelping",
+            "Temporal Trainee",
+            "Timehopper",
+            "Chrono-Friend",
+            "Bronze Ally",
+            "Epoch-Mender",
+            "Buddy",
+            "Good Friend",
             "Rank 7",
             "Rank 6",
             "Rank 5",
@@ -46,6 +56,8 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
             "Honored",
             "Friendly" -> repTier?.setTextColor(Color.parseColor("#0f9601"))
             "Neutral" -> repTier?.setTextColor(Color.parseColor("#edba03"))
+            "Acquaintance",
+            "Stranger",
             "Unfriendly" -> repTier?.setTextColor(Color.parseColor("#cc3609"))
             "Hostile",
             "Hated" -> repTier?.setTextColor(Color.parseColor("#d90e03"))
@@ -71,7 +83,17 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
     private fun setBarColor(reputations: Reputations) {
         when (reputations.standing.name) {
             "Rank 8",
+            "Timelord",
+            "Best Friend",
             "Exalted" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_teal)
+            "Buddy",
+            "Good Friend",
+            "Whelping",
+            "Temporal Trainee",
+            "Timehopper",
+            "Chrono-Friend",
+            "Bronze Ally",
+            "Epoch-Mender",
             "Rank 7",
             "Rank 6",
             "Rank 5",
@@ -82,7 +104,9 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
             "Revered",
             "Honored",
             "Friendly" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_green)
+            "Stranger",
             "Unfriendly" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_orange)
+            "Acquaintance",
             "Neutral" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_yellow)
             "Hostile",
             "Hated" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_red)

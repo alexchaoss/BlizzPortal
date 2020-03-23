@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +26,6 @@ import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputations
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
@@ -43,7 +43,7 @@ private const val MEDIA = "media"
 private const val REGION = "region"
 
 
-class ReputationsFragment : Fragment(), IOnBackPressed {
+class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListener {
 
     private var character: String? = null
     private var realm: String? = null
@@ -52,6 +52,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed {
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
     private val repsByExpac = arrayListOf<ArrayList<Reputations>>()
+    private val adapterList = ArrayList<ReputationsAdapter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +86,11 @@ class ReputationsFragment : Fragment(), IOnBackPressed {
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
-        val requestQueue = Volley.newRequestQueue(view.context)
+        search_view.queryHint = "Search reputations.."
+        val textView: TextView = search_view.findViewById(androidx.appcompat.R.id.search_src_text)
+        textView.setTextColor(Color.parseColor("#ffffff"))
+        textView.setHintTextColor(Color.parseColor("#ffffff"))
+        search_view.setOnQueryTextListener(this)
 
         val urlRep = URLConstants.getBaseURLforAPI(region) + URLConstants.WOW_REP.replace("zone", Ascii.toLowerCase(region)).replace("realm", Ascii.toLowerCase(realm!!))
                 .replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
@@ -137,6 +142,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed {
                             recyclerView?.apply {
                                 layoutManager = LinearLayoutManager(activity)
                                 adapter = ReputationsAdapter(reputations, context)
+                                adapter?.let { adapterList.add(it as ReputationsAdapter) }
                             }
                             recyclerView?.visibility = View.GONE
 
@@ -255,6 +261,17 @@ class ReputationsFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
+        return false
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        for (adapter in adapterList) {
+            adapter.filter(newText!!)
+        }
         return false
     }
 }

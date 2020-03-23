@@ -1,8 +1,6 @@
 package com.BlizzardArmory.ui.ui_warcraft.activity
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
@@ -19,11 +17,13 @@ import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.account.Character
 import com.BlizzardArmory.warcraft.media.Media
-import com.android.volley.*
-import com.android.volley.toolbox.*
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
 import java.util.*
 
@@ -65,11 +65,6 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
-        val cache: Cache = DiskBasedCache(context.cacheDir, 1024 * 1024 * 5) // 1MB cap
-        val network: Network = BasicNetwork(HurlStack())
-        val requestQueue = RequestQueue(cache, network)
-        requestQueue.start()
-
         val jsonRequestMedia = JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(MainActivity.selectedRegion.toLowerCase())
                 + URLConstants.MEDIA_QUERY.replace("zone", MainActivity.selectedRegion.toLowerCase()).replace("realm", character.realm.slug)
                 .replace("charactername", character.name.toLowerCase(Locale.ROOT)) + bnOAuth2Helper.accessToken, null,
@@ -91,14 +86,17 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
     }
 
     private fun downloadAvatar(media: Media?, character: Character) {
-        var mediaUrl: String?
+        val mediaUrl: String?
         if (media == null) {
             mediaUrl = "https://render-us.worldofwarcraft.com/character/auchindoun/0/0-main.jpg"
         } else {
             mediaUrl = media.avatarUrl
         }
+        val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
-        val imageRequest = ImageRequest(mediaUrl +
+        Picasso.get().load(fullURL).into(avatar)
+
+        /*val imageRequest = ImageRequest(mediaUrl +
                 URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-"
                 + (if (character.gender.type == "MALE") 1 else 0) + ".jpg", Response.Listener { bitmap: Bitmap? ->
 
@@ -107,7 +105,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
 
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 Response.ErrorListener { })
-        RequestQueueSingleton.getInstance(context).addToRequestQueue(imageRequest)
+        RequestQueueSingleton.getInstance(context).imageLoader()*/
     }
 
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {

@@ -83,64 +83,68 @@ class WoWActivity : AppCompatActivity() {
                     Response.Listener { response: JSONObject ->
                         val gsonCharacters = GsonBuilder().create()
                         charaters = gsonCharacters.fromJson(response.toString(), Account::class.java)
-                        for (wowAccount in charaters!!.wowAccounts) {
-                            characterList.addAll(wowAccount.characters)
-                        }
-
-                        for (characters in characterList.groupBy { it.realm.name }) {
-                            charactersByRealm.add(characters.value.sortedBy { it.level.toInt() }.reversed())
-                        }
-                        charactersByRealm.sortBy { it[0].realm.name }
-
-                        for (realm in charactersByRealm) run {
-                            val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                            val button = TextView(this@WoWActivity)
-                            button.setBackgroundResource(R.drawable.progress_collapse_header)
-                            button.setTextColor(Color.WHITE)
-                            button.text = "+ " + realm.get(0).realm.name
-                            button.textSize = 18F
-                            button.layoutParams = paramsButton
-                            linear_wow_characters.addView(button)
-
-                            var expand = false
-                            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                            val recyclerView = RecyclerView(this@WoWActivity)
-                            recyclerView.layoutParams = paramsRecyclerView
-                            linear_wow_characters.addView(recyclerView)
-
-                            recyclerView.apply {
-                                layoutManager = LinearLayoutManager(this@WoWActivity)
-                                adapter = bnOAuth2Params?.let { ActivityAdapter(realm, supportFragmentManager, this@WoWActivity, it) }
-                                loadingCircle.visibility = View.GONE
-                                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            }
-                            recyclerView.visibility = View.GONE
-
-                            button.setOnClickListener {
-                                Log.i("CLICKED", "realm")
-                                if (!expand) {
-                                    expand = true
-                                    recyclerView.visibility = View.VISIBLE
-                                    button.text = "- " + realm.get(0).realm.name
-                                } else {
-                                    expand = false
-                                    recyclerView.visibility = View.GONE
-                                    button.text = "+ " + realm.get(0).realm.name
-                                }
-                            }
-                        }
-
+                        populateRecyclerView()
                     },
                     Response.ErrorListener { error: VolleyError ->
-                        try {
+
+                        /*try {
                             callErrorAlertDialog(error.networkResponse.statusCode)
                         } catch (e: Exception) {
                             callErrorAlertDialog(0)
-                        }
+                        }*/
                     })
             RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonRequestCharacters)
         } catch (e: Exception) {
             Log.e("Error", e.toString())
+        }
+    }
+
+    private fun populateRecyclerView() {
+        for (wowAccount in charaters!!.wowAccounts) {
+            characterList.addAll(wowAccount.characters)
+        }
+
+        for (characters in characterList.groupBy { it.realm.name }) {
+            charactersByRealm.add(characters.value.sortedBy { it.level.toInt() }.reversed())
+        }
+        charactersByRealm.sortBy { it[0].realm.name }
+
+        for (realm in charactersByRealm) run {
+            val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            val button = TextView(this@WoWActivity)
+            button.setBackgroundResource(R.drawable.progress_collapse_header)
+            button.setTextColor(Color.WHITE)
+            button.text = "+ " + realm.get(0).realm.name
+            button.textSize = 18F
+            button.layoutParams = paramsButton
+            linear_wow_characters.addView(button)
+
+            var expand = false
+            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            val recyclerView = RecyclerView(this@WoWActivity)
+            recyclerView.layoutParams = paramsRecyclerView
+            linear_wow_characters.addView(recyclerView)
+
+            recyclerView.apply {
+                layoutManager = LinearLayoutManager(this@WoWActivity)
+                adapter = bnOAuth2Params?.let { ActivityAdapter(realm, supportFragmentManager, this@WoWActivity, it) }
+                loadingCircle.visibility = View.GONE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+            recyclerView.visibility = View.GONE
+
+            button.setOnClickListener {
+                Log.i("CLICKED", "realm")
+                if (!expand) {
+                    expand = true
+                    recyclerView.visibility = View.VISIBLE
+                    button.text = "- " + realm.get(0).realm.name
+                } else {
+                    expand = false
+                    recyclerView.visibility = View.GONE
+                    button.text = "+ " + realm.get(0).realm.name
+                }
+            }
         }
     }
 

@@ -17,6 +17,7 @@ enum class RepByExpansion(expansion: String, name: String, faction: String) {
     TORTOLLAN_SEEKERS("Battle for Azeroth", "Tortollan Seekers", ""),
     CHAMPIONS_OF_AZEROTH("Battle for Azeroth", "Champions of Azeroth", ""),
     ARMIES_OF_LEGIONFALL("Legion", "Armies of Legionfall", ""),
+    CHROMIE("Legion", "Chromie", ""),
     ARMY_OF_THE_LIGHT("Legion", "Army of the Light", ""),
     ARGUSSIAN_REACH("Legion", "Argussian Reach", ""),
     COURT_OF_FARONDIS("Legion", "Court of Farondis", ""),

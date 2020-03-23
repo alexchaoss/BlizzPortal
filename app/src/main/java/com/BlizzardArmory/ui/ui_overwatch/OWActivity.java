@@ -220,93 +220,90 @@ public class OWActivity extends AppCompatActivity {
     private void downloadAccountInformation() {
         String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
         Log.i("URL", URLConstants.getOWProfile(platform, username));
-        try {
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(username, platform), null,
-                    response -> {
 
-                        try {
-                            accountInformation = gson.fromJson(response.toString(), Profile.class);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(username, platform), null,
+                response -> {
 
-                            downloadAvatar();
-                            setName();
-                            downloadLevelIcon();
-                            setGamesWon();
-                            setRatingInformation();
-                            //downloadEndorsementIcon(requestQueue);
-                            //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
+                    try {
+                        accountInformation = gson.fromJson(response.toString(), Profile.class);
 
-                            setTopHeroesLists();
-                            setCareerLists();
-                            setSpinnerCareerList(careerQuickPlay);
+                        downloadAvatar();
+                        setName();
+                        downloadLevelIcon();
+                        setGamesWon();
+                        setRatingInformation();
+                        //downloadEndorsementIcon(requestQueue);
+                        //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
 
-                            if (topHeroesQuickPlay.size() > 0) {
-                                setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                        setTopHeroesLists();
+                        setCareerLists();
+                        setSpinnerCareerList(careerQuickPlay);
+
+                        if (topHeroesQuickPlay.size() > 0) {
+                            setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                        }
+                        setSpinnerTopHeroes(topHeroesListSpinner);
+                        setSpinnerCareer(careerListSpinner);
+
+                        quickplay.setOnClickListener(v -> {
+                            if (comp) {
+                                comp = false;
+                                quickplay.setBackground(switchCompQuickRadius);
+                                quickplay.setTextColor(Color.parseColor("#000000"));
+                                competitive.setTextColor(Color.parseColor("#FFFFFF"));
+                                competitive.setBackgroundColor(0);
+                                sortList(topHeroesQuickPlay, sortHeroList[0]);
+                                if (topHeroesQuickPlay.size() > 0) {
+                                    setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                                }
+                                setSpinnerTopHeroes(topHeroesListSpinner);
+                                setSpinnerCareerList(careerQuickPlay);
+                                setSpinnerCareer(careerListSpinner);
                             }
-                            setSpinnerTopHeroes(topHeroesListSpinner);
-                            setSpinnerCareer(careerListSpinner);
+                        });
 
-                            quickplay.setOnClickListener(v -> {
-                                if (comp) {
-                                    comp = false;
-                                    quickplay.setBackground(switchCompQuickRadius);
-                                    quickplay.setTextColor(Color.parseColor("#000000"));
-                                    competitive.setTextColor(Color.parseColor("#FFFFFF"));
-                                    competitive.setBackgroundColor(0);
-                                    sortList(topHeroesQuickPlay, sortHeroList[0]);
-                                    if (topHeroesQuickPlay.size() > 0) {
-                                        setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
-                                    }
-                                    setSpinnerTopHeroes(topHeroesListSpinner);
-                                    setSpinnerCareerList(careerQuickPlay);
-                                    setSpinnerCareer(careerListSpinner);
+                        competitive.setOnClickListener(v -> {
+                            if (!comp) {
+                                comp = true;
+                                competitive.setBackground(switchCompQuickRadius);
+                                competitive.setTextColor(Color.parseColor("#000000"));
+                                quickplay.setBackgroundColor(0);
+                                quickplay.setTextColor(Color.parseColor("#FFFFFF"));
+                                sortList(topHeroesCompetitive, sortHeroList[0]);
+                                if (topHeroesCompetitive.size() > 0) {
+                                    setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
                                 }
-                            });
+                                setSpinnerTopHeroes(topHeroesListSpinner);
+                                setSpinnerCareerList(careerCompetitive);
+                                setSpinnerCareer(careerListSpinner);
 
-                            competitive.setOnClickListener(v -> {
-                                if (!comp) {
-                                    comp = true;
-                                    competitive.setBackground(switchCompQuickRadius);
-                                    competitive.setTextColor(Color.parseColor("#000000"));
-                                    quickplay.setBackgroundColor(0);
-                                    quickplay.setTextColor(Color.parseColor("#FFFFFF"));
-                                    sortList(topHeroesCompetitive, sortHeroList[0]);
-                                    if (topHeroesCompetitive.size() > 0) {
-                                        setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
-                                    }
-                                    setSpinnerTopHeroes(topHeroesListSpinner);
-                                    setSpinnerCareerList(careerCompetitive);
-                                    setSpinnerCareer(careerListSpinner);
+                            }
+                        });
 
-                                }
-                            });
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                        URLConstants.loading = false;
 
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
-                            URLConstants.loading = false;
+                    } catch (Exception e) {
+                        gamesWon.setText("This profile is private and the information unavailable");
+                        gamesWon.setTextSize(18);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                        URLConstants.loading = false;
+                        Log.e("Error", Arrays.toString(e.getStackTrace()));
+                    }
 
-                        } catch (Exception e) {
-                            gamesWon.setText("This profile is private and the information unavailable");
-                            gamesWon.setTextSize(18);
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
-                            URLConstants.loading = false;
-                            Log.e("Error", Arrays.toString(e.getStackTrace()));
-                        }
+                },
+                error -> {
+                    Log.e("Error", error.toString());
+                    if (error.networkResponse == null) {
+                        showNoConnectionMessage(OWActivity.this, 0);
+                    } else {
+                        showNoConnectionMessage(OWActivity.this, error.networkResponse.statusCode);
+                    }
+                });
 
-                    },
-                    error -> {
-                        Log.e("Error", error.toString());
-                        if (error.networkResponse == null) {
-                            showNoConnectionMessage(OWActivity.this, 0);
-                        } else {
-                            showNoConnectionMessage(OWActivity.this, error.networkResponse.statusCode);
-                        }
-                    });
-
-            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
-        } catch (Exception e) {
-            Log.e("Error", e.toString());
-        }
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
     }
 
     private void setCareerLists() {
@@ -684,129 +681,102 @@ public class OWActivity extends AppCompatActivity {
         switch (topCharacterName) {
             case "Ana":
                 progressBar.setColor(Color.parseColor("#718ab3"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Ashe":
                 progressBar.setColor(Color.parseColor("#b3a05f"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Baptiste":
                 progressBar.setColor(Color.parseColor("#2892a8"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Bastion":
                 progressBar.setColor(Color.parseColor("#7c8f7b"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Brigitte":
                 progressBar.setColor(Color.parseColor("#be736e"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "DVa":
                 progressBar.setColor(Color.parseColor("#ed93c7"));
-                backgroundColor.setBackground(progressBar);
+                break;
+            case "Echo":
+                progressBar.setColor(Color.parseColor("#ffffff"));
                 break;
             case "Doomfist":
                 progressBar.setColor(Color.parseColor("#815049"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Genji":
                 progressBar.setColor(Color.parseColor("#97ef43"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Hanzo":
                 progressBar.setColor(Color.parseColor("#b9b48a"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Junkrat":
                 progressBar.setColor(Color.parseColor("#ecbd53"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Lúcio":
                 progressBar.setColor(Color.parseColor("#85c952"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Mccree":
                 progressBar.setColor(Color.parseColor("#ae595c"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Mei":
                 progressBar.setColor(Color.parseColor("#6faced"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Mercy":
                 progressBar.setColor(Color.parseColor("#ebe8bb"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Moira":
                 progressBar.setColor(Color.parseColor("#803c51"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Orisa":
                 progressBar.setColor(Color.parseColor("#468c43"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Pharah":
                 progressBar.setColor(Color.parseColor("#3e7dca"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Reaper":
                 progressBar.setColor(Color.parseColor("#7d3e51"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Reinhardt":
                 progressBar.setColor(Color.parseColor("#929da3"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Roadhog":
                 progressBar.setColor(Color.parseColor("#b68c52"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Sigma":
                 progressBar.setColor(Color.parseColor("#33bbaa"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Soldier76":
                 progressBar.setColor(Color.parseColor("#697794"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Sombra":
                 progressBar.setColor(Color.parseColor("#7359ba"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Symmetra":
                 progressBar.setColor(Color.parseColor("#8ebccc"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Torbjörn":
                 progressBar.setColor(Color.parseColor("#c0726e"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Tracer":
                 progressBar.setColor(Color.parseColor("#d79342"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Widowmaker":
                 progressBar.setColor(Color.parseColor("#9e6aa8"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Winston":
                 progressBar.setColor(Color.parseColor("#a2a6bf"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "WreckingBall":
                 progressBar.setColor(Color.parseColor("#4a575f"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Zarya":
                 progressBar.setColor(Color.parseColor("#e77eb6"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Zenyatta":
                 progressBar.setColor(Color.parseColor("#ede582"));
-                backgroundColor.setBackground(progressBar);
                 break;
         }
+        backgroundColor.setBackground(progressBar);
     }
 
     private int getHeroIcon(String topCharacterName) {
@@ -830,6 +800,8 @@ public class OWActivity extends AppCompatActivity {
             case "DVa":
                 id = R.drawable.dva_icon;
                 break;
+            case "Echo":
+                id = R.drawable.error_icon;
             case "Doomfist":
                 id = R.drawable.doomfist_icon;
                 break;
@@ -928,6 +900,9 @@ public class OWActivity extends AppCompatActivity {
                 break;
             case "DVa":
                 topCharacter.setImageResource(R.drawable.dva_portrait);
+                break;
+            case "Echo":
+                topCharacter.setImageResource(0);
                 break;
             case "Doomfist":
                 topCharacter.setImageResource(R.drawable.doomfist_portrait);
