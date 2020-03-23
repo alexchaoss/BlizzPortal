@@ -70,7 +70,7 @@ public class URLConstants {
     }
 
     public static String getBaseURLforUserInformation() {
-        if (MainActivity.selectedRegion.equals("cn")) {
+        if (MainActivity.selectedRegion.toLowerCase().equals("cn")) {
             return URLConstants.BASE_URL_CN_USER_INFO;
         } else {
             return URLConstants.BASE_URL_USER_INFO.replace("zone", MainActivity.selectedRegion.toLowerCase());

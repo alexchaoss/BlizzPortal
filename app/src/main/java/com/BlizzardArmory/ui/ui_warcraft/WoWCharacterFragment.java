@@ -61,6 +61,7 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -497,23 +498,14 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         imageURLs.put(itemSlot, media.getAssets().get(0).getValue());
                         Log.i("Icon URL", media.getAssets().get(0).getValue());
 
-                        ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), bitmap -> {
-                            if (index == equipment.getEquippedItems().size() - 1) {
-                                requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                loadingCircle.setVisibility(View.GONE);
-                                URLConstants.loading = false;
-                            }
-                            item = new BitmapDrawable(getResources(), bitmap);
-                            setIcons(itemSlot, equipment, item);
-                        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                e -> {
-                                    if (e.networkResponse == null) {
-                                        callErrorAlertDialog(0);
-                                    } else {
-                                        callErrorAlertDialog(e.networkResponse.statusCode);
-                                    }
-                                });
-                        RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(imageRequest);
+                        Picasso.get().load(imageURLs.get(itemSlot)).into(gearImageView.get(itemSlot));
+                        setIcons(itemSlot, equipment, null);
+
+                        if (index == equipment.getEquippedItems().size() - 1) {
+                            requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                            URLConstants.loading = false;
+                        }
                     },
                     e -> {
                         if (index == equipment.getEquippedItems().size() - 1) {
@@ -538,7 +530,9 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void setIcons(String itemSlot, Equipment equipment, Drawable item) {
-        Objects.requireNonNull(gearImageView.get(itemSlot)).setImageDrawable(item);
+        if (item != null) {
+            Objects.requireNonNull(gearImageView.get(itemSlot)).setImageDrawable(item);
+        }
         Objects.requireNonNull(gearImageView.get(itemSlot)).setPadding(3, 3, 3, 3);
         Objects.requireNonNull(gearImageView.get(itemSlot)).setClipToOutline(true);
         Drawable backgroundStroke = null;
