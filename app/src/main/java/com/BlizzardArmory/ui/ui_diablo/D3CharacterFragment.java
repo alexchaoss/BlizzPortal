@@ -3,9 +3,7 @@ package com.BlizzardArmory.ui.ui_diablo;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -47,7 +45,6 @@ import com.BlizzardArmory.diablo.items.Item;
 import com.BlizzardArmory.diablo.items.Items;
 import com.BlizzardArmory.ui.IOnBackPressed;
 import com.android.volley.Request;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -55,6 +52,8 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -351,9 +350,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         navigateTabs(chatgemInactive, chatgemActive, chatgemStatue);
 
         loadingCircle.setVisibility(View.VISIBLE);
-        D3CharacterFragment.this.requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        URLConstants.loading = true;
 
         long startTime = System.nanoTime();
         final Gson gson = new GsonBuilder().create();
@@ -395,7 +391,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 callErrorAlertDialog(error.networkResponse.statusCode);
             }
         });
-        RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest2);
+        RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext()).addToRequestQueue(jsonRequest2);
     }
 
     private void setCharacterInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
@@ -422,6 +418,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     toughness.setText(Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getToughness()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
                     recovery.setText(Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getHealing()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
 
+                    loadingCircle.setVisibility(View.GONE);
                 }, error -> {
             if (error.networkResponse == null) {
                 callErrorAlertDialog(0);
@@ -429,7 +426,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 callErrorAlertDialog(error.networkResponse.statusCode);
             }
         });
-        RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest);
+        RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
     }
 
     private void setCloseButton() {
@@ -546,40 +543,37 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
             skillIcons.put(characterInformation.getSkills().getActive().get(i).getSkill().getName(), tempPair);
         }
         for (String key : skillIcons.keySet()) {
-            final String tempKey = key;
-            ImageRequest imageRequest = new ImageRequest(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(skillIcons.get(key)).second.getSkill().getIcon()), bitmap -> {
-                Drawable skill = new BitmapDrawable(getResources(), bitmap);
-                skillList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setImageDrawable(skill);
-                skillNameList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setText(Objects.requireNonNull(skillIcons.get(tempKey)).second.getSkill().getName());
-                String smallRune = "";
-                try {
-                    smallRune = getSmallRuneIcon(Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getType());
-                } catch (Exception e) {
-                    Log.e("Rune", "none");
-                }
-                final String runeText = smallRune;
-                if (!smallRune.equals("")) {
-                    skillRuneList.get(Objects.requireNonNull(skillIcons.get(tempKey)).first).setText(Html.fromHtml("<img src=\"" + smallRune + "\">" +
-                            Objects.requireNonNull(skillIcons.get(tempKey)).second.getRune().getName(), Html.FROM_HTML_MODE_LEGACY, source -> {
-                        int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                        Drawable drawable = getResources().getDrawable(resourceId, D3CharacterFragment.this.requireContext().getTheme());
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        return drawable;
-                    }, null));
-                }
 
-                setOnTouchSkillTooltip(tempKey, runeText, skill);
+            skillNameList.get(Objects.requireNonNull(skillIcons.get(key)).first).setText(Objects.requireNonNull(skillIcons.get(key)).second.getSkill().getName());
+            String smallRune = "";
+            try {
+                smallRune = getSmallRuneIcon(Objects.requireNonNull(skillIcons.get(key)).second.getRune().getType());
+            } catch (Exception e) {
+                Log.e("Rune", "none");
+            }
+            final String runeText = smallRune;
+            if (!smallRune.equals("")) {
+                skillRuneList.get(Objects.requireNonNull(skillIcons.get(key)).first).setText(Html.fromHtml("<img src=\"" + smallRune + "\">" +
+                        Objects.requireNonNull(skillIcons.get(key)).second.getRune().getName(), Html.FROM_HTML_MODE_LEGACY, source -> {
+                    int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
+                    Drawable drawable = getResources().getDrawable(resourceId, D3CharacterFragment.this.requireContext().getTheme());
+                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    return drawable;
+                }, null));
+            }
 
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    error -> {
-                        Log.e("Network error", error.getMessage());
-                        if (error.networkResponse == null) {
-                            callErrorAlertDialog(0);
-                        } else {
-                            callErrorAlertDialog(error.networkResponse.statusCode);
+            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(skillIcons.get(key)).second.getSkill().getIcon()))
+                    .into(skillList.get(Objects.requireNonNull(skillIcons.get(key)).first), new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            setOnTouchSkillTooltip(key, runeText, skillList.get(Objects.requireNonNull(skillIcons.get(key)).first).getDrawable());
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
                         }
                     });
-            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
         }
     }
 
@@ -662,21 +656,18 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
             passiveIcons.put(characterInformation.getSkills().getPassive().get(i).getSkill().getName(), tempPair);
         }
         for (String key : passiveIcons.keySet()) {
-            final String tempKey = key;
-            ImageRequest imageRequest = new ImageRequest(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(passiveIcons.get(key)).second.getIcon()), bitmap -> {
-                Drawable passive = new BitmapDrawable(getResources(), bitmap);
-                passiveList.get(Objects.requireNonNull(passiveIcons.get(tempKey)).first).setImageDrawable(passive);
-                setOnTouchPassiveTooltip(tempKey, passive);
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    error -> {
-                        Log.e("Network error", error.getMessage());
-                        if (error.networkResponse == null) {
-                            callErrorAlertDialog(0);
-                        } else {
-                            callErrorAlertDialog(error.networkResponse.statusCode);
+            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(passiveIcons.get(key)).second.getIcon()))
+                    .into(passiveList.get(Objects.requireNonNull(passiveIcons.get(key)).first), new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            setOnTouchPassiveTooltip(key, passiveList.get(Objects.requireNonNull(passiveIcons.get(key)).first).getDrawable());
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
                         }
                     });
-            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
         }
     }
 
@@ -736,7 +727,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         callErrorAlertDialog(error.networkResponse.statusCode);
                     }
                 });
-                RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest2);
+                RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext()).addToRequestQueue(jsonRequest2);
             }
         } catch (IOException e) {
             Log.e("Error", e.toString());
@@ -1199,34 +1190,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private void getItemIcons() {
         for (String key : itemIconURL.keySet()) {
-            final String tempKey = key;
-            ImageRequest imageRequest = new ImageRequest(itemIconURL.get(key), bitmap -> {
-                Drawable item = new BitmapDrawable(getResources(), bitmap);
-                Objects.requireNonNull(imageViewItem.get(tempKey)).setImageDrawable(item);
-                imageIndex++;
-
-                if (imageIndex == itemIconURL.size()) {
-                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    loadingCircle.setVisibility(View.GONE);
-                    URLConstants.loading = false;
-                }
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    error -> {
-                        Log.e("Network error", error.getMessage());
-                            if (error.networkResponse != null && error.networkResponse.statusCode == 400) {
-                                callErrorAlertDialog(error.networkResponse.statusCode);
-                            } else {
-                                imageIndex++;
-                                if (imageIndex == itemIconURL.size()) {
-                                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    loadingCircle.setVisibility(View.GONE);
-                                    URLConstants.loading = false;
-                                }
-                                //Log.e("Error", error.toString());
-                            }
-                    });
-
-            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
+            Picasso.get().load(itemIconURL.get(key)).into(imageViewItem.get(key));
         }
     }
 
@@ -1249,40 +1213,26 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         }
 
         for (String key : cubeURL.keySet()) {
-            final String tempKey = key;
-            ImageRequest imageRequest = new ImageRequest(cubeURL.get(key), bitmap -> {
-                Drawable item = new BitmapDrawable(getResources(), bitmap);
-                switch (tempKey) {
-                    case "sword":
-                        cubeSword.setVisibility(View.VISIBLE);
-                        cubeSword.setImageDrawable(item);
-                        break;
-                    case "armor":
-                        cubeArmor.setVisibility(View.VISIBLE);
-                        cubeArmor.setImageDrawable(item);
-                        break;
-                    case "ring":
-                        cubeRing.setVisibility(View.VISIBLE);
-                        cubeRing.setImageDrawable(item);
-                        break;
-                }
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    error -> {
-                        Log.e("Network error", error.getMessage());
-                        if (error.networkResponse == null) {
-                            callErrorAlertDialog(0);
-                        } else {
-                            callErrorAlertDialog(error.networkResponse.statusCode);
-                        }
-                    });
-            RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(imageRequest);
+            switch (key) {
+                case "sword":
+                    cubeSword.setVisibility(View.VISIBLE);
+                    Picasso.get().load(cubeURL.get(key)).into(cubeSword);
+                    break;
+                case "armor":
+                    cubeArmor.setVisibility(View.VISIBLE);
+                    Picasso.get().load(cubeURL.get(key)).into(cubeArmor);
+                    break;
+                case "ring":
+                    cubeRing.setVisibility(View.VISIBLE);
+                    Picasso.get().load(cubeURL.get(key)).into(cubeRing);
+                    break;
+            }
         }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     private void addImageViewItemsToList() {
@@ -1397,6 +1347,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
             closeViewsWithoutButton();
             return true;
         } else {
+            RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext().getApplicationContext()).getRequestQueue().cancelAll(requireActivity().getApplicationContext());
             return false;
         }
     }
@@ -1442,36 +1393,41 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
             button.setLayoutParams(layoutParams);
             button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
 
-            dialog = builder.show();
-            Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            dialog.getWindow().setLayout(800, 500);
+            try {
+                dialog = builder.show();
 
-            LinearLayout linearLayout = new LinearLayout(getContext());
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setGravity(Gravity.CENTER);
+                Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                dialog.getWindow().setLayout(800, 500);
 
-            linearLayout.addView(titleText);
-            linearLayout.addView(messageText);
-            linearLayout.addView(button);
+                LinearLayout linearLayout = new LinearLayout(getContext());
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                linearLayout.setGravity(Gravity.CENTER);
 
-            LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 20, 20, 20);
+                linearLayout.addView(titleText);
+                linearLayout.addView(messageText);
+                linearLayout.addView(button);
 
-            dialog.addContentView(linearLayout, layoutParamsWindow);
+                LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(20, 20, 20, 20);
 
-            dialog.setOnCancelListener(dialog1 -> {
-                if (responseCode != 404) {
-                    D3CharacterFragment fragment = (D3CharacterFragment) getParentFragmentManager().findFragmentById(R.id.fragment);
-                    getParentFragmentManager().beginTransaction()
-                            .detach(Objects.requireNonNull(fragment))
-                            .attach(fragment)
-                            .commit();
-                } else {
-                    getParentFragmentManager().beginTransaction().remove(D3CharacterFragment.this).commit();
-                }
-            });
+                dialog.addContentView(linearLayout, layoutParamsWindow);
 
-            button.setOnClickListener(v -> dialog.cancel());
+                dialog.setOnCancelListener(dialog1 -> {
+                    if (responseCode != 404) {
+                        D3CharacterFragment fragment = (D3CharacterFragment) getParentFragmentManager().findFragmentById(R.id.fragment);
+                        getParentFragmentManager().beginTransaction()
+                                .detach(Objects.requireNonNull(fragment))
+                                .attach(fragment)
+                                .commit();
+                    } else {
+                        getParentFragmentManager().beginTransaction().remove(D3CharacterFragment.this).commit();
+                    }
+                });
+
+                button.setOnClickListener(v -> dialog.cancel());
+            } catch (WindowManager.BadTokenException e) {
+                Log.e("BAD TOKEN EXCEPTION", "ACTIVTY DOES NOT EXIST");
+            }
         }
     }
 }

@@ -9,25 +9,25 @@ public class TimePlayed {
 
     @SerializedName("demon-hunter")
     @Expose
-    private Double demonHunter;
+    private Double demonHunter = 0.0;
     @SerializedName("barbarian")
     @Expose
-    private Double barbarian;
+    private Double barbarian = 0.0;
     @SerializedName("witch-doctor")
     @Expose
-    private Double witchDoctor;
+    private Double witchDoctor = 0.0;
     @SerializedName("necromancer")
     @Expose
-    private Double necromancer;
+    private Double necromancer = 0.0;
     @SerializedName("wizard")
     @Expose
-    private Double wizard;
+    private Double wizard = 0.0;
     @SerializedName("monk")
     @Expose
-    private Double monk;
+    private Double monk = 0.0;
     @SerializedName("crusader")
     @Expose
-    private Double crusader;
+    private Double crusader = 0.0;
 
     public Double getDemonHunter() {
         return demonHunter;

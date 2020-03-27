@@ -3,9 +3,7 @@ package com.BlizzardArmory.ui.ui_warcraft;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -29,12 +27,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.ui.IOnBackPressed;
+import com.BlizzardArmory.ui.MainActivity;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.equipment.Enchantment;
@@ -53,7 +53,6 @@ import com.BlizzardArmory.warcraft.talents.Talents;
 import com.BlizzardArmory.warcraft.talents.specializationdata.SpecializationData;
 import com.BlizzardArmory.warcraft.talents.specializationdata.TalentTier;
 import com.android.volley.Request;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -100,7 +99,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     private TextView statsView;
     private TextView nameView;
     private ScrollView scrollView;
-    private Drawable item;
 
     //Primary stats
     private TextView strength;
@@ -115,7 +113,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     private TextView haste;
     private TextView mastery;
     private TextView versatility;
-    private Drawable backgroundMain = null;
 
     //Talents
     private List<TextView> talentsTierContainer;
@@ -142,14 +139,14 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private ImageView closeButton;
     private RelativeLayout loadingCircle;
-    //Containers
+
     private HashMap<String, ImageView> gearImageView = new HashMap<>();
-
-
     private HashMap<String, String> stats = new HashMap<>();
     private HashMap<String, String> nameList = new HashMap<>();
 
     private String urlMain = "";
+    private final Gson gson = new GsonBuilder().create();
+    private BnOAuth2Helper bnOAuth2Helper;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -210,10 +207,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         hundredTalent = view.findViewById(R.id.hundredTalent);
 
         activateCloseButton();
-
-        WoWCharacterFragment.this.requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
 
         LinearLayout.LayoutParams layoutParamsName = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -278,15 +271,15 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(requireActivity().getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
         assert bnOAuth2Params != null;
-        final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+        bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
         downloadBackground();
 
-        downloadAndSetCharacterInformation(bnOAuth2Helper);
+        downloadAndSetCharacterInformation();
 
-        downloadStats(bnOAuth2Helper);
+        downloadStats();
 
-        downloadTalents(bnOAuth2Helper);
+        downloadTalents();
 
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
@@ -305,8 +298,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         });
     }
 
-    private void downloadTalents(final BnOAuth2Helper bnOAuth2Helper) {
-        final Gson gson = new GsonBuilder().create();
+    private void downloadTalents() {
         try {
             String talentsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_TALENT_QUERY);
             talentsURL = talentsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
@@ -354,8 +346,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     }
 
-    private void downloadStats(BnOAuth2Helper bnOAuth2Helper) {
-        final Gson gson = new GsonBuilder().create();
+    private void downloadStats() {
         try {
             String statsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_STATS_QUERY);
             statsURL = statsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
@@ -379,8 +370,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     }
 
-    private void downloadAndSetCharacterInformation(final BnOAuth2Helper bnOAuth2Helper) {
-        final Gson gson = new GsonBuilder().create();
+    private void downloadAndSetCharacterInformation() {
         try {
             String characterURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_CHARACTER_QUERY);
             characterURL = characterURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
@@ -473,14 +463,22 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private void downloadBackground() {
         if (media != null) {
-            ImageRequest imageRequest = new ImageRequest(media.getRenderUrl(), bitmap -> {
-                backgroundMain = new BitmapDrawable(getResources(), bitmap);
-                background.setImageDrawable(backgroundMain);
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    e -> {
-                        Log.e("BAD URL BACKGROUND", urlMain);
-                    });
-            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(imageRequest);
+            Picasso.get().load(media.getRenderUrl()).into(background);
+        } else {
+            try {
+                JsonObjectRequest stringMedia = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(MainActivity.selectedRegion.toLowerCase())
+                        + URLConstants.MEDIA_QUERY.replace("zone", MainActivity.selectedRegion.toLowerCase()).replace("realm", characterRealm.toLowerCase())
+                        .replace("charactername", characterClicked.toLowerCase()) + bnOAuth2Helper.getAccessToken(), null,
+                        response -> {
+                            media = gson.fromJson(response.toString(), com.BlizzardArmory.warcraft.media.Media.class);
+                            Picasso.get().load(media.getRenderUrl()).into(background);
+                        }, e -> {
+                    Log.e("media", "download fail");
+                });
+                RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(stringMedia);
+            } catch (Exception e) {
+                Log.e("access token", e.toString());
+            }
         }
     }
 
@@ -502,7 +500,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         setIcons(itemSlot, equipment, null);
 
                         if (index == equipment.getEquippedItems().size() - 1) {
-                            requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
                             URLConstants.loading = false;
                         }
@@ -517,7 +514,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         setIcons(itemSlot, equipment, errorIcon);
                     });
 
-            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(requireActivity()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             try {
                 Log.e("Error Image URL", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
@@ -1305,13 +1302,12 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             dialog.setOnCancelListener(dialog1 -> {
                 if (responseCode != 404) {
                     dialog.hide();
-                    WoWNavFragment fragment = (WoWNavFragment)
-                            getParentFragmentManager().findFragmentById(R.id.fragment);
 
-                    getParentFragmentManager().beginTransaction()
-                            .detach(Objects.requireNonNull(fragment))
-                            .attach(fragment)
-                            .commit();
+                    Fragment fragment = requireActivity().getSupportFragmentManager().findFragmentByTag("NAV_FRAGMENT");
+                    FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
+                    ft.detach(fragment);
+                    ft.attach(fragment);
+                    ft.commit();
                 } else {
                     ((WoWActivity) getContext()).onBackPressed();
                 }
