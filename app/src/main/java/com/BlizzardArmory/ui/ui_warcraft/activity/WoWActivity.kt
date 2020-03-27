@@ -87,11 +87,6 @@ class WoWActivity : AppCompatActivity() {
                     },
                     Response.ErrorListener { error: VolleyError ->
 
-                        /*try {
-                            callErrorAlertDialog(error.networkResponse.statusCode)
-                        } catch (e: Exception) {
-                            callErrorAlertDialog(0)
-                        }*/
                     })
             RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonRequestCharacters)
         } catch (e: Exception) {
@@ -155,7 +150,7 @@ class WoWActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (!URLConstants.loading) {
+        RequestQueueSingleton.getInstance(this).requestQueue.cancelAll(this)
             val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
             if (fragment !is IOnBackPressed || !(fragment as IOnBackPressed).onBackPressed()) {
                 super.onBackPressed()
@@ -164,7 +159,6 @@ class WoWActivity : AppCompatActivity() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)
             }
-        }
     }
 
     private fun callErrorAlertDialog(responseCode: Int) {

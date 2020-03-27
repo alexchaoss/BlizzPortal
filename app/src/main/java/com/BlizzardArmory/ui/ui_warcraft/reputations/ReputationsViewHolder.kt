@@ -67,7 +67,7 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
     }
 
     private fun setTextViewsText(reputations: Reputations) {
-        if (reputations.standing.name == "Exalted") {
+        if (reputations.standing.name == "Exalted" || reputations.standing.name == "Best Friend" || reputations.standing.name == "Rank 8" || reputations.standing.name == "Timelord") {
             progressBar?.max = 1000
             progressBar?.progress = 1000
         } else {

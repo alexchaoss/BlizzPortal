@@ -152,4 +152,6 @@
     <string name="_10v10">10v10</string>
     <string name="reputation">Reputation</string>
     <string name="action_search">action_search</string>
+    <string name="rate_my_app">Rate my app!</string>
+    <string name="rate_it">Rate it!</string>
 </resources>

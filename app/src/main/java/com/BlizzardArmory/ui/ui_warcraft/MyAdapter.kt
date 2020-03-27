@@ -10,7 +10,7 @@ import com.BlizzardArmory.ui.ui_warcraft.progress.ProgressFragment
 import com.BlizzardArmory.ui.ui_warcraft.pvp.PvPFragment
 import com.BlizzardArmory.ui.ui_warcraft.reputations.ReputationsFragment
 
-class MyAdapter(private val myContext: Context, fm: FragmentManager, internal var totalTabs: Int, internal var bundle: Bundle) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MyAdapter(private val myContext: Context, fm: FragmentManager, private var totalTabs: Int, internal var bundle: Bundle) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
         when (position) {

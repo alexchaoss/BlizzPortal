@@ -429,7 +429,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/terran_wins_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/terran_wins"
@@ -452,7 +451,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/zerg_wins_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/zerg_wins"
@@ -475,7 +473,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/protoss_wins_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/protoss_wins"

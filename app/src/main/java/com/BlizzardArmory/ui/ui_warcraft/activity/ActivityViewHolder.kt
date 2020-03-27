@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.ui_warcraft.activity
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -61,7 +60,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
 
     }
 
-    private fun downloadMedia(character: Character, bnOAuth2Params: BnOAuth2Params, fragmentManager: FragmentManager): Drawable? {
+    private fun downloadMedia(character: Character, bnOAuth2Params: BnOAuth2Params, fragmentManager: FragmentManager) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
@@ -81,8 +80,6 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
             onClickCharacter(character, "", fragmentManager)
         })
         RequestQueueSingleton.getInstance(context).addToRequestQueue(jsonRequestMedia)
-
-        return null
     }
 
     private fun downloadAvatar(media: Media?, character: Character) {
@@ -95,17 +92,6 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
         Picasso.get().load(fullURL).into(avatar)
-
-        /*val imageRequest = ImageRequest(mediaUrl +
-                URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-"
-                + (if (character.gender.type == "MALE") 1 else 0) + ".jpg", Response.Listener { bitmap: Bitmap? ->
-
-            avatar?.background = BitmapDrawable(context.resources, bitmap)
-            URLConstants.loading = false
-
-        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                Response.ErrorListener { })
-        RequestQueueSingleton.getInstance(context).imageLoader()*/
     }
 
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {
@@ -113,8 +99,8 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
             val woWNavFragment = WoWNavFragment.newInstance(character.name.toLowerCase(Locale.ROOT), character.realm.slug, media, MainActivity.selectedRegion)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            fragmentTransaction.replace(R.id.fragment, woWNavFragment)
-            fragmentTransaction.addToBackStack(null).commit()
+            fragmentTransaction.replace(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+            fragmentTransaction.addToBackStack("NAV_FRAGMENT").commit()
             fragmentManager.executePendingTransactions()
         }
     }

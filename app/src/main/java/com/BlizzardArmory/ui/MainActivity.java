@@ -1,11 +1,14 @@
 package com.BlizzardArmory.ui;
 
 
+import android.app.ActivityManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -32,7 +35,6 @@ import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.InternetCheck;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity;
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -41,15 +43,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     public static String selectedRegion = "";
-    private SharedPreferences sharedPreferences;
     private BnOAuth2Params bnOAuth2Params;
     private String clientID = "";
     private String clientSecret = "";
@@ -63,13 +63,51 @@ public class MainActivity extends AppCompatActivity {
         Spinner regions = findViewById(R.id.spinner);
         Button login = findViewById(R.id.buttonLogin);
         Button clearCredentials = findViewById(R.id.clear_credentials);
+        Button rate = findViewById(R.id.rate);
         paypalWebView = findViewById(R.id.webview);
         String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
-        clearCacheOlderThan30Days();
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
+        ArrayAdapter arrayAdapter = setRegionAdapater(REGION_LIST);
+
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        regions.setAdapter(arrayAdapter);
+
+        regionSelector(regions);
+
+        ImageView settings = findViewById(R.id.settings);
+        settingsLayout = findViewById(R.id.settings_layout);
+        settings.setOnClickListener(v -> settingsLayout.setVisibility(View.VISIBLE));
+
+        ImageView closeButton = findViewById(R.id.close_button);
+        closeButton.setOnClickListener(v -> settingsLayout.setVisibility(View.GONE));
+
+        Button button = findViewById(R.id.licenses);
+        OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title));
+        button.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OssLicensesMenuActivity.class)));
+
+        rate.setOnClickListener(v -> {
+            openAppStoreForReview();
+        });
+
+
+        Button donateButton = findViewById(R.id.donation);
+        donateButton.setOnClickListener(v -> {
+            String url = "https://paypal.me/astpierredev";
+            paypalWebView.loadUrl(url);
+        });
+
+        openLoginToBattlenet(login);
+
+        clearCredentials.setOnClickListener(v -> {
+            showNoConnectionMessage(MainActivity.this, 100);
+        });
+    }
+
+    @NotNull
+    private ArrayAdapter setRegionAdapater(String[] REGION_LIST) {
+        return new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -90,10 +128,9 @@ public class MainActivity extends AppCompatActivity {
                 return view;
             }
         };
+    }
 
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        regions.setAdapter(arrayAdapter);
-
+    private void regionSelector(Spinner regions) {
         regions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -113,24 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(0);
             }
         });
+    }
 
-        ImageView settings = findViewById(R.id.settings);
-        settingsLayout = findViewById(R.id.settings_layout);
-        settings.setOnClickListener(v -> settingsLayout.setVisibility(View.VISIBLE));
-
-        ImageView closeButton = findViewById(R.id.close_button);
-        closeButton.setOnClickListener(v -> settingsLayout.setVisibility(View.GONE));
-
-        Button button = findViewById(R.id.licenses);
-        OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title));
-        button.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OssLicensesMenuActivity.class)));
-
-        Button donateButton = findViewById(R.id.donation);
-        donateButton.setOnClickListener(v -> {
-            String url = "https://paypal.me/astpierredev";
-            paypalWebView.loadUrl(url);
-        });
-
+    private void openLoginToBattlenet(Button login) {
         login.setOnClickListener(view -> {
             if (selectedRegion.equals("Select Region")) {
                 Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
@@ -138,71 +160,51 @@ public class MainActivity extends AppCompatActivity {
                 new InternetCheck(internet -> {
                     if (internet) {
                         try {
-                            DatabaseReference serverDatabase = FirebaseDatabase.getInstance().getReference();
-                            DatabaseReference serverRef = serverDatabase.child("servers");
-
-
-                            serverRef.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    clientID = dataSnapshot.child("clientID").getValue(String.class);
-                                    clientSecret = dataSnapshot.child("clientSecret").getValue(String.class);
-
-                                    bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
-                                            URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
-
-                                    startOauthFlow(bnOAuth2Params);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.e("SERVER DATA", databaseError.getMessage());
-                                }
-                            });
+                            getClientSecret();
                         } catch (Exception e) {
                             showNoConnectionMessage(MainActivity.this, 0);
                         }
-                    }else{
+                    } else {
                         showNoConnectionMessage(MainActivity.this, 0);
                     }
                 });
             }
-
         });
+    }
 
+    private void getClientSecret() {
+        DatabaseReference serverDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference serverRef = serverDatabase.child("servers");
+        serverRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                clientID = dataSnapshot.child("clientID").getValue(String.class);
+                clientSecret = dataSnapshot.child("clientSecret").getValue(String.class);
 
-        clearCredentials.setOnClickListener(v -> {
-            if (selectedRegion.equals("Select Region")) {
-                Toast.makeText(getApplicationContext(), "Please select a region", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Credentials cleared", Toast.LENGTH_SHORT).show();
-                clearCredentials(bnOAuth2Params);
+                bnOAuth2Params = new BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(),
+                        URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2);
+
+                startOauthFlow(bnOAuth2Params);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("SERVER DATA", databaseError.getMessage());
             }
         });
     }
 
-    private void clearCacheOlderThan30Days() {
-        if (getCacheDir().isDirectory()) {
-            Log.i("Cache", "exist");
-            File[] files = getCacheDir().listFiles();
-            for (File file : files) {
-                if (null != file) {
-                    Log.i("File", "exist");
-                    long lastModified = file.lastModified();
-
-                    if (0 < lastModified) {
-                        Date lastMDate = new Date(lastModified);
-                        Date today = new Date(System.currentTimeMillis());
-
-                        long diff = today.getTime() - lastMDate.getTime();
-                        long diffDays = diff / (24 * 60 * 60 * 1000);
-                        if (30 < diffDays) {
-                            Log.i("File", "deleted");
-                            file.delete();
-                        }
-                    }
-                }
-            }
+    private void openAppStoreForReview() {
+        Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
         }
     }
 
@@ -214,15 +216,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void clearCredentials(final BnOAuth2Params bnOAuth2Params) {
-        try {
-            if (bnOAuth2Params != null) {
-                new BnOAuth2Helper(sharedPreferences, bnOAuth2Params).clearCredentials();
-            }
-            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void clearCredentials() {
+
+        ((ActivityManager) this.getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
     }
 
     @Override
@@ -253,12 +249,11 @@ public class MainActivity extends AppCompatActivity {
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
 
+        LinearLayout buttonLayout = new LinearLayout(context);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout.setGravity(Gravity.CENTER);
+
         Button button = new Button(context);
-        if (responseCode == -10) {
-            button.setText("RETRY");
-        } else {
-            button.setText("OK");
-        }
         button.setTextSize(18);
         button.setTextColor(Color.WHITE);
         button.setGravity(Gravity.CENTER);
@@ -266,25 +261,54 @@ public class MainActivity extends AppCompatActivity {
         button.setLayoutParams(layoutParams);
         button.setBackground(context.getDrawable(R.drawable.buttonstyle));
 
+        Button button2 = new Button(context);
+        button2.setTextSize(18);
+        button2.setTextColor(Color.WHITE);
+        button2.setGravity(Gravity.CENTER);
+        button2.setWidth(200);
+        button2.setLayoutParams(layoutParams);
+        button2.setBackground(context.getDrawable(R.drawable.buttonstyle));
+
+        if (responseCode == -10) {
+            button.setText("RETRY");
+            buttonLayout.addView(button);
+        } else if (responseCode == 100) {
+            button.setText("Yes");
+            button2.setText("Cancel");
+            titleText.setText("Warning");
+            buttonLayout.addView(button);
+            buttonLayout.addView(button2);
+            messageText.setText("You are about to clear the application data, this will close the application.\n Are you sure you want to continue?");
+        } else {
+            buttonLayout.addView(button);
+            button.setText("OK");
+        }
+
         final AlertDialog dialog = builder.show();
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         dialog.getWindow().setLayout(800, 500);
+
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
 
+
         linearLayout.addView(titleText);
         linearLayout.addView(messageText);
-        linearLayout.addView(button);
+        linearLayout.addView(buttonLayout);
 
         LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(20, 20, 20, 20);
 
         dialog.addContentView(linearLayout, layoutParamsWindow);
-
-        button.setOnClickListener(v -> dialog.cancel());
-        dialog.setOnCancelListener(DialogInterface::cancel);
+        if (responseCode == 100) {
+            button2.setOnClickListener(v -> dialog.cancel());
+            button.setOnClickListener(v -> clearCredentials());
+        } else {
+            button.setOnClickListener(v -> dialog.cancel());
+            dialog.setOnCancelListener(DialogInterface::cancel);
+        }
     }
 
 }

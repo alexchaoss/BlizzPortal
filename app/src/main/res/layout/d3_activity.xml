@@ -47,11 +47,11 @@
         android:id="@+id/search"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:src="@drawable/search_icon"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:src="@drawable/search_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view2"
@@ -152,8 +152,8 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="*"
-                android:layout_marginTop="-40dp">
+                android:layout_marginTop="-40dp"
+                android:stretchColumns="*">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -295,6 +295,74 @@
                     android:layout_height="100dp"
                     android:contentDescription="@string/image_act5" />
             </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/time_played_d3">
+
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/barb_progress"
+                    android:layout_width="0dp"
+                    android:max="100"
+                    android:layout_height="match_parent"
+                    android:progressDrawable="@drawable/d3_prog_barb" />
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/crusader_progress"
+                    android:layout_width="0dp"
+                    android:max="100"
+                    android:layout_height="match_parent"
+                    android:progressDrawable="@drawable/d3_prog_crusader" />
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/dh_progress"
+                    android:layout_width="0dp"
+                    android:max="100"
+                    android:layout_height="match_parent"
+                    android:progressDrawable="@drawable/d3_prog_dh" />
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/monk_progress"
+                    android:layout_width="0dp"
+                    android:max="100"
+                    android:layout_height="match_parent"
+                    android:progressDrawable="@drawable/d3_prog_monk" />
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/necro_progress"
+                    android:layout_width="0dp"
+                    android:max="100"
+                    android:layout_height="match_parent"
+                    android:progressDrawable="@drawable/d3_prog_necro" />
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/wd_progress"
+                    android:layout_width="0dp"
+                    android:max="100"
+                    android:layout_height="match_parent"
+                    android:progressDrawable="@drawable/d3_prog_wd" />
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/wizard_progress"
+                    android:layout_width="0dp"
+                    android:max="100"
+                    android:layout_height="match_parent"
+                    android:progressDrawable="@drawable/d3_prog_wizard" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/textView3"
