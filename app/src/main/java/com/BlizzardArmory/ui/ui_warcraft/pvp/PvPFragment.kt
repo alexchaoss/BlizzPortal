@@ -83,8 +83,6 @@ class PvPFragment : Fragment(), IOnBackPressed {
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
-
-
         downloadPvPSummary()
         download2v2Info()
         download3v3Info()
@@ -132,7 +130,11 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     })
                     activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(tierRequest)
                 }, Response.ErrorListener {
-            layout3v3.alpha = 0.4f
+            try {
+                layout3v3.alpha = 0.4f
+            } catch (e: Exception) {
+
+            }
         })
         activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvp3v3Request)
     }
@@ -311,6 +313,6 @@ class PvPFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        return false
+        return URLConstants.loading
     }
 }
