@@ -28,16 +28,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.ui.MainActivity;
 import com.BlizzardArmory.ui.MetricConversion;
 import com.BlizzardArmory.warcraft.media.Media;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -54,7 +49,6 @@ public class WoWCharacterSearchDialog {
     private static String characterRealm = "";
     private static Media media;
     private static String selectedRegion = "";
-    private static RequestQueue requestQueue;
 
     private static void callCharacterFragment(Activity activity, Fragment fragment) {
         if (fragment != null && fragment.isVisible()) {
@@ -200,11 +194,6 @@ public class WoWCharacterSearchDialog {
             } else {
                 characterClicked = characterField.getText().toString().toLowerCase();
                 characterRealm = realmField.getText().toString().toLowerCase().replace(" ", "-");
-
-                Cache cache = new DiskBasedCache(Objects.requireNonNull(activity).getCacheDir(), 1024 * 1024 * 5); // 1MB cap
-                Network network = new BasicNetwork(new HurlStack());
-                requestQueue = new RequestQueue(cache, network);
-                requestQueue.start();
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
                 BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(activity).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
                 assert bnOAuth2Params != null;
@@ -221,7 +210,7 @@ public class WoWCharacterSearchDialog {
                             }, error -> {
                         callCharacterFragment(activity, fragment);
                     });
-                    requestQueue.add(jsonRequestMedia);
+                    RequestQueueSingleton.Companion.getInstance(activity).getRequestQueue().add(jsonRequestMedia);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

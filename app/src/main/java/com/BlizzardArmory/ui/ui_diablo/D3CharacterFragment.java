@@ -73,9 +73,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private Items itemsInformation;
     private AlertDialog dialog;
 
-    private int imageIndex = 0;
-
     private String battletag = "";
+    private String selectedRegion = "";
 
     private RelativeLayout loadingCircle;
 
@@ -114,7 +113,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     private HashMap<Integer, String> secondaryStatsMap = new HashMap<>();
     private HashMap<Integer, String> gemsMap = new HashMap<>();
 
-    public ScrollView itemScrollView;
+    private ScrollView itemScrollView;
     private ImageButton closeButton;
 
     private TabLayout d3Nav;
@@ -184,6 +183,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         assert bundle != null;
         long id = bundle.getLong("id");
         battletag = bundle.getString("battletag");
+        selectedRegion = bundle.getString("region");
 
         dialog = null;
         mainLayout = view.findViewById(R.id.item_d3_character);
@@ -373,7 +373,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void setItemInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
-        JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
+        JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(selectedRegion) +
                 URLConstants.getD3HeroItemsURL(id, battletag) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {
                     itemsInformation = gson.fromJson(response.toString(), Items.class);
@@ -396,7 +396,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void setCharacterInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(selectedRegion) +
                 URLConstants.getD3HeroURL(id, battletag) + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                 response -> {
                     Log.i("Response", response.toString());
@@ -711,7 +711,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         try {
             for (int i = 0; i < characterInformation.getLegendaryPowers().size(); i++) {
                 final int index = i;
-                JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
+                JsonObjectRequest jsonRequest2 = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(selectedRegion) +
                         URLConstants.D3_ITEM.replace("item", characterInformation.getLegendaryPowers().get(i).getTooltipParams()) + URLConstants.ACCESS_TOKEN_QUERY
                         + bnOAuth2Helper.getAccessToken(), null,
                         response -> {
@@ -1345,7 +1345,6 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     @Override
     public boolean onBackPressed() {
         if (URLConstants.loading) {
-            Log.i("BACK TEST", "WORKED");
             return true;
         } else {
             if (itemScrollView.getVisibility() == View.VISIBLE || skillToolTipScroll.getVisibility() == View.VISIBLE) {

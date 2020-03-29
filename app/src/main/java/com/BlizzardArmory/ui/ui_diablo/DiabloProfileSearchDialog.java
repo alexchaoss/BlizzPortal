@@ -4,18 +4,26 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.ui.MetricConversion;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
@@ -24,6 +32,7 @@ import java.util.Objects;
 public class DiabloProfileSearchDialog {
 
     private static String battleTag = "";
+    private static String selectedRegion = "";
 
 
     private static void callD3Activity(Activity activity, BnOAuth2Params bnOAuth2Params) {
@@ -32,6 +41,7 @@ public class DiabloProfileSearchDialog {
         }
         final Intent intent = new Intent(activity, D3Activity.class);
         intent.putExtra("battletag", battleTag);
+        intent.putExtra("region", selectedRegion);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         activity.startActivity(intent);
     }
@@ -40,6 +50,59 @@ public class DiabloProfileSearchDialog {
         AlertDialog.Builder builderOW = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
+
+        Spinner.LayoutParams layoutParamsSpinner = new Spinner.LayoutParams(Spinner.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(40, activity));
+
+        String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
+        Spinner regions = new Spinner(activity);
+        regions.setBackgroundResource(R.drawable.wow_spinner);
+        regions.setGravity(Gravity.CENTER);
+        regions.setLayoutParams(layoutParamsSpinner);
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setBackgroundColor(Color.BLACK);
+                tv.setTextSize(18);
+                tv.setGravity(Gravity.CENTER);
+                if (position == 0) {
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.WHITE);
+                }
+                return view;
+            }
+        };
+
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        regions.setAdapter(arrayAdapter);
+
+        regions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedRegion = (String) parent.getItemAtPosition(position);
+                try {
+                    ((TextView) view).setTextColor(Color.WHITE);
+                    ((TextView) view).setTextSize(18);
+                    ((TextView) view).setGravity(Gravity.CENTER);
+                } catch (Exception e) {
+                    Log.e("Error", e.toString());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                ((TextView) parent.getChildAt(0)).setTextColor(0);
+            }
+        });
 
         TextView titleText = new TextView(activity);
 
@@ -80,8 +143,8 @@ public class DiabloProfileSearchDialog {
         LinearLayout buttonLayout = new LinearLayout(activity);
         buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
         buttonLayout.setGravity(Gravity.CENTER);
-        buttonLayout.addView(myProfile);
         buttonLayout.addView(searchButton);
+        buttonLayout.addView(myProfile);
 
         final AlertDialog dialogD3 = builderOW.create();
         Objects.requireNonNull(dialogD3.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -98,6 +161,7 @@ public class DiabloProfileSearchDialog {
 
         linearLayout.addView(titleText);
         linearLayout.addView(battleTagField);
+        linearLayout.addView(regions);
         linearLayout.addView(buttonLayout);
 
         dialogD3.addContentView(linearLayout, layoutParams);
@@ -105,6 +169,8 @@ public class DiabloProfileSearchDialog {
         searchButton.setOnClickListener(v -> {
             if (!battleTagField.getText().toString().matches(".*#[0-9]*")) {
                 Toast.makeText(activity.getApplicationContext(), "Please enter a BattleTag", Toast.LENGTH_SHORT).show();
+            } else if (regions.getSelectedItem().toString().equalsIgnoreCase("Select Region")) {
+                Toast.makeText(activity.getApplicationContext(), "Please enter the region", Toast.LENGTH_SHORT).show();
             } else {
                 battleTag = battleTagField.getText().toString();
                 dialogD3.cancel();
@@ -114,6 +180,7 @@ public class DiabloProfileSearchDialog {
 
         myProfile.setOnClickListener(v -> {
             battleTag = UserInformation.getBattleTag();
+            selectedRegion = "";
             dialogD3.cancel();
             callD3Activity(activity, bnOAuth2Params);
         });
