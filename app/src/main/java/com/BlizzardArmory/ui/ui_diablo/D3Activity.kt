@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.ui_diablo
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -48,7 +47,8 @@ class D3Activity : AppCompatActivity() {
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var portraits: List<Drawable>? = null
-    private var battleTag = ""
+    private var battleTag: String? = ""
+    private var selectedRegion: String? = ""
     private var D3AccountInfo: JSONObject? = null
     private var paragonLevel: TextView? = null
     private var lifetimeKills: TextView? = null
@@ -61,6 +61,7 @@ class D3Activity : AppCompatActivity() {
     private var act4: ImageView? = null
     private var act5: ImageView? = null
     private var characterID: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.d3_activity)
@@ -79,7 +80,8 @@ class D3Activity : AppCompatActivity() {
         act4 = findViewById(R.id.prog_act4)
         act5 = findViewById(R.id.prog_act5)
         btag.text = UserInformation.getBattleTag()
-        battleTag = intent.extras.getString("battletag")
+        battleTag = intent.extras?.getString("battletag")
+        selectedRegion = intent.extras?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         bnOAuth2Params = Objects.requireNonNull(intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
@@ -99,7 +101,7 @@ class D3Activity : AppCompatActivity() {
     private fun downloadAccountInformation() {
         try {
             val gson = GsonBuilder().create()
-            val jsonRequest = JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") + URLConstants.getD3URLBtagProfile(battleTag)
+            val jsonRequest = JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(selectedRegion) + URLConstants.getD3URLBtagProfile(battleTag)
                     + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper!!.accessToken, null,
                     Response.Listener { response: JSONObject? ->
                         accountInformation = gson.fromJson(response.toString(), AccountInformation::class.java)
@@ -461,6 +463,7 @@ class D3Activity : AppCompatActivity() {
         val bundle = Bundle()
         bundle.putString("battletag", battleTag)
         bundle.putLong("id", characterID)
+        bundle.putString("region", selectedRegion)
         val d3CharacterFragment = D3CharacterFragment()
         d3CharacterFragment.arguments = bundle
         val fragmentManager = supportFragmentManager
@@ -476,7 +479,7 @@ class D3Activity : AppCompatActivity() {
         val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
         if (fragment !is IOnBackPressed || !(fragment as IOnBackPressed).onBackPressed()) {
             super.onBackPressed()
-        } else if (!URLConstants.loading) {
+        } else if (!URLConstants.loading && !fragment.isAdded) {
             val intent = Intent(this, GamesActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
@@ -542,9 +545,9 @@ class D3Activity : AppCompatActivity() {
         linearLayout.addView(messageText)
         linearLayout.addView(buttonLayout)
         dialog.addContentView(linearLayout, layoutParams)
-        dialog.setOnCancelListener { dialog1: DialogInterface? -> downloadAccountInformation() }
-        button.setOnClickListener { v: View? -> dialog.cancel() }
-        button2.setOnClickListener { v: View? -> onBackPressed() }
+        dialog.setOnCancelListener { downloadAccountInformation() }
+        button.setOnClickListener { dialog.cancel() }
+        button2.setOnClickListener { onBackPressed() }
     }
 
     companion object {
