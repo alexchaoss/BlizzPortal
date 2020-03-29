@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
+import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.google.android.material.tabs.TabLayout
 
@@ -83,6 +84,6 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        return false
+        return URLConstants.loading
     }
 }

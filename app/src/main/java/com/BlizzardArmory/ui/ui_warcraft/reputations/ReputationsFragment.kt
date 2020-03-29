@@ -261,7 +261,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
     }
 
     override fun onBackPressed(): Boolean {
-        return false
+        return URLConstants.loading
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

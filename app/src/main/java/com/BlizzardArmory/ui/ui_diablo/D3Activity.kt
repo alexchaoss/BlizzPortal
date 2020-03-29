@@ -476,17 +476,15 @@ class D3Activity : AppCompatActivity() {
         val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
         if (fragment !is IOnBackPressed || !(fragment as IOnBackPressed).onBackPressed()) {
             super.onBackPressed()
-        }
-        if (fragment == null) {
+        } else if (!URLConstants.loading) {
             val intent = Intent(this, GamesActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }
     }
 
-    fun showNoConnectionMessage(context: Context, responseCode: Int) {
+    private fun showNoConnectionMessage(context: Context, responseCode: Int) {
         loadingCircle!!.visibility = View.GONE
-        URLConstants.loading = false
         val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)

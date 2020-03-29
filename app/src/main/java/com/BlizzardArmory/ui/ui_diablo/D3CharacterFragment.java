@@ -179,6 +179,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
+        URLConstants.loading = true;
         Bundle bundle = getArguments();
         assert bundle != null;
         long id = bundle.getLong("id");
@@ -391,7 +392,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 callErrorAlertDialog(error.networkResponse.statusCode);
             }
         });
-        RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext()).addToRequestQueue(jsonRequest2);
+        RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest2);
     }
 
     private void setCharacterInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
@@ -419,6 +420,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     recovery.setText(Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation.getStats().getHealing()) + "</font>", Html.FROM_HTML_MODE_LEGACY));
 
                     loadingCircle.setVisibility(View.GONE);
+                    URLConstants.loading = false;
                 }, error -> {
             if (error.networkResponse == null) {
                 callErrorAlertDialog(0);
@@ -426,7 +428,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 callErrorAlertDialog(error.networkResponse.statusCode);
             }
         });
-        RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
+        RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest);
     }
 
     private void setCloseButton() {
@@ -717,6 +719,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
                             if (index == characterInformation.getLegendaryPowers().size() - 1) {
                                 setCubeText();
+                                URLConstants.loading = false;
                             }
 
                         }, error -> {
@@ -727,7 +730,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                         callErrorAlertDialog(error.networkResponse.statusCode);
                     }
                 });
-                RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext()).addToRequestQueue(jsonRequest2);
+                RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(jsonRequest2);
             }
         } catch (IOException e) {
             Log.e("Error", e.toString());
@@ -1190,7 +1193,9 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     private void getItemIcons() {
         for (String key : itemIconURL.keySet()) {
-            Picasso.get().load(itemIconURL.get(key)).into(imageViewItem.get(key));
+            if (itemIconURL.get(key) != null) {
+                Picasso.get().load(itemIconURL.get(key)).into(imageViewItem.get(key));
+            }
         }
     }
 
@@ -1211,7 +1216,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         } catch (Exception e) {
             Log.e("Power", "None");
         }
-
+        int i = 0;
         for (String key : cubeURL.keySet()) {
             switch (key) {
                 case "sword":
@@ -1227,12 +1232,8 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                     Picasso.get().load(cubeURL.get(key)).into(cubeRing);
                     break;
             }
+            i++;
         }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     private void addImageViewItemsToList() {
@@ -1343,12 +1344,17 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
     @Override
     public boolean onBackPressed() {
-        if (itemScrollView.getVisibility() == View.VISIBLE || skillToolTipScroll.getVisibility() == View.VISIBLE) {
-            closeViewsWithoutButton();
+        if (URLConstants.loading) {
+            Log.i("BACK TEST", "WORKED");
             return true;
         } else {
-            RequestQueueSingleton.Companion.getInstance(requireActivity().getApplicationContext().getApplicationContext()).getRequestQueue().cancelAll(requireActivity().getApplicationContext());
-            return false;
+            if (itemScrollView.getVisibility() == View.VISIBLE || skillToolTipScroll.getVisibility() == View.VISIBLE) {
+                closeViewsWithoutButton();
+                return true;
+            } else {
+                RequestQueueSingleton.Companion.getInstance(requireContext()).getRequestQueue().cancelAll(requireActivity());
+                return false;
+            }
         }
     }
 

@@ -154,7 +154,7 @@ class WoWActivity : AppCompatActivity() {
             val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
             if (fragment !is IOnBackPressed || !(fragment as IOnBackPressed).onBackPressed()) {
                 super.onBackPressed()
-            } else {
+            } else if (!URLConstants.loading) {
                 val intent = Intent(this, GamesActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)

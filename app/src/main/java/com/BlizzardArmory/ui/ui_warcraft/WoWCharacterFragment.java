@@ -155,6 +155,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
+        URLConstants.loading = true;
         Bundle bundle = getArguments();
         assert bundle != null;
         characterRealm = bundle.getString("realm");
@@ -162,7 +163,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         media = new Gson().fromJson(bundle.getString("media"), com.BlizzardArmory.warcraft.media.Media.class);
         urlMain = bundle.getString("url");
         region = bundle.getString("region");
-        URLConstants.loading = true;
         dialog = null;
 
         scrollView = view.findViewById(R.id.scrollView3);
@@ -423,7 +423,11 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                                 }
                                             }
                                             if (!slotEquipped) {
-                                                getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
+                                                try {
+                                                    getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
+                                                } catch (Exception e) {
+                                                    Log.e("Drawable", "Avoided crash");
+                                                }
                                             }
                                         }
                                     },
@@ -1237,7 +1241,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     @Override
     public boolean onBackPressed() {
-        return false;
+        return URLConstants.loading;
     }
 
     private void callErrorAlertDialog(int responseCode) {

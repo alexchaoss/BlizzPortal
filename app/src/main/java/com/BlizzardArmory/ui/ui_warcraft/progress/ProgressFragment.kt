@@ -239,6 +239,6 @@ class ProgressFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        return false
+        return URLConstants.loading
     }
 }
