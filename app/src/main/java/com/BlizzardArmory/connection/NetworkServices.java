@@ -2,6 +2,7 @@ package com.BlizzardArmory.connection;
 
 import com.BlizzardArmory.warcraft.account.Account;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
+import com.BlizzardArmory.warcraft.encounters.EncountersInformation;
 import com.BlizzardArmory.warcraft.equipment.EquippedItem;
 import com.BlizzardArmory.warcraft.media.Media;
 import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics;
@@ -29,14 +30,16 @@ public interface NetworkServices {
                          @Query("access_token") String accessToken);
 
     @GET
-    Call<Media> getDynamicMedia(@Url String url);
+    Call<Media> getDynamicMedia(@Url String url,
+                                @Query("locale") String locale,
+                                @Query("access_token") String accessToken);
 
     @GET("profile/wow/character/{realm}/{charactername}/encounters/raids")
-    Call<Media> getEncounters(@Path("charactername") String character,
-                              @Path("realm") String realm,
-                              @Query("namespace") String namespace,
-                              @Query("locale") String locale,
-                              @Query("access_token") String accessToken);
+    Call<EncountersInformation> getEncounters(@Path("charactername") String character,
+                                              @Path("realm") String realm,
+                                              @Query("namespace") String namespace,
+                                              @Query("locale") String locale,
+                                              @Query("access_token") String accessToken);
 
     @GET("profile/wow/character/{realm}/{charactername}/equipment")
     Call<EquippedItem> getEquippedItems(@Path("charactername") String character,
@@ -60,7 +63,9 @@ public interface NetworkServices {
                            @Query("access_token") String accessToken);
 
     @GET
-    Call<SpecializationData> getDynamicSpec(@Url String url);
+    Call<SpecializationData> getDynamicSpec(@Url String url,
+                                            @Query("locale") String locale,
+                                            @Query("access_token") String accessToken);
 
     @GET("profile/wow/character/{realm}/{charactername}")
     Call<CharacterSummary> getCharacter(@Path("charactername") String character,
@@ -90,7 +95,9 @@ public interface NetworkServices {
                                            @Query("access_token") String accessToken);
 
     @GET
-    Call<Tier> getDynamicTier(@Url String url);
+    Call<Tier> getDynamicTier(@Url String url,
+                              @Query("locale") String locale,
+                              @Query("access_token") String accessToken);
 
     @GET("profile/wow/character/{realm}/{charactername}/reputations")
     Call<Reputation> getReputations(@Path("charactername") String character,

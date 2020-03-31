@@ -36,6 +36,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_activity.*
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
@@ -86,7 +87,7 @@ class WoWActivity : AppCompatActivity() {
 
         val call: Call<Account> = networkServices.getAccount("profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
-            override fun onResponse(call: Call<Account>, response: retrofit2.Response<Account>) {
+            override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 charaters = response.body()
                 populateRecyclerView()
             }

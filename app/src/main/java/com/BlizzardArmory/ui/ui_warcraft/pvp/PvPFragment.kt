@@ -14,26 +14,30 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.connection.RequestQueueSingleton
+import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.MainActivity.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.FactionEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.warcraft.pvp.tiers.Tier
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.common.base.Ascii
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_pvp_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
 
 private const val CHARACTER = "character"
@@ -50,6 +54,9 @@ class PvPFragment : Fragment(), IOnBackPressed {
     private var region: String? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
+    private var retrofit: Retrofit? = null
+    private var gson: Gson? = null
+    private lateinit var networkServices: NetworkServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +90,10 @@ class PvPFragment : Fragment(), IOnBackPressed {
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
+        gson = GsonBuilder().create()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        networkServices = retrofit?.create(NetworkServices::class.java)!!
+
         downloadPvPSummary()
         download2v2Info()
         download3v3Info()
@@ -90,99 +101,114 @@ class PvPFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadRBGInfo() {
-        val urlRBG = URLConstants.getBaseURLforAPI(region) +
-                URLConstants.WOW_PVP_BRACKETS.replace("zone", Ascii.toLowerCase(region)).replace("BRACKET", "rbg")
-                        .replace("realm", Ascii.toLowerCase(realm!!)).replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
+        val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+                "rbg", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<BracketStatistics> {
+            override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
+                val pvpRBG = response.body()
 
-        val pvpRBGRequest = JsonObjectRequest(Request.Method.GET, urlRBG, null,
-                Response.Listener { response ->
-                    val pvpRBG = Gson().fromJson(response.toString(), BracketStatistics::class.java)
-                    val tierRequest = JsonObjectRequest(Request.Method.GET, pvpRBG.tier.key.href + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper!!.accessToken, null,
-                            Response.Listener { response1 ->
-                                val tier = Gson().fromJson(response1.toString(), Tier::class.java)
-                                setTierImage(tierimagerbg, tier)
-                                showBracketInformationOnTouch(layoutrbg, tier, pvpRBG)
+                val call2: Call<Tier> = networkServices.getDynamicTier(pvpRBG?.tier?.key?.href, "en_US", bnOAuth2Helper!!.accessToken)
+                call2.enqueue(object : Callback<Tier> {
+                    override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
+                        val tier = response.body()
+                        setTierImage(tierimagerbg, tier!!)
+                        showBracketInformationOnTouch(layoutrbg, tier, pvpRBG!!)
+                    }
 
-                            }, Response.ErrorListener {
-                    })
-                    activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(tierRequest)
+                    override fun onFailure(call: Call<Tier>, t: Throwable) {
+                        Log.e("Error", t.localizedMessage)
+                        layoutrbg.alpha = 0.4f
+                    }
+                })
+            }
 
-                }, Response.ErrorListener {
-            layoutrbg.alpha = 0.4f
+            override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+                layoutrbg.alpha = 0.4f
+            }
         })
-        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvpRBGRequest)
     }
 
     private fun download3v3Info() {
-        val url3v3 = URLConstants.getBaseURLforAPI(region) +
-                URLConstants.WOW_PVP_BRACKETS.replace("zone", Ascii.toLowerCase(region)).replace("BRACKET", "3v3")
-                        .replace("realm", Ascii.toLowerCase(realm!!)).replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
+        val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+                "3v3", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<BracketStatistics> {
+            override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
+                val pvp3v3 = response.body()
 
-        val pvp3v3Request = JsonObjectRequest(Request.Method.GET, url3v3, null,
-                Response.Listener { response ->
-                    val pvp3v3 = Gson().fromJson(response.toString(), BracketStatistics::class.java)
-                    val tierRequest = JsonObjectRequest(Request.Method.GET, pvp3v3.tier.key.href + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper!!.accessToken, null,
-                            Response.Listener { response1 ->
-                                val tier = Gson().fromJson(response1.toString(), Tier::class.java)
-                                setTierImage(tierimage3v3, tier)
-                                showBracketInformationOnTouch(layout3v3, tier, pvp3v3)
-                            }, Response.ErrorListener {
-                    })
-                    activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(tierRequest)
-                }, Response.ErrorListener {
-            try {
+                val call2: Call<Tier> = networkServices.getDynamicTier(pvp3v3?.tier?.key?.href, "en_US", bnOAuth2Helper!!.accessToken)
+                call2.enqueue(object : Callback<Tier> {
+                    override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
+                        val tier = response.body()
+                        setTierImage(tierimagerbg, tier!!)
+                        showBracketInformationOnTouch(layoutrbg, tier, pvp3v3!!)
+                    }
+
+                    override fun onFailure(call: Call<Tier>, t: Throwable) {
+                        Log.e("Error", t.localizedMessage)
+                        layout3v3.alpha = 0.4f
+                    }
+                })
+            }
+
+            override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
                 layout3v3.alpha = 0.4f
-            } catch (e: Exception) {
-
             }
         })
-        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvp3v3Request)
     }
 
     private fun download2v2Info() {
-        val url2v2 = URLConstants.getBaseURLforAPI(region) +
-                URLConstants.WOW_PVP_BRACKETS.replace("zone", Ascii.toLowerCase(region)).replace("BRACKET", "2v2")
-                        .replace("realm", Ascii.toLowerCase(realm!!)).replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
+        val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+                "2v2", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<BracketStatistics> {
+            override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
+                val pvp2v2 = response.body()
 
-        val pvp2v2Request = JsonObjectRequest(Request.Method.GET, url2v2, null,
-                Response.Listener { response ->
-                    val pvp2v2 = Gson().fromJson(response.toString(), BracketStatistics::class.java)
-                    val tierRequest = JsonObjectRequest(Request.Method.GET, pvp2v2.tier.key.href + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper!!.accessToken, null,
-                            Response.Listener { response1 ->
-                                Log.i("TEST", response1.toString())
-                                val tier = Gson().fromJson(response1.toString(), Tier::class.java)
-                                setTierImage(tierimage2v2, tier)
-                                showBracketInformationOnTouch(layout2v2, tier, pvp2v2)
+                val call2: Call<Tier> = networkServices.getDynamicTier(pvp2v2?.tier?.key?.href, "en_US", bnOAuth2Helper!!.accessToken)
+                call2.enqueue(object : Callback<Tier> {
+                    override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
+                        val tier = response.body()
+                        setTierImage(tierimagerbg, tier!!)
+                        showBracketInformationOnTouch(layoutrbg, tier, pvp2v2!!)
+                    }
 
-                            }, Response.ErrorListener {
-                    })
-                    activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(tierRequest)
-                }, Response.ErrorListener {
-            layout2v2.alpha = 0.4f
+                    override fun onFailure(call: Call<Tier>, t: Throwable) {
+                        Log.e("Error", t.localizedMessage)
+                        layout2v2.alpha = 0.4f
+                    }
+                })
+            }
+
+            override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+                layout2v2.alpha = 0.4f
+            }
         })
-        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvp2v2Request)
     }
 
     private fun downloadPvPSummary() {
-        val urlPvPSummary = URLConstants.getBaseURLforAPI(region) +
-                URLConstants.WOW_PVP_SUM.replace("zone", Ascii.toLowerCase(region)).replace("realm", Ascii.toLowerCase(realm!!))
-                        .replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
 
-        val pvpSummaryRequest = JsonObjectRequest(Request.Method.GET, urlPvPSummary, null,
-                Response.Listener { response ->
-                    val pvpSummary = Gson().fromJson(response.toString(), PvPSummary::class.java)
-                    kills.text = pvpSummary.honorable_kills.toString()
-                    level.text = "LEVEL " + pvpSummary.honor_level.toString()
-                    setHonorRankIcon(pvpSummary)
-                    if (pvpSummary.pvp_map_statistics != null) {
-                        recyclerviewbg.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
-                        }
+        val call: Call<PvPSummary> = networkServices.getPvPSummary(character!!.toLowerCase(Locale.ROOT),
+                realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<PvPSummary> {
+            override fun onResponse(call: Call<PvPSummary>, response: retrofit2.Response<PvPSummary>) {
+                val pvpSummary = response.body()
+                kills.text = pvpSummary?.honorable_kills.toString()
+                level.text = "LEVEL " + pvpSummary?.honor_level.toString()
+                setHonorRankIcon(pvpSummary!!)
+                if (pvpSummary.pvp_map_statistics != null) {
+                    recyclerviewbg.apply {
+                        layoutManager = LinearLayoutManager(activity)
+                        adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
                     }
-                }, Response.ErrorListener {
+                }
+            }
+
+            override fun onFailure(call: Call<PvPSummary>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+            }
         })
-        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it) }?.addToRequestQueue(pvpSummaryRequest)
     }
 
     private fun showBracketInformationOnTouch(layout: View, tier: Tier, bracket: BracketStatistics) {
