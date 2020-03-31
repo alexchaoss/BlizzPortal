@@ -4,6 +4,7 @@ package com.BlizzardArmory.ui.ui_warcraft.progress
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,24 +16,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.connection.RequestQueueSingleton
+import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.MainActivity.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.warcraft.encounters.Expansions
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.common.base.Ascii.toLowerCase
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_progress_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
 
 private const val CHARACTER = "character"
@@ -49,6 +54,10 @@ class ProgressFragment : Fragment(), IOnBackPressed {
     private var region: String? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
+    private var retrofit: Retrofit? = null
+    private var gson: Gson? = null
+    private lateinit var networkServices: NetworkServices
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +67,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
             media = it.getString(MEDIA)
             region = it.getString(REGION)
         }
+
     }
 
     override fun onStart() {
@@ -80,23 +90,25 @@ class ProgressFragment : Fragment(), IOnBackPressed {
         val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
-
+        gson = GsonBuilder().create()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        networkServices = retrofit?.create(NetworkServices::class.java)!!
         downloadEncounterInformation(view)
     }
 
     private fun downloadEncounterInformation(view: View) {
-        val url = URLConstants.getBaseURLforAPI(region) +
-                URLConstants.WOW_ENCOUNTERS.replace("zone", toLowerCase(region))
-                        .replace("realm", toLowerCase(realm!!)).replace("characterName", toLowerCase(character!!)) + bnOAuth2Helper!!.accessToken
+        val call: Call<EncountersInformation> = networkServices.getEncounters(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<EncountersInformation> {
+            override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
+                val encounters = response.body()
+                setRecyclerViewForEachExpansion(encounters!!)
+            }
 
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
-                Response.Listener { response ->
-                    val encounters = Gson().fromJson(response.toString(), EncountersInformation::class.java)
-                    setRecyclerViewForEachExpansion(encounters)
-                }, Response.ErrorListener {
-            showOutdatedTextView()
+            override fun onFailure(call: Call<EncountersInformation>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+                showOutdatedTextView()
+            }
         })
-        activity?.applicationContext?.let { RequestQueueSingleton.getInstance(it).addToRequestQueue(jsonObjectRequest) }
     }
 
     private fun setRecyclerViewForEachExpansion(encounters: EncountersInformation) {
