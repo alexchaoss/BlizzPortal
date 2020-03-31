@@ -2,6 +2,7 @@ package com.BlizzardArmory.ui.ui_warcraft.activity
 
 import android.content.Context
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -11,19 +12,20 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.connection.RequestQueueSingleton
+import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.account.Character
 import com.BlizzardArmory.warcraft.media.Media
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
@@ -36,6 +38,9 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
     private var characterClass: TextView? = null
     private var level: TextView? = null
     private var characterLayout: ConstraintLayout? = null
+    private var retrofit: Retrofit? = null
+    private var gson: Gson? = null
+    private var networkServices: NetworkServices
 
     init {
         avatar = itemView.findViewById(R.id.avatar)
@@ -44,6 +49,9 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         characterClass = itemView.findViewById(R.id.character_class)
         level = itemView.findViewById(R.id.level)
         characterLayout = itemView.findViewById(R.id.character_layout)
+        gson = GsonBuilder().create()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        networkServices = retrofit?.create(NetworkServices::class.java)!!
     }
 
     fun bind(character: Character, bnOAuth2Params: BnOAuth2Params, fragmentManager: FragmentManager) {
@@ -64,22 +72,23 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
-        val jsonRequestMedia = JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(MainActivity.selectedRegion.toLowerCase())
-                + URLConstants.MEDIA_QUERY.replace("zone", MainActivity.selectedRegion.toLowerCase()).replace("realm", character.realm.slug)
-                .replace("charactername", character.name.toLowerCase(Locale.ROOT)) + bnOAuth2Helper.accessToken, null,
-                Response.Listener { response: JSONObject ->
-                    val gsonMedia = GsonBuilder().create()
-                    val media: Media = gsonMedia.fromJson(response.toString(), Media::class.java)
+        val call: Call<Media> = networkServices.getMedia(character.name.toLowerCase(Locale.ROOT), character.realm.slug,
+                "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper.accessToken)
+        call.enqueue(object : Callback<Media> {
+            override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
+                val media: Media? = response.body()
+                onClickCharacter(character, gson?.toJson(response.body())!!, fragmentManager)
+                downloadAvatar(media, character)
 
-                    onClickCharacter(character, response.toString(), fragmentManager)
-                    downloadAvatar(media, character)
+            }
 
-                }, Response.ErrorListener {
-            val media: Media? = null
-            downloadAvatar(media, character)
-            onClickCharacter(character, "", fragmentManager)
+            override fun onFailure(call: Call<Media>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+                val media: Media? = null
+                downloadAvatar(media, character)
+                onClickCharacter(character, "", fragmentManager)
+            }
         })
-        RequestQueueSingleton.getInstance(context).addToRequestQueue(jsonRequestMedia)
     }
 
     private fun downloadAvatar(media: Media?, character: Character) {

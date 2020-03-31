@@ -52,7 +52,7 @@ public class WoWCharacterSearchDialog {
 
     private static void callCharacterFragment(Activity activity, Fragment fragment) {
         if (fragment != null && fragment.isVisible()) {
-            fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
+            fragment.getParentFragmentManager().beginTransaction().remove(fragment).commit();
         }
         String mediaString = new Gson().toJson(media);
         WoWNavFragment woWNavFragment = WoWNavFragment.Companion.newInstance(characterClicked, characterRealm, mediaString, selectedRegion);

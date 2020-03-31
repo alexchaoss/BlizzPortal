@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.UserInformation
-import com.BlizzardArmory.connection.RequestQueueSingleton
+import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
@@ -28,16 +28,16 @@ import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.WoWCharacterSearchDialog
 import com.BlizzardArmory.warcraft.account.Account
 import com.BlizzardArmory.warcraft.account.Character
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_activity.*
-import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class WoWActivity : AppCompatActivity() {
@@ -47,12 +47,18 @@ class WoWActivity : AppCompatActivity() {
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private val charactersByRealm = arrayListOf<List<Character>>()
+    private var retrofit: Retrofit? = null
+    private var gson: Gson? = null
+    private lateinit var networkServices: NetworkServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.wow_activity)
         btag_header.text = UserInformation.getBattleTag()
 
+        gson = GsonBuilder().create()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loadingCircle.visibility = View.VISIBLE
@@ -77,21 +83,18 @@ class WoWActivity : AppCompatActivity() {
     }
 
     private fun downloadWoWCharacters() {
-        try {
-            val jsonRequestCharacters = JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") +
-                    URLConstants.WOW_ACCOUNT.replace("zone", MainActivity.selectedRegion.toLowerCase(Locale.ROOT)).replace("TOKEN", bnOAuth2Helper!!.accessToken), null,
-                    Response.Listener { response: JSONObject ->
-                        val gsonCharacters = GsonBuilder().create()
-                        charaters = gsonCharacters.fromJson(response.toString(), Account::class.java)
-                        populateRecyclerView()
-                    },
-                    Response.ErrorListener { error: VolleyError ->
 
-                    })
-            RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonRequestCharacters)
-        } catch (e: Exception) {
-            Log.e("Error", e.toString())
-        }
+        val call: Call<Account> = networkServices.getAccount("profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<Account> {
+            override fun onResponse(call: Call<Account>, response: retrofit2.Response<Account>) {
+                charaters = response.body()
+                populateRecyclerView()
+            }
+
+            override fun onFailure(call: Call<Account>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+            }
+        })
     }
 
     private fun populateRecyclerView() {
@@ -150,7 +153,6 @@ class WoWActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        RequestQueueSingleton.getInstance(this).requestQueue.cancelAll(this)
             val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
             if (fragment !is IOnBackPressed || !(fragment as IOnBackPressed).onBackPressed()) {
                 super.onBackPressed()

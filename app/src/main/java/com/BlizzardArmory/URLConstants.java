@@ -15,15 +15,14 @@ public class URLConstants {
     public final static String BASE_URL_CN_USER_INFO = "https://www.battlenet.com.cn";
 
     //Base URL for APIs
-    public final static String BASE_URL_API = "https://zone.api.blizzard.com";
-    public final static String BASE_URL_CN_API = "https://gateway.battlenet.com.cn";
+    public final static String BASE_URL_API = "https://zone.api.blizzard.com/";
+    public final static String BASE_URL_CN_API = "https://gateway.battlenet.com.cn/";
 
     //Access Token Query
     public final static String ACCESS_TOKEN_QUERY = "access_token=";
     public final static String ACCESS_TOKEN_AND_LOCALE = "&locale=en_US&access_token=";
 
     //URLs for WoW images
-    public final static String WOW_CHARACTER_THUMNAIL_URL = "http://render-zone.worldofwarcraft.com/character/";
     public final static String NOT_FOUND_URL_AVATAR = "?alt=/wow/static/images/2d/avatar/";
     public final static String MEDIA_QUERY = "/profile/wow/character/realm/charactername/character-media?namespace=profile-us&locale=en_US&access_token=";
 
@@ -87,10 +86,6 @@ public class URLConstants {
         } else {
             return URLConstants.BASE_URL_API.replace("zone", region.toLowerCase());
         }
-    }
-
-    public static String getRenderZoneURL() {
-        return WOW_CHARACTER_THUMNAIL_URL.replace("zone", MainActivity.selectedRegion.toLowerCase());
     }
 
     public static String getRegion() {
