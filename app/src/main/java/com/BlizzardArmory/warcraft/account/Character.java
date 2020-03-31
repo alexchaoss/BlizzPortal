@@ -35,7 +35,7 @@ public class Character {
     private Faction faction;
     @SerializedName("level")
     @Expose
-    private long level;
+    private String level;
 
     public Character_ getCharacter() {
         return character;
@@ -109,11 +109,11 @@ public class Character {
         this.faction = faction;
     }
 
-    public long getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(long level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 

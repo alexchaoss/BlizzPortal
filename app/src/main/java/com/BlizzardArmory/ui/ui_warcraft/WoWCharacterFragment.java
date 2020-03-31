@@ -3,9 +3,7 @@ package com.BlizzardArmory.ui.ui_warcraft;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -29,11 +27,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.BlizzardArmory.BuildConfig;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.ui.IOnBackPressed;
+import com.BlizzardArmory.ui.MainActivity;
+import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.equipment.Enchantment;
 import com.BlizzardArmory.warcraft.equipment.Equipment;
@@ -50,14 +52,7 @@ import com.BlizzardArmory.warcraft.talents.Talent;
 import com.BlizzardArmory.warcraft.talents.Talents;
 import com.BlizzardArmory.warcraft.talents.specializationdata.SpecializationData;
 import com.BlizzardArmory.warcraft.talents.specializationdata.TalentTier;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
@@ -65,6 +60,9 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,12 +70,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private String characterRealm;
     private String characterClicked;
     private String region;
+    public static String faction;
 
     private AlertDialog dialog;
 
@@ -100,7 +100,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     private TextView statsView;
     private TextView nameView;
     private ScrollView scrollView;
-    private Drawable item;
 
     //Primary stats
     private TextView strength;
@@ -115,7 +114,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     private TextView haste;
     private TextView mastery;
     private TextView versatility;
-    private Drawable backgroundMain = null;
 
     //Talents
     private List<TextView> talentsTierContainer;
@@ -142,18 +140,14 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private ImageView closeButton;
     private RelativeLayout loadingCircle;
-    //Containers
+
     private HashMap<String, ImageView> gearImageView = new HashMap<>();
-
-
     private HashMap<String, String> stats = new HashMap<>();
     private HashMap<String, String> nameList = new HashMap<>();
 
-    private Cache cache;
-    private Network network;
-    private RequestQueue requestQueue;
-
     private String urlMain = "";
+    private final Gson gson = new GsonBuilder().create();
+    private BnOAuth2Helper bnOAuth2Helper;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -162,6 +156,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
+        URLConstants.loading = true;
         Bundle bundle = getArguments();
         assert bundle != null;
         characterRealm = bundle.getString("realm");
@@ -169,7 +164,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         media = new Gson().fromJson(bundle.getString("media"), com.BlizzardArmory.warcraft.media.Media.class);
         urlMain = bundle.getString("url");
         region = bundle.getString("region");
-        URLConstants.loading = true;
         dialog = null;
 
         scrollView = view.findViewById(R.id.scrollView3);
@@ -214,10 +208,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         hundredTalent = view.findViewById(R.id.hundredTalent);
 
         activateCloseButton();
-
-        Objects.requireNonNull(WoWCharacterFragment.this.getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
 
         LinearLayout.LayoutParams layoutParamsName = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams layoutParamsStats = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -280,26 +270,25 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         long startTime = System.nanoTime();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(getActivity()).getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        BnOAuth2Params bnOAuth2Params = Objects.requireNonNull(requireActivity().getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
         assert bnOAuth2Params != null;
-        final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
+        bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-        cache = new DiskBasedCache(Objects.requireNonNull(getContext()).getCacheDir(), 1024 * 1024 * 5); // 1MB cap
-        network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
-
-        downloadBackground();
-
-        downloadAndSetCharacterInformation(bnOAuth2Helper);
-
-        downloadStats(bnOAuth2Helper);
-
-        downloadTalents(bnOAuth2Helper);
+        downloadInfo();
 
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000000;
         Log.i("time", String.valueOf(duration));
+    }
+
+    private void downloadInfo() {
+        downloadBackground();
+
+        downloadAndSetCharacterInformation();
+
+        downloadStats();
+
+        downloadTalents();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -314,8 +303,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         });
     }
 
-    private void downloadTalents(final BnOAuth2Helper bnOAuth2Helper) {
-        final Gson gson = new GsonBuilder().create();
+    private void downloadTalents() {
         try {
             String talentsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_TALENT_QUERY);
             talentsURL = talentsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
@@ -329,7 +317,12 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
                         for (final Specialization specialization : talentsInfo.getSpecializations()) {
                             try {
-                                JsonObjectRequest jsonRequest1 = new JsonObjectRequest(Request.Method.GET, specialization.getSpecialization().getKey().getHref() + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper.getAccessToken(), null,
+                                String specURL = specialization.getSpecialization().getKey().getHref();
+                                if(specURL.contains("static")){
+                                    specURL = specURL.replaceAll("static-[0-9].[0-9].[0-9]_[0-9]*-" + region.toLowerCase(), "static-" + region.toLowerCase());
+                                    Log.i("IMAGE", specURL);
+                                }
+                                JsonObjectRequest jsonRequest1 = new JsonObjectRequest(Request.Method.GET, specURL + URLConstants.ACCESS_TOKEN_AND_LOCALE + bnOAuth2Helper.getAccessToken(), null,
                                         response1 -> {
                                             specializationData.add(gson.fromJson(response1.toString(), SpecializationData.class));
                                             if (specializationData.size() == talentsInfo.getSpecializations().size()) {
@@ -340,7 +333,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                             noTalent.setVisibility(View.VISIBLE);
                                             noTalent.setText("Talent information outdated");
                                         });
-                                requestQueue.add(jsonRequest1);
+                                RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest1);
                             } catch (Exception e) {
                                 Log.e("Error Spec Download", e.toString());
                             }
@@ -351,93 +344,14 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         noTalent.setText("Talent information outdated");
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error Talents Download", e.toString());
         }
 
     }
 
-    private void callErrorAlertDialog(int responseCode) {
-        Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        loadingCircle.setVisibility(View.GONE);
-        URLConstants.loading = false;
-        if (dialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.DialogTransparent);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, 20, 0, 0);
-
-            TextView titleText = new TextView(getContext());
-
-            titleText.setTextSize(20);
-            titleText.setGravity(Gravity.CENTER_HORIZONTAL);
-            titleText.setPadding(0, 20, 0, 20);
-            titleText.setLayoutParams(layoutParams);
-            titleText.setTextColor(Color.WHITE);
-
-            TextView messageText = new TextView(getContext());
-
-            messageText.setGravity(Gravity.CENTER_HORIZONTAL);
-            messageText.setLayoutParams(layoutParams);
-            messageText.setTextColor(Color.WHITE);
-
-            Button button = new Button(getContext());
-
-            if (responseCode == 404) {
-                titleText.setText("Information Outdated");
-                messageText.setText("Please login in game to update this character's information.");
-                button.setText("OK");
-            } else {
-                titleText.setText("No Internet Connection");
-                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-                button.setText("RETRY");
-            }
-
-            button.setTextSize(18);
-            button.setTextColor(Color.WHITE);
-            button.setGravity(Gravity.CENTER);
-            button.setWidth(200);
-            button.setLayoutParams(layoutParams);
-            button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
-
-            dialog = builder.show();
-            Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            dialog.getWindow().setLayout(800, 500);
-
-            LinearLayout linearLayout = new LinearLayout(getContext());
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setGravity(Gravity.CENTER);
-
-            linearLayout.addView(titleText);
-            linearLayout.addView(messageText);
-            linearLayout.addView(button);
-
-            LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 20, 20, 20);
-
-            dialog.addContentView(linearLayout, layoutParamsWindow);
-
-            dialog.setOnCancelListener(dialog1 -> {
-                if (responseCode != 404) {
-                    dialog.hide();
-                    WoWCharacterFragment fragment = (WoWCharacterFragment)
-                            Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.fragment);
-
-                    getFragmentManager().beginTransaction()
-                            .detach(Objects.requireNonNull(fragment))
-                            .attach(fragment)
-                            .commit();
-                } else {
-                    Objects.requireNonNull(getFragmentManager()).beginTransaction().remove(WoWCharacterFragment.this).commit();
-                }
-            });
-
-            button.setOnClickListener(v -> dialog.cancel());
-        }
-    }
-
-    private void downloadStats(BnOAuth2Helper bnOAuth2Helper) {
-        final Gson gson = new GsonBuilder().create();
+    private void downloadStats() {
         try {
             String statsURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_STATS_QUERY);
             statsURL = statsURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
@@ -454,15 +368,14 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         }
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error Stats Download", e.toString());
         }
 
     }
 
-    private void downloadAndSetCharacterInformation(final BnOAuth2Helper bnOAuth2Helper) {
-        final Gson gson = new GsonBuilder().create();
+    private void downloadAndSetCharacterInformation() {
         try {
             String characterURL = replaceZoneRealmCharacterNameURL(URLConstants.WOW_CHARACTER_QUERY);
             characterURL = characterURL.replace("TOKEN", bnOAuth2Helper.getAccessToken());
@@ -471,6 +384,8 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                     response -> {
                         characterSummary = gson.fromJson(response.toString(), CharacterSummary.class);
                         characterName.setText(characterSummary.getName());
+                        EventBus.getDefault().post(new FactionEvent(characterSummary.getFaction().getName().toLowerCase()));
+                        EventBus.getDefault().post(new ClassEvent(characterSummary.getCharacterClass().getName()));
                         itemLVL.setText(String.format("Item Level : %s", characterSummary.getEquippedItemLevel()));
                         String levelRaceClassString = characterSummary.getLevel() + " " + characterSummary.getRace().getName() + " " + characterSummary.getCharacterClass().getName();
                         levelRaceClass.setText(levelRaceClassString);
@@ -513,7 +428,11 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                                 }
                                             }
                                             if (!slotEquipped) {
-                                                getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
+                                                try {
+                                                    getEmptySlotIcon(slot, WoWCharacterFragment.this.getContext());
+                                                } catch (Exception e) {
+                                                    Log.e("Drawable", "Avoided crash");
+                                                }
                                             }
                                         }
                                     },
@@ -525,7 +444,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                                         }
                                     });
 
-                            requestQueue.add(jsonRequest1);
+                            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest1);
                         } catch (Exception e) {
                             Log.e("Error Equipment Download", e.toString());
                         }
@@ -540,7 +459,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
                         }
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             Log.e("Error", e.toString() + "\n");
             for (int i = 0; i < e.getStackTrace().length; i++) {
@@ -553,59 +472,61 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     private void downloadBackground() {
         if (media != null) {
-            ImageRequest imageRequest = new ImageRequest(media.getRenderUrl(), bitmap -> {
-                backgroundMain = new BitmapDrawable(getResources(), bitmap);
-                background.setImageDrawable(backgroundMain);
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    e -> {
-                        Log.e("BAD URL BACKGROUND", urlMain);
-                    });
-            requestQueue.add(imageRequest);
+            Picasso.get().load(media.getRenderUrl()).into(background);
+        } else {
+            try {
+                JsonObjectRequest stringMedia = new JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(MainActivity.selectedRegion.toLowerCase())
+                        + URLConstants.MEDIA_QUERY.replace("zone", MainActivity.selectedRegion.toLowerCase()).replace("realm", characterRealm.toLowerCase())
+                        .replace("charactername", characterClicked.toLowerCase()) + bnOAuth2Helper.getAccessToken(), null,
+                        response -> {
+                            media = gson.fromJson(response.toString(), com.BlizzardArmory.warcraft.media.Media.class);
+                            Picasso.get().load(media.getRenderUrl()).into(background);
+                        }, e -> {
+                    Log.e("media", "download fail");
+                });
+                RequestQueueSingleton.Companion.getInstance(requireContext()).addToRequestQueue(stringMedia);
+            } catch (Exception e) {
+                Log.e("access token", e.toString());
+            }
         }
     }
 
     private void downloadIcons(final Equipment equipment, final int index, final String itemSlot, BnOAuth2Helper bnOAuth2Helper, final Gson gson) {
         try {
-
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
+            String url = equipment.getEquippedItems().get(index).getMedia().getKey().getHref();
+            if(url.contains("static")){
+                url = url.replaceAll("static-[0-9].[0-9].[0-9]_[0-9]*-" + region.toLowerCase(), "static-" + region.toLowerCase());
+                Log.i("IMAGE", url);
+            }
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url
                     + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken(), null,
                     response -> {
                         Media media = gson.fromJson(response.toString(), Media.class);
                         imageURLs.put(itemSlot, media.getAssets().get(0).getValue());
                         Log.i("Icon URL", media.getAssets().get(0).getValue());
 
-                        ImageRequest imageRequest = new ImageRequest(imageURLs.get(itemSlot), bitmap -> {
-                            if (index == equipment.getEquippedItems().size() - 1) {
-                                Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                loadingCircle.setVisibility(View.GONE);
-                                URLConstants.loading = false;
-                            }
-                            item = new BitmapDrawable(getResources(), bitmap);
-                            setIcons(itemSlot, equipment, item);
-                        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                                e -> {
-                                    if (e.networkResponse == null) {
-                                        callErrorAlertDialog(0);
-                                    } else {
-                                        callErrorAlertDialog(e.networkResponse.statusCode);
-                                    }
-                                });
-                        requestQueue.add(imageRequest);
-                    },
-                    e -> {
+                        Picasso.get().load(imageURLs.get(itemSlot)).into(gearImageView.get(itemSlot));
+                        setIcons(itemSlot, equipment, null);
+
                         if (index == equipment.getEquippedItems().size() - 1) {
-                            Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             loadingCircle.setVisibility(View.GONE);
                             URLConstants.loading = false;
                         }
-                        Drawable errorIcon = getResources().getDrawable(R.drawable.error_icon, Objects.requireNonNull(getContext()).getTheme());
+                    },
+                    e -> {
+                        if (index == equipment.getEquippedItems().size() - 1) {
+                            requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            loadingCircle.setVisibility(View.GONE);
+                            URLConstants.loading = false;
+                        }
+                        Drawable errorIcon = getResources().getDrawable(R.drawable.error_icon, requireContext().getTheme());
                         setIcons(itemSlot, equipment, errorIcon);
                     });
 
-            requestQueue.add(jsonRequest);
+            RequestQueueSingleton.Companion.getInstance(requireActivity()).addToRequestQueue(jsonRequest);
         } catch (Exception e) {
             try {
-                Log.e("Error Image URL Download", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
+                Log.e("Error Image URL", e.toString() + "\n" + equipment.getEquippedItems().get(index).getMedia().getKey().getHref()
                         + "&" + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper.getAccessToken());
             } catch (Exception f) {
                 Log.e("Error", f.toString());
@@ -615,7 +536,9 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void setIcons(String itemSlot, Equipment equipment, Drawable item) {
-        Objects.requireNonNull(gearImageView.get(itemSlot)).setImageDrawable(item);
+        if (item != null) {
+            Objects.requireNonNull(gearImageView.get(itemSlot)).setImageDrawable(item);
+        }
         Objects.requireNonNull(gearImageView.get(itemSlot)).setPadding(3, 3, 3, 3);
         Objects.requireNonNull(gearImageView.get(itemSlot)).setClipToOutline(true);
         Drawable backgroundStroke = null;
@@ -751,7 +674,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
                 statsView.setText(Html.fromHtml(stats.get(equipment.getEquippedItems().get(index).getSlot().getType()), Html.FROM_HTML_MODE_LEGACY, source -> {
                     int resourceId = getResources().getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID);
-                    Drawable drawable = getResources().getDrawable(resourceId, Objects.requireNonNull(WoWCharacterFragment.this.getContext()).getTheme());
+                    Drawable drawable = getResources().getDrawable(resourceId, WoWCharacterFragment.this.requireContext().getTheme());
                     drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                     return drawable;
                 }, null));
@@ -1323,6 +1246,109 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
     @Override
     public boolean onBackPressed() {
-        return false;
+        return URLConstants.loading;
+    }
+
+    private void callErrorAlertDialog(int responseCode) {
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        loadingCircle.setVisibility(View.GONE);
+        URLConstants.loading = false;
+        if (dialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.DialogTransparent);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 20, 0, 0);
+
+            TextView titleText = new TextView(getContext());
+
+            titleText.setTextSize(20);
+            titleText.setGravity(Gravity.CENTER_HORIZONTAL);
+            titleText.setPadding(0, 20, 0, 20);
+            titleText.setLayoutParams(layoutParams);
+            titleText.setTextColor(Color.WHITE);
+
+            TextView messageText = new TextView(getContext());
+
+            messageText.setGravity(Gravity.CENTER_HORIZONTAL);
+            messageText.setLayoutParams(layoutParams);
+            messageText.setTextColor(Color.WHITE);
+
+            Button button = new Button(getContext());
+            button.setTextSize(18);
+            button.setTextColor(Color.WHITE);
+            button.setGravity(Gravity.CENTER);
+            button.setWidth(200);
+            button.setLayoutParams(layoutParams);
+            button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            AtomicBoolean btn2 = new AtomicBoolean(false);
+            Button button2 = new Button(getContext());
+            button2.setTextSize(18);
+            button2.setTextColor(Color.WHITE);
+            button2.setGravity(Gravity.CENTER);
+            button2.setWidth(200);
+            button2.setLayoutParams(layoutParams);
+            button2.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            LinearLayout buttonLayout = new LinearLayout(getContext());
+            buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+            buttonLayout.setGravity(Gravity.CENTER);
+            buttonLayout.addView(button);
+
+            if (responseCode >= 400) {
+                titleText.setText("Information Outdated");
+                messageText.setText("Please login in game to update this character's information.");
+                button.setText("BACK");
+            } else {
+                titleText.setText("No Internet Connection");
+                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                button.setText("RETRY");
+                button2.setText("BACK");
+                buttonLayout.addView(button2);
+            }
+
+            dialog = builder.show();
+            Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            dialog.getWindow().setLayout(800, 500);
+
+            LinearLayout linearLayout = new LinearLayout(getContext());
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setGravity(Gravity.CENTER);
+
+            linearLayout.addView(titleText);
+            linearLayout.addView(messageText);
+            linearLayout.addView(buttonLayout);
+
+            LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(20, 20, 20, 20);
+
+            dialog.addContentView(linearLayout, layoutParamsWindow);
+
+            dialog.setOnCancelListener(dialog1 -> {
+                if (btn2.get()) {
+                    Log.i("TEST", "got here");
+                    ((WoWActivity) getContext()).onBackPressed();
+                } else {
+                    if (responseCode == 0) {
+                        dialog.hide();
+
+                        Fragment fragment = requireActivity().getSupportFragmentManager().findFragmentByTag("NAV_FRAGMENT");
+                        FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
+                        ft.detach(fragment);
+                        ft.attach(fragment);
+                        ft.commit();
+                    } else {
+                        Log.i("TEST", "got here");
+                        ((WoWActivity) getContext()).onBackPressed();
+                    }
+                }
+            });
+
+            button.setOnClickListener(v -> dialog.cancel());
+
+            button2.setOnClickListener(v -> {
+                btn2.set(true);
+                dialog.cancel();
+            });
+        }
     }
 }

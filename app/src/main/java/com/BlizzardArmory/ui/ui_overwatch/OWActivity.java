@@ -34,20 +34,15 @@ import androidx.core.content.res.ResourcesCompat;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.overwatch.Profile;
 import com.BlizzardArmory.overwatch.heroes.Hero;
 import com.BlizzardArmory.overwatch.topheroes.TopHero;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
-import com.BlizzardArmory.ui.ui_warcraft.WoWActivity;
-import com.android.volley.Cache;
-import com.android.volley.Network;
+import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -71,7 +66,6 @@ public class OWActivity extends AppCompatActivity {
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
     private Gson gson;
-    private RequestQueue requestQueue;
 
     private String username;
     private String platform;
@@ -208,11 +202,6 @@ public class OWActivity extends AppCompatActivity {
         username = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("username");
         platform = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("platform");
 
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024 * 5);
-        Network network = new BasicNetwork(new HurlStack());
-        requestQueue = new RequestQueue(cache, network);
-        requestQueue.start();
-
         downloadAccountInformation();
 
         //Button calls
@@ -231,93 +220,90 @@ public class OWActivity extends AppCompatActivity {
     private void downloadAccountInformation() {
         String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
         Log.i("URL", URLConstants.getOWProfile(platform, username));
-        try {
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(username, platform), null,
-                    response -> {
 
-                        try {
-                            accountInformation = gson.fromJson(response.toString(), Profile.class);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(username, platform), null,
+                response -> {
 
-                            downloadAvatar(requestQueue);
-                            setName();
-                            downloadLevelIcon(requestQueue);
-                            setGamesWon();
-                            setRatingInformation(requestQueue);
-                            //downloadEndorsementIcon(requestQueue);
-                            //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
+                    try {
+                        accountInformation = gson.fromJson(response.toString(), Profile.class);
 
-                            setTopHeroesLists();
-                            setCareerLists();
-                            setSpinnerCareerList(careerQuickPlay);
+                        downloadAvatar();
+                        setName();
+                        downloadLevelIcon();
+                        setGamesWon();
+                        setRatingInformation();
+                        //downloadEndorsementIcon(requestQueue);
+                        //endorsement.setText(String.valueOf(accountInformation.getEndorsement()));
 
-                            if (topHeroesQuickPlay.size() > 0) {
-                                setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                        setTopHeroesLists();
+                        setCareerLists();
+                        setSpinnerCareerList(careerQuickPlay);
+
+                        if (topHeroesQuickPlay.size() > 0) {
+                            setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                        }
+                        setSpinnerTopHeroes(topHeroesListSpinner);
+                        setSpinnerCareer(careerListSpinner);
+
+                        quickplay.setOnClickListener(v -> {
+                            if (comp) {
+                                comp = false;
+                                quickplay.setBackground(switchCompQuickRadius);
+                                quickplay.setTextColor(Color.parseColor("#000000"));
+                                competitive.setTextColor(Color.parseColor("#FFFFFF"));
+                                competitive.setBackgroundColor(0);
+                                sortList(topHeroesQuickPlay, sortHeroList[0]);
+                                if (topHeroesQuickPlay.size() > 0) {
+                                    setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
+                                }
+                                setSpinnerTopHeroes(topHeroesListSpinner);
+                                setSpinnerCareerList(careerQuickPlay);
+                                setSpinnerCareer(careerListSpinner);
                             }
-                            setSpinnerTopHeroes(topHeroesListSpinner);
-                            setSpinnerCareer(careerListSpinner);
+                        });
 
-                            quickplay.setOnClickListener(v -> {
-                                if (comp) {
-                                    comp = false;
-                                    quickplay.setBackground(switchCompQuickRadius);
-                                    quickplay.setTextColor(Color.parseColor("#000000"));
-                                    competitive.setTextColor(Color.parseColor("#FFFFFF"));
-                                    competitive.setBackgroundColor(0);
-                                    sortList(topHeroesQuickPlay, sortHeroList[0]);
-                                    if (topHeroesQuickPlay.size() > 0) {
-                                        setTopCharacterImage(topHeroesQuickPlay.get(0).getClass().getSimpleName());
-                                    }
-                                    setSpinnerTopHeroes(topHeroesListSpinner);
-                                    setSpinnerCareerList(careerQuickPlay);
-                                    setSpinnerCareer(careerListSpinner);
+                        competitive.setOnClickListener(v -> {
+                            if (!comp) {
+                                comp = true;
+                                competitive.setBackground(switchCompQuickRadius);
+                                competitive.setTextColor(Color.parseColor("#000000"));
+                                quickplay.setBackgroundColor(0);
+                                quickplay.setTextColor(Color.parseColor("#FFFFFF"));
+                                sortList(topHeroesCompetitive, sortHeroList[0]);
+                                if (topHeroesCompetitive.size() > 0) {
+                                    setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
                                 }
-                            });
+                                setSpinnerTopHeroes(topHeroesListSpinner);
+                                setSpinnerCareerList(careerCompetitive);
+                                setSpinnerCareer(careerListSpinner);
 
-                            competitive.setOnClickListener(v -> {
-                                if (!comp) {
-                                    comp = true;
-                                    competitive.setBackground(switchCompQuickRadius);
-                                    competitive.setTextColor(Color.parseColor("#000000"));
-                                    quickplay.setBackgroundColor(0);
-                                    quickplay.setTextColor(Color.parseColor("#FFFFFF"));
-                                    sortList(topHeroesCompetitive, sortHeroList[0]);
-                                    if (topHeroesCompetitive.size() > 0) {
-                                        setTopCharacterImage(topHeroesCompetitive.get(0).getClass().getSimpleName());
-                                    }
-                                    setSpinnerTopHeroes(topHeroesListSpinner);
-                                    setSpinnerCareerList(careerCompetitive);
-                                    setSpinnerCareer(careerListSpinner);
+                            }
+                        });
 
-                                }
-                            });
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                        URLConstants.loading = false;
 
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
-                            URLConstants.loading = false;
+                    } catch (Exception e) {
+                        gamesWon.setText("This profile is private and the information unavailable");
+                        gamesWon.setTextSize(18);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        loadingCircle.setVisibility(View.GONE);
+                        URLConstants.loading = false;
+                        Log.e("Error", Arrays.toString(e.getStackTrace()));
+                    }
 
-                        } catch (Exception e) {
-                            gamesWon.setText("This profile is private and the information unavailable");
-                            gamesWon.setTextSize(18);
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            loadingCircle.setVisibility(View.GONE);
-                            URLConstants.loading = false;
-                            Log.e("Error", Arrays.toString(e.getStackTrace()));
-                        }
+                },
+                error -> {
+                    Log.e("Error", error.toString());
+                    if (error.networkResponse == null) {
+                        showNoConnectionMessage(OWActivity.this, 0);
+                    } else {
+                        showNoConnectionMessage(OWActivity.this, error.networkResponse.statusCode);
+                    }
+                });
 
-                    },
-                    error -> {
-                        Log.e("Error", error.toString());
-                        if (error.networkResponse == null) {
-                            showNoConnectionMessage(OWActivity.this, 0);
-                        } else {
-                            showNoConnectionMessage(OWActivity.this, error.networkResponse.statusCode);
-                        }
-                    });
-
-            requestQueue.add(jsonRequest);
-        } catch (Exception e) {
-            Log.e("Error", e.toString());
-        }
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
     }
 
     private void setCareerLists() {
@@ -695,129 +681,102 @@ public class OWActivity extends AppCompatActivity {
         switch (topCharacterName) {
             case "Ana":
                 progressBar.setColor(Color.parseColor("#718ab3"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Ashe":
                 progressBar.setColor(Color.parseColor("#b3a05f"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Baptiste":
                 progressBar.setColor(Color.parseColor("#2892a8"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Bastion":
                 progressBar.setColor(Color.parseColor("#7c8f7b"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Brigitte":
                 progressBar.setColor(Color.parseColor("#be736e"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "DVa":
                 progressBar.setColor(Color.parseColor("#ed93c7"));
-                backgroundColor.setBackground(progressBar);
+                break;
+            case "Echo":
+                progressBar.setColor(Color.parseColor("#ffffff"));
                 break;
             case "Doomfist":
                 progressBar.setColor(Color.parseColor("#815049"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Genji":
                 progressBar.setColor(Color.parseColor("#97ef43"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Hanzo":
                 progressBar.setColor(Color.parseColor("#b9b48a"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Junkrat":
                 progressBar.setColor(Color.parseColor("#ecbd53"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Lúcio":
                 progressBar.setColor(Color.parseColor("#85c952"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Mccree":
                 progressBar.setColor(Color.parseColor("#ae595c"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Mei":
                 progressBar.setColor(Color.parseColor("#6faced"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Mercy":
                 progressBar.setColor(Color.parseColor("#ebe8bb"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Moira":
                 progressBar.setColor(Color.parseColor("#803c51"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Orisa":
                 progressBar.setColor(Color.parseColor("#468c43"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Pharah":
                 progressBar.setColor(Color.parseColor("#3e7dca"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Reaper":
                 progressBar.setColor(Color.parseColor("#7d3e51"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Reinhardt":
                 progressBar.setColor(Color.parseColor("#929da3"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Roadhog":
                 progressBar.setColor(Color.parseColor("#b68c52"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Sigma":
                 progressBar.setColor(Color.parseColor("#33bbaa"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Soldier76":
                 progressBar.setColor(Color.parseColor("#697794"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Sombra":
                 progressBar.setColor(Color.parseColor("#7359ba"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Symmetra":
                 progressBar.setColor(Color.parseColor("#8ebccc"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Torbjörn":
                 progressBar.setColor(Color.parseColor("#c0726e"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Tracer":
                 progressBar.setColor(Color.parseColor("#d79342"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Widowmaker":
                 progressBar.setColor(Color.parseColor("#9e6aa8"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Winston":
                 progressBar.setColor(Color.parseColor("#a2a6bf"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "WreckingBall":
                 progressBar.setColor(Color.parseColor("#4a575f"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Zarya":
                 progressBar.setColor(Color.parseColor("#e77eb6"));
-                backgroundColor.setBackground(progressBar);
                 break;
             case "Zenyatta":
                 progressBar.setColor(Color.parseColor("#ede582"));
-                backgroundColor.setBackground(progressBar);
                 break;
         }
+        backgroundColor.setBackground(progressBar);
     }
 
     private int getHeroIcon(String topCharacterName) {
@@ -841,6 +800,8 @@ public class OWActivity extends AppCompatActivity {
             case "DVa":
                 id = R.drawable.dva_icon;
                 break;
+            case "Echo":
+                id = R.drawable.error_icon;
             case "Doomfist":
                 id = R.drawable.doomfist_icon;
                 break;
@@ -939,6 +900,9 @@ public class OWActivity extends AppCompatActivity {
                 break;
             case "DVa":
                 topCharacter.setImageResource(R.drawable.dva_portrait);
+                break;
+            case "Echo":
+                topCharacter.setImageResource(0);
                 break;
             case "Doomfist":
                 topCharacter.setImageResource(R.drawable.doomfist_portrait);
@@ -1099,13 +1063,13 @@ public class OWActivity extends AppCompatActivity {
         return secondsHero1;
     }
 
-    private void setRatingInformation(RequestQueue requestQueue) {
+    private void setRatingInformation() {
         if (accountInformation.getRating() > 0) {
             for (int i = 0; i < accountInformation.getRatings().size(); i++) {
                 if (accountInformation.getRatings().get(i).getRole().equals("tank") && accountInformation.getRatings().get(i).getLevel() > 0) {
                     ratingTank.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconTank);
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconTank);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRoleIcon(), ratingIconTank);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconTank);
                 } else {
                     if (accountInformation.getRatings().get(i).getLevel() == 0) {
                         ratingIconTank.setVisibility(View.GONE);
@@ -1115,8 +1079,8 @@ public class OWActivity extends AppCompatActivity {
                 }
                 if (accountInformation.getRatings().get(i).getRole().equals("damage") && accountInformation.getRatings().get(i).getLevel() > 0) {
                     ratingDamage.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconDamage);
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconDamage);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRoleIcon(), ratingIconDamage);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconDamage);
                 } else {
                     if (accountInformation.getRatings().get(i).getLevel() == 0) {
                         ratingIconDamage.setVisibility(View.GONE);
@@ -1126,8 +1090,8 @@ public class OWActivity extends AppCompatActivity {
                 }
                 if (accountInformation.getRatings().get(i).getRole().equals("support") && accountInformation.getRatings().get(i).getLevel() > 0) {
                     ratingSupport.setText(String.valueOf(accountInformation.getRatings().get(i).getLevel()));
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRoleIcon(), ratingIconSupport);
-                    downloadRatingIcon(requestQueue, accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconSupport);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRoleIcon(), ratingIconSupport);
+                    downloadRatingIcon(accountInformation.getRatings().get(i).getRankIcon(), ratingRankIconSupport);
                 } else {
                     if (accountInformation.getRatings().get(i).getLevel() == 0) {
                         ratingIconSupport.setVisibility(View.GONE);
@@ -1174,16 +1138,16 @@ public class OWActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void downloadAvatar(RequestQueue requestQueue) {
+    private void downloadAvatar() {
         ImageRequest imageRequest = new ImageRequest(accountInformation.getIcon(), bitmap -> {
             BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
             avatar.setBackground(avatarBM);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(imageRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
-    private void downloadEndorsementIcon(RequestQueue requestQueue) {
+    private void downloadEndorsementIcon() {
         StringRequest stringRequest = new StringRequest(accountInformation.getEndorsementIcon(), string -> {
             try {
                 SVG endorsement_icon = SVG.getFromString(string);
@@ -1195,19 +1159,19 @@ public class OWActivity extends AppCompatActivity {
 
         },
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(stringRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(stringRequest);
     }
 
-    private void downloadRatingIcon(RequestQueue requestQueue, String url, ImageView imageView) {
+    private void downloadRatingIcon(String url, ImageView imageView) {
         ImageRequest imageRequest = new ImageRequest(url, bitmap -> {
             BitmapDrawable icon = new BitmapDrawable(getResources(), bitmap);
             imageView.setImageDrawable(icon);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(imageRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
-    private void downloadLevelIcon(RequestQueue requestQueue) {
+    private void downloadLevelIcon() {
         ImageRequest imageRequest = new ImageRequest(accountInformation.getLevelIcon(), bitmap -> {
 
             BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
@@ -1218,11 +1182,11 @@ public class OWActivity extends AppCompatActivity {
                 prestigeIcon.setImageDrawable(avatarBM2);
             }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                     e -> Log.i("Prestige Icon", "None"));
-            requestQueue.add(imageRequest2);
+            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest2);
 
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
                 e -> showNoConnectionMessage(OWActivity.this, 0));
-        requestQueue.add(imageRequest);
+        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
     @Override

@@ -129,10 +129,34 @@
             android:id="@+id/licenses"
             android:layout_margin="10dp"
             android:layout_width="300dp"
+            android:textColor="#FFF"
+            android:textSize="18sp"
             android:layout_height="wrap_content"
             android:background="@drawable/buttonstyle"
             android:layout_gravity="center"
             android:text="@string/licenses" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:text="@string/rate_my_app" />
+
+        <Button
+            android:id="@+id/rate"
+            android:layout_margin="10dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:textSize="18sp"
+            android:background="@drawable/buttonstyle"
+            android:layout_gravity="center"
+            android:text="@string/rate_it" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -149,6 +173,8 @@
             android:id="@+id/donation"
             android:layout_margin="10dp"
             android:layout_width="300dp"
+            android:textColor="#FFF"
+            android:textSize="18sp"
             android:layout_height="wrap_content"
             android:background="@drawable/buttonstyle"
             android:layout_gravity="center"

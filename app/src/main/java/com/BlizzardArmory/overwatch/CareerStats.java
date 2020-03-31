@@ -8,6 +8,7 @@ import com.BlizzardArmory.overwatch.heroes.Bastion;
 import com.BlizzardArmory.overwatch.heroes.Brigitte;
 import com.BlizzardArmory.overwatch.heroes.DVa;
 import com.BlizzardArmory.overwatch.heroes.Doomfist;
+import com.BlizzardArmory.overwatch.heroes.Echo;
 import com.BlizzardArmory.overwatch.heroes.Genji;
 import com.BlizzardArmory.overwatch.heroes.Hanzo;
 import com.BlizzardArmory.overwatch.heroes.Hero;
@@ -61,6 +62,9 @@ public class CareerStats {
     @SerializedName("dVa")
     @Expose
     private DVa dVa;
+    @SerializedName("echo")
+    @Expose
+    private Echo echo;
     @SerializedName("doomfist")
     @Expose
     private Doomfist doomfist;
@@ -185,6 +189,14 @@ public class CareerStats {
 
     public void setDVa(DVa dVa) {
         this.dVa = dVa;
+    }
+
+    public Echo getEcho() {
+        return echo;
+    }
+
+    public void setEcho(Echo echo) {
+        this.echo = echo;
     }
 
     public Doomfist getDoomfist() {
@@ -395,6 +407,7 @@ public class CareerStats {
         heroList.add(bastion);
         heroList.add(brigitte);
         heroList.add(dVa);
+        heroList.add(echo);
         heroList.add(doomfist);
         heroList.add(genji);
         heroList.add(hanzo);
