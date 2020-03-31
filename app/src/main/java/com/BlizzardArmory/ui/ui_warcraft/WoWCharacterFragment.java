@@ -70,6 +70,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
@@ -273,6 +274,14 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         assert bnOAuth2Params != null;
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
+        downloadInfo();
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1000000000;
+        Log.i("time", String.valueOf(duration));
+    }
+
+    private void downloadInfo() {
         downloadBackground();
 
         downloadAndSetCharacterInformation();
@@ -280,10 +289,6 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
         downloadStats();
 
         downloadTalents();
-
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime) / 1000000000;
-        Log.i("time", String.valueOf(duration));
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1268,23 +1273,38 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             messageText.setTextColor(Color.WHITE);
 
             Button button = new Button(getContext());
-
-            if (responseCode == 404) {
-                titleText.setText("Information Outdated");
-                messageText.setText("Please login in game to update this character's information.");
-                button.setText("OK");
-            } else {
-                titleText.setText("No Internet Connection");
-                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-                button.setText("RETRY");
-            }
-
             button.setTextSize(18);
             button.setTextColor(Color.WHITE);
             button.setGravity(Gravity.CENTER);
             button.setWidth(200);
             button.setLayoutParams(layoutParams);
             button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            AtomicBoolean btn2 = new AtomicBoolean(false);
+            Button button2 = new Button(getContext());
+            button2.setTextSize(18);
+            button2.setTextColor(Color.WHITE);
+            button2.setGravity(Gravity.CENTER);
+            button2.setWidth(200);
+            button2.setLayoutParams(layoutParams);
+            button2.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            LinearLayout buttonLayout = new LinearLayout(getContext());
+            buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+            buttonLayout.setGravity(Gravity.CENTER);
+            buttonLayout.addView(button);
+
+            if (responseCode >= 400) {
+                titleText.setText("Information Outdated");
+                messageText.setText("Please login in game to update this character's information.");
+                button.setText("BACK");
+            } else {
+                titleText.setText("No Internet Connection");
+                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                button.setText("RETRY");
+                button2.setText("BACK");
+                buttonLayout.addView(button2);
+            }
 
             dialog = builder.show();
             Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -1296,7 +1316,7 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
 
             linearLayout.addView(titleText);
             linearLayout.addView(messageText);
-            linearLayout.addView(button);
+            linearLayout.addView(buttonLayout);
 
             LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(20, 20, 20, 20);
@@ -1304,20 +1324,31 @@ public class WoWCharacterFragment extends Fragment implements IOnBackPressed {
             dialog.addContentView(linearLayout, layoutParamsWindow);
 
             dialog.setOnCancelListener(dialog1 -> {
-                if (responseCode != 404) {
-                    dialog.hide();
-
-                    Fragment fragment = requireActivity().getSupportFragmentManager().findFragmentByTag("NAV_FRAGMENT");
-                    FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
-                    ft.detach(fragment);
-                    ft.attach(fragment);
-                    ft.commit();
-                } else {
+                if (btn2.get()) {
+                    Log.i("TEST", "got here");
                     ((WoWActivity) getContext()).onBackPressed();
+                } else {
+                    if (responseCode == 0) {
+                        dialog.hide();
+
+                        Fragment fragment = requireActivity().getSupportFragmentManager().findFragmentByTag("NAV_FRAGMENT");
+                        FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
+                        ft.detach(fragment);
+                        ft.attach(fragment);
+                        ft.commit();
+                    } else {
+                        Log.i("TEST", "got here");
+                        ((WoWActivity) getContext()).onBackPressed();
+                    }
                 }
             });
 
             button.setOnClickListener(v -> dialog.cancel());
+
+            button2.setOnClickListener(v -> {
+                btn2.set(true);
+                dialog.cancel();
+            });
         }
     }
 }

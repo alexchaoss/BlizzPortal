@@ -65,6 +65,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
@@ -360,16 +361,20 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
         assert bnOAuth2Params != null;
         final BnOAuth2Helper bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
+        setAllTabs(id, gson, bnOAuth2Helper);
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1000000000;
+        Log.i("time", String.valueOf(duration));
+    }
+
+    private void setAllTabs(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) {
         try {
             setCharacterInformation(id, gson, bnOAuth2Helper);
             setItemInformation(id, gson, bnOAuth2Helper);
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
-
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime) / 1000000000;
-        Log.i("time", String.valueOf(duration));
     }
 
     private void setItemInformation(long id, Gson gson, BnOAuth2Helper bnOAuth2Helper) throws IOException {
@@ -1358,6 +1363,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
     }
 
     private void callErrorAlertDialog(int responseCode) {
+        AtomicBoolean btn2 = new AtomicBoolean(false);
         requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);
         URLConstants.loading = false;
@@ -1380,23 +1386,37 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
             messageText.setTextColor(Color.WHITE);
 
             Button button = new Button(getContext());
-
-            if (responseCode == 404) {
-                titleText.setText("Information Outdated");
-                messageText.setText("Please login in game to update this character's information.");
-                button.setText("OK");
-            } else {
-                titleText.setText("No Internet Connection");
-                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-                button.setText("RETRY");
-            }
-
             button.setTextSize(18);
             button.setTextColor(Color.WHITE);
             button.setGravity(Gravity.CENTER);
             button.setWidth(200);
             button.setLayoutParams(layoutParams);
             button.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            Button button2 = new Button(getContext());
+            button2.setTextSize(18);
+            button2.setTextColor(Color.WHITE);
+            button2.setGravity(Gravity.CENTER);
+            button2.setWidth(200);
+            button2.setLayoutParams(layoutParams);
+            button2.setBackground(getContext().getDrawable(R.drawable.buttonstyle));
+
+            LinearLayout buttonLayout = new LinearLayout(getContext());
+            buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+            buttonLayout.setGravity(Gravity.CENTER);
+            buttonLayout.addView(button);
+
+            if (responseCode >= 400) {
+                titleText.setText("Information Outdated");
+                messageText.setText("Please login in game to update this character's information.");
+                button.setText("BACK");
+            } else {
+                titleText.setText("No Internet Connection");
+                messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                button.setText("RETRY");
+                button2.setText("BACK");
+                buttonLayout.addView(button2);
+            }
 
             try {
                 dialog = builder.show();
@@ -1410,7 +1430,7 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
 
                 linearLayout.addView(titleText);
                 linearLayout.addView(messageText);
-                linearLayout.addView(button);
+                linearLayout.addView(buttonLayout);
 
                 LinearLayout.LayoutParams layoutParamsWindow = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(20, 20, 20, 20);
@@ -1418,18 +1438,26 @@ public class D3CharacterFragment extends Fragment implements IOnBackPressed {
                 dialog.addContentView(linearLayout, layoutParamsWindow);
 
                 dialog.setOnCancelListener(dialog1 -> {
-                    if (responseCode != 404) {
-                        D3CharacterFragment fragment = (D3CharacterFragment) getParentFragmentManager().findFragmentById(R.id.fragment);
-                        getParentFragmentManager().beginTransaction()
-                                .detach(Objects.requireNonNull(fragment))
-                                .attach(fragment)
-                                .commit();
-                    } else {
+                    if (btn2.get()) {
                         getParentFragmentManager().beginTransaction().remove(D3CharacterFragment.this).commit();
+                    } else {
+                        if (responseCode == 0) {
+                            D3CharacterFragment fragment = (D3CharacterFragment) getParentFragmentManager().findFragmentById(R.id.fragment);
+                            getParentFragmentManager().beginTransaction()
+                                    .detach(Objects.requireNonNull(fragment))
+                                    .attach(fragment)
+                                    .commit();
+                        } else {
+                            getParentFragmentManager().beginTransaction().remove(D3CharacterFragment.this).commit();
+                        }
                     }
                 });
 
                 button.setOnClickListener(v -> dialog.cancel());
+                button2.setOnClickListener(v -> {
+                    btn2.set(true);
+                    dialog.cancel();
+                });
             } catch (WindowManager.BadTokenException e) {
                 Log.e("BAD TOKEN EXCEPTION", "ACTIVTY DOES NOT EXIST");
             }
