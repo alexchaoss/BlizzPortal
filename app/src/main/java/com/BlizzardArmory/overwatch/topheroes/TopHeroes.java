@@ -26,6 +26,9 @@ public class TopHeroes {
     @SerializedName("dVa")
     @Expose
     private DVa dVa;
+    @SerializedName("echo")
+    @Expose
+    private Echo echo;
     @SerializedName("doomfist")
     @Expose
     private Doomfist doomfist;
@@ -102,6 +105,7 @@ public class TopHeroes {
     @Expose
     private Zenyatta zenyatta;
 
+
     private ArrayList<TopHero> heroList = new ArrayList<>();
 
     public Ana getAna() {
@@ -150,6 +154,14 @@ public class TopHeroes {
 
     public void setDVa(DVa dVa) {
         this.dVa = dVa;
+    }
+
+    public Echo getEcho() {
+        return echo;
+    }
+
+    public void setEcho(Echo echo) {
+        this.echo = echo;
     }
 
     public Doomfist getDoomfist() {
@@ -359,6 +371,7 @@ public class TopHeroes {
         heroList.add(bastion);
         heroList.add(brigitte);
         heroList.add(dVa);
+        heroList.add(echo);
         heroList.add(doomfist);
         heroList.add(genji);
         heroList.add(hanzo);

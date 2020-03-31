@@ -133,4 +133,25 @@
     <string name="information">Information</string>
     <string name="want_to_donate">Want to donate?</string>
     <string name="paypal">Paypal</string>
+    <string name="achievements">Achievements</string>
+    <string name="character">Character</string>
+    <string name="progress">Progress</string>
+    <string name="pvp">PvP</string>
+    <string name="achievs">Achievs</string>
+    <string name="banner">banner</string>
+    <string name="lfr">LFR</string>
+    <string name="normal">NORMAL</string>
+    <string name="heroic">HEROIC</string>
+    <string name="mythic">MYTHIC</string>
+    <string name="raid_name">raid name</string>
+    <string name="level">level</string>
+    <string name="background">background</string>
+    <string name="honor">Honor</string>
+    <string name="arena">ARENA</string>
+    <string name="battlegrounds">BATTLEGROUNDS</string>
+    <string name="_10v10">10v10</string>
+    <string name="reputation">Reputation</string>
+    <string name="action_search">action_search</string>
+    <string name="rate_my_app">Rate my app!</string>
+    <string name="rate_it">Rate it!</string>
 </resources>
