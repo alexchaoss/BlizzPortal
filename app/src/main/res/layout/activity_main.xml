@@ -180,6 +180,28 @@
             android:layout_gravity="center"
             android:text="@string/paypal" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:text="@string/select_a_language" />
+
+        <Spinner
+            android:id="@+id/spinner_language"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/gradient_spinner"
+            android:gravity="center"
+            android:hint="@string/select_region"
+            android:textColorHint="#FFFFFF"
+            android:textSize="25sp" />
+
     </LinearLayout>
 
     <WebView

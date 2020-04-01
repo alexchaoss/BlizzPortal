@@ -32,42 +32,19 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
         if (position % 2 == 1) {
             repLayout?.setBackgroundResource(R.drawable.bgbaground)
         }
-        when (reputations.standing.name) {
-            "Rank 8",
-            "Timelord",
-            "Best Friend",
-            "Exalted" -> repTier?.setTextColor(Color.parseColor("#28a586"))
-            "Whelping",
-            "Temporal Trainee",
-            "Timehopper",
-            "Chrono-Friend",
-            "Bronze Ally",
-            "Epoch-Mender",
-            "Buddy",
-            "Good Friend",
-            "Rank 7",
-            "Rank 6",
-            "Rank 5",
-            "Rank 4",
-            "Rank 3",
-            "Rank 2",
-            "Rank 1",
-            "Revered",
-            "Honored",
-            "Friendly" -> repTier?.setTextColor(Color.parseColor("#0f9601"))
-            "Neutral" -> repTier?.setTextColor(Color.parseColor("#edba03"))
-            "Acquaintance",
-            "Stranger",
-            "Unfriendly" -> repTier?.setTextColor(Color.parseColor("#cc3609"))
-            "Hostile",
-            "Hated" -> repTier?.setTextColor(Color.parseColor("#d90e03"))
+        when (reputations.standing.tier) {
+            7 -> repTier?.setTextColor(Color.parseColor("#28a586"))
+            4, 5, 6 -> repTier?.setTextColor(Color.parseColor("#0f9601"))
+            3 -> repTier?.setTextColor(Color.parseColor("#edba03"))
+            1, 2 -> repTier?.setTextColor(Color.parseColor("#cc3609"))
+            0 -> repTier?.setTextColor(Color.parseColor("#d90e03"))
         }
         setTextViewsText(reputations)
         setBarColor(reputations)
     }
 
     private fun setTextViewsText(reputations: Reputations) {
-        if (reputations.standing.name == "Exalted" || reputations.standing.name == "Best Friend" || reputations.standing.name == "Rank 8" || reputations.standing.name == "Timelord") {
+        if (reputations.standing.tier == 7) {
             progressBar?.max = 1000
             progressBar?.progress = 1000
         } else {
@@ -81,35 +58,12 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
     }
 
     private fun setBarColor(reputations: Reputations) {
-        when (reputations.standing.name) {
-            "Rank 8",
-            "Timelord",
-            "Best Friend",
-            "Exalted" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_teal)
-            "Buddy",
-            "Good Friend",
-            "Whelping",
-            "Temporal Trainee",
-            "Timehopper",
-            "Chrono-Friend",
-            "Bronze Ally",
-            "Epoch-Mender",
-            "Rank 7",
-            "Rank 6",
-            "Rank 5",
-            "Rank 4",
-            "Rank 3",
-            "Rank 2",
-            "Rank 1",
-            "Revered",
-            "Honored",
-            "Friendly" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_green)
-            "Stranger",
-            "Unfriendly" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_orange)
-            "Acquaintance",
-            "Neutral" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_yellow)
-            "Hostile",
-            "Hated" -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_red)
+        when (reputations.standing.tier) {
+            7 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_teal)
+            4, 5, 6 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_green)
+            3 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_yellow)
+            1, 2 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_orange)
+            0 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_red)
         }
     }
 }

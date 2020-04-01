@@ -29,7 +29,6 @@ import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputations
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.common.base.Ascii
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_rep_fragment.*
@@ -106,82 +105,82 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
         textView.setHintTextColor(Color.parseColor("#ffffff"))
         search_view.setOnQueryTextListener(this)
 
-        val urlRep = URLConstants.getBaseURLforAPI(region) + URLConstants.WOW_REP.replace("zone", Ascii.toLowerCase(region)).replace("realm", Ascii.toLowerCase(realm!!))
-                .replace("characterName", Ascii.toLowerCase(character!!)).replace("TOKEN", bnOAuth2Helper!!.accessToken)
-
         for (i in 0..8) {
             repsByExpac.add(arrayListOf())
         }
 
         val call: Call<Reputation> = networkServices.getReputations(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+                realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Reputation> {
             override fun onResponse(call: Call<Reputation>, response: retrofit2.Response<Reputation>) {
                 val reputation = response.body()
 
-
-                for (reps in reputation?.reputations!!) {
-                    for (enumRep in RepByExpansion.values()) {
-                        if (reps.faction.name == enumRep.repName) {
-                            when (enumRep.xpac) {
-                                "Classic" -> repsByExpac[8].add(reps)
-                                "Burning Crusade" -> repsByExpac[7].add(reps)
-                                "Wrath of the Lich King" -> repsByExpac[6].add(reps)
-                                "Cataclysm" -> repsByExpac[5].add(reps)
-                                "Mists of Pandaria" -> repsByExpac[4].add(reps)
-                                "Warlords of Draenor" -> repsByExpac[3].add(reps)
-                                "Legion" -> repsByExpac[2].add(reps)
-                                "Battle for Azeroth" -> repsByExpac[1].add(reps)
-                                "Shadowlands" -> repsByExpac[0].add(reps)
+                if (reputation != null) {
+                    for (reps in reputation.reputations) {
+                        for (enumRep in RepByExpansion.values()) {
+                            if (reps.faction.id == enumRep.id) {
+                                when (enumRep.xpac) {
+                                    "Classic" -> repsByExpac[8].add(reps)
+                                    "Burning Crusade" -> repsByExpac[7].add(reps)
+                                    "Wrath of the Lich King" -> repsByExpac[6].add(reps)
+                                    "Cataclysm" -> repsByExpac[5].add(reps)
+                                    "Mists of Pandaria" -> repsByExpac[4].add(reps)
+                                    "Warlords of Draenor" -> repsByExpac[3].add(reps)
+                                    "Legion" -> repsByExpac[2].add(reps)
+                                    "Battle for Azeroth" -> repsByExpac[1].add(reps)
+                                    "Shadowlands" -> repsByExpac[0].add(reps)
+                                }
                             }
                         }
                     }
-                }
 
-                for (reputations in repsByExpac) {
-                    if (reputations.size > 0) {
-                        reputations.sortBy { RepByExpansion.getFaction(it.faction.name) }
-                        val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        val button = TextView(context)
-                        button.setBackgroundResource(R.drawable.progress_collapse_header)
-                        button.setTextColor(Color.WHITE)
-                        button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
-                        button.textSize = 18F
-                        button.layoutParams = paramsButton
-                        rep_container.addView(button)
+                    for (reputations in repsByExpac) {
+                        if (reputations.size > 0) {
+                            reputations.sortBy { RepByExpansion.getFaction(it.faction.name) }
+                            val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                            val button = TextView(context)
+                            button.setBackgroundResource(R.drawable.progress_collapse_header)
+                            button.setTextColor(Color.WHITE)
+                            button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
+                            button.textSize = 18F
+                            button.layoutParams = paramsButton
+                            rep_container.addView(button)
 
-                        var expand = false
-                        val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        val recyclerView = context?.let { RecyclerView(it) }
-                        recyclerView?.layoutParams = paramsRecyclerView
-                        rep_container.addView(recyclerView)
+                            var expand = false
+                            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                            val recyclerView = context?.let { RecyclerView(it) }
+                            recyclerView?.layoutParams = paramsRecyclerView
+                            rep_container.addView(recyclerView)
 
-                        recyclerView?.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = ReputationsAdapter(reputations, context)
-                            adapter?.let { adapterList.add(it as ReputationsAdapter) }
-                        }
-                        recyclerView?.visibility = View.GONE
-
-                        button.setOnClickListener {
-                            if (!expand) {
-                                expand = true
-                                recyclerView?.visibility = View.VISIBLE
-                                button.text = "- " + getExpansion(repsByExpac.indexOf(reputations))
-                            } else {
-                                expand = false
-                                recyclerView?.visibility = View.GONE
-                                button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
+                            recyclerView?.apply {
+                                layoutManager = LinearLayoutManager(activity)
+                                adapter = ReputationsAdapter(reputations, context)
+                                adapter?.let { adapterList.add(it as ReputationsAdapter) }
                             }
-                        }
+                            recyclerView?.visibility = View.GONE
 
+                            button.setOnClickListener {
+                                if (!expand) {
+                                    expand = true
+                                    recyclerView?.visibility = View.VISIBLE
+                                    button.text = "- " + getExpansion(repsByExpac.indexOf(reputations))
+                                } else {
+                                    expand = false
+                                    recyclerView?.visibility = View.GONE
+                                    button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
+                                }
+                            }
+
+                        }
                     }
+                } else {
+                    showOutdatedTextView()
                 }
             }
 
             override fun onFailure(call: Call<Reputation>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
-                showOutdatedTextView()
+
             }
         })
     }
@@ -227,51 +226,51 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun classEventReceived(classEvent: ClassEvent) {
         when (classEvent.data) {
-            "Death Knight" -> {
+            6 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#080812"))
                 background_rep.setBackgroundResource(R.drawable.dk_bg)
             }
-            "Demon Hunter" -> {
+            12 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#000900"))
                 background_rep.setBackgroundResource(R.drawable.dh_bg)
             }
-            "Druid" -> {
+            11 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#04100a"))
                 background_rep.setBackgroundResource(R.drawable.druid_bg)
             }
-            "Hunter" -> {
+            3 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#0f091b"))
                 background_rep.setBackgroundResource(R.drawable.hunter_bg)
             }
-            "Mage" -> {
+            8 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#110617"))
                 background_rep.setBackgroundResource(R.drawable.mage_bg)
             }
-            "Monk" -> {
+            10 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#040b17"))
                 background_rep.setBackgroundResource(R.drawable.monk_bg)
             }
-            "Paladin" -> {
+            2 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#13040a"))
                 background_rep.setBackgroundResource(R.drawable.paladin_bg)
             }
-            "Priest" -> {
+            5 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#15060e"))
                 background_rep.setBackgroundResource(R.drawable.priest_bg)
             }
-            "Rogue" -> {
+            4 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#160720"))
                 background_rep.setBackgroundResource(R.drawable.rogue_bg)
             }
-            "Shaman" -> {
+            7 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#050414"))
                 background_rep.setBackgroundResource(R.drawable.shaman_bg)
             }
-            "Warlock" -> {
+            9 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#080516"))
                 background_rep.setBackgroundResource(R.drawable.warlock_bg)
             }
-            "Warrior" -> {
+            1 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#1a0407"))
                 background_rep.setBackgroundResource(R.drawable.warrior_bg)
             }

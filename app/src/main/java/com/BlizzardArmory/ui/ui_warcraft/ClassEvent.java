@@ -1,9 +1,9 @@
 package com.BlizzardArmory.ui.ui_warcraft;
 
 public class ClassEvent {
-    public String data;
+    public int data;
 
-    public ClassEvent(String data) {
+    public ClassEvent(int data) {
         this.data = data;
     }
 }

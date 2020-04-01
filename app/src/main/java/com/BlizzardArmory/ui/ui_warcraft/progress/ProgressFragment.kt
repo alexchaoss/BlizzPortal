@@ -93,15 +93,20 @@ class ProgressFragment : Fragment(), IOnBackPressed {
         gson = GsonBuilder().create()
         retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
         networkServices = retrofit?.create(NetworkServices::class.java)!!
-        downloadEncounterInformation(view)
+        downloadEncounterInformation()
     }
 
-    private fun downloadEncounterInformation(view: View) {
-        val call: Call<EncountersInformation> = networkServices.getEncounters(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+    private fun downloadEncounterInformation() {
+        val call: Call<EncountersInformation> = networkServices.getEncounters(character!!.toLowerCase(Locale.ROOT),
+                realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<EncountersInformation> {
             override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
                 val encounters = response.body()
-                setRecyclerViewForEachExpansion(encounters!!)
+                if (encounters != null) {
+                    setRecyclerViewForEachExpansion(encounters)
+                } else {
+                    showOutdatedTextView()
+                }
             }
 
             override fun onFailure(call: Call<EncountersInformation>, t: Throwable) {
@@ -181,68 +186,68 @@ class ProgressFragment : Fragment(), IOnBackPressed {
     }
 
     private fun getRaidLevel(expansion: Expansions): String {
-        when (expansion.expansion.name) {
-            "Classic" -> return "Level 60"
-            "Burning Crusade" -> return "Level 70"
-            "Wrath of the Lich King" -> return "Level 80"
-            "Cataclysm" -> return "Level 85"
-            "Mists of Pandaria" -> return "Level 90"
-            "Warlords of Draenor" -> return "Level 100"
-            "Legion" -> return "Level 110"
-            "Battle for Azeroth" -> return "Level 120"
-            "Shadowlands" -> return "Level 60"
-            else -> return ""
+        return when (expansion.expansion.id) {
+            68L -> "Level 60"
+            70L -> "Level 70"
+            72L -> "Level 80"
+            73L -> "Level 85"
+            74L -> "Level 90"
+            124L -> "Level 100"
+            395L -> "Level 110"
+            396L -> "Level 120"
+            397L -> "Level 60"
+            else -> ""
         }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun classEventReceived(classEvent: ClassEvent) {
         when (classEvent.data) {
-            "Death Knight" -> {
+            6 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#080812"))
                 background_progress.setBackgroundResource(R.drawable.dk_bg)
             }
-            "Demon Hunter" -> {
+            12 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#000900"))
                 background_progress.setBackgroundResource(R.drawable.dh_bg)
             }
-            "Druid" -> {
+            11 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#04100a"))
                 background_progress.setBackgroundResource(R.drawable.druid_bg)
             }
-            "Hunter" -> {
+            3 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#0f091b"))
                 background_progress.setBackgroundResource(R.drawable.hunter_bg)
             }
-            "Mage" -> {
+            8 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#110617"))
                 background_progress.setBackgroundResource(R.drawable.mage_bg)
             }
-            "Monk" -> {
+            10 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#040b17"))
                 background_progress.setBackgroundResource(R.drawable.monk_bg)
             }
-            "Paladin" -> {
+            2 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#13040a"))
                 background_progress.setBackgroundResource(R.drawable.paladin_bg)
             }
-            "Priest" -> {
+            5 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#15060e"))
                 background_progress.setBackgroundResource(R.drawable.priest_bg)
             }
-            "Rogue" -> {
+            4 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#160720"))
                 background_progress.setBackgroundResource(R.drawable.rogue_bg)
             }
-            "Shaman" -> {
+            7 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#050414"))
                 background_progress.setBackgroundResource(R.drawable.shaman_bg)
             }
-            "Warlock" -> {
+            9 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#080516"))
                 background_progress.setBackgroundResource(R.drawable.warlock_bg)
             }
-            "Warrior" -> {
+            1 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#1a0407"))
                 background_progress.setBackgroundResource(R.drawable.warrior_bg)
             }

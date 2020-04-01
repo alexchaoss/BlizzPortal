@@ -58,7 +58,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         name?.text = character.name
         characterClass?.text = character.playableClass.name
         level?.text = "Level " + character.level
-        if (character.faction.name == "Horde") {
+        if (character.faction.type == "HORDE") {
             faction?.setBackgroundResource(R.drawable.horde_logo)
         } else {
             faction?.setBackgroundResource(R.drawable.alliance_logo)
@@ -73,7 +73,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
         val call: Call<Media> = networkServices.getMedia(character.name.toLowerCase(Locale.ROOT), character.realm.slug,
-                "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper.accessToken)
+                "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                 val media: Media? = response.body()

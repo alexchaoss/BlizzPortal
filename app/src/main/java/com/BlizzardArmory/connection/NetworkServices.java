@@ -3,7 +3,7 @@ package com.BlizzardArmory.connection;
 import com.BlizzardArmory.warcraft.account.Account;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation;
-import com.BlizzardArmory.warcraft.equipment.EquippedItem;
+import com.BlizzardArmory.warcraft.equipment.Equipment;
 import com.BlizzardArmory.warcraft.media.Media;
 import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics;
 import com.BlizzardArmory.warcraft.pvp.summary.PvPSummary;
@@ -11,7 +11,6 @@ import com.BlizzardArmory.warcraft.pvp.tiers.Tier;
 import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation;
 import com.BlizzardArmory.warcraft.statistic.Statistic;
 import com.BlizzardArmory.warcraft.talents.Talents;
-import com.BlizzardArmory.warcraft.talents.specializationdata.SpecializationData;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -34,6 +33,11 @@ public interface NetworkServices {
                                 @Query("locale") String locale,
                                 @Query("access_token") String accessToken);
 
+    @GET
+    Call<com.BlizzardArmory.warcraft.equipment.media.Media> getDynamicEquipmentMedia(@Url String url,
+                                                                                     @Query("locale") String locale,
+                                                                                     @Query("access_token") String accessToken);
+
     @GET("profile/wow/character/{realm}/{charactername}/encounters/raids")
     Call<EncountersInformation> getEncounters(@Path("charactername") String character,
                                               @Path("realm") String realm,
@@ -42,11 +46,11 @@ public interface NetworkServices {
                                               @Query("access_token") String accessToken);
 
     @GET("profile/wow/character/{realm}/{charactername}/equipment")
-    Call<EquippedItem> getEquippedItems(@Path("charactername") String character,
-                                        @Path("realm") String realm,
-                                        @Query("namespace") String namespace,
-                                        @Query("locale") String locale,
-                                        @Query("access_token") String accessToken);
+    Call<Equipment> getEquippedItems(@Path("charactername") String character,
+                                     @Path("realm") String realm,
+                                     @Query("namespace") String namespace,
+                                     @Query("locale") String locale,
+                                     @Query("access_token") String accessToken);
 
     @GET("profile/wow/character/{realm}/{charactername}/statistics")
     Call<Statistic> getStats(@Path("charactername") String character,
@@ -62,10 +66,6 @@ public interface NetworkServices {
                            @Query("locale") String locale,
                            @Query("access_token") String accessToken);
 
-    @GET
-    Call<SpecializationData> getDynamicSpec(@Url String url,
-                                            @Query("locale") String locale,
-                                            @Query("access_token") String accessToken);
 
     @GET("profile/wow/character/{realm}/{charactername}")
     Call<CharacterSummary> getCharacter(@Path("charactername") String character,
