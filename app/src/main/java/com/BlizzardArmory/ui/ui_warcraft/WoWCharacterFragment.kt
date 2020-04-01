@@ -55,7 +55,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     private var characterRealm: String? = null
     private var characterClicked: String? = null
     private var region: String? = null
-    private lateinit var dialog: AlertDialog
+    private var dialog: AlertDialog? = null
 
     private var retrofit: Retrofit? = null
     private var gson: Gson? = null
@@ -63,7 +63,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
     //Character information
     private lateinit var characterSummary: CharacterSummary
-    private lateinit var media: Media
+    private var media: Media? = null
     private lateinit var statistic: Statistic
     private lateinit var talentsInfo: Talents
     private lateinit var equipment: Equipment
@@ -106,7 +106,9 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         val bundle = requireArguments()
         characterRealm = bundle.getString("realm")
         characterClicked = bundle.getString("character")
-        media = Gson().fromJson(bundle.getString("media"), Media::class.java)
+        if (Gson().fromJson(bundle.getString("media"), Media::class.java) != null) {
+            media = Gson().fromJson(bundle.getString("media"), Media::class.java)
+        }
         region = bundle.getString("region")
 
         gson = GsonBuilder().create()
@@ -217,11 +219,14 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                 characterRealm!!.toLowerCase(Locale.ROOT), "profile-" + region!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Talents> {
             override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
-                talentsInfo = response.body()!!
-                setTalentInformation()
-                if (talentsInfo == null) {
-                    no_talent?.visibility = View.VISIBLE
-                    no_talent?.text = "Talent information outdated"
+                if (response.isSuccessful) {
+                    talentsInfo = response.body()!!
+                    if (talentsInfo == null) {
+                        no_talent?.visibility = View.VISIBLE
+                        no_talent?.text = "Talent information outdated"
+                    } else {
+                        setTalentInformation()
+                    }
                 }
             }
 
@@ -242,9 +247,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                     response.code() in 201..1000 -> {
                         callErrorAlertDialog(response.code())
                     }
-                    response.code() < 200 -> {
-                        callErrorAlertDialog(0)
-                    }
                     else -> {
                         statistic = response.body()!!
                         setCharacterInformationTextviews()
@@ -254,6 +256,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
             override fun onFailure(call: Call<Statistic>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
+                callErrorAlertDialog(0)
             }
         })
     }
@@ -266,9 +269,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                 when {
                     response.code() in 201..1000 -> {
                         callErrorAlertDialog(response.code())
-                    }
-                    response.code() < 200 -> {
-                        callErrorAlertDialog(0)
                     }
                     else -> {
                         characterSummary = response.body()!!
@@ -285,6 +285,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
             override fun onFailure(call: Call<CharacterSummary>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
+                callErrorAlertDialog(0)
             }
         })
     }
@@ -295,11 +296,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         call2.enqueue(object : Callback<Equipment> {
             override fun onResponse(call: Call<Equipment>, response: retrofit2.Response<Equipment>) {
                 when {
-                    response.code() in 201..1000 -> {
+                    response.code() in 400..1000 -> {
                         callErrorAlertDialog(response.code())
-                    }
-                    response.code() < 200 -> {
-                        callErrorAlertDialog(0)
                     }
                     else -> {
                         equipment = response.body()!!
@@ -332,24 +330,28 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
             override fun onFailure(call: Call<Equipment>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
+                callErrorAlertDialog(0)
             }
         })
     }
 
     private fun downloadBackground() {
         if (media != null) {
-            Picasso.get().load(media.renderUrl).into(background)
+            Picasso.get().load(media?.renderUrl).into(background)
         } else {
             val call: Call<Media> = networkServices.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
                     characterRealm!!.toLowerCase(Locale.ROOT), "profile-" + region!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
             call.enqueue(object : Callback<Media> {
                 override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
-                    media = response.body()!!
-                    Picasso.get().load(media.renderUrl).into(background)
+                    if (response.isSuccessful) {
+                        media = response.body()!!
+                        Picasso.get().load(media?.renderUrl).into(background)
+                    }
                 }
 
                 override fun onFailure(call: Call<Media>, t: Throwable) {
                     Log.e("Error", t.localizedMessage)
+                    callErrorAlertDialog(0)
                 }
             })
         }
@@ -556,7 +558,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         try {
             if (talents.size > 0) {
                 for (i in talents.indices) {
-                    no_talent?.visibility = View.INVISIBLE
+                    no_talent?.visibility = View.GONE
                     (talentsTierContainer as ArrayList<TextView?>)[i]?.gravity = Gravity.CENTER
                     (talentsTierContainer as ArrayList<TextView?>)[i]?.text = (talentsTier as ArrayList<String>)[i]
                     if (talents[i].talent != null) {
@@ -621,7 +623,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         } else {
             talents.clear()
             talents.addAll(talentsInfo.specializations[position].talents)
-            no_talent?.visibility = View.INVISIBLE
+            no_talent?.visibility = View.GONE
             for (i in talents.indices) {
                 talentsTierContainer!![i]?.gravity = Gravity.CENTER
                 talentsTierContainer!![i]?.text = talentsTier?.get(i)
@@ -1012,8 +1014,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                 buttonLayout.addView(button2)
             }
             dialog = builder.show()
-            Objects.requireNonNull(dialog.window).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            dialog.window?.setLayout(800, 500)
+            Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            dialog?.window?.setLayout(800, 500)
             val linearLayout = LinearLayout(context)
             linearLayout.orientation = LinearLayout.VERTICAL
             linearLayout.gravity = Gravity.CENTER
@@ -1022,14 +1024,14 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             linearLayout.addView(buttonLayout)
             val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             layoutParams.setMargins(20, 20, 20, 20)
-            dialog.addContentView(linearLayout, layoutParamsWindow)
-            dialog.setOnCancelListener(DialogInterface.OnCancelListener { dialog1: DialogInterface? ->
+            dialog?.addContentView(linearLayout, layoutParamsWindow)
+            dialog?.setOnCancelListener(DialogInterface.OnCancelListener { dialog1: DialogInterface? ->
                 if (btn2.get()) {
                     Log.i("TEST", "got here")
                     (context as WoWActivity?)?.onBackPressed()
                 } else {
                     if (responseCode == 0) {
-                        dialog.hide()
+                        dialog?.hide()
                         val fragment = requireActivity().supportFragmentManager.findFragmentByTag("NAV_FRAGMENT")
                         val ft = requireActivity().supportFragmentManager.beginTransaction()
                         ft.detach(fragment!!)
@@ -1041,10 +1043,10 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                     }
                 }
             })
-            button.setOnClickListener { v: View? -> dialog.cancel() }
+            button.setOnClickListener { v: View? -> dialog?.cancel() }
             button2.setOnClickListener { v: View? ->
                 btn2.set(true)
-                dialog.cancel()
+                dialog?.cancel()
             }
         }
     }

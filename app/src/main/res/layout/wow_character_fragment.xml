@@ -470,6 +470,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:text="@string/talent_information_not_available"
                         android:textColor="@color/owBackgroundColor"
                         android:textSize="15sp" />
