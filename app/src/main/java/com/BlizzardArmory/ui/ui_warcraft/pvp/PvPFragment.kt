@@ -102,12 +102,12 @@ class PvPFragment : Fragment(), IOnBackPressed {
 
     private fun downloadRBGInfo() {
         val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "rbg", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+                "rbg", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvpRBG = response.body()
 
-                val call2: Call<Tier> = networkServices.getDynamicTier(pvpRBG?.tier?.key?.href, "en_US", bnOAuth2Helper!!.accessToken)
+                val call2: Call<Tier> = networkServices.getDynamicTier(pvpRBG?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -131,12 +131,12 @@ class PvPFragment : Fragment(), IOnBackPressed {
 
     private fun download3v3Info() {
         val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "3v3", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+                "3v3", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp3v3 = response.body()
 
-                val call2: Call<Tier> = networkServices.getDynamicTier(pvp3v3?.tier?.key?.href, "en_US", bnOAuth2Helper!!.accessToken)
+                val call2: Call<Tier> = networkServices.getDynamicTier(pvp3v3?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -160,12 +160,12 @@ class PvPFragment : Fragment(), IOnBackPressed {
 
     private fun download2v2Info() {
         val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "2v2", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+                "2v2", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp2v2 = response.body()
 
-                val call2: Call<Tier> = networkServices.getDynamicTier(pvp2v2?.tier?.key?.href, "en_US", bnOAuth2Helper!!.accessToken)
+                val call2: Call<Tier> = networkServices.getDynamicTier(pvp2v2?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -190,17 +190,19 @@ class PvPFragment : Fragment(), IOnBackPressed {
     private fun downloadPvPSummary() {
 
         val call: Call<PvPSummary> = networkServices.getPvPSummary(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+                realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<PvPSummary> {
             override fun onResponse(call: Call<PvPSummary>, response: retrofit2.Response<PvPSummary>) {
                 val pvpSummary = response.body()
-                kills.text = pvpSummary?.honorable_kills.toString()
-                level.text = "LEVEL " + pvpSummary?.honor_level.toString()
-                setHonorRankIcon(pvpSummary!!)
-                if (pvpSummary.pvp_map_statistics != null) {
-                    recyclerviewbg.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
+                if (pvpSummary != null) {
+                    kills.text = pvpSummary?.honorable_kills.toString()
+                    level.text = "LEVEL " + pvpSummary?.honor_level.toString()
+                    setHonorRankIcon(pvpSummary!!)
+                    if (pvpSummary.pvp_map_statistics != null) {
+                        recyclerviewbg.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
+                        }
                     }
                 }
             }
@@ -212,7 +214,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
     }
 
     private fun showBracketInformationOnTouch(layout: View, tier: Tier, bracket: BracketStatistics) {
-        layout.setOnTouchListener { v, event ->
+        layout.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     title.text = tier.name
@@ -226,7 +228,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 MotionEvent.ACTION_UP -> bracketinfo?.visibility = View.GONE
             }
 
-            layout_pvp.setOnScrollChangeListener { view: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            layout_pvp.setOnScrollChangeListener { _: View, scrollX: Int, _: Int, _: Int, oldScrollY: Int ->
                 if (scrollX != oldScrollY) {
                     bracketinfo?.visibility = View.GONE
                 }
@@ -273,51 +275,51 @@ class PvPFragment : Fragment(), IOnBackPressed {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun classEventReceived(classEvent: ClassEvent) {
         when (classEvent.data) {
-            "Death Knight" -> {
+            6 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#080812"))
                 background_pvp.setBackgroundResource(R.drawable.dk_bg)
             }
-            "Demon Hunter" -> {
+            12 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#000900"))
                 background_pvp.setBackgroundResource(R.drawable.dh_bg)
             }
-            "Druid" -> {
+            11 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#04100a"))
                 background_pvp.setBackgroundResource(R.drawable.druid_bg)
             }
-            "Hunter" -> {
+            3 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#0f091b"))
                 background_pvp.setBackgroundResource(R.drawable.hunter_bg)
             }
-            "Mage" -> {
+            8 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#110617"))
                 background_pvp.setBackgroundResource(R.drawable.mage_bg)
             }
-            "Monk" -> {
+            10 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#040b17"))
                 background_pvp.setBackgroundResource(R.drawable.monk_bg)
             }
-            "Paladin" -> {
+            2 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#13040a"))
                 background_pvp.setBackgroundResource(R.drawable.paladin_bg)
             }
-            "Priest" -> {
+            5 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#15060e"))
                 background_pvp.setBackgroundResource(R.drawable.priest_bg)
             }
-            "Rogue" -> {
+            4 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#160720"))
                 background_pvp.setBackgroundResource(R.drawable.rogue_bg)
             }
-            "Shaman" -> {
+            7 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#050414"))
                 background_pvp.setBackgroundResource(R.drawable.shaman_bg)
             }
-            "Warlock" -> {
+            9 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#080516"))
                 background_pvp.setBackgroundResource(R.drawable.warlock_bg)
             }
-            "Warrior" -> {
+            1 -> {
                 layout_pvp.setBackgroundColor(Color.parseColor("#1a0407"))
                 background_pvp.setBackgroundResource(R.drawable.warrior_bg)
             }

@@ -65,32 +65,32 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     private fun setVisibilityBar() {
-        when (expansion.name) {
-            "Burning Crusade" -> {
+        when (expansion.id) {
+            70L -> {
                 layoutNormal?.visibility = View.VISIBLE
                 layoutLFR?.visibility = View.GONE
                 layoutHeroic?.visibility = View.GONE
                 layoutMythic?.visibility = View.GONE
             }
-            "Wrath of the Lich King" -> {
+            72L -> {
                 layoutNormal?.visibility = View.VISIBLE
                 layoutLFR?.visibility = View.GONE
                 layoutHeroic?.visibility = View.GONE
                 layoutMythic?.visibility = View.GONE
             }
-            "Cataclysm" -> {
+            73L -> {
                 layoutHeroic?.visibility = View.VISIBLE
                 layoutNormal?.visibility = View.VISIBLE
                 layoutLFR?.visibility = View.GONE
                 layoutMythic?.visibility = View.GONE
             }
-            "Mist of Pandaria" -> {
+            74L -> {
                 layoutHeroic?.visibility = View.VISIBLE
                 layoutLFR?.visibility = View.VISIBLE
                 layoutNormal?.visibility = View.VISIBLE
                 layoutMythic?.visibility = View.GONE
             }
-            "Classic" -> {
+            68L -> {
                 layoutNormal?.visibility = View.VISIBLE
                 layoutLFR?.visibility = View.GONE
                 layoutHeroic?.visibility = View.GONE
@@ -100,12 +100,12 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     private fun setProgressBarCount(instances: Instances) {
-        when (instances.instance.name) {
-            "Trial of the Crusader" -> layoutHeroic?.visibility = View.VISIBLE
-            "Icecrown Citadel" -> layoutHeroic?.visibility = View.VISIBLE
-            "The Ruby Sanctum" -> layoutHeroic?.visibility = View.VISIBLE
-            "Dragon Soul" -> layoutLFR?.visibility = View.VISIBLE
-            "Siege of Orgrimmar" -> layoutMythic?.visibility = View.VISIBLE
+        when (instances.instance.id) {
+            284L -> layoutHeroic?.visibility = View.VISIBLE
+            758L -> layoutHeroic?.visibility = View.VISIBLE
+            761L -> layoutHeroic?.visibility = View.VISIBLE
+            187L -> layoutLFR?.visibility = View.VISIBLE
+            369L -> layoutMythic?.visibility = View.VISIBLE
         }
         var maxCount = 0
         var totalCount = 0
@@ -127,52 +127,52 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             }
 
             val count: String? = maxCount.toString() + "/" + mode.progress.total_count.toString()
-            when (mode.difficulty.name) {
-                "Raid Finder" -> {
+            when (mode.difficulty.type) {
+                "LFR" -> {
                     progressCountLFR?.text = count
                     progressBarLFR?.max = mode.progress.total_count
                     progressBarLFR?.progress = maxCount
                     setProgressColor(mode, progressBarLFR, maxCount)
                 }
-                "Normal" -> {
+                "NORMAL" -> {
                     progressCountNormal?.text = count
                     progressBarNormal?.max = mode.progress.total_count
                     progressBarNormal?.progress = maxCount
                     setProgressColor(mode, progressBarNormal, maxCount)
                 }
-                "10 Player" -> {
-                    progressCountNormal?.text = count
-                    progressBarNormal?.max = mode.progress.total_count
-                    progressBarNormal?.progress = maxCount
-                    setProgressColor(mode, progressBarNormal, maxCount)
-
-                }
-                "25 Player" -> {
+                "LEGACY_10_MAN" -> {
                     progressCountNormal?.text = count
                     progressBarNormal?.max = mode.progress.total_count
                     progressBarNormal?.progress = maxCount
                     setProgressColor(mode, progressBarNormal, maxCount)
 
                 }
-                "10 Player (Heroic)" -> {
+                "LEGACY_25_MAN" -> {
+                    progressCountNormal?.text = count
+                    progressBarNormal?.max = mode.progress.total_count
+                    progressBarNormal?.progress = maxCount
+                    setProgressColor(mode, progressBarNormal, maxCount)
+
+                }
+                "LEGACY_10_MAN_HEROIC" -> {
                     progressCountHeroic?.text = count
                     progressBarHeroic?.max = mode.progress.total_count
                     progressBarHeroic?.progress = maxCount
                     setProgressColor(mode, progressBarHeroic, maxCount)
                 }
-                "25 Player (Heroic)" -> {
+                "LEGACY_25_MAN_HEROIC" -> {
                     progressCountHeroic?.text = count
                     progressBarHeroic?.max = mode.progress.total_count
                     progressBarHeroic?.progress = maxCount
                     setProgressColor(mode, progressBarHeroic, maxCount)
                 }
-                "Heroic" -> {
+                "HEROIC" -> {
                     progressCountHeroic?.text = count
                     progressBarHeroic?.max = mode.progress.total_count
                     progressBarHeroic?.progress = maxCount
                     setProgressColor(mode, progressBarHeroic, maxCount)
                 }
-                "Mythic" -> {
+                "MYTHIC" -> {
                     progressCountMythic?.text = count
                     progressBarMythic?.max = mode.progress.total_count
                     progressBarMythic?.progress = maxCount
@@ -195,52 +195,52 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     private fun findBanner(instances: Instances): Int {
-        when (instances.instance.name) {
-            "Uldir" -> return R.drawable.uldir_small
-            "Battle of Dazar'alor" -> return R.drawable.battle_of_dazaralor_small
-            "Crucible of Storms" -> return R.drawable.crucible_of_storms_small
-            "The Eternal Palace" -> return R.drawable.the_eternal_palace_small
-            "Ny'alotha, the Waking City" -> return R.drawable.nyalotha_the_waking_city_small
-            "The Emerald Nightmare" -> return R.drawable.the_emerald_nightmare_small
-            "Trial of Valor" -> return R.drawable.trial_of_valor_small
-            "The Nighthold" -> return R.drawable.the_nighthold_small
-            "Tomb of Sargeras" -> return R.drawable.tomb_of_sargeras_small
-            "Antorus, the Burning Throne" -> return R.drawable.antorus_the_burning_throne_small
-            "Highmaul" -> return R.drawable.highmaul_small
-            "Blackrock Foundry" -> return R.drawable.blackrock_foundry_small
-            "Hellfire Citadel" -> return R.drawable.hellfire_citadel_small
-            "Mogu'shan Vaults" -> return R.drawable.mogushan_vaults_small
-            "Heart of Fear" -> return R.drawable.heart_of_fear_small
-            "Terrace of Endless Spring" -> return R.drawable.terrace_of_endless_spring_small
-            "Throne of Thunder" -> return R.drawable.throne_of_thunder_small
-            "Siege of Orgrimmar" -> return R.drawable.siege_of_orgrimmar_small
-            "Baradin Hold" -> return R.drawable.baradin_hold_small
-            "Blackwing Descent" -> return R.drawable.blackwing_descent_small
-            "The Bastion of Twilight" -> return R.drawable.the_bastion_of_twilight_small
-            "Throne of the Four Winds" -> return R.drawable.throne_of_the_four_winds_small
-            "Firelands" -> return R.drawable.firelands_small
-            "Dragon Soul" -> return R.drawable.dragon_soul_small
-            "Vault of Archavon" -> return R.drawable.vault_of_archavon_small
-            "Naxxramas" -> return R.drawable.naxxramas_small
-            "The Obsidian Sanctum" -> return R.drawable.the_obsidian_sanctum_small
-            "The Eye of Eternity" -> return R.drawable.the_eye_of_eternity_small
-            "Ulduar" -> return R.drawable.ulduar_small
-            "Trial of the Crusader" -> return R.drawable.trial_of_the_crusader_small
-            "Onyxia's Lair" -> return R.drawable.onyxias_lair_small
-            "Icecrown Citadel" -> return R.drawable.icecrown_citadel_small
-            "The Ruby Sanctum" -> return R.drawable.the_ruby_sanctum_small
-            "Karazhan" -> return R.drawable.karazhan_small
-            "Gruul's Lair" -> return R.drawable.gruuls_lair_small
-            "Magtheridon's Lair" -> return R.drawable.magtheridons_lair_small
-            "Serpentshrine Cavern" -> return R.drawable.serpentshrine_cavern_small
-            "The Eye" -> return R.drawable.the_eye_small
-            "The Battle for Mount Hyjal" -> return R.drawable.the_battle_for_mount_hyjal_small
-            "Black Temple" -> return R.drawable.black_temple_small
-            "Sunwell Plateau" -> return R.drawable.sunwell_plateau_small
-            "Molten Core" -> return R.drawable.molten_core_small
-            "Blackwing Lair" -> return R.drawable.blackwing_lair_small
-            "Ruins of Ahn'Qiraj" -> return R.drawable.ruins_of_ahnqiraj_small
-            "Temple of Ahn'Qiraj" -> return R.drawable.temple_of_ahnqiraj_small
+        when (instances.instance.id) {
+            1031L -> return R.drawable.uldir_small
+            1176L -> return R.drawable.battle_of_dazaralor_small
+            1177L -> return R.drawable.crucible_of_storms_small
+            1179L -> return R.drawable.the_eternal_palace_small
+            1180L -> return R.drawable.nyalotha_the_waking_city_small
+            768L -> return R.drawable.the_emerald_nightmare_small
+            861L -> return R.drawable.trial_of_valor_small
+            786L -> return R.drawable.the_nighthold_small
+            875L -> return R.drawable.tomb_of_sargeras_small
+            946L -> return R.drawable.antorus_the_burning_throne_small
+            477L -> return R.drawable.highmaul_small
+            457L -> return R.drawable.blackrock_foundry_small
+            669L -> return R.drawable.hellfire_citadel_small
+            317L -> return R.drawable.mogushan_vaults_small
+            330L -> return R.drawable.heart_of_fear_small
+            320L -> return R.drawable.terrace_of_endless_spring_small
+            362L -> return R.drawable.throne_of_thunder_small
+            369L -> return R.drawable.siege_of_orgrimmar_small
+            75L -> return R.drawable.baradin_hold_small
+            73L -> return R.drawable.blackwing_descent_small
+            72L -> return R.drawable.the_bastion_of_twilight_small
+            74L -> return R.drawable.throne_of_the_four_winds_small
+            78L -> return R.drawable.firelands_small
+            187L -> return R.drawable.dragon_soul_small
+            753L -> return R.drawable.vault_of_archavon_small
+            754L -> return R.drawable.naxxramas_small
+            755L -> return R.drawable.the_obsidian_sanctum_small
+            756L -> return R.drawable.the_eye_of_eternity_small
+            759L -> return R.drawable.ulduar_small
+            757L -> return R.drawable.trial_of_the_crusader_small
+            760L -> return R.drawable.onyxias_lair_small
+            758L -> return R.drawable.icecrown_citadel_small
+            761L -> return R.drawable.the_ruby_sanctum_small
+            745L -> return R.drawable.karazhan_small
+            746L -> return R.drawable.gruuls_lair_small
+            747L -> return R.drawable.magtheridons_lair_small
+            748L -> return R.drawable.serpentshrine_cavern_small
+            749L -> return R.drawable.the_eye_small
+            750L -> return R.drawable.the_battle_for_mount_hyjal_small
+            751L -> return R.drawable.black_temple_small
+            752L -> return R.drawable.sunwell_plateau_small
+            741L -> return R.drawable.molten_core_small
+            742L -> return R.drawable.blackwing_lair_small
+            743L -> return R.drawable.ruins_of_ahnqiraj_small
+            744L -> return R.drawable.temple_of_ahnqiraj_small
             else -> return 0
         }
     }

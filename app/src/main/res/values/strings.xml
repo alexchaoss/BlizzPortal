@@ -154,4 +154,5 @@
     <string name="action_search">action_search</string>
     <string name="rate_my_app">Rate my app!</string>
     <string name="rate_it">Rate it!</string>
+    <string name="select_a_language">Select a language</string>
 </resources>

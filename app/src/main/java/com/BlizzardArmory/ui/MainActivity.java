@@ -45,6 +45,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,26 +56,44 @@ public class MainActivity extends AppCompatActivity {
     private String clientSecret = "";
     private LinearLayout settingsLayout;
     private WebView paypalWebView;
+    public static String locale = "en_US";
+    private String[] REGION_LIST;
+    private String selectedLanguage;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Spinner regions = findViewById(R.id.spinner);
+        Spinner language = findViewById(R.id.spinner_language);
         Button login = findViewById(R.id.buttonLogin);
         Button clearCredentials = findViewById(R.id.clear_credentials);
         Button rate = findViewById(R.id.rate);
         paypalWebView = findViewById(R.id.webview);
-        String[] REGION_LIST = {"Select Region", "CN", "US", "EU", "KR", "TW"};
+        REGION_LIST = new String[]{"Select Region", "CN", "US", "EU", "KR", "TW"};
+        String[] LANGUAGE_LIST = {"Select Language", "English", "Spanish", "Portuguese", "French", "Russian", "Dutch", "Italian", "Korean", "Chinese", "Taiwanese"};
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!sharedPreferences.contains("locale")) {
+            sharedPreferences.edit().putString("locale", "en_US").apply();
+            locale = "en_US";
+        } else {
+            locale = sharedPreferences.getString("locale", "en_US");
+        }
 
-        ArrayAdapter arrayAdapter = setRegionAdapater(REGION_LIST);
+        ArrayAdapter regionAdapter = setAdapater(REGION_LIST);
 
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        regions.setAdapter(arrayAdapter);
+        regionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        regions.setAdapter(regionAdapter);
 
-        regionSelector(regions);
+        ArrayAdapter languageAdapter = setAdapater(LANGUAGE_LIST);
+
+        languageAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        language.setAdapter(languageAdapter);
+
+        spinnerSelector(regions);
+        spinnerSelector(language);
 
         ImageView settings = findViewById(R.id.settings);
         settingsLayout = findViewById(R.id.settings_layout);
@@ -106,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @NotNull
-    private ArrayAdapter setRegionAdapater(String[] REGION_LIST) {
+    private ArrayAdapter setAdapater(String[] REGION_LIST) {
         return new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, REGION_LIST) {
             @Override
             public boolean isEnabled(int position) {
@@ -130,11 +149,18 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private void regionSelector(Spinner regions) {
-        regions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    private void spinnerSelector(Spinner spinner) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedRegion = (String) parent.getItemAtPosition(position);
+                if (Arrays.asList(REGION_LIST).contains(parent.getItemAtPosition(position))) {
+                    selectedRegion = (String) parent.getItemAtPosition(position);
+                } else {
+                    selectedLanguage = (String) parent.getItemAtPosition(position);
+                    Log.i("lang", selectedLanguage);
+                    setLocale();
+                }
+
                 try {
                     ((TextView) view).setTextColor(Color.WHITE);
                     ((TextView) view).setTextSize(20);
@@ -150,6 +176,47 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(0);
             }
         });
+    }
+
+    private void setLocale() {
+        switch (selectedLanguage) {
+            case "English":
+                locale = "en_US";
+                break;
+            case "Spanish":
+                locale = "es_ES";
+                break;
+            case "French":
+                locale = "fr_FR";
+                break;
+            case "Russian":
+                locale = "ru_RU";
+                break;
+            case "Dutch":
+                locale = "de_DE";
+                break;
+            case "Portuguese":
+                locale = "pt_PT";
+                break;
+            case "Italian":
+                locale = "it_IT";
+                break;
+            case "Korean":
+                locale = "ko_KR";
+                break;
+            case "Chinese":
+                locale = "zh_CN";
+                break;
+            case "Taiwanese":
+                locale = "zh_TW";
+                break;
+            default: {
+                if (sharedPreferences.contains("locale")) {
+                    locale = sharedPreferences.getString("locale", "en_US");
+                }
+            }
+        }
+        sharedPreferences.edit().putString("locale", locale).apply();
     }
 
     private void openLoginToBattlenet(Button login) {

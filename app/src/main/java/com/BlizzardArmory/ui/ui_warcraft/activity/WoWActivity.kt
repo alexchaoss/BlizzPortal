@@ -85,7 +85,7 @@ class WoWActivity : AppCompatActivity() {
 
     private fun downloadWoWCharacters() {
 
-        val call: Call<Account> = networkServices.getAccount("profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), "en_US", bnOAuth2Helper!!.accessToken)
+        val call: Call<Account> = networkServices.getAccount("profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 charaters = response.body()
