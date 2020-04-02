@@ -1,6 +1,5 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -34,6 +33,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.connection.NetworkServices;
 import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.overwatch.Profile;
 import com.BlizzardArmory.overwatch.heroes.Hero;
@@ -42,9 +42,7 @@ import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
-import com.android.volley.Request;
 import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.caverock.androidsvg.SVG;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
@@ -60,12 +58,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class OWActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
     private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
     private Gson gson;
+    private Retrofit retrofit;
+    private NetworkServices networkServices;
 
     private String username;
     private String platform;
@@ -198,6 +203,8 @@ public class OWActivity extends AppCompatActivity {
         bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
         gson = new GsonBuilder().create();
+        retrofit = new Retrofit.Builder().baseUrl("https://ow-api.com/v1/stats/").addConverterFactory(GsonConverterFactory.create(gson)).build();
+        networkServices = retrofit.create(NetworkServices.class);
 
         username = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("username");
         platform = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("platform");
@@ -221,12 +228,14 @@ public class OWActivity extends AppCompatActivity {
         String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
         Log.i("URL", URLConstants.getOWProfile(platform, username));
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, URLConstants.getOWProfile(username, platform), null,
-                response -> {
+        Call<Profile> call = networkServices.getOWProfile(URLConstants.getOWProfile(username, platform));
+        call.enqueue(new Callback<Profile>() {
+            @Override
+            public void onResponse(Call<Profile> call, retrofit2.Response<Profile> response) {
 
+                if (response.isSuccessful()) {
                     try {
-                        accountInformation = gson.fromJson(response.toString(), Profile.class);
-
+                        accountInformation = response.body();
                         downloadAvatar();
                         setName();
                         downloadLevelIcon();
@@ -283,7 +292,6 @@ public class OWActivity extends AppCompatActivity {
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                         URLConstants.loading = false;
-
                     } catch (Exception e) {
                         gamesWon.setText("This profile is private and the information unavailable");
                         gamesWon.setTextSize(18);
@@ -293,17 +301,19 @@ public class OWActivity extends AppCompatActivity {
                         Log.e("Error", Arrays.toString(e.getStackTrace()));
                     }
 
-                },
-                error -> {
-                    Log.e("Error", error.toString());
-                    if (error.networkResponse == null) {
-                        showNoConnectionMessage(OWActivity.this, 0);
-                    } else {
-                        showNoConnectionMessage(OWActivity.this, error.networkResponse.statusCode);
-                    }
-                });
+                } else if (response.code() >= 400) {
+                    showNoConnectionMessage(response.code());
+                }
+            }
 
-        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(jsonRequest);
+            @Override
+            public void onFailure(Call<Profile> call, Throwable t) {
+                Log.e("Error", t.getLocalizedMessage());
+                showNoConnectionMessage(0);
+            }
+
+
+        });
     }
 
     private void setCareerLists() {
@@ -1143,7 +1153,7 @@ public class OWActivity extends AppCompatActivity {
             BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
             avatar.setBackground(avatarBM);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                e -> showNoConnectionMessage(OWActivity.this, 0));
+                e -> showNoConnectionMessage(0));
         RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
@@ -1158,7 +1168,7 @@ public class OWActivity extends AppCompatActivity {
             }
 
         },
-                e -> showNoConnectionMessage(OWActivity.this, 0));
+                e -> showNoConnectionMessage(0));
         RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(stringRequest);
     }
 
@@ -1167,7 +1177,7 @@ public class OWActivity extends AppCompatActivity {
             BitmapDrawable icon = new BitmapDrawable(getResources(), bitmap);
             imageView.setImageDrawable(icon);
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                e -> showNoConnectionMessage(OWActivity.this, 0));
+                e -> showNoConnectionMessage(0));
         RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
@@ -1185,7 +1195,7 @@ public class OWActivity extends AppCompatActivity {
             RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest2);
 
         }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                e -> showNoConnectionMessage(OWActivity.this, 0));
+                e -> showNoConnectionMessage(0));
         RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
@@ -1198,17 +1208,17 @@ public class OWActivity extends AppCompatActivity {
         }
     }
 
-    public void showNoConnectionMessage(final Context context, final int responseCode) {
+    public void showNoConnectionMessage(final int responseCode) {
         this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);
         URLConstants.loading = false;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTransparent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         buttonParams.setMargins(10, 20, 10, 20);
 
-        TextView titleText = new TextView(context);
+        TextView titleText = new TextView(this);
 
         titleText.setTextSize(20);
         titleText.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -1216,14 +1226,14 @@ public class OWActivity extends AppCompatActivity {
         titleText.setLayoutParams(layoutParams);
         titleText.setTextColor(Color.WHITE);
 
-        TextView messageText = new TextView(context);
+        TextView messageText = new TextView(this);
 
         messageText.setGravity(Gravity.CENTER_HORIZONTAL);
         messageText.setPadding(0, 0, 0, 20);
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
 
-        Button button = new Button(context);
+        Button button = new Button(this);
 
         button.setTextSize(20);
         button.setTextColor(Color.WHITE);
@@ -1231,9 +1241,9 @@ public class OWActivity extends AppCompatActivity {
         button.setWidth(200);
         button.setHeight(100);
         button.setLayoutParams(buttonParams);
-        button.setBackground(context.getDrawable(R.drawable.buttonstyle));
+        button.setBackground(this.getDrawable(R.drawable.buttonstyle));
 
-        Button button2 = new Button(context);
+        Button button2 = new Button(this);
 
         button2.setTextSize(20);
         button2.setTextColor(Color.WHITE);
@@ -1241,9 +1251,9 @@ public class OWActivity extends AppCompatActivity {
         button2.setWidth(200);
         button2.setHeight(100);
         button2.setLayoutParams(buttonParams);
-        button2.setBackground(context.getDrawable(R.drawable.buttonstyle));
+        button2.setBackground(this.getDrawable(R.drawable.buttonstyle));
 
-        LinearLayout buttonLayout = new LinearLayout(context);
+        LinearLayout buttonLayout = new LinearLayout(this);
         buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
         buttonLayout.setGravity(Gravity.CENTER);
         buttonLayout.addView(button);
@@ -1265,7 +1275,7 @@ public class OWActivity extends AppCompatActivity {
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-        LinearLayout linearLayout = new LinearLayout(context);
+        LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setPadding(20, 20, 20, 20);

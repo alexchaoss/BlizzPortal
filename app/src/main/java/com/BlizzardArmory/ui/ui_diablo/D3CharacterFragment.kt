@@ -228,9 +228,6 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
                     response.code() >= 400 -> {
                         callErrorAlertDialog(response.code())
                     }
-                    else -> {
-                        callErrorAlertDialog(0)
-                    }
                 }
             }
 

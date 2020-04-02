@@ -25,36 +25,12 @@ public class URLConstants {
     public final static String NOT_FOUND_URL_AVATAR = "?alt=/wow/static/images/2d/avatar/";
     public final static String MEDIA_QUERY = "/profile/wow/character/realm/charactername/character-media?namespace=profile-us&locale=en_US&access_token=";
 
-    //URLS for D3 characters and queries
-    public final static String D3_PROFILE = "/d3/profile/btag/?locale=en_US&";
-    public final static String D3_CHARACTER = "/d3/profile/btag/hero/id?locale=en_US&";
-    public final static String D3_CHARACTER_ITEMS = "/d3/profile/btag/hero/id/items?locale=en_US&";
-    public final static String D3_ITEM = "/d3/data/item?locale=en_US&";
+    //URLS for D3 characters
     public final static String D3_ICON_ITEMS = "http://media.blizzard.com/d3/icons/items/large/icon.png";
     public final static String D3_ICON_SKILLS = "http://media.blizzard.com/d3/icons/skills/64/url.png";
 
-    //URLs for SC2
-    public final static String SC2_PROFILE = "/sc2/player/id?";
-    public final static String SC2_PROFILE_INFO = "/sc2/profile/region_id/realm_id/profile_id?locale=en_US&access_token=";
-
     //URL Overwwatch
     public final static String OW_PROFILE = "https://ow-api.com/v1/stats/:platform/:region/:battletag/complete";
-
-    public static String getD3URLBtagProfile(String btag) {
-        return URLConstants.D3_PROFILE.replace("btag", btag.replace("#", "-"));
-    }
-
-    public static String getD3HeroURL(long id, String btag) {
-        //Log.i("ID", "" + id);
-        String url = D3_CHARACTER.replace("btag", btag.replace("#", "-"));
-        return url.replace("id", String.valueOf(id));
-    }
-
-    public static String getD3HeroItemsURL(long id, String btag) {
-        //Log.i("ID", "" + id);
-        String url = D3_CHARACTER_ITEMS.replace("btag", btag.replace("#", "-"));
-        return url.replace("id", String.valueOf(id));
-    }
 
     public static String getBaseURLforUserInformation() {
         if (MainActivity.selectedRegion.toLowerCase().equals("cn")) {

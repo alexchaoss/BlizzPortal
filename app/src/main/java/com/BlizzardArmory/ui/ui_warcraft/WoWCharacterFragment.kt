@@ -701,12 +701,12 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         try {
             itemSubclass = equippedItem.itemSubclass.name
             var length = slot.length + itemSubclass.length
-            while (length < 45) {
+            while (length < 43) {
                 slot.append("&nbsp;")
                 length++
             }
             var lengthSubClass = itemSubclass.length
-            while (lengthSubClass < 15) {
+            while (lengthSubClass < 14) {
                 slot.append("&nbsp;")
                 lengthSubClass++
             }
@@ -737,11 +737,11 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         } catch (e: Exception) {
             Log.e("Level", "none")
         }
-        try {
+
+        if (equippedItem.description != null) {
             description = "<font color=#edc201>" + equippedItem.description + "</font>"
-        } catch (e: Exception) {
-            Log.e("Description", "none")
         }
+
         if (equippedItem.nameDescription != "") {
             Log.i("name descript", equippedItem.nameDescription)
             nameDescription = "<font color=#00ff00>" + equippedItem.nameDescription + "</font><br>"
@@ -764,7 +764,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Log.e("trigger", "none")
         }
         try {
-            if (equippedItem.name == "Heart of Azeroth") {
+            if (equippedItem.item.id == 158075) {
                 azeriteSpells.append("<br>")
                 for (selectedEssence in equippedItem.azeriteDetails.selectedEssences) {
                     val essenceImage = "<img src=\"" + getEssenceImage(selectedEssence.slot) + "\"> "
@@ -808,13 +808,13 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         } catch (e: Exception) {
             Log.e("bind", "none")
         }
-        if (equippedItem.name == "Heart of Azeroth") {
+        if (equippedItem.item.id == 158075) {
             HoALevel = "<font color=#edc201>" + equippedItem.azeriteDetails.level.displayString + "</font><br>"
         }
-        if (equippedItem.itemClass.name == "Weapon") {
+        if (equippedItem.itemClass.id == 2) {
             damageInfo = StringBuilder(equippedItem.weapon.damage.displayString)
             var length = damageInfo.length + equippedItem.weapon.attackSpeed.displayString.length
-            while (length < 39) {
+            while (length < 43) {
                 damageInfo.append("&nbsp;")
                 length++
             }
@@ -865,7 +865,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         if (sellPrice.toString() != "") {
             stats[equippedItem.slot.type] = stats[equippedItem.slot.type].toString() + String.format("%s<br>", sellPrice)
         }
-        if (description != "<font color=#edc201>null</font>") {
+        if (equippedItem.description != null) {
             stats[equippedItem.slot.type] = stats[equippedItem.slot.type].toString() + String.format("<br>%s<br>", description)
         }
         Log.i("Stats per slot: ", equippedItem.slot.name + ": " + stats[equippedItem.slot.type])

@@ -4,6 +4,8 @@ import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.BlizzardArmory.diablo.character.CharacterInformation;
 import com.BlizzardArmory.diablo.item.SingleItem;
 import com.BlizzardArmory.diablo.items.Items;
+import com.BlizzardArmory.starcraft.Player;
+import com.BlizzardArmory.starcraft.profile.Profile;
 import com.BlizzardArmory.warcraft.account.Account;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation;
@@ -15,6 +17,8 @@ import com.BlizzardArmory.warcraft.pvp.tiers.Tier;
 import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation;
 import com.BlizzardArmory.warcraft.statistic.Statistic;
 import com.BlizzardArmory.warcraft.talents.Talents;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -112,26 +116,43 @@ public interface NetworkServices {
                                           @Query("locale") String locale,
                                           @Query("access_token") String accessToken);
 
-    @GET("/d3/profile/{battletag}/hero/{id}")
+    @GET("d3/profile/{battletag}/hero/{id}")
     Call<CharacterInformation> getD3Hero(@Path("battletag") String battletag,
                                          @Path("id") long id,
                                          @Query("namespace") String namespace,
                                          @Query("locale") String locale,
                                          @Query("access_token") String accessToken);
 
-    @GET("/d3/profile/{battletag}/hero/{id}/items")
+    @GET("d3/profile/{battletag}/hero/{id}/items")
     Call<Items> getHeroItems(@Path("battletag") String battletag,
                              @Path("id") long id,
                              @Query("namespace") String namespace,
                              @Query("locale") String locale,
                              @Query("access_token") String accessToken);
 
-    @GET("/d3/data/{item}")
+    @GET("d3/data/{item}")
     Call<SingleItem> getItem(@Path("item") String item,
                              @Query("namespace") String namespace,
                              @Query("locale") String locale,
                              @Query("access_token") String accessToken);
 
+    //Sc2 endpoints
+    @GET("sc2/player/{id}")
+    Call<List<Player>> getSc2Player(@Path("id") String id,
+                                    @Query("namespace") String namespace,
+                                    @Query("locale") String locale,
+                                    @Query("access_token") String accessToken);
 
+    @GET("sc2/profile/{region_id}/{realm_id}/{profile_id}")
+    Call<Profile> getSc2Profile(@Path("region_id") int regionId,
+                                @Path("realm_id") int realmId,
+                                @Path("profile_id") String profileId,
+                                @Query("namespace") String namespace,
+                                @Query("locale") String locale,
+                                @Query("access_token") String accessToken);
+
+    //Overwatch endpoint
+    @GET
+    Call<com.BlizzardArmory.overwatch.Profile> getOWProfile(@Url String url);
 
 }
