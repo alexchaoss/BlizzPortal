@@ -1,5 +1,9 @@
 package com.BlizzardArmory.connection;
 
+import com.BlizzardArmory.diablo.account.AccountInformation;
+import com.BlizzardArmory.diablo.character.CharacterInformation;
+import com.BlizzardArmory.diablo.item.SingleItem;
+import com.BlizzardArmory.diablo.items.Items;
 import com.BlizzardArmory.warcraft.account.Account;
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary;
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation;
@@ -27,11 +31,6 @@ public interface NetworkServices {
                          @Query("namespace") String namespace,
                          @Query("locale") String locale,
                          @Query("access_token") String accessToken);
-
-    @GET
-    Call<Media> getDynamicMedia(@Url String url,
-                                @Query("locale") String locale,
-                                @Query("access_token") String accessToken);
 
     @GET
     Call<com.BlizzardArmory.warcraft.equipment.media.Media> getDynamicEquipmentMedia(@Url String url,
@@ -107,9 +106,32 @@ public interface NetworkServices {
                                     @Query("access_token") String accessToken);
 
     //D3 Endpoints
-    @GET("d3/profile/btag/")
-    Call<Talents> getD3Profile(@Query("namespace") String namespace,
-                               @Query("locale") String locale,
-                               @Query("access_token") String accessToken);
+    @GET("d3/profile/{battletag}/")
+    Call<AccountInformation> getD3Profile(@Path("battletag") String battletag,
+                                          @Query("namespace") String namespace,
+                                          @Query("locale") String locale,
+                                          @Query("access_token") String accessToken);
+
+    @GET("/d3/profile/{battletag}/hero/{id}")
+    Call<CharacterInformation> getD3Hero(@Path("battletag") String battletag,
+                                         @Path("id") long id,
+                                         @Query("namespace") String namespace,
+                                         @Query("locale") String locale,
+                                         @Query("access_token") String accessToken);
+
+    @GET("/d3/profile/{battletag}/hero/{id}/items")
+    Call<Items> getHeroItems(@Path("battletag") String battletag,
+                             @Path("id") long id,
+                             @Query("namespace") String namespace,
+                             @Query("locale") String locale,
+                             @Query("access_token") String accessToken);
+
+    @GET("/d3/data/{item}")
+    Call<SingleItem> getItem(@Path("item") String item,
+                             @Query("namespace") String namespace,
+                             @Query("locale") String locale,
+                             @Query("access_token") String accessToken);
+
+
 
 }

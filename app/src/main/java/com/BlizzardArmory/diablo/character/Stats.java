@@ -12,13 +12,13 @@ public class Stats {
     private double life;
     @SerializedName("damage")
     @Expose
-    private double damage;
+    private int damage;
     @SerializedName("toughness")
     @Expose
-    private double toughness;
+    private int toughness;
     @SerializedName("healing")
     @Expose
-    private double healing;
+    private int healing;
     @SerializedName("attackSpeed")
     @Expose
     private double attackSpeed;
@@ -39,22 +39,22 @@ public class Stats {
     private double intelligence;
     @SerializedName("physicalResist")
     @Expose
-    private double physicalResist;
+    private int physicalResist;
     @SerializedName("fireResist")
     @Expose
-    private double fireResist;
+    private int fireResist;
     @SerializedName("coldResist")
     @Expose
-    private double coldResist;
+    private int coldResist;
     @SerializedName("lightningResist")
     @Expose
-    private double lightningResist;
+    private int lightningResist;
     @SerializedName("poisonResist")
     @Expose
-    private double poisonResist;
+    private int poisonResist;
     @SerializedName("arcaneResist")
     @Expose
-    private double arcaneResist;
+    private int arcaneResist;
     @SerializedName("blockChance")
     @Expose
     private double blockChance;
@@ -84,10 +84,10 @@ public class Stats {
     private double lifeOnHit;
     @SerializedName("primaryResource")
     @Expose
-    private double primaryResource;
+    private int primaryResource;
     @SerializedName("secondaryResource")
     @Expose
-    private double secondaryResource;
+    private int secondaryResource;
 
     public double getLife() {
         return life;
@@ -97,27 +97,27 @@ public class Stats {
         this.life = life;
     }
 
-    public double getDamage() {
+    public int getDamage() {
         return damage;
     }
 
-    public void setDamage(double damage) {
+    public void setDamage(int damage) {
         this.damage = damage;
     }
 
-    public double getToughness() {
+    public int getToughness() {
         return toughness;
     }
 
-    public void setToughness(double toughness) {
+    public void setToughness(int toughness) {
         this.toughness = toughness;
     }
 
-    public double getHealing() {
+    public int getHealing() {
         return healing;
     }
 
-    public void setHealing(double healing) {
+    public void setHealing(int healing) {
         this.healing = healing;
     }
 
@@ -169,51 +169,51 @@ public class Stats {
         this.intelligence = intelligence;
     }
 
-    public double getPhysicalResist() {
+    public int getPhysicalResist() {
         return physicalResist;
     }
 
-    public void setPhysicalResist(double physicalResist) {
+    public void setPhysicalResist(int physicalResist) {
         this.physicalResist = physicalResist;
     }
 
-    public double getFireResist() {
+    public int getFireResist() {
         return fireResist;
     }
 
-    public void setFireResist(double fireResist) {
+    public void setFireResist(int fireResist) {
         this.fireResist = fireResist;
     }
 
-    public double getColdResist() {
+    public int getColdResist() {
         return coldResist;
     }
 
-    public void setColdResist(double coldResist) {
+    public void setColdResist(int coldResist) {
         this.coldResist = coldResist;
     }
 
-    public double getLightningResist() {
+    public int getLightningResist() {
         return lightningResist;
     }
 
-    public void setLightningResist(double lightningResist) {
+    public void setLightningResist(int lightningResist) {
         this.lightningResist = lightningResist;
     }
 
-    public double getPoisonResist() {
+    public int getPoisonResist() {
         return poisonResist;
     }
 
-    public void setPoisonResist(double poisonResist) {
+    public void setPoisonResist(int poisonResist) {
         this.poisonResist = poisonResist;
     }
 
-    public double getArcaneResist() {
+    public int getArcaneResist() {
         return arcaneResist;
     }
 
-    public void setArcaneResist(double arcaneResist) {
+    public void setArcaneResist(int arcaneResist) {
         this.arcaneResist = arcaneResist;
     }
 
@@ -289,19 +289,19 @@ public class Stats {
         this.lifeOnHit = lifeOnHit;
     }
 
-    public double getPrimaryResource() {
+    public int getPrimaryResource() {
         return primaryResource;
     }
 
-    public void setPrimaryResource(double primaryResource) {
+    public void setPrimaryResource(int primaryResource) {
         this.primaryResource = primaryResource;
     }
 
-    public double getSecondaryResource() {
+    public int getSecondaryResource() {
         return secondaryResource;
     }
 
-    public void setSecondaryResource(double secondaryResource) {
+    public void setSecondaryResource(int secondaryResource) {
         this.secondaryResource = secondaryResource;
     }
 

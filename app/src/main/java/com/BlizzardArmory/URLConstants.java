@@ -20,7 +20,6 @@ public class URLConstants {
 
     //Access Token Query
     public final static String ACCESS_TOKEN_QUERY = "access_token=";
-    public final static String ACCESS_TOKEN_AND_LOCALE = "&locale=en_US&access_token=";
 
     //URLs for WoW images
     public final static String NOT_FOUND_URL_AVATAR = "?alt=/wow/static/images/2d/avatar/";
@@ -33,17 +32,6 @@ public class URLConstants {
     public final static String D3_ITEM = "/d3/data/item?locale=en_US&";
     public final static String D3_ICON_ITEMS = "http://media.blizzard.com/d3/icons/items/large/icon.png";
     public final static String D3_ICON_SKILLS = "http://media.blizzard.com/d3/icons/skills/64/url.png";
-
-    //URLs for WoW characters and queries
-    public final static String WOW_ENCOUNTERS = "/profile/wow/character/realm/characterName/encounters/raids?namespace=profile-zone&locale=en_US&access_token=";
-    public final static String WOW_ITEM_QUERY = "/profile/wow/character/realm/characterName/equipment?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String WOW_STATS_QUERY = "/profile/wow/character/realm/characterName/statistics?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String WOW_TALENT_QUERY = "/profile/wow/character/realm/characterName/specializations?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String WOW_CHARACTER_QUERY = "/profile/wow/character/realm/characterName?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String WOW_ACCOUNT = "/profile/user/wow?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String WOW_PVP_SUM = "/profile/wow/character/realm/characterName/pvp-summary?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String WOW_PVP_BRACKETS = "/profile/wow/character/realm/characterName/pvp-bracket/BRACKET?namespace=profile-zone&locale=en_US&access_token=TOKEN";
-    public final static String WOW_REP = "/profile/wow/character/realm/characterName/reputations?namespace=profile-zone&locale=en_US&access_token=TOKEN";
 
     //URLs for SC2
     public final static String SC2_PROFILE = "/sc2/player/id?";
