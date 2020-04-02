@@ -1,6 +1,5 @@
 package com.BlizzardArmory.ui.ui_starcraft
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -26,18 +25,15 @@ import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.UserInformation
+import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.starcraft.Player
 import com.BlizzardArmory.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
@@ -45,21 +41,29 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.sc2_activity.*
-import org.json.JSONArray
-import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class SC2Activity : AppCompatActivity() {
     private var prefs: SharedPreferences? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
-    private var gson: Gson? = null
-    private var accountInformation: Player? = null
+    private var accountInformation = listOf<Player>()
     private var sc2Profile: Profile? = null
+    private var retrofit: Retrofit? = null
+    private var gson: Gson? = null
+    private lateinit var networkServices: NetworkServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sc2_activity)
+
+        gson = GsonBuilder().create()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         val summaryBG = GradientDrawable()
         summaryBG.setStroke(6, Color.parseColor("#122a42"))
@@ -114,17 +118,18 @@ class SC2Activity : AppCompatActivity() {
     }
 
     private fun downloadAccountInformation() {
-        try {
-            val jsonRequest = JsonArrayRequest(Request.Method.GET, URLConstants.getBaseURLforAPI("") + URLConstants.SC2_PROFILE.replace("id", UserInformation.getUserID())
-                    + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper!!.accessToken, null,
-                    Response.Listener { response0: JSONArray ->
-                        try {
-                            accountInformation = gson!!.fromJson(response0[0].toString(), Player::class.java)
-                            val url = profileURL
-                            Log.i("URL", url + bnOAuth2Helper!!.accessToken)
-                            val profileRequest = JsonObjectRequest(Request.Method.GET, url + bnOAuth2Helper!!.accessToken, null,
-                                    Response.Listener { response1: JSONObject ->
-                                        sc2Profile = gson!!.fromJson(response1.toString(), Profile::class.java)
+        val call: Call<List<Player>> = networkServices.getSc2Player(UserInformation.getUserID(), "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<List<Player>> {
+            override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
+                when {
+                    response.isSuccessful -> {
+                        accountInformation = response.body()!!
+                        val call2: Call<Profile> = networkServices.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                        call2.enqueue(object : Callback<Profile> {
+                            override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
+                                when {
+                                    response.isSuccessful -> {
+                                        sc2Profile = response.body()
                                         setSummaryInformation()
                                         setSnapshotInformation()
                                         setStatisticsInformation()
@@ -133,29 +138,31 @@ class SC2Activity : AppCompatActivity() {
                                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                         loadingCircle!!.visibility = View.GONE
                                         URLConstants.loading = false
-                                    },
-                                    Response.ErrorListener { showNoConnectionMessage(this@SC2Activity, 0) })
-                            RequestQueueSingleton.getInstance(this).addToRequestQueue(profileRequest)
-                        } catch (e: Exception) {
-                            Log.e("Error", e.toString())
-                        }
-                        try {
-                            downloadAvatar()
-                        } catch (e: Exception) {
-                            Log.e("Avatar", "No avatar")
-                        }
-                    },
-                    Response.ErrorListener { error: VolleyError ->
-                        if (error.networkResponse == null) {
-                            showNoConnectionMessage(this@SC2Activity, 0)
-                        } else {
-                            showNoConnectionMessage(this@SC2Activity, error.networkResponse.statusCode)
-                        }
-                    })
-            RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonRequest)
-        } catch (e: Exception) {
-            Log.e("Error", e.toString())
-        }
+                                        downloadAvatar()
+                                    }
+                                    response.code() >= 400 -> {
+                                        showNoConnectionMessage(response.code())
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<Profile>, t: Throwable) {
+                                Log.e("Error", t.localizedMessage)
+                                showNoConnectionMessage(0)
+                            }
+                        })
+                    }
+                    response.code() >= 400 -> {
+                        showNoConnectionMessage(response.code())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<Player>>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+                showNoConnectionMessage(0)
+            }
+        })
     }
 
     private fun setCampaignInformation() {
@@ -396,17 +403,8 @@ class SC2Activity : AppCompatActivity() {
         }, null)
     }
 
-    private val profileURL: String
-        get() {
-            var url = URLConstants.getBaseURLforAPI("") + URLConstants.SC2_PROFILE_INFO
-            url = url.replace("region_id", accountInformation!!.regionId.toString())
-            url = url.replace("realm_id", accountInformation!!.realmId.toString())
-            url = url.replace("profile_id", accountInformation!!.profileId)
-            return url
-        }
-
     private fun downloadAvatar() {
-        Picasso.get().load(accountInformation!!.avatarUrl).into(object : com.squareup.picasso.Target {
+        Picasso.get().load(accountInformation[0].avatarUrl).into(object : com.squareup.picasso.Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 avatar.background = BitmapDrawable(resources, bitmap)
             }
@@ -429,42 +427,42 @@ class SC2Activity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun showNoConnectionMessage(context: Context, responseCode: Int) {
+    private fun showNoConnectionMessage(responseCode: Int) {
         this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loadingCircle!!.visibility = View.GONE
         URLConstants.loading = false
-        val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
+        val builder = AlertDialog.Builder(this, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         buttonParams.setMargins(10, 20, 10, 20)
-        val titleText = TextView(context)
+        val titleText = TextView(this)
         titleText.textSize = 20f
         titleText.gravity = Gravity.CENTER_HORIZONTAL
         titleText.setPadding(0, 20, 0, 20)
         titleText.layoutParams = layoutParams
         titleText.setTextColor(Color.WHITE)
-        val messageText = TextView(context)
+        val messageText = TextView(this)
         messageText.gravity = Gravity.CENTER_HORIZONTAL
         messageText.setPadding(0, 0, 0, 20)
         messageText.layoutParams = layoutParams
         messageText.setTextColor(Color.WHITE)
-        val button = Button(context)
+        val button = Button(this)
         button.textSize = 20f
         button.setTextColor(Color.WHITE)
         button.gravity = Gravity.CENTER
         button.width = 200
         button.height = 100
         button.layoutParams = buttonParams
-        button.background = context.getDrawable(R.drawable.buttonstyle)
-        val button2 = Button(context)
+        button.background = this.getDrawable(R.drawable.buttonstyle)
+        val button2 = Button(this)
         button2.textSize = 20f
         button2.setTextColor(Color.WHITE)
         button2.gravity = Gravity.CENTER
         button2.width = 200
         button2.height = 100
         button2.layoutParams = buttonParams
-        button2.background = context.getDrawable(R.drawable.buttonstyle)
-        val buttonLayout = LinearLayout(context)
+        button2.background = this.getDrawable(R.drawable.buttonstyle)
+        val buttonLayout = LinearLayout(this)
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
         buttonLayout.addView(button)
@@ -484,9 +482,9 @@ class SC2Activity : AppCompatActivity() {
             buttonLayout.addView(button2)
         }
         val dialog = builder.show()
-        Objects.requireNonNull(dialog.window).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog.window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val linearLayout = LinearLayout(context)
+        Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        val linearLayout = LinearLayout(this)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.gravity = Gravity.CENTER
         linearLayout.setPadding(20, 20, 20, 20)
