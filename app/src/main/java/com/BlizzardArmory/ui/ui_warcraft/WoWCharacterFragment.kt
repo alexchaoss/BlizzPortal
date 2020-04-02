@@ -691,7 +691,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         }
         try {
             for (enchantment in equippedItem.enchantments) {
-                if (enchantment.displayString != "null") {
+                if (enchantment.displayString != null) {
                     enchant.append("<font color=#00ff00>").append(enchantment.displayString).append("</font><br>")
                 }
             }
@@ -797,7 +797,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Log.e("Socket", "none")
         }
         try {
-            if (equippedItem.socketBonus != "null") {
+            if (equippedItem.socketBonus != null) {
                 socketBonus = "<font color=#00ff00>" + equippedItem.socketBonus + "</font><br>"
             }
         } catch (e: Exception) {

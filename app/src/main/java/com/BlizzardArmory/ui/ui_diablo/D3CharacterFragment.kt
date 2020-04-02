@@ -807,7 +807,7 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
                     Log.e("Error", e.toString())
                 }
                 try {
-                    if (items[index].flavorText != "null") {
+                    if (items[index].flavorText != null) {
                         flavortext!!.text = Html.fromHtml("<font color=\"#9d7853\">\"<i>" + items[index].flavorText + "</i>\"</font><br>", Html.FROM_HTML_MODE_LEGACY)
                         item_stats!!.addView(flavortext, layoutParamsStats)
                     }

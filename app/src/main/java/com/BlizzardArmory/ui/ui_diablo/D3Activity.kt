@@ -268,6 +268,7 @@ class D3Activity : AppCompatActivity() {
 
     private fun sortHeroes() {
         accountInformation!!.heroes.sortBy { it.lastUpdated }
+        accountInformation!!.heroes.reverse()
     }
 
     private fun setCharacterFrames() {
@@ -535,8 +536,8 @@ class D3Activity : AppCompatActivity() {
             buttonLayout.addView(button2)
         }
         val dialog = builder.show()
-        Objects.requireNonNull(dialog.window).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog.window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val linearLayout = LinearLayout(context)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.gravity = Gravity.CENTER
