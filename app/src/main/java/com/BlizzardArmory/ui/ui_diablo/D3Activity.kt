@@ -21,24 +21,26 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.UserInformation
+import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.connection.RequestQueueSingleton.Companion.getInstance
 import com.BlizzardArmory.diablo.account.AccountInformation
 import com.BlizzardArmory.diablo.account.Hero
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonObjectRequest
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.d3_activity.*
-import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,7 +51,6 @@ class D3Activity : AppCompatActivity() {
     private var portraits: List<Drawable>? = null
     private var battleTag: String? = ""
     private var selectedRegion: String? = ""
-    private var D3AccountInfo: JSONObject? = null
     private var paragonLevel: TextView? = null
     private var lifetimeKills: TextView? = null
     private var eliteKills: TextView? = null
@@ -62,11 +63,19 @@ class D3Activity : AppCompatActivity() {
     private var act5: ImageView? = null
     private var characterID: Long = 0
 
+    private var retrofit: Retrofit? = null
+    private var gson: Gson? = null
+    private lateinit var networkServices: NetworkServices
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.d3_activity)
 
         val btag = findViewById<TextView>(R.id.btag_header)
+
+        gson = GsonBuilder().create()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         loadingCircle.visibility = View.VISIBLE
         paragonLevel = findViewById(R.id.paragonLevel)
@@ -99,40 +108,36 @@ class D3Activity : AppCompatActivity() {
     }
 
     private fun downloadAccountInformation() {
-        try {
-            val gson = GsonBuilder().create()
-            val jsonRequest = JsonObjectRequest(Request.Method.GET, URLConstants.getBaseURLforAPI(selectedRegion) + URLConstants.getD3URLBtagProfile(battleTag)
-                    + URLConstants.ACCESS_TOKEN_QUERY + bnOAuth2Helper!!.accessToken, null,
-                    Response.Listener { response: JSONObject? ->
-                        accountInformation = gson.fromJson(response.toString(), AccountInformation::class.java)
-                        sortHeroes()
-                        portraits = accountInformation?.heroes?.let { getCharacterImage(it, applicationContext) }
-                        val paragon = accountInformation?.paragonLevel.toString() +
-                                " | " +
-                                "<font color=#b00000>" +
-                                accountInformation?.paragonLevelHardcore +
-                                "</font>"
-                        paragonLevel!!.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
-                        eliteKills!!.text = accountInformation?.kills?.elites.toString()
-                        lifetimeKills!!.text = accountInformation?.kills?.monsters.toString()
-                        setProgression()
-                        setTimePlayed()
-                        setCharacterFrames()
-                        setFallenCharacterFrames()
-                        loadingCircle!!.visibility = View.GONE
-                    },
-                    Response.ErrorListener { error: VolleyError ->
-                        if (error.networkResponse == null) {
-                            showNoConnectionMessage(this@D3Activity, 0)
-                        } else {
-                            showNoConnectionMessage(this@D3Activity, error.networkResponse.statusCode)
-                        }
-                    })
-            getInstance(this).addToRequestQueue(jsonRequest)
-            Log.i("json", D3AccountInfo.toString())
-        } catch (e: Exception) {
-            Log.e("Error", e.toString())
-        }
+        val call: Call<AccountInformation> = networkServices.getD3Profile(battleTag, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<AccountInformation> {
+            override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
+                if (response.isSuccessful) {
+                    accountInformation = response.body()
+                    sortHeroes()
+                    portraits = accountInformation?.heroes?.let { getCharacterImage(it, applicationContext) }
+                    val paragon = accountInformation?.paragonLevel.toString() +
+                            " | " +
+                            "<font color=#b00000>" +
+                            accountInformation?.paragonLevelHardcore +
+                            "</font>"
+                    paragonLevel!!.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
+                    eliteKills!!.text = accountInformation?.kills?.elites.toString()
+                    lifetimeKills!!.text = accountInformation?.kills?.monsters.toString()
+                    setProgression()
+                    setTimePlayed()
+                    setCharacterFrames()
+                    setFallenCharacterFrames()
+                    loadingCircle!!.visibility = View.GONE
+                } else if (response.code() >= 400) {
+                    showNoConnectionMessage(this@D3Activity, response.code())
+                }
+            }
+
+            override fun onFailure(call: Call<AccountInformation>, t: Throwable) {
+                Log.e("Error", t.localizedMessage)
+                showNoConnectionMessage(this@D3Activity, 0)
+            }
+        })
     }
 
     private fun setTimePlayed() {
@@ -262,12 +267,7 @@ class D3Activity : AppCompatActivity() {
     }
 
     private fun sortHeroes() {
-        accountInformation!!.heroes.sortWith(Comparator sort@{ hero1: Hero, hero2: Hero ->
-            if (hero1.lastUpdated > hero2.lastUpdated) {
-                return@sort -1
-            }
-            0
-        })
+        accountInformation!!.heroes.sortBy { it.lastUpdated }
     }
 
     private fun setCharacterFrames() {
@@ -355,7 +355,7 @@ class D3Activity : AppCompatActivity() {
     }
 
     private fun setOnClickCharacterFrame(constraintLayoutCharacter: ConstraintLayout) {
-        constraintLayoutCharacter.setOnClickListener { v: View? ->
+        constraintLayoutCharacter.setOnClickListener {
             for (j in accountInformation!!.heroes.indices) {
                 if (j == constraintLayoutCharacter.id) {
                     Log.i("ID test", "" + accountInformation!!.heroes[j].id)

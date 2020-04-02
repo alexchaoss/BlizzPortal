@@ -78,7 +78,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     private val talents: MutableList<Talent> = ArrayList()
     private var specs: TabLayout? = null
     private var spec: TextView? = null
-    private var no_talent: TextView? = null
     private var fifteen: TextView? = null
     private var thirty: TextView? = null
     private var forty_five: TextView? = null

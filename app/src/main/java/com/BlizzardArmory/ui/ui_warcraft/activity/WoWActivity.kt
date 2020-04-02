@@ -84,7 +84,6 @@ class WoWActivity : AppCompatActivity() {
     }
 
     private fun downloadWoWCharacters() {
-
         val call: Call<Account> = networkServices.getAccount("profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
@@ -94,6 +93,7 @@ class WoWActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<Account>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
+                callErrorAlertDialog(0)
             }
         })
     }
@@ -199,7 +199,7 @@ class WoWActivity : AppCompatActivity() {
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
         buttonLayout.addView(button)
-        if (responseCode == 404) {
+        if (responseCode >= 400) {
             titleText.text = "Information Outdated"
             messageText.text = "Please login in game to update this account's information."
             button.text = "OK"
