@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.Html
@@ -222,8 +223,9 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                         EventBus.getDefault().post(FactionEvent(characterSummary.faction.name.toLowerCase(Locale.ROOT)))
                         EventBus.getDefault().post(ClassEvent(characterSummary.characterClass.id))
                         item_lvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
-                        val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
-                        level_race_class.text = levelRaceClassString
+                        val levelRaceString = characterSummary.level.toString() + " " + characterSummary.race.name
+                        level_race.text = levelRaceString
+                        character_class.text = characterSummary.characterClass.name
                         downloadEquipment()
                     }
                 }
@@ -360,17 +362,31 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
     private fun setIcons(itemSlot: String, equipment: Equipment?, item: Drawable?) {
         if (item != null) {
-            Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(item)
+            gearImageView[itemSlot]?.setImageDrawable(item)
         }
-        Objects.requireNonNull(gearImageView[itemSlot])?.setPadding(3, 3, 3, 3)
-        Objects.requireNonNull(gearImageView[itemSlot])?.clipToOutline = true
+        var layerDrawable: LayerDrawable
+        gearImageView[itemSlot]?.setPadding(3, 3, 3, 3)
+        gearImageView[itemSlot]?.clipToOutline = true
         var backgroundStroke: Drawable? = null
         for (i in equipment?.equippedItems?.indices!!) {
             if (equipment.equippedItems[i].slot.type == itemSlot) {
                 backgroundStroke = equipment.equippedItems?.get(i)?.let { itemColor(it, GradientDrawable()) }
+                if (equipment.equippedItems[i].azeriteDetails != null && equipment.equippedItems[i].item.id != 158075) {
+                    when (itemSlot) {
+                        "HEAD" -> headAzerite.setImageResource(R.drawable.azerite_gear_border)
+                        "SHOULDER" -> shoulderAzerite.setImageResource(R.drawable.azerite_gear_border)
+                        "CHEST" -> chestAzerite.setImageResource(R.drawable.azerite_gear_border)
+                    }
+                } else {
+                    when (itemSlot) {
+                        "HEAD" -> headAzerite.visibility = View.GONE
+                        "SHOULDER" -> shoulderAzerite.visibility = View.GONE
+                        "CHEST" -> chestAzerite.visibility = View.GONE
+                    }
+                }
             }
         }
-        Objects.requireNonNull(gearImageView[itemSlot])?.background = backgroundStroke
+        gearImageView[itemSlot]?.background = backgroundStroke
     }
 
     private fun getEmptySlotIcon(itemSlot: String) {

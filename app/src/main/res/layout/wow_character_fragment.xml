@@ -31,13 +31,25 @@
                 android:gravity="center"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
-                app:layout_constraintBottom_toTopOf="@+id/level_race_class"
+                app:layout_constraintBottom_toTopOf="@+id/level_race"
                 app:layout_constraintEnd_toStartOf="@id/item_col4"
                 app:layout_constraintStart_toEndOf="@id/item_col1"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/level_race_class"
+                android:id="@+id/level_race"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/character_class"
+                app:layout_constraintEnd_toStartOf="@id/item_col4"
+                app:layout_constraintStart_toEndOf="@id/item_col1"
+                app:layout_constraintTop_toBottomOf="@id/character_name" />
+
+            <TextView
+                android:id="@+id/character_class"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -46,7 +58,7 @@
                 app:layout_constraintBottom_toTopOf="@id/item_lvl"
                 app:layout_constraintEnd_toStartOf="@id/item_col4"
                 app:layout_constraintStart_toEndOf="@id/item_col1"
-                app:layout_constraintTop_toBottomOf="@id/character_name" />
+                app:layout_constraintTop_toBottomOf="@id/level_race" />
 
             <TextView
                 android:id="@+id/item_lvl"
@@ -57,47 +69,196 @@
                 android:textSize="20sp"
                 app:layout_constraintEnd_toStartOf="@id/item_col4"
                 app:layout_constraintStart_toEndOf="@id/item_col1"
-                app:layout_constraintTop_toBottomOf="@id/level_race_class" />
+                app:layout_constraintTop_toBottomOf="@id/character_class" />
 
             <LinearLayout
                 android:id="@+id/item_col1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="start"
-                android:orientation="vertical"
-                android:layout_marginEnd="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="40dp"
                 android:layout_marginBottom="10dp"
+                android:gravity="start"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@id/stats_layout"
                 app:layout_constraintEnd_toStartOf="@id/item_col2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
                     <ImageView
                         android:id="@+id/head"
-                        android:layout_width="match_parent"
+                        android:layout_width="56dp"
                         android:layout_height="56dp"
+                        android:layout_centerInParent="true"
                         android:layout_marginBottom="5dp"
                         android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
-                        android:id="@+id/neck"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:id="@+id/headAzerite"
+                        android:layout_width="72dp"
+                        android:layout_height="67dp"
+                        android:layout_centerInParent="true"
                         android:layout_marginBottom="5dp"
                         android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
+                </RelativeLayout>
+
+
+                <ImageView
+                    android:id="@+id/neck"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
 
                     <ImageView
                         android:id="@+id/shoulder"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
+                        android:layout_centerInParent="true"
                         android:layout_marginBottom="5dp"
                         android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
 
+                    <ImageView
+                        android:id="@+id/shoulderAzerite"
+                        android:layout_width="72dp"
+                        android:layout_height="67dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginBottom="5dp"
+                        android:contentDescription="@string/itemsCharacter"
+                        app:srcCompat="@android:color/transparent" />
+                </RelativeLayout>
+
                 <ImageView
                     android:id="@+id/back"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/chest"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginBottom="5dp"
+                        android:contentDescription="@string/itemsCharacter"
+                        app:srcCompat="@android:color/transparent" />
+
+                    <ImageView
+                        android:id="@+id/chestAzerite"
+                        android:layout_width="72dp"
+                        android:layout_height="67dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginBottom="5dp"
+                        android:contentDescription="@string/itemsCharacter"
+                        app:srcCompat="@android:color/transparent" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/shirt"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
+
+                <ImageView
+                    android:id="@+id/tabard"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
+
+                <ImageView
+                    android:id="@+id/wrist"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_col2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/stats_layout"
+                app:layout_constraintEnd_toStartOf="@id/item_col3"
+                app:layout_constraintStart_toEndOf="@id/item_col1">
+
+                <ImageView
+                    android:id="@+id/main_hand"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_col3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/stats_layout"
+                app:layout_constraintEnd_toStartOf="@id/item_col4"
+                app:layout_constraintStart_toEndOf="@id/item_col2">
+
+                <ImageView
+                    android:id="@+id/off_hand"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_col4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="end"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/stats_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/item_col3"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/hands"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_marginBottom="5dp"
@@ -105,155 +266,61 @@
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
-                        android:id="@+id/chest"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
+                    android:id="@+id/waist"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                    <ImageView
-                        android:id="@+id/shirt"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
+                <ImageView
+                    android:id="@+id/legs"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                    <ImageView
-                        android:id="@+id/tabard"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
+                <ImageView
+                    android:id="@+id/feet"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                    <ImageView
-                        android:id="@+id/wrist"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
+                <ImageView
+                    android:id="@+id/finger1"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/finger2"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                <LinearLayout
-                    android:id="@+id/item_col2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="10dp"
-                    app:layout_constraintBottom_toTopOf="@id/stats_layout"
-                    app:layout_constraintEnd_toStartOf="@id/item_col3"
-                    app:layout_constraintStart_toEndOf="@id/item_col1">
+                <ImageView
+                    android:id="@+id/trinket1"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                    <ImageView
-                        android:id="@+id/main_hand"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
+                <ImageView
+                    android:id="@+id/trinket2"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:contentDescription="@string/itemsCharacter"
+                    app:srcCompat="@android:color/transparent" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/item_col3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="10dp"
-                    app:layout_constraintBottom_toTopOf="@id/stats_layout"
-                    app:layout_constraintEnd_toStartOf="@id/item_col4"
-                    app:layout_constraintStart_toEndOf="@id/item_col2">
-
-                    <ImageView
-                        android:id="@+id/off_hand"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/item_col4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="end"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="50dp"
-                    app:layout_constraintBottom_toTopOf="@id/stats_layout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/item_col3"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/hands"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                    <ImageView
-                        android:id="@+id/waist"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                    <ImageView
-                        android:id="@+id/legs"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                    <ImageView
-                        android:id="@+id/feet"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                    <ImageView
-                        android:id="@+id/finger1"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                    <ImageView
-                        android:id="@+id/finger2"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                    <ImageView
-                        android:id="@+id/trinket1"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="5dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                    <ImageView
-                        android:id="@+id/trinket2"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/itemsCharacter"
-                        app:srcCompat="@android:color/transparent" />
-
-                </LinearLayout>
+            </LinearLayout>
 
 
             <LinearLayout
@@ -261,9 +328,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:padding="10dp"
                 android:background="@drawable/inputstyle"
                 android:orientation="vertical"
+                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -470,10 +537,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:visibility="gone"
                         android:text="@string/talent_information_not_available"
                         android:textColor="@color/owBackgroundColor"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:visibility="gone" />
 
                     <TableRow
                         android:layout_width="match_parent"

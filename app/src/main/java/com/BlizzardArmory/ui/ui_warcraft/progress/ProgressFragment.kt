@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,7 +47,7 @@ private const val MEDIA = "media"
 private const val REGION = "region"
 
 
-class ProgressFragment : Fragment(), IOnBackPressed {
+class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListener {
 
     private var character: String? = null
     private var realm: String? = null
@@ -54,6 +55,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
     private var region: String? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
+    private val adapterList = ArrayList<EncounterAdapter>()
     private var retrofit: Retrofit? = null
     private var gson: Gson? = null
     private lateinit var networkServices: NetworkServices
@@ -92,6 +94,13 @@ class ProgressFragment : Fragment(), IOnBackPressed {
         gson = GsonBuilder().create()
         retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
         networkServices = retrofit?.create(NetworkServices::class.java)!!
+
+        search_view.queryHint = "Search raid.."
+        val textView: TextView = search_view.findViewById(androidx.appcompat.R.id.search_src_text)
+        textView.setTextColor(Color.parseColor("#ffffff"))
+        textView.setHintTextColor(Color.parseColor("#ffffff"))
+        search_view.setOnQueryTextListener(this)
+
         downloadEncounterInformation()
     }
 
@@ -141,6 +150,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
                     val raidLevel = getRaidLevel(expansion)
                     layoutManager = LinearLayoutManager(activity)
                     adapter = EncounterAdapter(expansion.instances, raidLevel, context, expansion.expansion)
+                    adapter?.let { adapterList.add(it as EncounterAdapter) }
                 }
                 recyclerView?.visibility = View.GONE
 
@@ -257,5 +267,16 @@ class ProgressFragment : Fragment(), IOnBackPressed {
 
     override fun onBackPressed(): Boolean {
         return URLConstants.loading
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        for (adapter in adapterList) {
+            adapter.filter(newText!!)
+        }
+        return false
     }
 }

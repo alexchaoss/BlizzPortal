@@ -47,10 +47,6 @@ object WoWCharacterSearchDialog {
     private lateinit var networkServices: NetworkServices
 
     private fun callCharacterFragment(activity: Activity, fragment: Fragment?) {
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
-
         if (fragment != null && fragment.isVisible) {
             fragment.parentFragmentManager.beginTransaction().remove(fragment).commit()
         }
@@ -71,6 +67,10 @@ object WoWCharacterSearchDialog {
      * @param fragment the fragment
      */
     fun characterSearchPrompt(activity: Activity, fragment: Fragment?) {
+        gson = GsonBuilder().create()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        networkServices = retrofit?.create(NetworkServices::class.java)!!
+
         val builderOW = AlertDialog.Builder(activity, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams.gravity = Gravity.CENTER
@@ -158,7 +158,7 @@ object WoWCharacterSearchDialog {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View, parent: ViewGroup): View {
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
                 tv.setBackgroundColor(Color.BLACK)
