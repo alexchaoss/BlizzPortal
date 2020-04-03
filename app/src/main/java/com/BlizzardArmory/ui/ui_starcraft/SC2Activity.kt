@@ -141,6 +141,7 @@ class SC2Activity : AppCompatActivity() {
                                         downloadAvatar()
                                     }
                                     response.code() >= 400 -> {
+                                        Log.e("Error", "Response code: " + response.code())
                                         showNoConnectionMessage(response.code())
                                     }
                                 }
@@ -153,6 +154,7 @@ class SC2Activity : AppCompatActivity() {
                         })
                     }
                     response.code() >= 400 -> {
+                        Log.e("Error", "Response code: " + response.code() + " " + response.message())
                         showNoConnectionMessage(response.code())
                     }
                 }
@@ -474,6 +476,10 @@ class SC2Activity : AppCompatActivity() {
             titleText.text = "Unavailable"
             messageText.text = "The Starcraft 2 community servers are down temporarily."
             button.text = "Back"
+        } else if (responseCode == 500) {
+            titleText.text = "Server error"
+            messageText.text = "There seems to be some problems with Blizzard's servers, please try again later"
+            button.text = "Back"
         } else {
             titleText.text = "No Internet Connection"
             messageText.text = "Make sure that Wi-Fi or mobile data is turned on, then try again."
@@ -492,7 +498,7 @@ class SC2Activity : AppCompatActivity() {
         linearLayout.addView(messageText)
         linearLayout.addView(buttonLayout)
         dialog.addContentView(linearLayout, layoutParams)
-        if (responseCode == 404 || responseCode == 403) {
+        if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
             dialog.setOnCancelListener { finish() }
         } else {
             dialog.setOnCancelListener { downloadAccountInformation() }

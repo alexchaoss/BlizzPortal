@@ -17,7 +17,7 @@ import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.MainActivity.selectedRegion
+import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.FactionEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
@@ -195,9 +195,9 @@ class PvPFragment : Fragment(), IOnBackPressed {
             override fun onResponse(call: Call<PvPSummary>, response: retrofit2.Response<PvPSummary>) {
                 val pvpSummary = response.body()
                 if (pvpSummary != null) {
-                    kills.text = pvpSummary?.honorable_kills.toString()
-                    level.text = "LEVEL " + pvpSummary?.honor_level.toString()
-                    setHonorRankIcon(pvpSummary!!)
+                    kills.text = pvpSummary.honorable_kills.toString()
+                    level.text = "LEVEL " + pvpSummary.honor_level.toString()
+                    setHonorRankIcon(pvpSummary)
                     if (pvpSummary.pvp_map_statistics != null) {
                         recyclerviewbg.apply {
                             layoutManager = LinearLayoutManager(activity)

@@ -51,16 +51,6 @@ class D3Activity : AppCompatActivity() {
     private var portraits: List<Drawable>? = null
     private var battleTag: String? = ""
     private var selectedRegion: String? = ""
-    private var paragonLevel: TextView? = null
-    private var lifetimeKills: TextView? = null
-    private var eliteKills: TextView? = null
-    private var linearLayoutCharacters: LinearLayout? = null
-    private var fallenCharacterLayout: LinearLayout? = null
-    private var act1: ImageView? = null
-    private var act2: ImageView? = null
-    private var act3: ImageView? = null
-    private var act4: ImageView? = null
-    private var act5: ImageView? = null
     private var characterID: Long = 0
 
     private var retrofit: Retrofit? = null
@@ -78,16 +68,6 @@ class D3Activity : AppCompatActivity() {
         networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         loadingCircle.visibility = View.VISIBLE
-        paragonLevel = findViewById(R.id.paragonLevel)
-        lifetimeKills = findViewById(R.id.lifetime_kills)
-        eliteKills = findViewById(R.id.elite_kills)
-        linearLayoutCharacters = findViewById(R.id.character_layout)
-        fallenCharacterLayout = findViewById(R.id.fallen_character_layout)
-        act1 = findViewById(R.id.prog_act1)
-        act2 = findViewById(R.id.prog_act2)
-        act3 = findViewById(R.id.prog_act3)
-        act4 = findViewById(R.id.prog_act4)
-        act5 = findViewById(R.id.prog_act5)
         btag.text = UserInformation.getBattleTag()
         battleTag = intent.extras?.getString("battletag")
         selectedRegion = intent.extras?.getString("region")
@@ -121,8 +101,8 @@ class D3Activity : AppCompatActivity() {
                             accountInformation?.paragonLevelHardcore +
                             "</font>"
                     paragonLevel!!.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
-                    eliteKills!!.text = accountInformation?.kills?.elites.toString()
-                    lifetimeKills!!.text = accountInformation?.kills?.monsters.toString()
+                    elite_kills!!.text = accountInformation?.kills?.elites.toString()
+                    lifetime_kills!!.text = accountInformation?.kills?.monsters.toString()
                     setProgression()
                     setTimePlayed()
                     setCharacterFrames()
@@ -216,7 +196,7 @@ class D3Activity : AppCompatActivity() {
                 setFrame.connect(levelFrame.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
                 setFrame.connect(levelFrame.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -25)
                 setFrame.applyTo(frameLayout)
-                fallenCharacterLayout!!.addView(frameLayout)
+                fallen_character_layout!!.addView(frameLayout)
             }
         } catch (e: Exception) {
             val fallenHeroContainer = findViewById<HorizontalScrollView>(R.id.fallen_heroes_scroll)
@@ -350,7 +330,7 @@ class D3Activity : AppCompatActivity() {
             setFrame.connect(level.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
             setFrame.connect(level.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 25)
             setFrame.applyTo(constraintLayoutCharacter)
-            linearLayoutCharacters!!.addView(constraintLayoutCharacter)
+            character_layout!!.addView(constraintLayoutCharacter)
             setOnClickCharacterFrame(constraintLayoutCharacter)
         }
     }
@@ -369,29 +349,29 @@ class D3Activity : AppCompatActivity() {
 
     private fun setProgression() {
         if (accountInformation!!.progression.act1) {
-            act1!!.setImageDrawable(resources.getDrawable(R.drawable.act1_done, theme))
+            prog_act1!!.setImageDrawable(resources.getDrawable(R.drawable.act1_done, theme))
         } else {
-            act1!!.setImageDrawable(resources.getDrawable(R.drawable.act1_not_done, theme))
+            prog_act1!!.setImageDrawable(resources.getDrawable(R.drawable.act1_not_done, theme))
         }
         if (accountInformation!!.progression.act2) {
-            act2!!.setImageDrawable(resources.getDrawable(R.drawable.act2_done, theme))
+            prog_act2!!.setImageDrawable(resources.getDrawable(R.drawable.act2_done, theme))
         } else {
-            act2!!.setImageDrawable(resources.getDrawable(R.drawable.act2_not_done, theme))
+            prog_act2!!.setImageDrawable(resources.getDrawable(R.drawable.act2_not_done, theme))
         }
         if (accountInformation!!.progression.act3) {
-            act3!!.setImageDrawable(resources.getDrawable(R.drawable.act3_done, theme))
+            prog_act3!!.setImageDrawable(resources.getDrawable(R.drawable.act3_done, theme))
         } else {
-            act3!!.setImageDrawable(resources.getDrawable(R.drawable.act3_not_done, theme))
+            prog_act3!!.setImageDrawable(resources.getDrawable(R.drawable.act3_not_done, theme))
         }
         if (accountInformation!!.progression.act4) {
-            act4!!.setImageDrawable(resources.getDrawable(R.drawable.act4_done, theme))
+            prog_act4!!.setImageDrawable(resources.getDrawable(R.drawable.act4_done, theme))
         } else {
-            act4!!.setImageDrawable(resources.getDrawable(R.drawable.act4_not_done, theme))
+            prog_act4!!.setImageDrawable(resources.getDrawable(R.drawable.act4_not_done, theme))
         }
         if (accountInformation!!.progression.act5) {
-            act5!!.setImageDrawable(resources.getDrawable(R.drawable.act5_done, theme))
+            prog_act5!!.setImageDrawable(resources.getDrawable(R.drawable.act5_done, theme))
         } else {
-            act5!!.setImageDrawable(resources.getDrawable(R.drawable.act5_not_done, theme))
+            prog_act5!!.setImageDrawable(resources.getDrawable(R.drawable.act5_not_done, theme))
         }
     }
 

@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.ui_warcraft
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -1024,7 +1023,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             layoutParams.setMargins(20, 20, 20, 20)
             dialog?.addContentView(linearLayout, layoutParamsWindow)
-            dialog?.setOnCancelListener(DialogInterface.OnCancelListener { dialog1: DialogInterface? ->
+            dialog?.setOnCancelListener {
                 if (btn2.get()) {
                     Log.i("TEST", "got here")
                     (context as WoWActivity?)?.onBackPressed()
@@ -1041,9 +1040,9 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                         (context as WoWActivity?)?.onBackPressed()
                     }
                 }
-            })
-            button.setOnClickListener { v: View? -> dialog?.cancel() }
-            button2.setOnClickListener { v: View? ->
+            }
+            button.setOnClickListener { dialog?.cancel() }
+            button2.setOnClickListener {
                 btn2.set(true)
                 dialog?.cancel()
             }
