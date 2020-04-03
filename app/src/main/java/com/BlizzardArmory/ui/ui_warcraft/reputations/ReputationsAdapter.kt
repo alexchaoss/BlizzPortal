@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputations
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ReputationsAdapter(private val list: List<Reputations>, private val context: Context)
     : RecyclerView.Adapter<ReputationsViewHolder>() {
 
-    var fullRepList = ArrayList<Reputations>()
+    private var fullRepList = ArrayList<Reputations>()
 
     init {
         fullRepList.addAll(list)
@@ -30,11 +32,11 @@ class ReputationsAdapter(private val list: List<Reputations>, private val contex
 
     fun filter(constraint: String) {
         fullRepList.clear()
-        if (constraint.toLowerCase().isEmpty()) {
+        if (constraint.toLowerCase(Locale.ROOT).isEmpty()) {
             fullRepList.addAll(list)
         } else {
             for (rep in list) {
-                if (rep.faction.name.toLowerCase().trim().contains(constraint.toLowerCase().trim())) {
+                if (rep.faction.name.toLowerCase(Locale.ROOT).trim().contains(constraint.toLowerCase(Locale.ROOT).trim())) {
                     fullRepList.add(rep)
                 }
             }
