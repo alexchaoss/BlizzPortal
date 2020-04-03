@@ -18,6 +18,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
+/**
+ * The type Service generator.
+ */
 public class ServiceGenerator {
 
     private static final String TAG = "ServiceGenerator";
@@ -27,6 +30,11 @@ public class ServiceGenerator {
 
     private static ServiceGenerator instance;
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ServiceGenerator getInstance() {
         if (instance == null) {
             instance = new ServiceGenerator();
@@ -105,6 +113,11 @@ public class ServiceGenerator {
         return httpLoggingInterceptor;
     }
 
+    /**
+     * Gets network services.
+     *
+     * @return the network services
+     */
     public static NetworkServices getNetworkServices() {
         return retrofit().create(NetworkServices.class);
     }

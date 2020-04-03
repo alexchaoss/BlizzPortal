@@ -1,10 +1,8 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +29,6 @@ import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
 import com.BlizzardArmory.connection.ErrorMessages;
 import com.BlizzardArmory.connection.NetworkServices;
-import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.overwatch.Profile;
 import com.BlizzardArmory.overwatch.heroes.Hero;
 import com.BlizzardArmory.overwatch.topheroes.TopHero;
@@ -39,11 +36,11 @@ import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
-import com.android.volley.toolbox.ImageRequest;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +55,9 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * The type Ow activity.
+ */
 public class OWActivity extends AppCompatActivity {
 
     private BnOAuth2Params bnOAuth2Params;
@@ -1131,12 +1131,7 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void downloadAvatar() {
-        ImageRequest imageRequest = new ImageRequest(accountInformation.getIcon(), bitmap -> {
-            BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
-            avatar.setBackground(avatarBM);
-        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                e -> showNoConnectionMessage(0));
-        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
+        Picasso.get().load(accountInformation.getIcon()).into(avatar);
     }
 
     /*private void downloadEndorsementIcon() {
@@ -1155,30 +1150,12 @@ public class OWActivity extends AppCompatActivity {
     }*/
 
     private void downloadRatingIcon(String url, ImageView imageView) {
-        ImageRequest imageRequest = new ImageRequest(url, bitmap -> {
-            BitmapDrawable icon = new BitmapDrawable(getResources(), bitmap);
-            imageView.setImageDrawable(icon);
-        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                e -> showNoConnectionMessage(0));
-        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
+        Picasso.get().load(url).into(imageView);
     }
 
     private void downloadLevelIcon() {
-        ImageRequest imageRequest = new ImageRequest(accountInformation.getLevelIcon(), bitmap -> {
-
-            BitmapDrawable avatarBM = new BitmapDrawable(getResources(), bitmap);
-            levelIcon.setBackground(avatarBM);
-
-            ImageRequest imageRequest2 = new ImageRequest(accountInformation.getPrestigeIcon(), bitmap2 -> {
-                BitmapDrawable avatarBM2 = new BitmapDrawable(getResources(), bitmap2);
-                prestigeIcon.setImageDrawable(avatarBM2);
-            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                    e -> Log.i("Prestige Icon", "None"));
-            RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest2);
-
-        }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565,
-                e -> showNoConnectionMessage(0));
-        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
+        Picasso.get().load(accountInformation.getLevelIcon()).into(levelIcon);
+        Picasso.get().load(accountInformation.getPrestigeIcon()).into(prestigeIcon);
     }
 
     @Override
@@ -1190,6 +1167,11 @@ public class OWActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Show no connection message.
+     *
+     * @param responseCode the response code
+     */
     public void showNoConnectionMessage(final int responseCode) {
         this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);

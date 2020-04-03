@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * The type Talent tier.
+ */
 public class TalentTier {
 
     @SerializedName("level")
@@ -21,8 +24,10 @@ public class TalentTier {
     }
 
     /**
-     * @param level
-     * @param talents
+     * Instantiates a new Talent tier.
+     *
+     * @param level   the level
+     * @param talents the talents
      */
     public TalentTier(int level, List<Talent> talents) {
         super();
@@ -30,18 +35,38 @@ public class TalentTier {
         this.talents = talents;
     }
 
+    /**
+     * Gets level.
+     *
+     * @return the level
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     * Sets level.
+     *
+     * @param level the level
+     */
     public void setLevel(int level) {
         this.level = level;
     }
 
+    /**
+     * Gets talents.
+     *
+     * @return the talents
+     */
     public List<Talent> getTalents() {
         return talents;
     }
 
+    /**
+     * Sets talents.
+     *
+     * @param talents the talents
+     */
     public void setTalents(List<Talent> talents) {
         this.talents = talents;
     }

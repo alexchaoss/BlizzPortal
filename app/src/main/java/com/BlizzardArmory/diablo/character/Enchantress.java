@@ -7,6 +7,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
+/**
+ * The type Enchantress.
+ */
 public class Enchantress {
 
     @SerializedName("slug")
@@ -25,42 +28,92 @@ public class Enchantress {
     @Expose
     private List<Object> skills = null;
 
+    /**
+     * Gets slug.
+     *
+     * @return the slug
+     */
     public String getSlug() {
         return slug;
     }
 
+    /**
+     * Sets slug.
+     *
+     * @param slug the slug
+     */
     public void setSlug(String slug) {
         this.slug = slug;
     }
 
+    /**
+     * Gets level.
+     *
+     * @return the level
+     */
     public Integer getLevel() {
         return level;
     }
 
+    /**
+     * Sets level.
+     *
+     * @param level the level
+     */
     public void setLevel(Integer level) {
         this.level = level;
     }
 
+    /**
+     * Gets items character.
+     *
+     * @return the items character
+     */
     public ItemsCharacter getItemsCharacter() {
         return itemsCharacter;
     }
 
+    /**
+     * Sets items character.
+     *
+     * @param itemsCharacter the items character
+     */
     public void setItemsCharacter(ItemsCharacter itemsCharacter) {
         this.itemsCharacter = itemsCharacter;
     }
 
+    /**
+     * Gets stats.
+     *
+     * @return the stats
+     */
     public Stats getStats() {
         return stats;
     }
 
+    /**
+     * Sets stats.
+     *
+     * @param stats the stats
+     */
     public void setStats(Stats stats) {
         this.stats = stats;
     }
 
+    /**
+     * Gets skills.
+     *
+     * @return the skills
+     */
     public List<Object> getSkills() {
         return skills;
     }
 
+    /**
+     * Sets skills.
+     *
+     * @param skills the skills
+     */
     public void setSkills(List<Object> skills) {
         this.skills = skills;
     }

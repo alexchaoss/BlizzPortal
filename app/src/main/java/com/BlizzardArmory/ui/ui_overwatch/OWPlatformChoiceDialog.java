@@ -21,10 +21,16 @@ import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
 import java.util.Objects;
 
+/**
+ * The type Ow platform choice dialog.
+ */
 public class OWPlatformChoiceDialog {
 
     private static String username = "";
     private static String platform = "";
+    /**
+     * The My profile chosen.
+     */
     static public boolean myProfileChosen = false;
 
     private static final String OK = "OK";
@@ -49,6 +55,12 @@ public class OWPlatformChoiceDialog {
         activity.startActivity(intent);
     }
 
+    /**
+     * Overwatch prompt.
+     *
+     * @param activity       the activity
+     * @param bnOAuth2Params the bn o auth 2 params
+     */
     public static void overwatchPrompt(Activity activity, BnOAuth2Params bnOAuth2Params) {
         AlertDialog.Builder builderOW = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

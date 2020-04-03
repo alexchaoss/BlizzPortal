@@ -26,7 +26,6 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
-import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.starcraft.Player
 import com.BlizzardArmory.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
@@ -423,7 +422,6 @@ class SC2Activity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        RequestQueueSingleton.getInstance(this).requestQueue.cancelAll(this)
         val intent = Intent(this, GamesActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)

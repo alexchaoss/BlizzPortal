@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * The type Dye.
+ */
 public class Dye {
 
     @SerializedName("id")
@@ -20,34 +23,74 @@ public class Dye {
     @Expose
     private String tooltipParams;
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets icon.
+     *
+     * @return the icon
+     */
     public String getIcon() {
         return icon;
     }
 
+    /**
+     * Sets icon.
+     *
+     * @param icon the icon
+     */
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
+    /**
+     * Gets tooltip params.
+     *
+     * @return the tooltip params
+     */
     public String getTooltipParams() {
         return tooltipParams;
     }
 
+    /**
+     * Sets tooltip params.
+     *
+     * @param tooltipParams the tooltip params
+     */
     public void setTooltipParams(String tooltipParams) {
         this.tooltipParams = tooltipParams;
     }

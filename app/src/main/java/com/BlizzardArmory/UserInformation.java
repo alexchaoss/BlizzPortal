@@ -2,6 +2,9 @@ package com.BlizzardArmory;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * The type User information.
+ */
 public class UserInformation {
 
     @SerializedName("sub")
@@ -13,27 +16,30 @@ public class UserInformation {
     @SerializedName("battletag")
     private String battleTag;
 
+    /**
+     * Gets sub.
+     *
+     * @return the sub
+     */
     public String getSub() {
         return sub;
     }
 
-    public void setSub(String sub) {
-        sub = sub;
-    }
-
+    /**
+     * Gets battle tag.
+     *
+     * @return the battle tag
+     */
     public String getBattleTag() {
         return battleTag;
     }
 
-    public void setBattleTag(String battleTag) {
-        battleTag = battleTag;
-    }
-
+    /**
+     * Gets user id.
+     *
+     * @return the user id
+     */
     public String getUserID() {
         return userID;
-    }
-
-    public void setUserID(String userID) {
-        userID = userID;
     }
 }

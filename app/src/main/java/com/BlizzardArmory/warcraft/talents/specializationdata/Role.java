@@ -3,6 +3,9 @@ package com.BlizzardArmory.warcraft.talents.specializationdata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * The type Role.
+ */
 public class Role {
 
     @SerializedName("type")
@@ -19,8 +22,10 @@ public class Role {
     }
 
     /**
-     * @param name
-     * @param type
+     * Instantiates a new Role.
+     *
+     * @param type the type
+     * @param name the name
      */
     public Role(String type, String name) {
         super();
@@ -28,18 +33,38 @@ public class Role {
         this.name = name;
     }
 
+    /**
+     * Gets type.
+     *
+     * @return the type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets type.
+     *
+     * @param type the type
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }

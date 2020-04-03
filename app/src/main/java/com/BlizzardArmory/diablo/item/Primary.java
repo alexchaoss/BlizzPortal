@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
+/**
+ * The type Primary.
+ */
 public class Primary {
 
     @SerializedName("text")
@@ -13,10 +16,20 @@ public class Primary {
     @Expose
     private String textHtml;
 
+    /**
+     * Gets text.
+     *
+     * @return the text
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Gets text html.
+     *
+     * @return the text html
+     */
     public String getTextHtml() {
         return textHtml;
     }
