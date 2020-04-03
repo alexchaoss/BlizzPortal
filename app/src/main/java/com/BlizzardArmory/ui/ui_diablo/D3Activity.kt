@@ -22,7 +22,6 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
-import com.BlizzardArmory.connection.RequestQueueSingleton.Companion.getInstance
 import com.BlizzardArmory.diablo.account.AccountInformation
 import com.BlizzardArmory.diablo.account.Hero
 import com.BlizzardArmory.ui.GamesActivity
@@ -456,7 +455,6 @@ class D3Activity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        getInstance(this).requestQueue.cancelAll(this)
         val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
         if (fragment !is IOnBackPressed || !(fragment as IOnBackPressed).onBackPressed()) {
             super.onBackPressed()

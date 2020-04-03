@@ -5,6 +5,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+/**
+ * The type Blizzard armory.
+ */
 public class BlizzardArmory extends Application {
 
     private static BlizzardArmory instance;
@@ -18,10 +21,20 @@ public class BlizzardArmory extends Application {
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static BlizzardArmory getInstance() {
         return instance;
     }
 
+    /**
+     * Has network boolean.
+     *
+     * @return the boolean
+     */
     public static boolean hasNetwork() {
         return instance.isNetworkConnected();
     }

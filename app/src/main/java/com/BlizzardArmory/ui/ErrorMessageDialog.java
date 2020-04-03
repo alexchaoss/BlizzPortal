@@ -14,8 +14,18 @@ import com.BlizzardArmory.R;
 
 import java.util.Objects;
 
+/**
+ * The type Error message dialog.
+ */
 public class ErrorMessageDialog {
 
+    /**
+     * Show no connection message int.
+     *
+     * @param activity     the activity
+     * @param responseCode the response code
+     * @return the int
+     */
     public int showNoConnectionMessage(Activity activity, final int responseCode) {
         int retry = 0;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.DialogTransparent);

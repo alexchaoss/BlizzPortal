@@ -6,14 +6,30 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+/**
+ * The type Internet check.
+ */
 public class InternetCheck extends AsyncTask<Void,Void,Boolean> {
 
     private Consumer mConsumer;
 
+    /**
+     * The interface Consumer.
+     */
     public interface Consumer {
+        /**
+         * Accept.
+         *
+         * @param internet the internet
+         */
         void accept(Boolean internet);
     }
 
+    /**
+     * Instantiates a new Internet check.
+     *
+     * @param consumer the consumer
+     */
     public  InternetCheck(Consumer consumer) { mConsumer = consumer; execute(); }
 
     @Override protected Boolean doInBackground(Void... voids) { try {

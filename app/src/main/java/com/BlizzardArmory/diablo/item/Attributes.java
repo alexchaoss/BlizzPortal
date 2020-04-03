@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * The type Attributes.
+ */
 public class Attributes {
 
 
@@ -18,14 +21,29 @@ public class Attributes {
     @Expose
     private List<Secondary> secondary;
 
+    /**
+     * Gets other.
+     *
+     * @return the other
+     */
     public List<Object> getOther() {
         return other;
     }
 
+    /**
+     * Gets primary.
+     *
+     * @return the primary
+     */
     public List<Primary> getPrimary() {
         return primary;
     }
 
+    /**
+     * Gets secondary.
+     *
+     * @return the secondary
+     */
     public List<Secondary> getSecondary() {
         return secondary;
     }

@@ -11,6 +11,9 @@ import com.BlizzardArmory.overwatch.Miscellaneous;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * The type Hero.
+ */
 public class Hero {
     @SerializedName("assists")
     @Expose
@@ -40,74 +43,164 @@ public class Hero {
     @Expose
     private Miscellaneous miscellaneous;
 
+    /**
+     * Gets assists.
+     *
+     * @return the assists
+     */
     public Assists getAssists() {
         return assists;
     }
 
+    /**
+     * Sets assists.
+     *
+     * @param assists the assists
+     */
     public void setAssists(Assists assists) {
         this.assists = assists;
     }
 
+    /**
+     * Gets average.
+     *
+     * @return the average
+     */
     public Average getAverage() {
         return average;
     }
 
+    /**
+     * Sets average.
+     *
+     * @param average the average
+     */
     public void setAverage(Average average) {
         this.average = average;
     }
 
+    /**
+     * Gets best.
+     *
+     * @return the best
+     */
     public Best getBest() {
         return best;
     }
 
+    /**
+     * Sets best.
+     *
+     * @param best the best
+     */
     public void setBest(Best best) {
         this.best = best;
     }
 
+    /**
+     * Gets combat.
+     *
+     * @return the combat
+     */
     public Combat getCombat() {
         return combat;
     }
 
+    /**
+     * Sets combat.
+     *
+     * @param combat the combat
+     */
     public void setCombat(Combat combat) {
         this.combat = combat;
     }
 
+    /**
+     * Gets deaths.
+     *
+     * @return the deaths
+     */
     public Object getDeaths() {
         return deaths;
     }
 
+    /**
+     * Sets deaths.
+     *
+     * @param deaths the deaths
+     */
     public void setDeaths(Object deaths) {
         this.deaths = deaths;
     }
 
+    /**
+     * Gets hero specific.
+     *
+     * @return the hero specific
+     */
     public HeroSpecific getHeroSpecific() {
         return heroSpecific;
     }
 
+    /**
+     * Sets hero specific.
+     *
+     * @param heroSpecific the hero specific
+     */
     public void setHeroSpecific(HeroSpecific heroSpecific) {
         this.heroSpecific = heroSpecific;
     }
 
+    /**
+     * Gets game.
+     *
+     * @return the game
+     */
     public Game getGame() {
         return game;
     }
 
+    /**
+     * Sets game.
+     *
+     * @param game the game
+     */
     public void setGame(Game game) {
         this.game = game;
     }
 
+    /**
+     * Gets match awards.
+     *
+     * @return the match awards
+     */
     public MatchAwards getMatchAwards() {
         return matchAwards;
     }
 
+    /**
+     * Sets match awards.
+     *
+     * @param matchAwards the match awards
+     */
     public void setMatchAwards(MatchAwards matchAwards) {
         this.matchAwards = matchAwards;
     }
 
+    /**
+     * Gets miscellaneous.
+     *
+     * @return the miscellaneous
+     */
     public Miscellaneous getMiscellaneous() {
         return miscellaneous;
     }
 
+    /**
+     * Sets miscellaneous.
+     *
+     * @param miscellaneous the miscellaneous
+     */
     public void setMiscellaneous(Miscellaneous miscellaneous) {
         this.miscellaneous = miscellaneous;
     }
