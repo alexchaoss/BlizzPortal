@@ -20,7 +20,7 @@ import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.MainActivity.selectedRegion
+import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.reputations.characterreputations.RepByExpansion

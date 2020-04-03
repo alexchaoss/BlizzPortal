@@ -19,7 +19,7 @@ import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.MainActivity.selectedRegion
+import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation
@@ -91,7 +91,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
         gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
         networkServices = retrofit?.create(NetworkServices::class.java)!!
         downloadEncounterInformation()
     }

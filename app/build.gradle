@@ -15,8 +15,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 52
-        versionName "2.44"
+        versionCode 53
+        versionName "2.45"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -76,12 +76,19 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.caverock:androidsvg-aar:1.4'
+
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.fragment:fragment-ktx:1.2.3'
+
     implementation 'com.squareup.picasso:picasso:2.71828'
+
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+
+    implementation "com.squareup.okhttp3:okhttp:4.4.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.4.0"
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")

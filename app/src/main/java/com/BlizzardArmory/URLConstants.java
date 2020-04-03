@@ -6,6 +6,9 @@ public class URLConstants {
     //Loading boolean
     public static boolean loading = false;
 
+    //Paypal
+    public final static String paypalURL = "https://paypal.me/astpierredev";
+
     //Callback URL
     public final static String CALLBACK_URL = "https://alexchaoss.github.io/BnetAuthorize";
 

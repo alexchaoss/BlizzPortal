@@ -439,11 +439,12 @@
 
                 <Spinner
                     android:id="@+id/spinner"
-                    android:layout_width="185dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="28dp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/ow_spinner"
+                    android:paddingEnd="25dp"
                     android:hint="@string/time_played"
                     android:spinnerMode="dialog"
                     android:textAlignment="viewStart"
@@ -503,11 +504,12 @@
 
                 <Spinner
                     android:id="@+id/spinner_career"
-                    android:layout_width="185dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="28dp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/ow_spinner"
+                    android:paddingEnd="25dp"
                     android:hint="@string/time_played"
                     android:spinnerMode="dialog"
                     android:textAlignment="viewStart"

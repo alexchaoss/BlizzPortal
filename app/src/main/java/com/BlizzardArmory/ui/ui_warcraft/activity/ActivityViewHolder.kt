@@ -92,11 +92,10 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
     }
 
     private fun downloadAvatar(media: Media?, character: Character) {
-        val mediaUrl: String?
-        if (media == null) {
-            mediaUrl = "https://render-us.worldofwarcraft.com/character/auchindoun/0/0-main.jpg"
+        val mediaUrl: String? = if (media == null) {
+            "https://render-us.worldofwarcraft.com/character/auchindoun/0/0-main.jpg"
         } else {
-            mediaUrl = media.avatarUrl
+            media.avatarUrl
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
@@ -113,9 +112,5 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
             fragmentManager.executePendingTransactions()
         }
     }
-
-}
-
-private operator fun String?.invoke(s: String) {
 
 }

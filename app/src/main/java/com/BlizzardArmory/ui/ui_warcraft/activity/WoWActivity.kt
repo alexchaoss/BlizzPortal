@@ -19,6 +19,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.UserInformation
 import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.ServiceGenerator
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
@@ -51,6 +52,7 @@ class WoWActivity : AppCompatActivity() {
     private var retrofit: Retrofit? = null
     private var gson: Gson? = null
     private lateinit var networkServices: NetworkServices
+    private val serviceGenerator: ServiceGenerator = ServiceGenerator.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -212,7 +214,7 @@ class WoWActivity : AppCompatActivity() {
         }
         val dialog = builder.show()
         dialog.show()
-        Objects.requireNonNull(dialog.window).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         window.setGravity(Gravity.CENTER)
         val linearLayout = LinearLayout(this@WoWActivity)
