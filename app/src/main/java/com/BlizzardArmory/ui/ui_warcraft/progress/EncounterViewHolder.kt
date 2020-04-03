@@ -16,7 +16,7 @@ import com.BlizzardArmory.warcraft.encounters.Instances
 import com.BlizzardArmory.warcraft.encounters.Modes
 
 class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context, private val expansion: Expansion) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.encounter_list, parent, false)) {
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_list, parent, false)) {
 
     private var raidName: TextView? = null
     private var raidLevel: TextView? = null

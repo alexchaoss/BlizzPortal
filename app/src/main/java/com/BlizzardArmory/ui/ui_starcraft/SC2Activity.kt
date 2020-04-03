@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.UserInformation
+import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.connection.RequestQueueSingleton
 import com.BlizzardArmory.starcraft.Player
@@ -118,7 +118,7 @@ class SC2Activity : AppCompatActivity() {
     }
 
     private fun downloadAccountInformation() {
-        val call: Call<List<Player>> = networkServices.getSc2Player(UserInformation.getUserID(), "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<List<Player>> = networkServices.getSc2Player(GamesActivity.userInformation.userID, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<List<Player>> {
             override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
                 when {
@@ -468,24 +468,29 @@ class SC2Activity : AppCompatActivity() {
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
         buttonLayout.addView(button)
-        if (responseCode == 404) {
-            titleText.text = "The account could not be found"
-            messageText.text = "There is no Starcraft 2 profile associated with this account."
-            button.text = "OK"
-        } else if (responseCode == 403) {
-            titleText.text = "Unavailable"
-            messageText.text = "The Starcraft 2 community servers are down temporarily."
-            button.text = "Back"
-        } else if (responseCode == 500) {
-            titleText.text = "Server error"
-            messageText.text = "There seems to be some problems with Blizzard's servers, please try again later"
-            button.text = "Back"
-        } else {
-            titleText.text = "No Internet Connection"
-            messageText.text = "Make sure that Wi-Fi or mobile data is turned on, then try again."
-            button.text = "Retry"
-            button2.text = "Back"
-            buttonLayout.addView(button2)
+        when (responseCode) {
+            404 -> {
+                titleText.text = ErrorMessages.ACCOUNT_NOT_FOUND
+                messageText.text = ErrorMessages.SC2_ACCOUNT_NOT_FOUND
+                button.text = ErrorMessages.OK
+            }
+            403 -> {
+                titleText.text = ErrorMessages.UNAVAILABLE
+                messageText.text = ErrorMessages.SC2_SERVERS_DOWN
+                button.text = ErrorMessages.BACK
+            }
+            500 -> {
+                titleText.text = ErrorMessages.SERVERS_ERROR
+                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                button.text = ErrorMessages.BACK
+            }
+            else -> {
+                titleText.text = ErrorMessages.NO_INTERNET
+                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                button.text = ErrorMessages.RETRY
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
+            }
         }
         val dialog = builder.show()
         Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)

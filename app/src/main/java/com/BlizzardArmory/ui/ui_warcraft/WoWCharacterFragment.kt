@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
+import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
@@ -75,22 +76,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     private var talentsContainer: List<TextView?>? = null
     private var talentsTier: List<String>? = null
     private val talents: MutableList<Talent> = ArrayList()
-    private var specs: TabLayout? = null
-    private var spec: TextView? = null
-    private var fifteen: TextView? = null
-    private var thirty: TextView? = null
-    private var forty_five: TextView? = null
-    private var sixty: TextView? = null
-    private var seventy_five: TextView? = null
-    private var ninety: TextView? = null
-    private var hundred: TextView? = null
-    private var fifteenTalent: TextView? = null
-    private var thirtyTalent: TextView? = null
-    private var forty_fiveTalent: TextView? = null
-    private var sixtyTalent: TextView? = null
-    private var seventy_fiveTalent: TextView? = null
-    private var ninetyTalent: TextView? = null
-    private var hundredTalent: TextView? = null
     private val gearImageView = HashMap<String, ImageView>()
     private val stats = HashMap<String, String>()
     private val nameList = HashMap<String, String>()
@@ -123,48 +108,17 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         linearLayoutItemStats.addView(nameView)
         linearLayoutItemStats.addView(statsView)
         loading_circle?.visibility = View.VISIBLE
-        spec = view.findViewById(R.id.specialization)
-        specs = view.findViewById(R.id.tabLayout)
         no_talent?.visibility = View.INVISIBLE
-        fifteen = view.findViewById(R.id.fifteen)
-        thirty = view.findViewById(R.id.thirty)
-        forty_five = view.findViewById(R.id.forty_five)
-        sixty = view.findViewById(R.id.sixty)
-        seventy_five = view.findViewById(R.id.seventy_five)
-        ninety = view.findViewById(R.id.ninety)
-        hundred = view.findViewById(R.id.hundred)
-        fifteenTalent = view.findViewById(R.id.fifteenTalent)
-        thirtyTalent = view.findViewById(R.id.thirtyTalent)
-        forty_fiveTalent = view.findViewById(R.id.forty_fiveTalent)
-        sixtyTalent = view.findViewById(R.id.sixtyTalent)
-        seventy_fiveTalent = view.findViewById(R.id.seventy_fiveTalent)
-        ninetyTalent = view.findViewById(R.id.ninetyTalent)
-        hundredTalent = view.findViewById(R.id.hundredTalent)
+
         activateCloseButton()
+
         val layoutParamsName = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val layoutParamsStats = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParamsName.setMargins(20, 20, 20, -5)
         nameView?.layoutParams = layoutParamsName
         layoutParamsStats.setMargins(20, 0, 20, 0)
         statsView?.layoutParams = layoutParamsStats
-        val head = view.findViewById<ImageView>(R.id.head)
-        val neck = view.findViewById<ImageView>(R.id.neck)
-        val shoulder = view.findViewById<ImageView>(R.id.shoulder)
-        val back = view.findViewById<ImageView>(R.id.back)
-        val chest = view.findViewById<ImageView>(R.id.chest)
-        val shirt = view.findViewById<ImageView>(R.id.shirt)
-        val tabard = view.findViewById<ImageView>(R.id.tabard)
-        val wrist = view.findViewById<ImageView>(R.id.wrist)
-        val hands = view.findViewById<ImageView>(R.id.hands)
-        val waist = view.findViewById<ImageView>(R.id.waist)
-        val legs = view.findViewById<ImageView>(R.id.legs)
-        val feet = view.findViewById<ImageView>(R.id.feet)
-        val finger1 = view.findViewById<ImageView>(R.id.finger1)
-        val finger2 = view.findViewById<ImageView>(R.id.finger2)
-        val trinket1 = view.findViewById<ImageView>(R.id.trinket1)
-        val trinket2 = view.findViewById<ImageView>(R.id.trinket2)
-        val mainHand = view.findViewById<ImageView>(R.id.main_hand)
-        val offHand = view.findViewById<ImageView>(R.id.off_hand)
+
         gearImageView["HEAD"] = head
         gearImageView["NECK"] = neck
         gearImageView["SHOULDER"] = shoulder
@@ -181,16 +135,14 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         gearImageView["FINGER_2"] = finger2
         gearImageView["TRINKET_1"] = trinket1
         gearImageView["TRINKET_2"] = trinket2
-        gearImageView["MAIN_HAND"] = mainHand
-        gearImageView["OFF_HAND"] = offHand
-        val startTime = System.nanoTime()
+        gearImageView["MAIN_HAND"] = main_hand
+        gearImageView["OFF_HAND"] = off_hand
+
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Params: BnOAuth2Params = requireActivity().intent.extras!!.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+
         downloadInfo()
-        val endTime = System.nanoTime()
-        val duration = (endTime - startTime) / 1000000000
-        Log.i("time", duration.toString())
     }
 
     private fun downloadInfo() {
@@ -219,19 +171,15 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
                 if (response.isSuccessful) {
                     talentsInfo = response.body()!!
-                    if (talentsInfo == null) {
-                        no_talent?.visibility = View.VISIBLE
-                        no_talent?.text = "Talent information outdated"
-                    } else {
-                        setTalentInformation()
-                    }
+                    setTalentInformation()
                 }
             }
 
             override fun onFailure(call: Call<Talents>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
                 no_talent?.visibility = View.VISIBLE
-                no_talent?.text = "Talent information outdated"
+                val noTalent = "Talent information outdated"
+                no_talent?.text = noTalent
             }
         })
     }
@@ -274,7 +222,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                         EventBus.getDefault().post(FactionEvent(characterSummary.faction.name.toLowerCase(Locale.ROOT)))
                         EventBus.getDefault().post(ClassEvent(characterSummary.characterClass.id))
                         item_lvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
-                        val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.getRace().name + " " + characterSummary.getCharacterClass().name
+                        val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
                         level_race_class.text = levelRaceClassString
                         downloadEquipment()
                     }
@@ -425,18 +373,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         Objects.requireNonNull(gearImageView[itemSlot])?.background = backgroundStroke
     }
 
-    private fun replaceZoneRealmCharacterNameURL(url: String): String {
-        var newURL = url
-        newURL = if (region == null) {
-            newURL.replace("zone", URLConstants.getRegion())
-        } else {
-            newURL.replace("zone", region!!.toLowerCase(Locale.ROOT))
-        }
-        newURL = newURL.replace("realm", characterRealm!!)
-        newURL = newURL.replace("characterName", characterClicked!!.toLowerCase(Locale.ROOT))
-        return newURL
-    }
-
     private fun getEmptySlotIcon(itemSlot: String) {
         Objects.requireNonNull(gearImageView[itemSlot])?.setPadding(3, 3, 3, 3)
         Objects.requireNonNull(gearImageView[itemSlot])?.clipToOutline = true
@@ -529,25 +465,25 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                 } catch (e: Exception) {
                     talents.add(Talent())
                 }
-                spec?.text = String.format("Specialization: %s", talentsInfo.activeSpecialization.name)
+                specialization?.text = String.format("Specialization: %s", talentsInfo.activeSpecialization.name)
             }
         }
         if (talentsInfo.specializations.size == 4) {
-            specs?.addTab(specs!!.newTab())
-            specs?.getTabAt(3)?.text = talentsInfo.specializations[3].specialization.name
+            tabLayout?.addTab(tabLayout!!.newTab())
+            tabLayout?.getTabAt(3)?.text = talentsInfo.specializations[3].specialization.name
         }
         for (i in talentsInfo.specializations.indices) {
-            val tab = specs?.getTabAt(i)
+            val tab = tabLayout?.getTabAt(i)
             Objects.requireNonNull(tab)?.text = talentsInfo.specializations[i].specialization.name
             Log.i("spec", talentsInfo.specializations[i].specialization.name)
         }
         if (talentsInfo.specializations.size == 2) {
-            val tab3 = specs?.getTabAt(2)
+            val tab3 = tabLayout?.getTabAt(2)
             tab3!!.text = "Unavailable"
         } else if (talentsInfo.specializations.size == 1) {
-            val tab2 = specs?.getTabAt(1)
+            val tab2 = tabLayout?.getTabAt(1)
             tab2!!.text = "Unavailable"
-            val tab3 = specs?.getTabAt(2)
+            val tab3 = tabLayout?.getTabAt(2)
             tab3!!.text = "Unavailable"
         }
         talentsTierContainer = ArrayList(listOf(fifteen, thirty, forty_five, sixty, seventy_five, ninety, hundred))
@@ -575,7 +511,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Log.e("Talent-Error", e.toString())
             no_talent?.visibility = View.VISIBLE
         }
-        specs?.addOnTabSelectedListener(object : OnTabSelectedListener {
+        tabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 when (tab.position) {
                     0 -> if (tab.text != "Unavailable") {
@@ -651,7 +587,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         var requiredLevel = ""
         var description = ""
         var trigger = ""
-        var HoALevel = ""
+        var hoaLevel = ""
         var bind = ""
         val itemSubclass: String
         val enchant = StringBuilder()
@@ -808,7 +744,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Log.e("bind", "none")
         }
         if (equippedItem.item.id == 158075) {
-            HoALevel = "<font color=#edc201>" + equippedItem.azeriteDetails.level.displayString + "</font><br>"
+            hoaLevel = "<font color=#edc201>" + equippedItem.azeriteDetails.level.displayString + "</font><br>"
         }
         if (equippedItem.itemClass.id == 2) {
             damageInfo = StringBuilder(equippedItem.weapon.damage.displayString)
@@ -834,7 +770,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                 i++
             }
         }
-        stats[equippedItem.slot.type] = String.format("%s%s%s%s%s%s%s%s%s", nameDescription, itemLvl, transmog, HoALevel, bind, slot.toString(), damageInfo.toString(), armor, statsString.toString())
+        stats[equippedItem.slot.type] = String.format("%s%s%s%s%s%s%s%s%s", nameDescription, itemLvl, transmog, hoaLevel, bind, slot.toString(), damageInfo.toString(), armor, statsString.toString())
         if (enchant.toString() != "") {
             stats[equippedItem.slot.type] = stats[equippedItem.slot.type].toString() + String.format("<br>%s", enchant)
         }
@@ -1000,16 +936,24 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             buttonLayout.orientation = LinearLayout.HORIZONTAL
             buttonLayout.gravity = Gravity.CENTER
             buttonLayout.addView(button)
-            if (responseCode >= 400) {
-                titleText.text = "Information Outdated"
-                messageText.text = "Please login in game to update this character's information."
-                button.text = "BACK"
-            } else {
-                titleText.text = "No Internet Connection"
-                messageText.text = "Make sure that Wi-Fi or mobile data is turned on, then try again."
-                button.text = "RETRY"
-                button2.text = "BACK"
-                buttonLayout.addView(button2)
+            when (responseCode) {
+                in 400..499 -> {
+                    titleText.text = ErrorMessages.INFORMATION_OUTDATED
+                    messageText.text = ErrorMessages.LOGIN_TO_UPDATE
+                    button.text = ErrorMessages.BACK
+                }
+                500 -> {
+                    titleText.text = ErrorMessages.SERVERS_ERROR
+                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                    button.text = ErrorMessages.BACK
+                }
+                else -> {
+                    titleText.text = ErrorMessages.NO_INTERNET
+                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                    button.text = ErrorMessages.RETRY
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
+                }
             }
             dialog = builder.show()
             Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)

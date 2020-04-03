@@ -1,15 +1,12 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -32,7 +29,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.URLConstants;
-import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.connection.ErrorMessages;
 import com.BlizzardArmory.connection.NetworkServices;
 import com.BlizzardArmory.connection.RequestQueueSingleton;
 import com.BlizzardArmory.overwatch.Profile;
@@ -43,15 +40,13 @@ import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.caverock.androidsvg.SVG;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,11 +60,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OWActivity extends AppCompatActivity {
 
-    private SharedPreferences prefs;
-    private BnOAuth2Helper bnOAuth2Helper;
     private BnOAuth2Params bnOAuth2Params;
-    private Gson gson;
-    private Retrofit retrofit;
     private NetworkServices networkServices;
 
     private String username;
@@ -79,13 +70,6 @@ public class OWActivity extends AppCompatActivity {
     private Spinner careerListSpinner;
     private GradientDrawable switchCompQuickRadius;
 
-    private ImageButton wowButton;
-    private ImageButton sc2Button;
-    private ImageButton d3Button;
-    private ImageButton owButton;
-    private ImageView search;
-
-    private TextView btag;
     private RelativeLayout loadingCircle;
     private Profile accountInformation;
     private ArrayList<TopHero> topHeroesQuickPlay;
@@ -108,8 +92,8 @@ public class OWActivity extends AppCompatActivity {
     private ImageView ratingRankIconSupport;
     private TextView ratingSupport;
     private TextView gamesWon;
-    private ImageView endorsementIcon;
-    private TextView endorsement;
+    //private ImageView endorsementIcon;
+    //private TextView endorsement;
     private ImageView topCharacter;
 
     private final String TIME_PLAYED = "Time Played";
@@ -125,7 +109,6 @@ public class OWActivity extends AppCompatActivity {
 
     private TextView quickplay;
     private TextView competitive;
-    private LinearLayout quickComp;
     private boolean comp = false;
 
     private LinearLayout best;
@@ -136,19 +119,20 @@ public class OWActivity extends AppCompatActivity {
     private LinearLayout misc;
     private LinearLayout matchAwards;
 
+    private String privateProfile = "This profile is private and the information unavailable";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ow_activity);
-        wowButton = findViewById(R.id.wowButton);
-        sc2Button = findViewById(R.id.starcraft2Button);
-        d3Button = findViewById(R.id.diablo3Button);
-        owButton = findViewById(R.id.overwatchButton);
-        search = findViewById(R.id.search);
-        btag = findViewById(R.id.btag_header);
+        ImageButton wowButton = findViewById(R.id.wowButton);
+        ImageButton sc2Button = findViewById(R.id.starcraft2Button);
+        ImageButton d3Button = findViewById(R.id.diablo3Button);
+        ImageView search = findViewById(R.id.search);
+        TextView btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
-        btag.setText(UserInformation.getBattleTag());
+        btag.setText(GamesActivity.userInformation.getBattleTag());
         avatar = findViewById(R.id.avatar);
         name = findViewById(R.id.name);
         levelIcon = findViewById(R.id.level_icon);
@@ -173,7 +157,7 @@ public class OWActivity extends AppCompatActivity {
         heroList = findViewById(R.id.hero_list);
         competitive = findViewById(R.id.competitive);
         quickplay = findViewById(R.id.quickplay);
-        quickComp = findViewById(R.id.quick_comp);
+        LinearLayout quickComp = findViewById(R.id.quick_comp);
         best = findViewById(R.id.best);
         assists = findViewById(R.id.assist);
         game = findViewById(R.id.game);
@@ -192,18 +176,15 @@ public class OWActivity extends AppCompatActivity {
         switchCompQuickRadius.setColor(Color.parseColor("#FFFFFF"));
         quickplay.setBackground(switchCompQuickRadius);
 
-        btag.setText(UserInformation.getBattleTag());
+        btag.setText(GamesActivity.userInformation.getBattleTag());
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         URLConstants.loading = true;
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(OWActivity.this);
         bnOAuth2Params = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
-        assert bnOAuth2Params != null;
-        bnOAuth2Helper = new BnOAuth2Helper(prefs, bnOAuth2Params);
 
-        gson = new GsonBuilder().create();
-        retrofit = new Retrofit.Builder().baseUrl("https://ow-api.com/v1/stats/").addConverterFactory(GsonConverterFactory.create(gson)).build();
+        Gson gson = new GsonBuilder().create();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://ow-api.com/v1/stats/").addConverterFactory(GsonConverterFactory.create(gson)).build();
         networkServices = retrofit.create(NetworkServices.class);
 
         username = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("username");
@@ -225,13 +206,13 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void downloadAccountInformation() {
-        String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
+        //String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
         Log.i("URL", URLConstants.getOWProfile(platform, username));
 
         Call<Profile> call = networkServices.getOWProfile(URLConstants.getOWProfile(username, platform));
         call.enqueue(new Callback<Profile>() {
             @Override
-            public void onResponse(Call<Profile> call, retrofit2.Response<Profile> response) {
+            public void onResponse(@NotNull Call<Profile> call, @NotNull retrofit2.Response<Profile> response) {
 
                 if (response.isSuccessful()) {
                     try {
@@ -293,7 +274,7 @@ public class OWActivity extends AppCompatActivity {
                         loadingCircle.setVisibility(View.GONE);
                         URLConstants.loading = false;
                     } catch (Exception e) {
-                        gamesWon.setText("This profile is private and the information unavailable");
+                        gamesWon.setText(privateProfile);
                         gamesWon.setTextSize(18);
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
@@ -307,7 +288,7 @@ public class OWActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Profile> call, Throwable t) {
+            public void onFailure(@NotNull Call<Profile> call, @NotNull Throwable t) {
                 Log.e("Error", t.getLocalizedMessage());
                 showNoConnectionMessage(0);
             }
@@ -1061,14 +1042,14 @@ public class OWActivity extends AppCompatActivity {
     private int getSeconds(TopHero hero) {
         int secondsHero1 = 0;
         if (StringUtils.countMatches(hero.getTimePlayed(), ":") == 2) {
-            secondsHero1 += Integer.valueOf(hero.getTimePlayed().substring(0, hero.getTimePlayed().indexOf(":"))) * 3600;
-            secondsHero1 += Integer.valueOf(hero.getTimePlayed().substring(hero.getTimePlayed().indexOf(":") + 1, hero.getTimePlayed().lastIndexOf(":"))) * 60;
-            secondsHero1 += Integer.valueOf(hero.getTimePlayed().substring(hero.getTimePlayed().lastIndexOf(":") + 1));
+            secondsHero1 += Integer.parseInt(hero.getTimePlayed().substring(0, hero.getTimePlayed().indexOf(":"))) * 3600;
+            secondsHero1 += Integer.parseInt(hero.getTimePlayed().substring(hero.getTimePlayed().indexOf(":") + 1, hero.getTimePlayed().lastIndexOf(":"))) * 60;
+            secondsHero1 += Integer.parseInt(hero.getTimePlayed().substring(hero.getTimePlayed().lastIndexOf(":") + 1));
         } else if (StringUtils.countMatches(hero.getTimePlayed(), ":") == 1) {
-            secondsHero1 += Integer.valueOf(hero.getTimePlayed().substring(0, hero.getTimePlayed().indexOf(":"))) * 60;
-            secondsHero1 += Integer.valueOf(hero.getTimePlayed().substring(hero.getTimePlayed().lastIndexOf(":") + 1));
+            secondsHero1 += Integer.parseInt(hero.getTimePlayed().substring(0, hero.getTimePlayed().indexOf(":"))) * 60;
+            secondsHero1 += Integer.parseInt(hero.getTimePlayed().substring(hero.getTimePlayed().lastIndexOf(":") + 1));
         } else {
-            secondsHero1 = Integer.valueOf(hero.getTimePlayed());
+            secondsHero1 = Integer.parseInt(hero.getTimePlayed());
         }
         return secondsHero1;
     }
@@ -1137,7 +1118,8 @@ public class OWActivity extends AppCompatActivity {
             String tempName = accountInformation.getName().substring(0, hashtag) + " ";
             name.setText(tempName);
         } else {
-            name.setText(accountInformation.getName() + " ");
+            String accountInfo = accountInformation.getName() + " ";
+            name.setText(accountInfo);
         }
         level.setText(String.valueOf(accountInformation.getLevel()));
     }
@@ -1157,7 +1139,7 @@ public class OWActivity extends AppCompatActivity {
         RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(imageRequest);
     }
 
-    private void downloadEndorsementIcon() {
+    /*private void downloadEndorsementIcon() {
         StringRequest stringRequest = new StringRequest(accountInformation.getEndorsementIcon(), string -> {
             try {
                 SVG endorsement_icon = SVG.getFromString(string);
@@ -1170,7 +1152,7 @@ public class OWActivity extends AppCompatActivity {
         },
                 e -> showNoConnectionMessage(0));
         RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(stringRequest);
-    }
+    }*/
 
     private void downloadRatingIcon(String url, ImageView imageView) {
         ImageRequest imageRequest = new ImageRequest(url, bitmap -> {
@@ -1259,15 +1241,15 @@ public class OWActivity extends AppCompatActivity {
         buttonLayout.addView(button);
 
         if (responseCode == 404) {
-            titleText.setText("The account could not be found");
-            messageText.setText("There is no Overwatch profile associated with this account.");
-            button.setText("OK");
-            button2.setText("Back");
+            titleText.setText(ErrorMessages.ACCOUNT_NOT_FOUND);
+            messageText.setText(ErrorMessages.OW_ACCOUNT_NOT_FOUND);
+            button.setText(ErrorMessages.OK);
+            button2.setText(ErrorMessages.BACK);
         } else {
-            titleText.setText("No Internet Connection");
-            messageText.setText("Make sure that Wi-Fi or mobile data is turned on, then try again.");
-            button.setText("Retry");
-            button2.setText("Back");
+            titleText.setText(ErrorMessages.NO_INTERNET);
+            messageText.setText(ErrorMessages.TURN_ON_CONNECTION_MESSAGE);
+            button.setText(ErrorMessages.RETRY);
+            button2.setText(ErrorMessages.BACK);
             buttonLayout.addView(button2);
         }
 

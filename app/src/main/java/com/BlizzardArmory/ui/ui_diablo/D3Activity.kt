@@ -20,7 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.UserInformation
+import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.connection.RequestQueueSingleton.Companion.getInstance
 import com.BlizzardArmory.diablo.account.AccountInformation
@@ -68,7 +68,7 @@ class D3Activity : AppCompatActivity() {
         networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         loadingCircle.visibility = View.VISIBLE
-        btag.text = UserInformation.getBattleTag()
+        btag.text = GamesActivity.userInformation.battleTag
         battleTag = intent.extras?.getString("battletag")
         selectedRegion = intent.extras?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -502,18 +502,24 @@ class D3Activity : AppCompatActivity() {
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
         buttonLayout.addView(button)
-        if (responseCode == 404) {
-            titleText.text = "Information Outdated"
-            messageText.text = "Please login in game to update your account's information."
-            button2.text = "Back"
-            buttonLayout.removeView(button)
-            buttonLayout.addView(button2)
-        } else {
-            titleText.text = "No Internet Connection"
-            messageText.text = "Make sure that Wi-Fi or mobile data is turned on, then try again."
-            button.text = "Retry"
-            button2.text = "Back"
-            buttonLayout.addView(button2)
+        when (responseCode) {
+            in 400..499 -> {
+                titleText.text = ErrorMessages.INFORMATION_OUTDATED
+                messageText.text = ErrorMessages.LOGIN_TO_UPDATE
+                button.text = ErrorMessages.BACK
+            }
+            500 -> {
+                titleText.text = ErrorMessages.SERVERS_ERROR
+                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                button.text = ErrorMessages.BACK
+            }
+            else -> {
+                titleText.text = ErrorMessages.NO_INTERNET
+                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                button.text = ErrorMessages.RETRY
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
+            }
         }
         val dialog = builder.show()
         Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
