@@ -1,24 +1,39 @@
 package com.BlizzardArmory;
 
+import com.google.gson.annotations.SerializedName;
+
 public class UserInformation {
 
-    private static String userID;
+    @SerializedName("sub")
+    private String sub;
 
-    private static String battleTag;
+    @SerializedName("id")
+    private String userID;
 
-    public static String getBattleTag() {
+    @SerializedName("battletag")
+    private String battleTag;
+
+    public String getSub() {
+        return sub;
+    }
+
+    public void setSub(String sub) {
+        sub = sub;
+    }
+
+    public String getBattleTag() {
         return battleTag;
     }
 
-    public static void setBattleTag(String battleTag) {
-        UserInformation.battleTag = battleTag;
+    public void setBattleTag(String battleTag) {
+        battleTag = battleTag;
     }
 
-    public static String getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public static void setUserID(String userID) {
-        UserInformation.userID = userID;
+    public void setUserID(String userID) {
+        userID = userID;
     }
 }

@@ -81,8 +81,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.wow_progress_fragment, container, false)
-        return view
+        return inflater.inflate(R.layout.wow_progress_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,7 +118,7 @@ class ProgressFragment : Fragment(), IOnBackPressed {
     private fun setRecyclerViewForEachExpansion(encounters: EncountersInformation) {
         var expansions: List<Expansions>? = null
         if (!encounters.expansions.isNullOrEmpty()) {
-            expansions = encounters.expansions.reversed();
+            expansions = encounters.expansions.reversed()
         }
         if (expansions != null) {
             for (expansion in expansions) run {
@@ -164,7 +163,8 @@ class ProgressFragment : Fragment(), IOnBackPressed {
 
     private fun showOutdatedTextView() {
         val outdatedInfo = TextView(context)
-        outdatedInfo.text = "Outdated information\nPlease login in game to refresh data"
+        val outdated = "Outdated information\nPlease login in game to refresh data"
+        outdatedInfo.text = outdated
         outdatedInfo.setTextColor(Color.WHITE)
         outdatedInfo.gravity = Gravity.CENTER
         outdatedInfo.textSize = 20F

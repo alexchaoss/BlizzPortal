@@ -17,9 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.UserInformation
+import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
-import com.BlizzardArmory.connection.ServiceGenerator
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
@@ -52,12 +51,12 @@ class WoWActivity : AppCompatActivity() {
     private var retrofit: Retrofit? = null
     private var gson: Gson? = null
     private lateinit var networkServices: NetworkServices
-    private val serviceGenerator: ServiceGenerator = ServiceGenerator.getInstance()
+    //private val serviceGenerator: ServiceGenerator = ServiceGenerator.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.wow_activity)
-        btag_header.text = UserInformation.getBattleTag()
+        btag_header.text = GamesActivity.userInformation.battleTag
 
         gson = GsonBuilder().create()
         retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
@@ -89,8 +88,17 @@ class WoWActivity : AppCompatActivity() {
         val call: Call<Account> = networkServices.getAccount("profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
-                charaters = response.body()
-                populateRecyclerView()
+                when {
+                    response.isSuccessful -> {
+                        charaters = response.body()
+                        populateRecyclerView()
+                    }
+                    response.code() >= 400 -> {
+                        Log.e("Error", "Response code: " + response.code())
+                        callErrorAlertDialog(response.code())
+                    }
+                }
+
             }
 
             override fun onFailure(call: Call<Account>, t: Throwable) {
@@ -201,16 +209,24 @@ class WoWActivity : AppCompatActivity() {
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
         buttonLayout.addView(button)
-        if (responseCode >= 400) {
-            titleText.text = "Information Outdated"
-            messageText.text = "Please login in game to update this account's information."
-            button.text = "OK"
-        } else {
-            titleText.text = "No Internet Connection"
-            messageText.text = "Make sure that Wi-Fi or mobile data is turned on, then try again."
-            button.text = "Retry"
-            button2.text = "Back"
-            buttonLayout.addView(button2)
+        when (responseCode) {
+            in 400..499 -> {
+                titleText.text = ErrorMessages.INFORMATION_OUTDATED
+                messageText.text = ErrorMessages.LOGIN_TO_UPDATE
+                button.text = ErrorMessages.BACK
+            }
+            500 -> {
+                titleText.text = ErrorMessages.SERVERS_ERROR
+                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                button.text = ErrorMessages.BACK
+            }
+            else -> {
+                titleText.text = ErrorMessages.NO_INTERNET
+                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                button.text = ErrorMessages.RETRY
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
+            }
         }
         val dialog = builder.show()
         dialog.show()

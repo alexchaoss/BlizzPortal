@@ -13,8 +13,7 @@ public class URLConstants {
     public final static String CALLBACK_URL = "https://alexchaoss.github.io/BnetAuthorize";
 
     //Account information
-    public final static String BASE_URL_USER_INFO = "https://zone.battle.net";
-    public final static String END_USER_INFO_URL = "/oauth/userinfo?";
+    public final static String BASE_URL_USER_INFO = "https://zone.battle.net/";
     public final static String BASE_URL_CN_USER_INFO = "https://www.battlenet.com.cn";
 
     //Base URL for APIs

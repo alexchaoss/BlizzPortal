@@ -10,7 +10,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.warcraft.pvp.summary.PvpMapStatistics
 
 class BattlegroundViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.battleground_list, parent, false)) {
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_battleground_list, parent, false)) {
 
     private var bgName: TextView? = null
     private var bgGames: TextView? = null

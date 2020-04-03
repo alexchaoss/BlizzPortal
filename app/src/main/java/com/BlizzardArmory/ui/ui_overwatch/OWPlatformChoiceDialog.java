@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.ui.GamesActivity;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
@@ -26,6 +26,17 @@ public class OWPlatformChoiceDialog {
     private static String username = "";
     private static String platform = "";
     static public boolean myProfileChosen = false;
+
+    private static final String OK = "OK";
+    private static final String PLATFORM_CHOICE = "Choose your platform";
+    private static final String BATTLE_TAG = "Enter your Battle Tag";
+    private static final String MY_PROFILE = "My PC Profile";
+    private static final String PC = "PC";
+    private static final String XBL = "XBL";
+    private static final String PSN = "PSN";
+    private static final String ENTER_BTAG = "Enter your Battle Tag";
+    private static final String ENTER_XBL = "Enter your Xbox live username";
+    private static final String ENTER_PSN = "Enter your Playstation username";
 
     private static void callOverWatchActivity(Activity activity, BnOAuth2Params bnOAuth2Params) {
         if (activity.getClass().getSimpleName().equalsIgnoreCase("OWActivity")) {
@@ -54,17 +65,17 @@ public class OWPlatformChoiceDialog {
         titleText.setPadding(0, 20, 0, 20);
         titleText.setLayoutParams(layoutParams);
         titleText.setTextColor(Color.WHITE);
-        titleText.setText("Choose your platform");
+        titleText.setText(PLATFORM_CHOICE);
 
         TextView messageText = new TextView(activity);
         messageText.setTextSize(18);
         messageText.setGravity(Gravity.CENTER_HORIZONTAL);
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
-        messageText.setText("Enter your Battle Tag");
+        messageText.setText(BATTLE_TAG);
 
         Button myProfile = new Button(activity);
-        myProfile.setText("My PC Profile");
+        myProfile.setText(MY_PROFILE);
         myProfile.setTextSize(16);
         myProfile.setTextColor(Color.BLACK);
         myProfile.setGravity(Gravity.CENTER);
@@ -73,7 +84,7 @@ public class OWPlatformChoiceDialog {
         myProfile.setBackground(activity.getDrawable(R.drawable.buttonstyle));
 
         Button pcButton = new Button(activity);
-        pcButton.setText("PC");
+        pcButton.setText(PC);
         pcButton.setTextSize(16);
         pcButton.setTextColor(Color.WHITE);
         pcButton.setGravity(Gravity.CENTER);
@@ -81,7 +92,7 @@ public class OWPlatformChoiceDialog {
         pcButton.setBackground(activity.getDrawable(R.drawable.buttonstyle));
 
         Button xboxButton = new Button(activity);
-        xboxButton.setText("XBL");
+        xboxButton.setText(XBL);
         xboxButton.setTextSize(16);
         xboxButton.setTextColor(Color.BLACK);
         xboxButton.setGravity(Gravity.CENTER);
@@ -89,7 +100,7 @@ public class OWPlatformChoiceDialog {
         xboxButton.setBackground(activity.getDrawable(R.drawable.buttonstyle));
 
         Button psButton = new Button(activity);
-        psButton.setText("PSN");
+        psButton.setText(PSN);
         psButton.setTextSize(16);
         psButton.setTextColor(Color.BLACK);
         psButton.setGravity(Gravity.CENTER);
@@ -97,7 +108,7 @@ public class OWPlatformChoiceDialog {
         psButton.setBackground(activity.getDrawable(R.drawable.buttonstyle));
 
         Button okButton = new Button(activity);
-        okButton.setText("OK");
+        okButton.setText(OK);
         okButton.setTextSize(16);
         okButton.setTextColor(Color.WHITE);
         okButton.setGravity(Gravity.CENTER);
@@ -146,7 +157,7 @@ public class OWPlatformChoiceDialog {
             psButton.setTextColor(Color.BLACK);
             pcButton.setTextColor(Color.WHITE);
             myProfile.setTextColor(Color.BLACK);
-            messageText.setText("Enter your Battle Tag");
+            messageText.setText(ENTER_BTAG);
             platform = "pc";
         });
 
@@ -156,7 +167,7 @@ public class OWPlatformChoiceDialog {
             psButton.setTextColor(Color.BLACK);
             pcButton.setTextColor(Color.BLACK);
             myProfile.setTextColor(Color.BLACK);
-            messageText.setText("Enter your Xbox live username");
+            messageText.setText(ENTER_XBL);
             platform = "xbl";
         });
 
@@ -166,7 +177,7 @@ public class OWPlatformChoiceDialog {
             psButton.setTextColor(Color.WHITE);
             pcButton.setTextColor(Color.BLACK);
             myProfile.setTextColor(Color.BLACK);
-            messageText.setText("Enter your Playstation username");
+            messageText.setText(ENTER_PSN);
             platform = "psn";
         });
 
@@ -188,7 +199,7 @@ public class OWPlatformChoiceDialog {
             psButton.setTextColor(Color.BLACK);
             pcButton.setTextColor(Color.BLACK);
             myProfile.setTextColor(Color.WHITE);
-            username = UserInformation.getBattleTag();
+            username = GamesActivity.userInformation.getBattleTag();
             platform = "pc";
         });
     }

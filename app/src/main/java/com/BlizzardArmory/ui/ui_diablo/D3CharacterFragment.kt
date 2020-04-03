@@ -14,13 +14,13 @@ import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
 import android.view.*
-import android.view.WindowManager.BadTokenException
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
+import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.diablo.character.Active
 import com.BlizzardArmory.diablo.character.CharacterInformation
@@ -1072,52 +1072,56 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
             buttonLayout.orientation = LinearLayout.HORIZONTAL
             buttonLayout.gravity = Gravity.CENTER
             buttonLayout.addView(button)
-            if (responseCode >= 400) {
-                titleText.text = "Information Outdated"
-                messageText.text = "Please login in game to update this character's information."
-                button.text = "BACK"
-            } else {
-                titleText.text = "No Internet Connection"
-                messageText.text = "Make sure that Wi-Fi or mobile data is turned on, then try again."
-                button.text = "RETRY"
-                button2.text = "BACK"
-                buttonLayout.addView(button2)
+            when (responseCode) {
+                in 400..499 -> {
+                    titleText.text = ErrorMessages.INFORMATION_OUTDATED
+                    messageText.text = ErrorMessages.LOGIN_TO_UPDATE
+                    button.text = ErrorMessages.BACK
+                }
+                500 -> {
+                    titleText.text = ErrorMessages.SERVERS_ERROR
+                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                    button.text = ErrorMessages.BACK
+                }
+                else -> {
+                    titleText.text = ErrorMessages.NO_INTERNET
+                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                    button.text = ErrorMessages.RETRY
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
+                }
             }
-            try {
-                dialog = builder.show()
-                Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-                dialog?.window?.setLayout(800, 500)
-                val linearLayout = LinearLayout(context)
-                linearLayout.orientation = LinearLayout.VERTICAL
-                linearLayout.gravity = Gravity.CENTER
-                linearLayout.addView(titleText)
-                linearLayout.addView(messageText)
-                linearLayout.addView(buttonLayout)
-                val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                layoutParams.setMargins(20, 20, 20, 20)
-                dialog?.addContentView(linearLayout, layoutParamsWindow)
-                dialog?.setOnCancelListener {
-                    if (btn2.get()) {
-                        parentFragmentManager.beginTransaction().remove(this@D3CharacterFragment).commit()
+            dialog = builder.show()
+            Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            dialog?.window?.setLayout(800, 500)
+            val linearLayout = LinearLayout(context)
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.gravity = Gravity.CENTER
+            linearLayout.addView(titleText)
+            linearLayout.addView(messageText)
+            linearLayout.addView(buttonLayout)
+            val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            layoutParams.setMargins(20, 20, 20, 20)
+            dialog?.addContentView(linearLayout, layoutParamsWindow)
+            dialog?.setOnCancelListener {
+                if (btn2.get()) {
+                    parentFragmentManager.beginTransaction().remove(this@D3CharacterFragment).commit()
+                } else {
+                    if (responseCode == 0) {
+                        val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as D3CharacterFragment?
+                        parentFragmentManager.beginTransaction()
+                                .detach(Objects.requireNonNull(fragment)!!)
+                                .attach(fragment!!)
+                                .commit()
                     } else {
-                        if (responseCode == 0) {
-                            val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as D3CharacterFragment?
-                            parentFragmentManager.beginTransaction()
-                                    .detach(Objects.requireNonNull(fragment)!!)
-                                    .attach(fragment!!)
-                                    .commit()
-                        } else {
-                            parentFragmentManager.beginTransaction().remove(this@D3CharacterFragment).commit()
-                        }
+                        parentFragmentManager.beginTransaction().remove(this@D3CharacterFragment).commit()
                     }
                 }
-                button.setOnClickListener { dialog?.cancel() }
-                button2.setOnClickListener {
-                    btn2.set(true)
-                    dialog?.cancel()
-                }
-            } catch (e: BadTokenException) {
-                Log.e("BAD TOKEN EXCEPTION", "ACTIVTY DOES NOT EXIST")
+            }
+            button.setOnClickListener { dialog?.cancel() }
+            button2.setOnClickListener {
+                btn2.set(true)
+                dialog?.cancel()
             }
         }
     }

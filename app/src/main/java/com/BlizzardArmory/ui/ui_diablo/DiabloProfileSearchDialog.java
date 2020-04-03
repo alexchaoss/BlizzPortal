@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.UserInformation;
+import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.MetricConversion;
 import com.dementh.lib.battlenet_oauth2.BnConstants;
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
@@ -179,7 +179,7 @@ public class DiabloProfileSearchDialog {
         });
 
         myProfile.setOnClickListener(v -> {
-            battleTag = UserInformation.getBattleTag();
+            battleTag = GamesActivity.userInformation.getBattleTag();
             selectedRegion = "";
             dialogD3.cancel();
             callD3Activity(activity, bnOAuth2Params);

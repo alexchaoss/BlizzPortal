@@ -1,5 +1,6 @@
 package com.BlizzardArmory.connection;
 
+import com.BlizzardArmory.UserInformation;
 import com.BlizzardArmory.diablo.account.AccountInformation;
 import com.BlizzardArmory.diablo.character.CharacterInformation;
 import com.BlizzardArmory.diablo.item.SingleItem;
@@ -27,6 +28,10 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface NetworkServices {
+
+    //User information
+    @GET("oauth/userinfo")
+    Call<UserInformation> getUserInfo(@Query("access_token") String accessToken);
 
     //WoW Endpoints
     @GET("/profile/wow/character/{realm}/{charactername}/character-media")
