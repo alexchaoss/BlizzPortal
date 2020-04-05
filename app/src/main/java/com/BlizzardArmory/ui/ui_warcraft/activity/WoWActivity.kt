@@ -51,7 +51,6 @@ class WoWActivity : AppCompatActivity() {
     private var retrofit: Retrofit? = null
     private var gson: Gson? = null
     private lateinit var networkServices: NetworkServices
-    //private val serviceGenerator: ServiceGenerator = ServiceGenerator.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,8 +108,10 @@ class WoWActivity : AppCompatActivity() {
     }
 
     private fun populateRecyclerView() {
-        for (wowAccount in charaters!!.wowAccounts) {
-            characterList.addAll(wowAccount.characters)
+        if (charaters?.wowAccounts != null) {
+            for (wowAccount in charaters!!.wowAccounts) {
+                characterList.addAll(wowAccount.characters)
+            }
         }
 
         for (characters in characterList.groupBy { it.realm.name }) {
@@ -123,7 +124,7 @@ class WoWActivity : AppCompatActivity() {
             val button = TextView(this@WoWActivity)
             button.setBackgroundResource(R.drawable.progress_collapse_header)
             button.setTextColor(Color.WHITE)
-            button.text = "+ " + realm.get(0).realm.name
+            button.text = "+ " + realm[0].realm.name
             button.textSize = 18F
             button.layoutParams = paramsButton
             linear_wow_characters.addView(button)
@@ -147,11 +148,11 @@ class WoWActivity : AppCompatActivity() {
                 if (!expand) {
                     expand = true
                     recyclerView.visibility = View.VISIBLE
-                    button.text = "- " + realm.get(0).realm.name
+                    button.text = "- " + realm[0].realm.name
                 } else {
                     expand = false
                     recyclerView.visibility = View.GONE
-                    button.text = "+ " + realm.get(0).realm.name
+                    button.text = "+ " + realm[0].realm.name
                 }
             }
         }

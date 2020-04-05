@@ -3,6 +3,8 @@ package com.BlizzardArmory.ui
 import android.app.ActivityManager
 import android.content.*
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -17,7 +19,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.R
 import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.connection.InternetCheck
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
@@ -162,31 +163,26 @@ class MainActivity : AppCompatActivity() {
             if (selectedRegion == "Select Region") {
                 Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT).show()
             } else {
-                InternetCheck(InternetCheck.Consumer { internet: Boolean ->
-                    if (internet) {
-                        try {
-                            val serverDatabase = FirebaseDatabase.getInstance().reference
-                            val serverRef = serverDatabase.child("servers")
-                            serverRef.addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    clientID = dataSnapshot.child("clientID").getValue(String::class.java)
-                                    clientSecret = dataSnapshot.child("clientSecret").getValue(String::class.java)
-                                    bnOAuth2Params = BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(Locale.ROOT),
-                                            URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2)
-                                    startOauthFlow(bnOAuth2Params!!)
-                                }
+                if (isNetworkAvailable()) {
+                    val serverDatabase = FirebaseDatabase.getInstance().reference
+                    val serverRef = serverDatabase.child("servers")
+                    serverRef.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            clientID = dataSnapshot.child("clientID").getValue(String::class.java)
+                            clientSecret = dataSnapshot.child("clientSecret").getValue(String::class.java)
+                            bnOAuth2Params = BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(Locale.ROOT),
+                                    URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2)
+                            startOauthFlow(bnOAuth2Params!!)
+                        }
 
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                    Log.e("SERVER DATA", databaseError.message)
-                                }
-                            })
-                        } catch (e: Exception) {
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            Log.e("SERVER DATA", databaseError.message)
                             showNoConnectionMessage(this@MainActivity, 0)
                         }
-                    } else {
-                        showNoConnectionMessage(this@MainActivity, 0)
-                    }
-                })
+                    })
+                } else {
+                    showNoConnectionMessage(this@MainActivity, 0)
+                }
             }
         }
     }
@@ -226,6 +222,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
     private fun showNoConnectionMessage(context: Context, responseCode: Int) {
         val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -259,19 +261,23 @@ class MainActivity : AppCompatActivity() {
         button2.width = 200
         button2.layoutParams = layoutParams
         button2.background = context.getDrawable(R.drawable.buttonstyle)
-        if (responseCode == -10) {
-            button.text = "RETRY"
-            buttonLayout.addView(button)
-        } else if (responseCode == 100) {
-            button.text = "Yes"
-            button2.text = "Cancel"
-            titleText.text = "Warning"
-            buttonLayout.addView(button)
-            buttonLayout.addView(button2)
-            messageText.text = "You are about to clear the application data, this will close the application.\n Are you sure you want to continue?"
-        } else {
-            buttonLayout.addView(button)
-            button.text = "OK"
+        when (responseCode) {
+            -10 -> {
+                button.text = "RETRY"
+                buttonLayout.addView(button)
+            }
+            100 -> {
+                button.text = "Yes"
+                button2.text = "Cancel"
+                titleText.text = "Warning"
+                buttonLayout.addView(button)
+                buttonLayout.addView(button2)
+                messageText.text = "You are about to clear the application data, this will close the application.\n Are you sure you want to continue?"
+            }
+            else -> {
+                buttonLayout.addView(button)
+                button.text = "OK"
+            }
         }
         val dialog = builder.show()
         Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)

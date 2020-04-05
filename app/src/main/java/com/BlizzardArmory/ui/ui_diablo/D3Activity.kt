@@ -60,14 +60,12 @@ class D3Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.d3_activity)
 
-        val btag = findViewById<TextView>(R.id.btag_header)
-
         gson = GsonBuilder().create()
         retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
         networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         loadingCircle.visibility = View.VISIBLE
-        btag.text = GamesActivity.userInformation.battleTag
+        btag_header.text = GamesActivity.userInformation.battleTag
         battleTag = intent.extras?.getString("battletag")
         selectedRegion = intent.extras?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
