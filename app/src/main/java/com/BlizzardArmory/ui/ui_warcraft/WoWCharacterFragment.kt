@@ -494,13 +494,10 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Log.i("spec", talentsInfo.specializations[i].specialization.name)
         }
         if (talentsInfo.specializations.size == 2) {
-            val tab3 = tabLayout?.getTabAt(2)
-            tab3!!.text = "Unavailable"
+            tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
         } else if (talentsInfo.specializations.size == 1) {
-            val tab2 = tabLayout?.getTabAt(1)
-            tab2!!.text = "Unavailable"
-            val tab3 = tabLayout?.getTabAt(2)
-            tab3!!.text = "Unavailable"
+            tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
+            tabLayout?.getTabAt(1)?.let { tabLayout?.removeTab(it) }
         }
         talentsTierContainer = ArrayList(listOf(fifteen, thirty, forty_five, sixty, seventy_five, ninety, hundred))
         talentsContainer = ArrayList(listOf(fifteenTalent, thirtyTalent, forty_fiveTalent, sixtyTalent, seventy_fiveTalent, ninetyTalent, hundredTalent))
