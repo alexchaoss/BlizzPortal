@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_warcraft
+package com.BlizzardArmory.ui.ui_warcraft.character
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -24,6 +24,9 @@ import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
+import com.BlizzardArmory.ui.ui_warcraft.events.ClassEvent
+import com.BlizzardArmory.ui.ui_warcraft.events.FactionEvent
+import com.BlizzardArmory.ui.ui_warcraft.events.RetryEvent
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.warcraft.equipment.Equipment
 import com.BlizzardArmory.warcraft.equipment.EquippedItem

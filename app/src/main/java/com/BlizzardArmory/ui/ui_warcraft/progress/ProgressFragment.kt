@@ -21,9 +21,9 @@ import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
-import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
-import com.BlizzardArmory.ui.ui_warcraft.RetryEvent
-import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
+import com.BlizzardArmory.ui.ui_warcraft.events.ClassEvent
+import com.BlizzardArmory.ui.ui_warcraft.events.RetryEvent
+import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.warcraft.encounters.Expansions
 import com.dementh.lib.battlenet_oauth2.BnConstants
