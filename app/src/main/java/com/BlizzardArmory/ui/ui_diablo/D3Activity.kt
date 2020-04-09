@@ -497,23 +497,25 @@ class D3Activity : AppCompatActivity() {
         val buttonLayout = LinearLayout(context)
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
-        buttonLayout.addView(button)
         when (responseCode) {
             in 400..499 -> {
                 titleText.text = ErrorMessages.INFORMATION_OUTDATED
                 messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                button.text = ErrorMessages.BACK
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
             }
             500 -> {
                 titleText.text = ErrorMessages.SERVERS_ERROR
                 messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                button.text = ErrorMessages.BACK
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
             }
             else -> {
                 titleText.text = ErrorMessages.NO_INTERNET
                 messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
                 button.text = ErrorMessages.RETRY
                 button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button)
                 buttonLayout.addView(button2)
             }
         }

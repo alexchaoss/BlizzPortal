@@ -123,34 +123,38 @@ class SC2Activity : AppCompatActivity() {
                 when {
                     response.isSuccessful -> {
                         accountInformation = response.body()!!
-                        val call2: Call<Profile> = networkServices.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
-                        call2.enqueue(object : Callback<Profile> {
-                            override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
-                                when {
-                                    response.isSuccessful -> {
-                                        sc2Profile = response.body()
-                                        setSummaryInformation()
-                                        setSnapshotInformation()
-                                        setStatisticsInformation()
-                                        setRaceLevelInformation()
-                                        setCampaignInformation()
-                                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                        loadingCircle!!.visibility = View.GONE
-                                        URLConstants.loading = false
-                                        downloadAvatar()
-                                    }
-                                    response.code() >= 400 -> {
-                                        Log.e("Error", "Response code: " + response.code())
-                                        showNoConnectionMessage(response.code())
+                        if (accountInformation.isNotEmpty()) {
+                            val call2: Call<Profile> = networkServices.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                            call2.enqueue(object : Callback<Profile> {
+                                override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
+                                    when {
+                                        response.isSuccessful -> {
+                                            sc2Profile = response.body()
+                                            setSummaryInformation()
+                                            setSnapshotInformation()
+                                            setStatisticsInformation()
+                                            setRaceLevelInformation()
+                                            setCampaignInformation()
+                                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                                            loadingCircle!!.visibility = View.GONE
+                                            URLConstants.loading = false
+                                            downloadAvatar()
+                                        }
+                                        response.code() >= 400 -> {
+                                            Log.e("Error", "Response code: " + response.code())
+                                            showNoConnectionMessage(response.code())
+                                        }
                                     }
                                 }
-                            }
 
-                            override fun onFailure(call: Call<Profile>, t: Throwable) {
-                                Log.e("Error", t.localizedMessage)
-                                showNoConnectionMessage(0)
-                            }
-                        })
+                                override fun onFailure(call: Call<Profile>, t: Throwable) {
+                                    Log.e("Error", t.localizedMessage)
+                                    showNoConnectionMessage(0)
+                                }
+                            })
+                        } else {
+                            showNoConnectionMessage(404)
+                        }
                     }
                     response.code() >= 400 -> {
                         Log.e("Error", "Response code: " + response.code() + " " + response.message())

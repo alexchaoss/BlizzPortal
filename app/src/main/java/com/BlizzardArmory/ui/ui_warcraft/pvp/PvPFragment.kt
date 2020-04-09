@@ -20,6 +20,7 @@ import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.FactionEvent
+import com.BlizzardArmory.ui.ui_warcraft.RetryEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.warcraft.pvp.summary.PvPSummary
@@ -91,7 +92,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
         gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(region)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
         networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         downloadPvPSummary()
@@ -260,6 +261,16 @@ class PvPFragment : Fragment(), IOnBackPressed {
             in 50000..99999 -> rankicon.setImageResource(R.drawable.rank8_honor)
             in 100000..249999 -> rankicon.setImageResource(R.drawable.rank9_honor)
             in 250000..Int.MAX_VALUE -> rankicon.setImageResource(R.drawable.rank10_honor)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun retryEventReceived(retryEvent: RetryEvent) {
+        if (retryEvent.data) {
+            downloadPvPSummary()
+            download2v2Info()
+            download3v3Info()
+            downloadRBGInfo()
         }
     }
 

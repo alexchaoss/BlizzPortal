@@ -89,6 +89,7 @@ class WoWActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 when {
                     response.isSuccessful -> {
+                        Log.i("TEST", response.raw().request.url.toString())
                         charaters = response.body()
                         populateRecyclerView()
                     }
@@ -113,7 +114,7 @@ class WoWActivity : AppCompatActivity() {
                 characterList.addAll(wowAccount.characters)
             }
         }
-
+        Log.i("TEST", characterList.get(0).realm.name)
         for (characters in characterList.groupBy { it.realm.name }) {
             charactersByRealm.add(characters.value.sortedBy { it.level.toInt() }.reversed())
         }
@@ -124,7 +125,9 @@ class WoWActivity : AppCompatActivity() {
             val button = TextView(this@WoWActivity)
             button.setBackgroundResource(R.drawable.progress_collapse_header)
             button.setTextColor(Color.WHITE)
-            button.text = "+ " + realm[0].realm.name
+            var realmNamePlus = "+ " + realm[0].realm.name
+            var realmNameMinus = "- " + realm[0].realm.name
+            button.text = realmNamePlus
             button.textSize = 18F
             button.layoutParams = paramsButton
             linear_wow_characters.addView(button)
@@ -148,11 +151,11 @@ class WoWActivity : AppCompatActivity() {
                 if (!expand) {
                     expand = true
                     recyclerView.visibility = View.VISIBLE
-                    button.text = "- " + realm[0].realm.name
+                    button.text = realmNameMinus
                 } else {
                     expand = false
                     recyclerView.visibility = View.GONE
-                    button.text = "+ " + realm[0].realm.name
+                    button.text = realmNamePlus
                 }
             }
         }
@@ -209,23 +212,25 @@ class WoWActivity : AppCompatActivity() {
         val buttonLayout = LinearLayout(this@WoWActivity)
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
-        buttonLayout.addView(button)
         when (responseCode) {
             in 400..499 -> {
                 titleText.text = ErrorMessages.INFORMATION_OUTDATED
                 messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                button.text = ErrorMessages.BACK
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
             }
             500 -> {
                 titleText.text = ErrorMessages.SERVERS_ERROR
                 messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                button.text = ErrorMessages.BACK
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
             }
             else -> {
                 titleText.text = ErrorMessages.NO_INTERNET
                 messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
                 button.text = ErrorMessages.RETRY
                 button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button)
                 buttonLayout.addView(button2)
             }
         }

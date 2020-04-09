@@ -22,6 +22,7 @@ import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
+import com.BlizzardArmory.ui.ui_warcraft.RetryEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.warcraft.encounters.Expansions
@@ -92,7 +93,7 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
         gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(region)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
         networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         search_view.queryHint = "Search raid.."
@@ -111,7 +112,12 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
             override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
                 val encounters = response.body()
                 if (encounters != null) {
-                    setRecyclerViewForEachExpansion(encounters)
+                    if (view?.findViewWithTag<TextView>("OUTDATED") == null) {
+                        setRecyclerViewForEachExpansion(encounters)
+                    } else {
+                        progress_container.removeAllViews()
+                        setRecyclerViewForEachExpansion(encounters)
+                    }
                 } else {
                     showOutdatedTextView()
                 }
@@ -172,14 +178,17 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
     }
 
     private fun showOutdatedTextView() {
-        val outdatedInfo = TextView(context)
-        val outdated = "Outdated information\nPlease login in game to refresh data"
-        outdatedInfo.text = outdated
-        outdatedInfo.setTextColor(Color.WHITE)
-        outdatedInfo.gravity = Gravity.CENTER
-        outdatedInfo.textSize = 20F
-        outdatedInfo.setPadding(0, 50, 0, 0)
-        progress_container.addView(outdatedInfo)
+        if (progress_container.childCount < 1) {
+            val outdatedInfo = TextView(context)
+            val outdated = "Outdated information\nPlease login in game to refresh data"
+            outdatedInfo.text = outdated
+            outdatedInfo.setTextColor(Color.WHITE)
+            outdatedInfo.gravity = Gravity.CENTER
+            outdatedInfo.textSize = 20F
+            outdatedInfo.setPadding(0, 50, 0, 0)
+            outdatedInfo.tag = "OUTDATED"
+            progress_container.addView(outdatedInfo)
+        }
     }
 
     companion object {
@@ -207,6 +216,13 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
             396L -> "Level 120"
             397L -> "Level 60"
             else -> ""
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun retryEventReceived(retryEvent: RetryEvent) {
+        if (retryEvent.data) {
+            downloadEncounterInformation()
         }
     }
 

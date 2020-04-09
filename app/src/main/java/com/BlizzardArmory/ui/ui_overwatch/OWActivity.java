@@ -178,17 +178,14 @@ public class OWActivity extends AppCompatActivity {
 
         btag.setText(GamesActivity.userInformation.getBattleTag());
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        URLConstants.loading = true;
-
         bnOAuth2Params = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
 
         Gson gson = new GsonBuilder().create();
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://ow-api.com/v1/stats/").addConverterFactory(GsonConverterFactory.create(gson)).build();
         networkServices = retrofit.create(NetworkServices.class);
 
-        username = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("username");
-        platform = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getString("platform");
+        username = OWActivity.this.getIntent().getExtras().getString("username");
+        platform = OWActivity.this.getIntent().getExtras().getString("platform");
 
         downloadAccountInformation();
 
@@ -208,6 +205,9 @@ public class OWActivity extends AppCompatActivity {
     private void downloadAccountInformation() {
         //String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
         Log.i("URL", URLConstants.getOWProfile(platform, username));
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        URLConstants.loading = true;
 
         Call<Profile> call = networkServices.getOWProfile(URLConstants.getOWProfile(username, platform));
         call.enqueue(new Callback<Profile>() {
