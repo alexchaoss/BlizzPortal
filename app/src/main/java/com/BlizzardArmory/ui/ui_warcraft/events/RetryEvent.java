@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_warcraft;
+package com.BlizzardArmory.ui.ui_warcraft.events;
 
 /**
  * The type Retry event.

@@ -1,10 +1,11 @@
-package com.BlizzardArmory.ui.ui_warcraft
+package com.BlizzardArmory.ui.ui_warcraft.navigation
 
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.BlizzardArmory.ui.ui_warcraft.character.WoWCharacterFragment
 import com.BlizzardArmory.ui.ui_warcraft.progress.ProgressFragment
 import com.BlizzardArmory.ui.ui_warcraft.pvp.PvPFragment
 import com.BlizzardArmory.ui.ui_warcraft.reputations.ReputationsFragment

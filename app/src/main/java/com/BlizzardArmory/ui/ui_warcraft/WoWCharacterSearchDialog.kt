@@ -19,7 +19,7 @@ import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.MetricConversion
-import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment.Companion.newInstance
+import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment.Companion.newInstance
 import com.BlizzardArmory.warcraft.media.Media
 import com.dementh.lib.battlenet_oauth2.BnConstants
 import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper

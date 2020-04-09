@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_warcraft
+package com.BlizzardArmory.ui.ui_warcraft.navigation
 
 import android.os.Bundle
 import android.view.LayoutInflater
