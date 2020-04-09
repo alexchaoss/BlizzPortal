@@ -22,6 +22,7 @@ import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.ClassEvent
+import com.BlizzardArmory.ui.ui_warcraft.RetryEvent
 import com.BlizzardArmory.ui.ui_warcraft.WoWNavFragment
 import com.BlizzardArmory.warcraft.reputations.characterreputations.RepByExpansion
 import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation
@@ -37,6 +38,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
@@ -96,7 +98,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
         gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
+        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(region)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
         networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         search_view.queryHint = "Search reputations.."
@@ -109,70 +111,18 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
             repsByExpac.add(arrayListOf())
         }
 
+        downloadReputations()
+    }
+
+    private fun downloadReputations() {
         val call: Call<Reputation> = networkServices.getReputations(character!!.toLowerCase(Locale.ROOT),
                 realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Reputation> {
-            override fun onResponse(call: Call<Reputation>, response: retrofit2.Response<Reputation>) {
+            override fun onResponse(call: Call<Reputation>, response: Response<Reputation>) {
                 val reputation = response.body()
-
                 if (reputation != null) {
-                    for (reps in reputation.reputations) {
-                        for (enumRep in RepByExpansion.values()) {
-                            if (reps.faction.id == enumRep.id) {
-                                when (enumRep.xpac) {
-                                    "Classic" -> repsByExpac[8].add(reps)
-                                    "Burning Crusade" -> repsByExpac[7].add(reps)
-                                    "Wrath of the Lich King" -> repsByExpac[6].add(reps)
-                                    "Cataclysm" -> repsByExpac[5].add(reps)
-                                    "Mists of Pandaria" -> repsByExpac[4].add(reps)
-                                    "Warlords of Draenor" -> repsByExpac[3].add(reps)
-                                    "Legion" -> repsByExpac[2].add(reps)
-                                    "Battle for Azeroth" -> repsByExpac[1].add(reps)
-                                    "Shadowlands" -> repsByExpac[0].add(reps)
-                                }
-                            }
-                        }
-                    }
-
-                    for (reputations in repsByExpac) {
-                        if (reputations.size > 0) {
-                            reputations.sortBy { RepByExpansion.getFaction(it.faction.name) }
-                            val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                            val button = TextView(context)
-                            button.setBackgroundResource(R.drawable.progress_collapse_header)
-                            button.setTextColor(Color.WHITE)
-                            button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
-                            button.textSize = 18F
-                            button.layoutParams = paramsButton
-                            rep_container.addView(button)
-
-                            var expand = false
-                            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                            val recyclerView = context?.let { RecyclerView(it) }
-                            recyclerView?.layoutParams = paramsRecyclerView
-                            rep_container.addView(recyclerView)
-
-                            recyclerView?.apply {
-                                layoutManager = LinearLayoutManager(activity)
-                                adapter = ReputationsAdapter(reputations, context)
-                                adapter?.let { adapterList.add(it as ReputationsAdapter) }
-                            }
-                            recyclerView?.visibility = View.GONE
-
-                            button.setOnClickListener {
-                                if (!expand) {
-                                    expand = true
-                                    recyclerView?.visibility = View.VISIBLE
-                                    button.text = "- " + getExpansion(repsByExpac.indexOf(reputations))
-                                } else {
-                                    expand = false
-                                    recyclerView?.visibility = View.GONE
-                                    button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
-                                }
-                            }
-
-                        }
-                    }
+                    sortRepsByExpansions(reputation)
+                    createRecyclerViews()
                 } else {
                     showOutdatedTextView()
                 }
@@ -183,6 +133,68 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
 
             }
         })
+    }
+
+    private fun sortRepsByExpansions(reputation: Reputation) {
+        for (reps in reputation.reputations) {
+            for (enumRep in RepByExpansion.values()) {
+                if (reps.faction.id == enumRep.id) {
+                    when (enumRep.xpac) {
+                        "Classic" -> repsByExpac[8].add(reps)
+                        "Burning Crusade" -> repsByExpac[7].add(reps)
+                        "Wrath of the Lich King" -> repsByExpac[6].add(reps)
+                        "Cataclysm" -> repsByExpac[5].add(reps)
+                        "Mists of Pandaria" -> repsByExpac[4].add(reps)
+                        "Warlords of Draenor" -> repsByExpac[3].add(reps)
+                        "Legion" -> repsByExpac[2].add(reps)
+                        "Battle for Azeroth" -> repsByExpac[1].add(reps)
+                        "Shadowlands" -> repsByExpac[0].add(reps)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createRecyclerViews() {
+        for (reputations in repsByExpac) {
+            if (reputations.size > 0) {
+                reputations.sortBy { RepByExpansion.getFaction(it.faction.name) }
+                val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                val button = TextView(context)
+                button.setBackgroundResource(R.drawable.progress_collapse_header)
+                button.setTextColor(Color.WHITE)
+                button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
+                button.textSize = 18F
+                button.layoutParams = paramsButton
+                rep_container.addView(button)
+
+                var expand = false
+                val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                val recyclerView = context?.let { RecyclerView(it) }
+                recyclerView?.layoutParams = paramsRecyclerView
+                rep_container.addView(recyclerView)
+
+                recyclerView?.apply {
+                    layoutManager = LinearLayoutManager(activity)
+                    adapter = ReputationsAdapter(reputations, context)
+                    adapter?.let { adapterList.add(it as ReputationsAdapter) }
+                }
+                recyclerView?.visibility = View.GONE
+
+                button.setOnClickListener {
+                    if (!expand) {
+                        expand = true
+                        recyclerView?.visibility = View.VISIBLE
+                        button.text = "- " + getExpansion(repsByExpac.indexOf(reputations))
+                    } else {
+                        expand = false
+                        recyclerView?.visibility = View.GONE
+                        button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
+                    }
+                }
+
+            }
+        }
     }
 
     private fun showOutdatedTextView() {
@@ -221,6 +233,13 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
                         putString(REGION, region)
                     }
                 }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun retryEventReceived(retryEvent: RetryEvent) {
+        if (retryEvent.data) {
+            downloadReputations()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

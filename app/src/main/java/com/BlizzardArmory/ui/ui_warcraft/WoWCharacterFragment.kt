@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.Html
@@ -16,7 +15,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
@@ -50,7 +48,6 @@ import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 class WoWCharacterFragment : Fragment(), IOnBackPressed {
     private var characterRealm: String? = null
@@ -108,7 +105,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         nameView = TextView(view.context)
         linearLayoutItemStats.addView(nameView)
         linearLayoutItemStats.addView(statsView)
-        loading_circle?.visibility = View.VISIBLE
         no_talent?.visibility = View.INVISIBLE
 
         activateCloseButton()
@@ -147,6 +143,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadInfo() {
+        dialog = null
+        loading_circle?.visibility = View.VISIBLE
         downloadBackground()
         downloadAndSetCharacterInformation()
         downloadStats()
@@ -191,7 +189,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         call.enqueue(object : Callback<Statistic> {
             override fun onResponse(call: Call<Statistic>, response: retrofit2.Response<Statistic>) {
                 when {
-                    response.code() in 201..1000 -> {
+                    response.code() in 201..Int.MAX_VALUE -> {
                         callErrorAlertDialog(response.code())
                     }
                     else -> {
@@ -214,7 +212,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         call.enqueue(object : Callback<CharacterSummary> {
             override fun onResponse(call: Call<CharacterSummary>, response: retrofit2.Response<CharacterSummary>) {
                 when {
-                    response.code() in 201..1000 -> {
+                    response.code() in 201..Int.MAX_VALUE -> {
                         callErrorAlertDialog(response.code())
                     }
                     else -> {
@@ -244,33 +242,14 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         call2.enqueue(object : Callback<Equipment> {
             override fun onResponse(call: Call<Equipment>, response: retrofit2.Response<Equipment>) {
                 when {
-                    response.code() in 400..1000 -> {
+                    response.code() in 400..Int.MAX_VALUE -> {
                         callErrorAlertDialog(response.code())
                     }
                     else -> {
                         equipment = response.body()!!
                         for (i in equipment.equippedItems.indices) {
-                            try {
-                                downloadIcons(equipment, i, equipment.equippedItems[i].slot.type)
-                            } catch (e: Exception) {
-                                break
-                            }
+                            downloadIcons(equipment, i, equipment.equippedItems[i].slot.type)
                             setCharacterItemsInformation(i)
-                        }
-                        for (slot in gearImageView.keys) {
-                            var slotEquipped = false
-                            for (i in equipment.equippedItems.indices) {
-                                if (slot == equipment.equippedItems[i].slot.type) {
-                                    slotEquipped = true
-                                }
-                            }
-                            if (!slotEquipped) {
-                                try {
-                                    getEmptySlotIcon(slot)
-                                } catch (e: Exception) {
-                                    Log.e("Drawable", "Avoided crash")
-                                }
-                            }
                         }
                     }
                 }
@@ -315,7 +294,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         call.enqueue(object : Callback<com.BlizzardArmory.warcraft.equipment.media.Media> {
             override fun onResponse(call: Call<com.BlizzardArmory.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.warcraft.equipment.media.Media>) {
                 when {
-                    response.code() in 201..1000 -> {
+                    response.code() in 201..Int.MAX_VALUE -> {
                         if (index == equipment?.equippedItems!!.size - 1) {
                             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                             loading_circle?.visibility = View.GONE
@@ -349,13 +328,13 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
             override fun onFailure(call: Call<com.BlizzardArmory.warcraft.equipment.media.Media>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
+                val errorIcon = resources.getDrawable(R.drawable.error_icon, requireContext().theme)
+                setIcons(itemSlot, equipment, errorIcon)
                 if (index == equipment?.equippedItems!!.size - 1) {
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     loading_circle?.visibility = View.GONE
                     URLConstants.loading = false
                 }
-                val errorIcon = resources.getDrawable(R.drawable.error_icon, requireContext().theme)
-                setIcons(itemSlot, equipment, errorIcon)
             }
         })
     }
@@ -364,8 +343,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         if (item != null) {
             gearImageView[itemSlot]?.setImageDrawable(item)
         }
-        var layerDrawable: LayerDrawable
-        gearImageView[itemSlot]?.setPadding(3, 3, 3, 3)
         gearImageView[itemSlot]?.clipToOutline = true
         var backgroundStroke: Drawable? = null
         for (i in equipment?.equippedItems?.indices!!) {
@@ -387,33 +364,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             }
         }
         gearImageView[itemSlot]?.background = backgroundStroke
-    }
-
-    private fun getEmptySlotIcon(itemSlot: String) {
-        Objects.requireNonNull(gearImageView[itemSlot])?.setPadding(3, 3, 3, 3)
-        Objects.requireNonNull(gearImageView[itemSlot])?.clipToOutline = true
-        val backgroundStroke = GradientDrawable()
-        backgroundStroke.cornerRadius = 3f
-        backgroundStroke.setColor(Color.parseColor("#000000"))
-        backgroundStroke.setStroke(3, Color.GRAY)
-        Objects.requireNonNull(gearImageView[itemSlot])?.background = backgroundStroke
-        when (itemSlot) {
-            "HEAD" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_head))
-            "NECK" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_neck))
-            "SHOULDER" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_shoulders))
-            "CHEST", "BACK" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_chest))
-            "SHIRT" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_shirt))
-            "TABARD" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_tabard))
-            "WRIST" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_wrist))
-            "HANDS" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_hands))
-            "WAIST" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_waist))
-            "LEGS" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_legs))
-            "FEET" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_feet))
-            "FINGER_1", "FINGER_2" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_ring))
-            "TRINKET_1", "TRINKET_2" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_trinket))
-            "MAIN_HAND" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_main_hand))
-            "OFF_HAND" -> Objects.requireNonNull(gearImageView[itemSlot])?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.empty_shield))
-        }
     }
 
     private fun itemColor(equippedItem: EquippedItem, drawable: GradientDrawable): Drawable {
@@ -917,6 +867,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         loading_circle?.visibility = View.GONE
         URLConstants.loading = false
         if (dialog == null) {
+            Log.i("SHOULD BE VISIBLE", "ERROR MESSAGE")
             val builder = AlertDialog.Builder(requireContext(), R.style.DialogTransparent)
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             layoutParams.setMargins(0, 20, 0, 0)
@@ -937,7 +888,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             button.width = 200
             button.layoutParams = layoutParams
             button.background = requireContext().getDrawable(R.drawable.buttonstyle)
-            val btn2 = AtomicBoolean(false)
             val button2 = Button(context)
             button2.textSize = 18f
             button2.setTextColor(Color.WHITE)
@@ -981,26 +931,15 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             layoutParams.setMargins(20, 20, 20, 20)
             dialog?.addContentView(linearLayout, layoutParamsWindow)
             dialog?.setOnCancelListener {
-                if (btn2.get()) {
-                    Log.i("TEST", "got here")
-                    (context as WoWActivity?)?.onBackPressed()
-                } else {
-                    if (responseCode == 0) {
-                        dialog?.hide()
-                        val fragment = requireActivity().supportFragmentManager.findFragmentByTag("NAV_FRAGMENT")
-                        val ft = requireActivity().supportFragmentManager.beginTransaction()
-                        ft.detach(fragment!!)
-                        ft.attach(fragment)
-                        ft.commit()
-                    } else {
-                        Log.i("TEST", "got here")
-                        (context as WoWActivity?)?.onBackPressed()
-                    }
-                }
+                (context as WoWActivity?)?.onBackPressed()
             }
-            button.setOnClickListener { dialog?.cancel() }
+            button.setOnClickListener {
+                Log.i("RETRY", "CLICKED")
+                dialog?.hide()
+                downloadInfo()
+                EventBus.getDefault().post(RetryEvent(true))
+            }
             button2.setOnClickListener {
-                btn2.set(true)
                 dialog?.cancel()
             }
         }

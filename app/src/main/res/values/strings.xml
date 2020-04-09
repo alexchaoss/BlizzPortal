@@ -1,96 +1,96 @@
 <resources>
     <string name="app_name">Blizzard Games Profiles</string>
-    <string name="battle_tag">Battle tag</string>
+    <string name="battle_tag" translatable="false">Battle tag</string>
     <string name="select_region">Select Region</string>
     <string name="login">Login</string>
-    <string name="battlenetlogo">battlenetLogo</string>
-    <string name="d3_icon">d3_icon</string>
-    <string name="wow_icon">wow_icon</string>
-    <string name="sc2_icon">sc2_icon</string>
-    <string name="ow_icon">ow_icon</string>
-    <string name="bnetlogo">bnetLogo</string>
-    <string name="blizzard_profiles">Blizzard Profiles</string>
-    <string name="title">TextView</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="battlenetlogo" translatable="false">battlenetLogo</string>
+    <string name="d3_icon" translatable="false">d3_icon</string>
+    <string name="wow_icon" translatable="false">wow_icon</string>
+    <string name="sc2_icon" translatable="false">sc2_icon</string>
+    <string name="ow_icon" translatable="false">ow_icon</string>
+    <string name="bnetlogo" translatable="false">bnetLogo</string>
+    <string name="blizzard_profiles" translatable="false">Blizzard Profiles</string>
+    <string name="title" translatable="false">TextView</string>
+    <string name="title_activity_main2" translatable="false">Main2Activity</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="action_settings" translatable="false">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
-    <string name="btag">Battle Tag</string>
-    <string name="wow_button">wow button</string>
-    <string name="starcraft_button">starcraft button</string>
-    <string name="overwatch_button">overwatch button</string>
-    <string name="diablo_button">diablo button</string>
+    <string name="menu_home" translatable="false">Home</string>
+    <string name="menu_gallery" translatable="false">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
+    <string name="menu_tools" translatable="false">Tools</string>
+    <string name="menu_share" translatable="false">Share</string>
+    <string name="menu_send" translatable="false">Send</string>
+    <string name="btag" translatable="false">Battle Tag</string>
+    <string name="wow_button" translatable="false">wow button</string>
+    <string name="starcraft_button" translatable="false">starcraft button</string>
+    <string name="overwatch_button" translatable="false">overwatch button</string>
+    <string name="diablo_button" translatable="false">diablo button</string>
     <string name="clear_credentials">Clear Credentials</string>
     <string name="wow_characters">Characters</string>
-    <string name="itemsCharacter">item</string>
-    <string name="name">name</string>
-    <string name="background_character">TODO</string>
+    <string name="itemsCharacter" translatable="false">item</string>
+    <string name="name" translatable="false">name</string>
+    <string name="background_character" translatable="false">TODO</string>
     <string name="item_level">item level</string>
-    <string name="itemlevel">itemlvl</string>
+    <string name="itemlevel" translatable="false">itemlvl</string>
     <string name="spec">Specialization</string>
-    <string name="stats">Stats</string>
-    <string name="spec1">spec1</string>
-    <string name="spec2">spec2</string>
-    <string name="spec3">spec3</string>
+    <string name="stats" translatable="false">Stats</string>
+    <string name="spec1" translatable="false">spec1</string>
+    <string name="spec2" translatable="false">spec2</string>
+    <string name="spec3" translatable="false">spec3</string>
 
     <string name="talent_information_not_available">Talent information unavailable</string>
     <string name="career">Career</string>
-    <string name="paragon">Paragon</string>
-    <string name="lifetime_kills">Lifetime Kills</string>
-    <string name="elite_kills">Elite Kills</string>
-    <string name="image_act3">image act3</string>
-    <string name="image_act1">image act1</string>
-    <string name="image_act2">image act2</string>
-    <string name="image_act4">image act4</string>
-    <string name="image_act5">image act5</string>
-    <string name="shoulders">shoulders</string>
-    <string name="chest">chest</string>
-    <string name="off_hand">off_hand</string>
-    <string name="boots">boots</string>
-    <string name="bracers">bracers</string>
-    <string name="legs">legs</string>
-    <string name="ring2">ring2</string>
-    <string name="belt">belt</string>
-    <string name="amulet">amulet</string>
-    <string name="main_hand">main_hand</string>
-    <string name="ring1">ring1</string>
-    <string name="head">head</string>
-    <string name="gloves">gloves</string>
-    <string name="class_level">class_level</string>
+    <string name="paragon" translatable="false">Paragon</string>
+    <string name="lifetime_kills" translatable="false">Lifetime Kills</string>
+    <string name="elite_kills" translatable="false">Elite Kills</string>
+    <string name="image_act3" translatable="false">image act3</string>
+    <string name="image_act1" translatable="false">image act1</string>
+    <string name="image_act2" translatable="false">image act2</string>
+    <string name="image_act4" translatable="false">image act4</string>
+    <string name="image_act5" translatable="false">image act5</string>
+    <string name="shoulders" translatable="false">shoulders</string>
+    <string name="chest" translatable="false">chest</string>
+    <string name="off_hand" translatable="false">off_hand</string>
+    <string name="boots" translatable="false">boots</string>
+    <string name="bracers" translatable="false">bracers</string>
+    <string name="legs" translatable="false">legs</string>
+    <string name="ring2" translatable="false">ring2</string>
+    <string name="belt" translatable="false">belt</string>
+    <string name="amulet" translatable="false">amulet</string>
+    <string name="main_hand" translatable="false">main_hand</string>
+    <string name="ring1" translatable="false">ring1</string>
+    <string name="head" translatable="false">head</string>
+    <string name="gloves" translatable="false">gloves</string>
+    <string name="class_level" translatable="false">class_level</string>
     <string name="character_outdated">Information outdated, please login on this character to update the information</string>
-    <string name="close_button">close button</string>
-    <string name="item_icon">item_icon</string>
-    <string name="weapon_effect">Weapon Effect</string>
-    <string name="loading">loading</string>
-    <string name="gear">Gear</string>
-    <string name="skills">Skills</string>
-    <string name="kanai_s_cube">Kanai\'s Cube</string>
-    <string name="paperdoll">paperdoll</string>
-    <string name="cube">Cube</string>
-    <string name="skill_icon">skill_icon</string>
-    <string name="passive_icon">passive_icon</string>
-    <string name="chat_gem_statue">Chat gem statue</string>
-    <string name="sword_for_cube">sword for cube</string>
-    <string name="armor_for_cube">armor for cube</string>
-    <string name="ring_for_cube">ring for cube</string>
-    <string name="tooltip_rune">tooltip rune</string>
+    <string name="close_button" translatable="false">close button</string>
+    <string name="item_icon" translatable="false">item_icon</string>
+    <string name="weapon_effect" translatable="false">Weapon Effect</string>
+    <string name="loading" translatable="false">loading</string>
+    <string name="gear" translatable="false">Gear</string>
+    <string name="skills" translatable="false">Skills</string>
+    <string name="kanai_s_cube" translatable="false">Kanai\'s Cube</string>
+    <string name="paperdoll" translatable="false">paperdoll</string>
+    <string name="cube" translatable="false">Cube</string>
+    <string name="skill_icon" translatable="false">skill_icon</string>
+    <string name="passive_icon" translatable="false">passive_icon</string>
+    <string name="chat_gem_statue" translatable="false">Chat gem statue</string>
+    <string name="sword_for_cube" translatable="false">sword for cube</string>
+    <string name="armor_for_cube" translatable="false">armor for cube</string>
+    <string name="ring_for_cube" translatable="false">ring for cube</string>
+    <string name="tooltip_rune" translatable="false">tooltip rune</string>
     <string name="strength">Strength:</string>
     <string name="dexterity">Dexterity:</string>
     <string name="intelligence">Intelligence:</string>
     <string name="vitality">Vitality:</string>
-    <string name="snapshot">SNAPSHOT</string>
+    <string name="snapshot" translatable="false">SNAPSHOT</string>
     <string name="statistics">statistics</string>
-    <string name="_1v1">1v1</string>
+    <string name="_1v1" translatable="false">1v1</string>
     <string name="team">Team</string>
     <string name="total_career_games">Total Career Games</string>
     <string name="games_played_this_season">Games Played This Season</string>
@@ -98,61 +98,61 @@
     <string name="zerg_wins">Zerg Wins</string>
     <string name="terran_wins">Terran Wins</string>
     <string name="not_yet_ranked">- Not Yet Ranked</string>
-    <string name="_4v4">4v4</string>
-    <string name="_3v3">3v3</string>
-    <string name="_2v2">2v2</string>
-    <string name="archon">Archon</string>
-    <string name="race_levels">race levels</string>
-    <string name="zerg">Zerg</string>
-    <string name="protoss">Protoss</string>
-    <string name="terran">Terran</string>
+    <string name="_4v4" translatable="false">4v4</string>
+    <string name="_3v3" translatable="false">3v3</string>
+    <string name="_2v2" translatable="false">2v2</string>
+    <string name="archon" translatable="false">Archon</string>
+    <string name="race_levels" translatable="false">race levels</string>
+    <string name="zerg" translatable="false">Zerg</string>
+    <string name="protoss" translatable="false">Protoss</string>
+    <string name="terran" translatable="false">Terran</string>
     <string name="campaign">campaign</string>
-    <string name="wings_of_liberty">Wings of Liberty</string>
-    <string name="legacy_of_the_void">Legacy of the Void</string>
-    <string name="heart_of_the_swarm">Heart of the Swarm</string>
+    <string name="wings_of_liberty" translatable="false">Wings of Liberty</string>
+    <string name="legacy_of_the_void" translatable="false">Legacy of the Void</string>
+    <string name="heart_of_the_swarm" translatable="false">Heart of the Swarm</string>
     <string name="campaign_not_complete">Campaign Not Complete</string>
     <string name="top_heroes">Top Heroes</string>
     <string name="time_played">Time Played</string>
     <string name="career_stats">CAREER STATS</string>
     <string name="heroes">Heroes</string>
     <string name="fallen_heroes">Fallen Heroes</string>
-    <string name="life_glove">life glove</string>
-    <string name="competitive_play">COMPETITIVE PLAY</string>
-    <string name="quick_play">QUICK PLAY</string>
+    <string name="life_glove" translatable="false">life glove</string>
+    <string name="competitive_play" translatable="false">COMPETITIVE PLAY</string>
+    <string name="quick_play" translatable="false">QUICK PLAY</string>
     <string name="best">BEST</string>
     <string name="assist">ASSISTS</string>
     <string name="game">GAME</string>
     <string name="average">AVERAGE</string>
     <string name="match_awards">MATCH AWARDS</string>
     <string name="miscellaneous">MISCELLANEOUS</string>
-    <string name="combat">COMBAT</string>
-    <string name="settings">settings</string>
-    <string name="custom_license_title">Licenses</string>
-    <string name="licenses">Licenses</string>
+    <string name="combat" translatable="false">COMBAT</string>
+    <string name="settings" translatable="false">settings</string>
+    <string name="custom_license_title" translatable="false">Licenses</string>
+    <string name="licenses" translatable="false">Licenses</string>
     <string name="settingsTitle">Settings</string>
-    <string name="information">Information</string>
+    <string name="information" translatable="false">Information</string>
     <string name="want_to_donate">Want to donate?</string>
-    <string name="paypal">Paypal</string>
+    <string name="paypal" translatable="false">Paypal</string>
     <string name="achievements">Achievements</string>
     <string name="character">Character</string>
     <string name="progress">Progress</string>
-    <string name="pvp">PvP</string>
+    <string name="pvp" translatable="false">PvP</string>
     <string name="achievs">Achievs</string>
-    <string name="banner">banner</string>
-    <string name="lfr">LFR</string>
-    <string name="normal">NORMAL</string>
-    <string name="heroic">HEROIC</string>
-    <string name="mythic">MYTHIC</string>
-    <string name="raid_name">raid name</string>
+    <string name="banner" translatable="false">banner</string>
+    <string name="lfr" translatable="false">LFR</string>
+    <string name="normal" translatable="false">NORMAL</string>
+    <string name="heroic" translatable="false">HEROIC</string>
+    <string name="mythic" translatable="false">MYTHIC</string>
+    <string name="raid_name" translatable="false">raid name</string>
     <string name="level">level</string>
-    <string name="background">background</string>
+    <string name="background" translatable="false">background</string>
     <string name="honor">Honor</string>
-    <string name="arena">ARENA</string>
-    <string name="battlegrounds">BATTLEGROUNDS</string>
-    <string name="_10v10">10v10</string>
+    <string name="arena" translatable="false">ARENA</string>
+    <string name="battlegrounds" translatable="false">BATTLEGROUNDS</string>
+    <string name="_10v10" translatable="false">10v10</string>
     <string name="reputation">Reputation</string>
-    <string name="action_search">action_search</string>
+    <string name="action_search" translatable="false">action_search</string>
     <string name="rate_my_app">Rate my app!</string>
-    <string name="rate_it">Rate it!</string>
+    <string name="rate_it">Here!</string>
     <string name="select_a_language">Select a language</string>
 </resources>

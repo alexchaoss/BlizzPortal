@@ -31,7 +31,7 @@ public class OWPlatformChoiceDialog {
     /**
      * The My profile chosen.
      */
-    static public boolean myProfileChosen = false;
+    static public boolean myProfileChosen;
 
     private static final String OK = "OK";
     private static final String PLATFORM_CHOICE = "Choose your platform";
@@ -62,6 +62,7 @@ public class OWPlatformChoiceDialog {
      * @param bnOAuth2Params the bn o auth 2 params
      */
     public static void overwatchPrompt(Activity activity, BnOAuth2Params bnOAuth2Params) {
+        myProfileChosen = false;
         AlertDialog.Builder builderOW = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;

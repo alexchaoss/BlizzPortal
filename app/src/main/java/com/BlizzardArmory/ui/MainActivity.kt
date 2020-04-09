@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        locale = if (sharedPreferences?.contains("locale")!!) {
+        locale = if (!sharedPreferences?.contains("locale")!!) {
             sharedPreferences?.edit()?.putString("locale", "en_US")?.apply()
             "en_US"
         } else {
@@ -143,17 +143,12 @@ class MainActivity : AppCompatActivity() {
             "Spanish" -> locale = "es_ES"
             "French" -> locale = "fr_FR"
             "Russian" -> locale = "ru_RU"
-            "Dutch" -> locale = "de_DE"
-            "Portuguese" -> locale = "pt_PT"
+            "German" -> locale = "de_DE"
+            "Portuguese" -> locale = "pt_BR"
             "Italian" -> locale = "it_IT"
             "Korean" -> locale = "ko_KR"
             "Chinese" -> locale = "zh_CN"
             "Taiwanese" -> locale = "zh_TW"
-            else -> {
-                if (sharedPreferences!!.contains("locale")) {
-                    locale = sharedPreferences?.getString("locale", "en_US")!!
-                }
-            }
         }
         sharedPreferences!!.edit().putString("locale", locale).apply()
     }
@@ -222,7 +217,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isNetworkAvailable(): Boolean {
+    public fun isNetworkAvailable(): Boolean {
         val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
