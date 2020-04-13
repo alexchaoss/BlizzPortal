@@ -16,9 +16,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
@@ -28,17 +31,10 @@ import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.WoWCharacterSearchDialog
 import com.BlizzardArmory.warcraft.account.Account
 import com.BlizzardArmory.warcraft.account.Character
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_activity.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class WoWActivity : AppCompatActivity() {
@@ -48,26 +44,19 @@ class WoWActivity : AppCompatActivity() {
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private val charactersByRealm = arrayListOf<List<Character>>()
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.wow_activity)
         btag_header.text = GamesActivity.userInformation.battleTag
 
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
-
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loadingCircle.visibility = View.VISIBLE
         URLConstants.loading = true
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        bnOAuth2Params = Objects.requireNonNull(intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        bnOAuth2Params = intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
+        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
         downloadWoWCharacters()
 
         //Button calls
@@ -84,7 +73,7 @@ class WoWActivity : AppCompatActivity() {
     }
 
     private fun downloadWoWCharacters() {
-        val call: Call<Account> = networkServices.getAccount("profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<Account> = RetroClient.getClient.getAccount(MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 when {

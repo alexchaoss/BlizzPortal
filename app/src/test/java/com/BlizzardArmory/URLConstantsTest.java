@@ -1,5 +1,6 @@
 package com.BlizzardArmory;
 
+import com.BlizzardArmory.connection.URLConstants;
 import com.BlizzardArmory.ui.MainActivity;
 
 import junit.framework.TestCase;

@@ -22,10 +22,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.BlizzardArmory.R;
+import com.BlizzardArmory.connection.oauth.BnConstants;
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params;
 import com.BlizzardArmory.ui.GamesActivity;
 import com.BlizzardArmory.ui.MetricConversion;
-import com.dementh.lib.battlenet_oauth2.BnConstants;
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params;
 
 import java.util.Objects;
 

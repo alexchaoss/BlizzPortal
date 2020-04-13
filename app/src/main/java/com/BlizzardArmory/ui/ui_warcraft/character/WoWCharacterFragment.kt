@@ -18,9 +18,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
@@ -36,20 +39,14 @@ import com.BlizzardArmory.warcraft.media.Media
 import com.BlizzardArmory.warcraft.statistic.Statistic
 import com.BlizzardArmory.warcraft.talents.Talent
 import com.BlizzardArmory.warcraft.talents.Talents
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wow_character_fragment.*
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class WoWCharacterFragment : Fragment(), IOnBackPressed {
@@ -57,10 +54,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     private var characterClicked: String? = null
     private var region: String? = null
     private var dialog: AlertDialog? = null
-
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
 
     //Character information
     private lateinit var characterSummary: CharacterSummary
@@ -94,10 +87,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             media = Gson().fromJson(bundle.getString("media"), Media::class.java)
         }
         region = bundle.getString("region")
-
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         item_scroll_view?.setPadding(10, 10, 10, 10)
         val linearLayoutItemStats = LinearLayout(view.context)
@@ -167,8 +156,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadTalents() {
-        val call: Call<Talents> = networkServices.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), "profile-" + region!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<Talents> = RetroClient.getClient.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Talents> {
             override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
                 if (response.isSuccessful) {
@@ -187,8 +176,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadStats() {
-        val call: Call<Statistic> = networkServices.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), "profile-" + region!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<Statistic> = RetroClient.getClient.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Statistic> {
             override fun onResponse(call: Call<Statistic>, response: retrofit2.Response<Statistic>) {
                 when {
@@ -210,8 +199,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadAndSetCharacterInformation() {
-        val call: Call<CharacterSummary> = networkServices.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), "profile-" + region!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<CharacterSummary> = RetroClient.getClient.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<CharacterSummary> {
             override fun onResponse(call: Call<CharacterSummary>, response: retrofit2.Response<CharacterSummary>) {
                 when {
@@ -240,8 +229,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadEquipment() {
-        val call2: Call<Equipment> = networkServices.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), "profile-" + region!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call2: Call<Equipment> = RetroClient.getClient.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call2.enqueue(object : Callback<Equipment> {
             override fun onResponse(call: Call<Equipment>, response: retrofit2.Response<Equipment>) {
                 when {
@@ -269,8 +258,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         if (media != null) {
             Picasso.get().load(media?.renderUrl).into(background)
         } else {
-            val call: Call<Media> = networkServices.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
-                    characterRealm!!.toLowerCase(Locale.ROOT), "profile-" + region!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+            val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
+                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
             call.enqueue(object : Callback<Media> {
                 override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                     if (response.isSuccessful) {
@@ -293,7 +282,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             url = url.replace(("static-[0-9].[0-9].[0-9]_[0-9]*-" + region?.toLowerCase(Locale.ROOT)?.toRegex()).toRegex(), "static-" + region?.toLowerCase(Locale.ROOT))
             Log.i("IMAGE", url)
         }
-        val call: Call<com.BlizzardArmory.warcraft.equipment.media.Media> = networkServices.getDynamicEquipmentMedia(url, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<com.BlizzardArmory.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<com.BlizzardArmory.warcraft.equipment.media.Media> {
             override fun onResponse(call: Call<com.BlizzardArmory.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.warcraft.equipment.media.Media>) {
                 when {

@@ -19,9 +19,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.diablo.character.Active
 import com.BlizzardArmory.diablo.character.CharacterInformation
 import com.BlizzardArmory.diablo.character.Skill
@@ -30,19 +33,12 @@ import com.BlizzardArmory.diablo.items.Item
 import com.BlizzardArmory.diablo.items.Items
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_character_fragment.*
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -50,11 +46,8 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
-class D3CharacterFragment : Fragment(), IOnBackPressed {
+class CharacterStatsPage : Fragment(), IOnBackPressed {
     private var bnOAuth2Helper: BnOAuth2Helper? = null
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
 
     private var characterInformation: CharacterInformation? = null
     private var itemsInformation: Items? = null
@@ -101,10 +94,6 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
         id = bundle.getLong("id")
         battletag = bundle.getString("battletag")!!
         selectedRegion = bundle.getString("region")!!
-
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(selectedRegion.toLowerCase(Locale.ROOT))).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         dialog = null
         closeButton = ImageButton(view.context)
@@ -155,7 +144,7 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
         loading_circle.visibility = View.VISIBLE
         val startTime = System.nanoTime()
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val bnOAuth2Params: BnOAuth2Params = Objects.requireNonNull(requireActivity().intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
+        val bnOAuth2Params: BnOAuth2Params = requireActivity().intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
         setAllTabs()
         val endTime = System.nanoTime()
@@ -174,7 +163,7 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
 
     @Throws(IOException::class)
     private fun setItemInformation() {
-        val call: Call<Items> = networkServices.getHeroItems(battletag, id, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<Items> = RetroClient.getClient.getHeroItems(battletag, id, MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<Items> {
             override fun onResponse(call: Call<Items>, response: retrofit2.Response<Items>) {
                 when {
@@ -202,7 +191,7 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
     }
 
     private fun setCharacterInformation() {
-        val call: Call<CharacterInformation> = networkServices.getD3Hero(battletag, id, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<CharacterInformation> = RetroClient.getClient.getD3Hero(battletag, id, MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<CharacterInformation> {
             override fun onResponse(call: Call<CharacterInformation>, response: retrofit2.Response<CharacterInformation>) {
                 when {
@@ -484,7 +473,7 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
 
     private fun downloadCubeItems() {
         for (i in characterInformation!!.legendaryPowers.indices) {
-            val call: Call<SingleItem> = networkServices.getItem(characterInformation!!.legendaryPowers[i].tooltipParams, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+            val call: Call<SingleItem> = RetroClient.getClient.getItem(characterInformation!!.legendaryPowers[i].tooltipParams, MainActivity.locale, bnOAuth2Helper!!.accessToken)
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
                     when {
@@ -1105,16 +1094,16 @@ class D3CharacterFragment : Fragment(), IOnBackPressed {
             dialog?.addContentView(linearLayout, layoutParamsWindow)
             dialog?.setOnCancelListener {
                 if (btn2.get()) {
-                    parentFragmentManager.beginTransaction().remove(this@D3CharacterFragment).commit()
+                    parentFragmentManager.beginTransaction().remove(this@CharacterStatsPage).commit()
                 } else {
                     if (responseCode == 0) {
-                        val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as D3CharacterFragment?
+                        val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as CharacterStatsPage?
                         parentFragmentManager.beginTransaction()
                                 .detach(Objects.requireNonNull(fragment)!!)
                                 .attach(fragment!!)
                                 .commit()
                     } else {
-                        parentFragmentManager.beginTransaction().remove(this@D3CharacterFragment).commit()
+                        parentFragmentManager.beginTransaction().remove(this@CharacterStatsPage).commit()
                     }
                 }
             }

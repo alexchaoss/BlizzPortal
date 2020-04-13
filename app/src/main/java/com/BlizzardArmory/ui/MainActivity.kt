@@ -18,15 +18,14 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.activities.BnOAuthAccessTokenActivity
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -34,16 +33,18 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private var bnOAuth2Params: BnOAuth2Params? = null
-    private var clientID: String? = ""
-    private var clientSecret: String? = ""
+    private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
     private val regionList = arrayOf("Select Region", "CN", "US", "EU", "KR", "TW")
     private val languageList = arrayOf("Select Language", "English", "Spanish", "Portuguese", "French", "Russian", "German", "Italian", "Korean", "Chinese", "Taiwanese")
     private lateinit var selectedLanguage: String
     private var sharedPreferences: SharedPreferences? = null
+    private val REQUEST_CODE_IN_APP_UPDATE = 7500
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        checkForAppUpdates()
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         locale = if (!sharedPreferences?.contains("locale")!!) {
@@ -81,12 +82,26 @@ class MainActivity : AppCompatActivity() {
 
 
         donation.setOnClickListener {
-            webview?.loadUrl(URLConstants.paypalURL)
+            webview?.loadUrl(URLConstants.PAYPAL_URL)
         }
 
         openLoginToBattlenet()
 
         clear_credentials.setOnClickListener { showNoConnectionMessage(this@MainActivity, 100) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkForAppUpdates()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_IN_APP_UPDATE) {
+            if (resultCode != RESULT_OK) {
+                checkForAppUpdates()
+            }
+        }
     }
 
     private fun setAdapater(list: Array<String>): ArrayAdapter<String> {
@@ -159,22 +174,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT).show()
             } else {
                 if (isNetworkAvailable()) {
-                    val serverDatabase = FirebaseDatabase.getInstance().reference
-                    val serverRef = serverDatabase.child("servers")
-                    serverRef.addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            clientID = dataSnapshot.child("clientID").getValue(String::class.java)
-                            clientSecret = dataSnapshot.child("clientSecret").getValue(String::class.java)
-                            bnOAuth2Params = BnOAuth2Params(clientID, clientSecret, selectedRegion.toLowerCase(Locale.ROOT),
-                                    URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2)
-                            startOauthFlow(bnOAuth2Params!!)
-                        }
-
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            Log.e("SERVER DATA", databaseError.message)
-                            showNoConnectionMessage(this@MainActivity, 0)
-                        }
-                    })
+                    bnOAuth2Params = BnOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
+                            URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2)
+                    startOauthFlow(bnOAuth2Params!!)
                 } else {
                     showNoConnectionMessage(this@MainActivity, 0)
                 }
@@ -197,7 +199,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startOauthFlow(bnOAuth2Params: BnOAuth2Params) {
-        val intent = Intent(this, BnOAuthAccessTokenActivity::class.java)
+        val intent = Intent(this, AuthorizationTokenActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
         intent.putExtra(BnConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity::class.java)
@@ -217,10 +219,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    public fun isNetworkAvailable(): Boolean {
+    private fun isNetworkAvailable(): Boolean {
         val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    private fun checkForAppUpdates() {
+        val appUpdateManager = AppUpdateManagerFactory.create(this)
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    || appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.IMMEDIATE,
+                        this,
+                        REQUEST_CODE_IN_APP_UPDATE)
+            }
+        }
     }
 
     private fun showNoConnectionMessage(context: Context, responseCode: Int) {

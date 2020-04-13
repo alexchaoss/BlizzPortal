@@ -12,15 +12,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.events.NetworkEvent
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.warcraft.account.Character
 import com.BlizzardArmory.warcraft.media.Media
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
@@ -31,8 +31,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
@@ -45,9 +43,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
     private var characterClass: TextView? = null
     private var level: TextView? = null
     private var characterLayout: ConstraintLayout? = null
-    private var retrofit: Retrofit? = null
     private var gson: Gson? = null
-    private var networkServices: NetworkServices
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var fragmentManager: FragmentManager? = null
     private var character: Character? = null
@@ -60,8 +56,6 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         level = itemView.findViewById(R.id.level)
         characterLayout = itemView.findViewById(R.id.character_layout)
         gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
         EventBus.getDefault().register(this)
         GlobalScope.launch {
             do {
@@ -87,10 +81,9 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
 
     private fun downloadMedia() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
 
-        val call: Call<Media> = networkServices.getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug,
-                "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient.getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                 val media: Media? = response.body()
