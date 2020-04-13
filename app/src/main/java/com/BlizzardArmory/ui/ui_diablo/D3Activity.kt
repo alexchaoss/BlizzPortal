@@ -19,9 +19,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.diablo.account.AccountInformation
 import com.BlizzardArmory.diablo.account.Hero
 import com.BlizzardArmory.ui.GamesActivity
@@ -30,16 +33,9 @@ import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.d3_activity.*
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,26 +48,18 @@ class D3Activity : AppCompatActivity() {
     private var selectedRegion: String? = ""
     private var characterID: Long = 0
 
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.d3_activity)
-
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         loadingCircle.visibility = View.VISIBLE
         btag_header.text = GamesActivity.userInformation.battleTag
         battleTag = intent.extras?.getString("battletag")
         selectedRegion = intent.extras?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        bnOAuth2Params = Objects.requireNonNull(intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)
+        bnOAuth2Params = intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
         downloadAccountInformation()
 
         //Button calls
@@ -85,7 +73,7 @@ class D3Activity : AppCompatActivity() {
     }
 
     private fun downloadAccountInformation() {
-        val call: Call<AccountInformation> = networkServices.getD3Profile(battleTag, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<AccountInformation> = RetroClient.getClient.getD3Profile(battleTag, MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<AccountInformation> {
             override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
                 if (response.isSuccessful) {
@@ -442,7 +430,7 @@ class D3Activity : AppCompatActivity() {
         bundle.putString("battletag", battleTag)
         bundle.putLong("id", characterID)
         bundle.putString("region", selectedRegion)
-        val d3CharacterFragment = D3CharacterFragment()
+        val d3CharacterFragment = CharacterStatsPage()
         d3CharacterFragment.arguments = bundle
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()

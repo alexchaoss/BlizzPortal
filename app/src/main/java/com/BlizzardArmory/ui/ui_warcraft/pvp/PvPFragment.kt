@@ -13,11 +13,13 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.MainActivity.Companion.selectedRegion
 import com.BlizzardArmory.ui.ui_warcraft.events.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.events.FactionEvent
 import com.BlizzardArmory.ui.ui_warcraft.events.RetryEvent
@@ -25,19 +27,12 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.warcraft.pvp.tiers.Tier
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_pvp_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
@@ -55,9 +50,6 @@ class PvPFragment : Fragment(), IOnBackPressed {
     private var region: String? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,11 +81,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
 
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(region)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         downloadPvPSummary()
         download2v2Info()
@@ -102,13 +91,13 @@ class PvPFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadRBGInfo() {
-        val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "rbg", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<BracketStatistics> = RetroClient.getClient.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+                "rbg", MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvpRBG = response.body()
 
-                val call2: Call<Tier> = networkServices.getDynamicTier(pvpRBG?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(pvpRBG?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -131,13 +120,13 @@ class PvPFragment : Fragment(), IOnBackPressed {
     }
 
     private fun download3v3Info() {
-        val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "3v3", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<BracketStatistics> = RetroClient.getClient.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+                "3v3", MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp3v3 = response.body()
 
-                val call2: Call<Tier> = networkServices.getDynamicTier(pvp3v3?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(pvp3v3?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -160,13 +149,13 @@ class PvPFragment : Fragment(), IOnBackPressed {
     }
 
     private fun download2v2Info() {
-        val call: Call<BracketStatistics> = networkServices.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "2v2", "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<BracketStatistics> = RetroClient.getClient.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+                "2v2", MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp2v2 = response.body()
 
-                val call2: Call<Tier> = networkServices.getDynamicTier(pvp2v2?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(pvp2v2?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -190,8 +179,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
 
     private fun downloadPvPSummary() {
 
-        val call: Call<PvPSummary> = networkServices.getPvPSummary(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<PvPSummary> = RetroClient.getClient.getPvPSummary(character!!.toLowerCase(Locale.ROOT),
+                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<PvPSummary> {
             override fun onResponse(call: Call<PvPSummary>, response: retrofit2.Response<PvPSummary>) {
                 val pvpSummary = response.body()
@@ -199,11 +188,9 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     kills.text = pvpSummary.honorable_kills.toString()
                     level.text = "LEVEL " + pvpSummary.honor_level.toString()
                     setHonorRankIcon(pvpSummary)
-                    if (pvpSummary.pvp_map_statistics != null) {
-                        recyclerviewbg.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
-                        }
+                    recyclerviewbg.apply {
+                        layoutManager = LinearLayoutManager(activity)
+                        adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
                     }
                 }
             }

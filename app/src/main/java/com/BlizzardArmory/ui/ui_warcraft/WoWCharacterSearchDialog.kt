@@ -15,22 +15,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.MetricConversion
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment.Companion.newInstance
 import com.BlizzardArmory.warcraft.media.Media
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 /**
@@ -41,10 +37,6 @@ object WoWCharacterSearchDialog {
     private var characterRealm = ""
     private var media: Media? = null
     private var selectedRegion = ""
-
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
 
     private fun callCharacterFragment(activity: Activity, fragment: Fragment?) {
         if (fragment != null && fragment.isVisible) {
@@ -67,9 +59,6 @@ object WoWCharacterSearchDialog {
      * @param fragment the fragment
      */
     fun characterSearchPrompt(activity: Activity, fragment: Fragment?) {
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         val builderOW = AlertDialog.Builder(activity, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -115,7 +104,7 @@ object WoWCharacterSearchDialog {
         realmField.textSize = 16f
         realmField.backgroundTintList = colorStateList
         val dialogWoW = builderOW.create()
-        Objects.requireNonNull(dialogWoW.window).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialogWoW.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialogWoW.show()
         dialogWoW.window?.setGravity(Gravity.CENTER)
         dialogWoW.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
@@ -195,14 +184,13 @@ object WoWCharacterSearchDialog {
 
     private fun downloadMedia(activity: Activity, dialogWoW: AlertDialog, fragment: Fragment?) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        val bnOAuth2Params: BnOAuth2Params = Objects.requireNonNull(Objects.requireNonNull(activity).intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
+        val bnOAuth2Params: BnOAuth2Params = Objects.requireNonNull(activity).intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
         val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
-        val call: Call<Media> = networkServices.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT),
-                "profile-" + selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: Response<Media>) {
-                val media: Media? = response.body()
+                media = response.body()
                 dialogWoW.cancel()
                 callCharacterFragment(activity, fragment)
             }

@@ -23,9 +23,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.starcraft.Player
 import com.BlizzardArmory.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
@@ -33,17 +36,10 @@ import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.sc2_activity.*
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class SC2Activity : AppCompatActivity() {
@@ -52,17 +48,10 @@ class SC2Activity : AppCompatActivity() {
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var accountInformation = listOf<Player>()
     private var sc2Profile: Profile? = null
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sc2_activity)
-
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforAPI(MainActivity.selectedRegion)).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
 
         val summaryBG = GradientDrawable()
         summaryBG.setStroke(6, Color.parseColor("#122a42"))
@@ -101,10 +90,9 @@ class SC2Activity : AppCompatActivity() {
 
         loadingCircle.visibility = View.VISIBLE
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        bnOAuth2Params = Objects.requireNonNull(intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)
+        bnOAuth2Params = intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
-        gson = GsonBuilder().create()
+        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
         downloadAccountInformation()
 
         //Button calls
@@ -117,14 +105,14 @@ class SC2Activity : AppCompatActivity() {
     }
 
     private fun downloadAccountInformation() {
-        val call: Call<List<Player>> = networkServices.getSc2Player(GamesActivity.userInformation.userID, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation.userID, MainActivity.locale, bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<List<Player>> {
             override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
                 when {
                     response.isSuccessful -> {
                         accountInformation = response.body()!!
                         if (accountInformation.isNotEmpty()) {
-                            val call2: Call<Profile> = networkServices.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, "profile-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                            val call2: Call<Profile> = RetroClient.getClient.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, MainActivity.locale, bnOAuth2Helper!!.accessToken)
                             call2.enqueue(object : Callback<Profile> {
                                 override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
                                     when {

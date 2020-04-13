@@ -13,50 +13,38 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.R
-import com.BlizzardArmory.URLConstants
 import com.BlizzardArmory.UserInformation
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.NetworkServices
+import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.oauth.BnConstants
+import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
-import com.dementh.lib.battlenet_oauth2.BnConstants
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Helper
-import com.dementh.lib.battlenet_oauth2.connections.BnOAuth2Params
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_games.*
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class GamesActivity : AppCompatActivity() {
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
-    private var retrofit: Retrofit? = null
-    private var gson: Gson? = null
-    private lateinit var networkServices: NetworkServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_games)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        bnOAuth2Params = Objects.requireNonNull(this.intent.extras).getParcelable(BnConstants.BUNDLE_BNPARAMS)
+        bnOAuth2Params = this.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
 
-        gson = GsonBuilder().create()
-        retrofit = Retrofit.Builder().baseUrl(URLConstants.getBaseURLforUserInformation()).addConverterFactory(GsonConverterFactory.create(gson!!)).build()
-        networkServices = retrofit?.create(NetworkServices::class.java)!!
-
-        downloadUserInfo()
+        //downloadUserInfo()
     }
 
     private fun downloadUserInfo() {
-        val call: Call<UserInformation> = networkServices.getUserInfo(bnOAuth2Helper!!.accessToken)
+        val call: Call<UserInformation> = RetroClient.getClient.getUserInfo(bnOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<UserInformation> {
             override fun onResponse(call: Call<UserInformation>, response: retrofit2.Response<UserInformation>) {
                 userInformation = response.body()!!
@@ -71,9 +59,7 @@ class GamesActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<UserInformation>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
-                if (userInformation == null) {
-                    callErrorAlertDialog()
-                }
+                callErrorAlertDialog()
             }
         })
     }
