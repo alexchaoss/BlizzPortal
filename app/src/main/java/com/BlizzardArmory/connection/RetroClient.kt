@@ -1,6 +1,8 @@
 package com.BlizzardArmory.connection
 
+import com.BlizzardArmory.BlizzardArmory
 import com.google.gson.GsonBuilder
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -11,13 +13,16 @@ object RetroClient {
     val getClient: NetworkServices
         get() {
 
-            val gson = GsonBuilder()
-                    .setLenient()
-                    .create()
+            val cacheSize: Long = 30 * 1024 * 1024 // 10 MB
+            val cache = Cache(BlizzardArmory.getInstance().cacheDir, cacheSize)
+
+            val gson = GsonBuilder().create()
+
             val interceptor = HttpLoggingInterceptor()
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient
                     .Builder()
+                    .cache(cache)
                     .addInterceptor(interceptor)
                     .build()
 

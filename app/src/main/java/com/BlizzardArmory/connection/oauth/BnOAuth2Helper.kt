@@ -13,6 +13,7 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import java.io.IOException
 import java.util.*
 
+
 class BnOAuth2Helper(sharedPreferences: SharedPreferences?, oauth2Params: BnOAuth2Params) {
     private val credentialStore: CredentialStore
     private val flow: AuthorizationCodeFlow
@@ -23,9 +24,8 @@ class BnOAuth2Helper(sharedPreferences: SharedPreferences?, oauth2Params: BnOAut
     @Throws(IOException::class)
     fun retrieveAndStoreAccessToken(authorizationCode: String) {
         Log.i(BnConstants.TAG, "retrieveAndStoreAccessToken for code $authorizationCode")
-        val call = RetroClient.getClient.getAccessToken(authorizationCode, oauth2Params.zone.toLowerCase(Locale.ROOT), oauth2Params.rederictUri).execute()
-        val tokenResponse = call.body()
-        Log.i("URL", call.raw().request.url.toString())
+        val tokenResponse = RetroClient.getClient.getAccessToken(authorizationCode, oauth2Params.zone.toLowerCase(Locale.ROOT), oauth2Params.rederictUri).execute().body()
+        //val tokenResponse: TokenResponse = gson?.fromJson(call, TokenResponse::class.java)!!
         Log.i(BnConstants.TAG, "Found tokenResponse: " + tokenResponse?.accessToken)
         if (null != tokenResponse?.accessToken) {
             Log.i(BnConstants.TAG, "Access Token : " + tokenResponse.accessToken)

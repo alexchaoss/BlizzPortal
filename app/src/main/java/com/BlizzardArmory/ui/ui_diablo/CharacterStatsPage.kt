@@ -504,7 +504,7 @@ class CharacterStatsPage : Fragment(), IOnBackPressed {
     @SuppressLint("ClickableViewAccessibility")
     private fun setCubeText() {
         for (i in singleItem.indices) {
-            Objects.requireNonNull(cubeMap[singleItem[i].icon.toLowerCase(Locale.ROOT)])?.setOnTouchListener { _: View?, _: MotionEvent? ->
+            cubeMap[singleItem[i].icon.toLowerCase(Locale.ROOT)]?.setOnTouchListener { _: View?, _: MotionEvent? ->
                 for (j in singleItem[i].attributes.secondary.indices) {
                     if (singleItem[i].attributes.secondary[j].textHtml.contains("d3-color-ffff8000")) {
                         cubeText = "<big>" + singleItem[i].name + "</big><br>" + singleItem[i].attributes.secondary[j].textHtml
@@ -633,7 +633,7 @@ class CharacterStatsPage : Fragment(), IOnBackPressed {
         secondaryStatsMap[index] = secondary.toString()
         gemsMap[index] = gem.toString()
         try {
-            setOnPressItemInformation(Objects.requireNonNull(imageViewItem[items[index].slots]), index)
+            setOnPressItemInformation(imageViewItem[items[index].slots], index)
         } catch (e: Exception) {
             Log.e("Item", "empty")
         }
@@ -1081,7 +1081,7 @@ class CharacterStatsPage : Fragment(), IOnBackPressed {
                 }
             }
             dialog = builder.show()
-            Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             dialog?.window?.setLayout(800, 500)
             val linearLayout = LinearLayout(context)
             linearLayout.orientation = LinearLayout.VERTICAL
@@ -1099,8 +1099,8 @@ class CharacterStatsPage : Fragment(), IOnBackPressed {
                     if (responseCode == 0) {
                         val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as CharacterStatsPage?
                         parentFragmentManager.beginTransaction()
-                                .detach(Objects.requireNonNull(fragment)!!)
-                                .attach(fragment!!)
+                                .detach(fragment!!)
+                                .attach(fragment)
                                 .commit()
                     } else {
                         parentFragmentManager.beginTransaction().remove(this@CharacterStatsPage).commit()
