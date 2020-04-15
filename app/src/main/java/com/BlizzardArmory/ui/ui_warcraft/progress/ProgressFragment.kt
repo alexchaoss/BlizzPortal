@@ -62,7 +62,6 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
             media = it.getString(MEDIA)
             region = it.getString(REGION)
         }
-
     }
 
     override fun onStart() {
