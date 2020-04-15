@@ -451,7 +451,7 @@ class D3Activity : AppCompatActivity() {
         }
     }
 
-    private fun showNoConnectionMessage(context: Context, responseCode: Int) {
+    public fun showNoConnectionMessage(context: Context, responseCode: Int) {
         loadingCircle!!.visibility = View.GONE
         val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
