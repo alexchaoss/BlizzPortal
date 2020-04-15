@@ -20,7 +20,6 @@ import com.BlizzardArmory.diablo.character.CharacterInformation
 import com.BlizzardArmory.diablo.item.SingleItem
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_character_fragment.*
 import org.greenrobot.eventbus.EventBus
@@ -29,7 +28,7 @@ import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import java.util.*
 
-class CharacterCubePage : Fragment(), IOnBackPressed {
+class CharacterCubeFragment : Fragment(), IOnBackPressed {
 
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
@@ -37,7 +36,6 @@ class CharacterCubePage : Fragment(), IOnBackPressed {
     private val cubeMap = HashMap<String, ImageView?>()
     private val singleItem = ArrayList<SingleItem>()
     private var characterInformation: CharacterInformation? = null
-    private var gson: Gson? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +52,16 @@ class CharacterCubePage : Fragment(), IOnBackPressed {
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
         cubeIcons
         downloadCubeItems()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     private val cubeIcons: Unit
@@ -147,19 +155,9 @@ class CharacterCubePage : Fragment(), IOnBackPressed {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
-    }
-
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(characterEvent: CharacterEvent) {
-        characterInformation = gson?.fromJson(characterEvent.data, CharacterInformation::class.java)
+        characterInformation = characterEvent.data
     }
 
     override fun onBackPressed(): Boolean {

@@ -430,7 +430,7 @@ class D3Activity : AppCompatActivity() {
         bundle.putString("battletag", battleTag)
         bundle.putLong("id", characterID)
         bundle.putString("region", selectedRegion)
-        val d3CharacterFragment = CharacterStatsPage()
+        val d3CharacterFragment = CharacterStatsFragment()
         d3CharacterFragment.arguments = bundle
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
