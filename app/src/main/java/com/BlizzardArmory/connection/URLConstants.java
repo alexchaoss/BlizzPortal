@@ -66,7 +66,7 @@ public class URLConstants {
      * @return the base ur lfor user information
      */
     public static String getBaseURLforUserInformation() {
-        if (MainActivity.selectedRegion.toLowerCase().equals("cn")) {
+        if (MainActivity.selectedRegion.equalsIgnoreCase("cn")) {
             return URLConstants.BASE_URL_CN_USER_INFO;
         } else {
             return URLConstants.BASE_URL_USER_INFO.replace("zone", MainActivity.selectedRegion.toLowerCase());
@@ -112,7 +112,7 @@ public class URLConstants {
         if (platform.equalsIgnoreCase("PC")) {
             url = OW_PROFILE.replace(":battletag", username.replace("#", "-"));
             url = url.replace(":platform", "pc");
-            if (MainActivity.selectedRegion.toLowerCase().equals("cn") || MainActivity.selectedRegion.toLowerCase().equals("tw")) {
+            if (MainActivity.selectedRegion.equalsIgnoreCase("cn") || MainActivity.selectedRegion.equalsIgnoreCase("tw")) {
                 url = url.replace(":region", "asia");
             } else {
                 url = url.replace(":region", MainActivity.selectedRegion.toLowerCase());

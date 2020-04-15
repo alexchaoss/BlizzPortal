@@ -792,7 +792,8 @@ public class OWActivity extends AppCompatActivity {
                 id = R.drawable.dva_icon;
                 break;
             case "Echo":
-                id = R.drawable.error_icon;
+                id = R.drawable.echo_icon;
+                break;
             case "Doomfist":
                 id = R.drawable.doomfist_icon;
                 break;
@@ -893,7 +894,7 @@ public class OWActivity extends AppCompatActivity {
                 topCharacter.setImageResource(R.drawable.dva_portrait);
                 break;
             case "Echo":
-                topCharacter.setImageResource(0);
+                topCharacter.setImageResource(R.drawable.echo_portrait);
                 break;
             case "Doomfist":
                 topCharacter.setImageResource(R.drawable.doomfist_portrait);
