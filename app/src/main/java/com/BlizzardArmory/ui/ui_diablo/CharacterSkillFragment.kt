@@ -30,7 +30,7 @@ import com.BlizzardArmory.diablo.character.Skill
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.d3_character_fragment.*
+import kotlinx.android.synthetic.main.d3_skill_fragment.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -49,12 +49,8 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
     private val skillRuneList = ArrayList<TextView>()
     private val skillLayoutList = ArrayList<ImageView>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.d3_gear_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -238,10 +234,8 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 v.performClick()
                 Log.i("CLOSE", "CLICKED")
-                item_scroll_view!!.visibility = View.GONE
                 skill_tooltip_scroll!!.visibility = View.GONE
-                weapon_effect!!.setImageDrawable(null)
-                item_scroll_view!!.scrollTo(0, 0)
+                skill_tooltip_scroll!!.scrollTo(0, 0)
             }
             false
         }

@@ -25,13 +25,17 @@ import com.BlizzardArmory.diablo.items.Items
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.d3_character_fragment.*
+import kotlinx.android.synthetic.main.d3_gear_fragment.*
 import retrofit2.Call
 import java.io.IOException
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.roundToInt
+
+private const val BATTLETAG = "battletag"
+private const val SELECTED_REGION = "region"
+private const val ID = "id"
 
 class CharacterGearFragment : Fragment(), IOnBackPressed {
 
@@ -63,19 +67,20 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            battletag = it.getString(BATTLETAG)!!
+            selectedRegion = it.getString(SELECTED_REGION)!!
+            id = it.getLong(ID)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.d3_gear_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         URLConstants.loading = true
-        val bundle = requireArguments()
-        id = bundle.getLong("id")
-        battletag = bundle.getString("battletag")!!
-        selectedRegion = bundle.getString("region")!!
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
