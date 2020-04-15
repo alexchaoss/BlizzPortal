@@ -1024,7 +1024,7 @@ class CharacterStatsPage : Fragment(), IOnBackPressed {
         }
     }
 
-    private fun callErrorAlertDialog(responseCode: Int) {
+    fun callErrorAlertDialog(responseCode: Int) {
         val btn2 = AtomicBoolean(false)
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loading_circle!!.visibility = View.GONE
