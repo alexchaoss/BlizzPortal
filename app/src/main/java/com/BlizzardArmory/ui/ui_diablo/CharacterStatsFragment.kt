@@ -38,6 +38,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_character_fragment.*
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import java.io.IOException
 import java.text.DecimalFormat
@@ -46,7 +47,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
-class CharacterStatsPage : Fragment(), IOnBackPressed {
+class CharacterStatsFragment : Fragment(), IOnBackPressed {
     private var bnOAuth2Helper: BnOAuth2Helper? = null
 
     private var characterInformation: CharacterInformation? = null
@@ -197,6 +198,7 @@ class CharacterStatsPage : Fragment(), IOnBackPressed {
                 when {
                     response.isSuccessful -> {
                         characterInformation = response.body()
+                        EventBus.getDefault().post(CharacterEvent(characterInformation!!))
                         setGlobes()
                         setName()
                         cubeIcons
@@ -1094,16 +1096,16 @@ class CharacterStatsPage : Fragment(), IOnBackPressed {
             dialog?.addContentView(linearLayout, layoutParamsWindow)
             dialog?.setOnCancelListener {
                 if (btn2.get()) {
-                    parentFragmentManager.beginTransaction().remove(this@CharacterStatsPage).commit()
+                    parentFragmentManager.beginTransaction().remove(this@CharacterStatsFragment).commit()
                 } else {
                     if (responseCode == 0) {
-                        val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as CharacterStatsPage?
+                        val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as CharacterStatsFragment?
                         parentFragmentManager.beginTransaction()
                                 .detach(fragment!!)
                                 .attach(fragment)
                                 .commit()
                     } else {
-                        parentFragmentManager.beginTransaction().remove(this@CharacterStatsPage).commit()
+                        parentFragmentManager.beginTransaction().remove(this@CharacterStatsFragment).commit()
                     }
                 }
             }
