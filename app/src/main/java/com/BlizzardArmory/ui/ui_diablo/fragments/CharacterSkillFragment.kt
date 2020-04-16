@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo
+package com.BlizzardArmory.ui.ui_diablo.fragments
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -28,6 +28,7 @@ import com.BlizzardArmory.diablo.character.Active
 import com.BlizzardArmory.diablo.character.CharacterInformation
 import com.BlizzardArmory.diablo.character.Skill
 import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.ui.ui_diablo.CharacterEvent
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_skill_fragment.*

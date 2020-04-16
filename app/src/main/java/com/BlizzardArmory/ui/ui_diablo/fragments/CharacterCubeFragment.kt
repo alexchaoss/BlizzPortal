@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo
+package com.BlizzardArmory.ui.ui_diablo.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -21,6 +21,7 @@ import com.BlizzardArmory.diablo.character.CharacterInformation
 import com.BlizzardArmory.diablo.item.SingleItem
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.ui_diablo.CharacterEvent
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_cube_fragment.*
 import org.greenrobot.eventbus.EventBus
@@ -110,7 +111,7 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
 
     private fun downloadCubeItems() {
         for (i in characterInformation!!.legendaryPowers.indices) {
-            val call: Call<SingleItem> = RetroClient.getClient.getItem(characterInformation!!.legendaryPowers[i].tooltipParams, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+            val call: Call<SingleItem> = RetroClient.getClient.getItem(characterInformation!!.legendaryPowers[i].tooltipParams, MainActivity.locale)
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
                     when {

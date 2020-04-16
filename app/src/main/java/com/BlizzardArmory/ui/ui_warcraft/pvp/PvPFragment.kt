@@ -96,8 +96,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvpRBG = response.body()
-
-                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(pvpRBG?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                val url = pvpRBG?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(url, MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -125,8 +125,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp3v3 = response.body()
-
-                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(pvp3v3?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                val url = pvp3v3?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(url, MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
@@ -154,8 +154,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp2v2 = response.body()
-
-                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(pvp2v2?.tier?.key?.href, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                val url = pvp2v2?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(url, MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()

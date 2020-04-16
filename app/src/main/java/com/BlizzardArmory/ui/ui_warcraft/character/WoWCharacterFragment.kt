@@ -282,7 +282,8 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             url = url.replace(("static-[0-9].[0-9].[0-9]_[0-9]*-" + region?.toLowerCase(Locale.ROOT)?.toRegex()).toRegex(), "static-" + region?.toLowerCase(Locale.ROOT))
             Log.i("IMAGE", url)
         }
-        val call: Call<com.BlizzardArmory.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+        val call: Call<com.BlizzardArmory.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale)
         call.enqueue(object : Callback<com.BlizzardArmory.warcraft.equipment.media.Media> {
             override fun onResponse(call: Call<com.BlizzardArmory.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.warcraft.equipment.media.Media>) {
                 when {
