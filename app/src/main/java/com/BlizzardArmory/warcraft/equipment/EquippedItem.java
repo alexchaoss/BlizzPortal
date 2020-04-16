@@ -1,11 +1,5 @@
 package com.BlizzardArmory.warcraft.equipment;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -92,7 +86,8 @@ public class EquippedItem {
     @SerializedName("set")
     @Expose
     private Set set;
-    private String nameDescription = "";
+    @SerializedName("name_description")
+    @Expose
     private NameDescription nameDescriptionObject;
     @SerializedName("socket_bonus")
     @Expose
@@ -579,24 +574,6 @@ public class EquippedItem {
     }
 
     /**
-     * Gets name description.
-     *
-     * @return the name description
-     */
-    public String getNameDescription() {
-        return nameDescription;
-    }
-
-    /**
-     * Sets name description.
-     *
-     * @param nameDescription the name description
-     */
-    public void setNameDescription(String nameDescription) {
-        this.nameDescription = nameDescription;
-    }
-
-    /**
      * Gets socket bonus.
      *
      * @return the socket bonus
@@ -684,34 +661,5 @@ public class EquippedItem {
      */
     public void setWeapon(Weapon weapon) {
         this.weapon = weapon;
-    }
-
-
-    /**
-     * The type Name description deserializer.
-     */
-    public static class NameDescriptionDeserializer implements JsonDeserializer<EquippedItem> {
-
-        @Override
-        public EquippedItem deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            EquippedItem equippedItem = new Gson().fromJson(json, EquippedItem.class);
-            JsonObject jsonObject = json.getAsJsonObject();
-
-            if (jsonObject.has("name_description")) {
-                JsonElement elem = jsonObject.get("name_description");
-                if (elem != null && !elem.isJsonNull()) {
-                    try {
-                        equippedItem.setNameDescription(elem.getAsString());
-                    } catch (Exception e) {
-                        equippedItem.setNameDescription(new NameDescription(elem.getAsJsonObject().get("display_string").getAsString(),
-                                new Color(elem.getAsJsonObject().get("color").getAsJsonObject().get("r").getAsInt(),
-                                        elem.getAsJsonObject().get("color").getAsJsonObject().get("g").getAsInt(),
-                                        elem.getAsJsonObject().get("color").getAsJsonObject().get("b").getAsInt(),
-                                        elem.getAsJsonObject().get("color").getAsJsonObject().get("a").getAsFloat())));
-                    }
-                }
-            }
-            return equippedItem;
-        }
     }
 }
