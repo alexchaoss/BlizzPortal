@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo
+package com.BlizzardArmory.ui.ui_diablo.fragments
 
 import android.annotation.SuppressLint
 import android.content.res.Resources

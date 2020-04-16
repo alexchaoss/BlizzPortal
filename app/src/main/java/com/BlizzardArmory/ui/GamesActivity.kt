@@ -40,7 +40,7 @@ class GamesActivity : AppCompatActivity() {
         assert(bnOAuth2Params != null)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
 
-        //downloadUserInfo()
+        downloadUserInfo()
     }
 
     private fun downloadUserInfo() {

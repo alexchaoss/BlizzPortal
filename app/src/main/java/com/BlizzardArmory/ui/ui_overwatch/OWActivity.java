@@ -671,7 +671,7 @@ public class OWActivity extends AppCompatActivity {
 
         switch (topCharacterName) {
             case "Ana":
-                progressBar.setColor(Color.parseColor("#718ab3"));
+                progressBar.setColor(Color.parseColor("#9c978a"));
                 break;
             case "Ashe":
                 progressBar.setColor(Color.parseColor("#b3a05f"));
@@ -680,91 +680,91 @@ public class OWActivity extends AppCompatActivity {
                 progressBar.setColor(Color.parseColor("#2892a8"));
                 break;
             case "Bastion":
-                progressBar.setColor(Color.parseColor("#7c8f7b"));
+                progressBar.setColor(Color.parseColor("#24f9f8"));
                 break;
             case "Brigitte":
-                progressBar.setColor(Color.parseColor("#be736e"));
+                progressBar.setColor(Color.parseColor("#efb016"));
                 break;
             case "DVa":
-                progressBar.setColor(Color.parseColor("#ed93c7"));
+                progressBar.setColor(Color.parseColor("#ee4bb5"));
                 break;
             case "Echo":
-                progressBar.setColor(Color.parseColor("#ffffff"));
+                progressBar.setColor(Color.parseColor("#89c8ff"));
                 break;
             case "Doomfist":
-                progressBar.setColor(Color.parseColor("#815049"));
+                progressBar.setColor(Color.parseColor("#762c21"));
                 break;
             case "Genji":
-                progressBar.setColor(Color.parseColor("#97ef43"));
+                progressBar.setColor(Color.parseColor("#abe50b"));
                 break;
             case "Hanzo":
-                progressBar.setColor(Color.parseColor("#b9b48a"));
+                progressBar.setColor(Color.parseColor("#837c46"));
                 break;
             case "Junkrat":
-                progressBar.setColor(Color.parseColor("#ecbd53"));
+                progressBar.setColor(Color.parseColor("#fbd73a"));
                 break;
             case "Lúcio":
-                progressBar.setColor(Color.parseColor("#85c952"));
+                progressBar.setColor(Color.parseColor("#aaf531"));
                 break;
             case "Mccree":
-                progressBar.setColor(Color.parseColor("#ae595c"));
+                progressBar.setColor(Color.parseColor("#c23f46"));
                 break;
             case "Mei":
-                progressBar.setColor(Color.parseColor("#6faced"));
+                progressBar.setColor(Color.parseColor("#87d7f6"));
                 break;
             case "Mercy":
-                progressBar.setColor(Color.parseColor("#ebe8bb"));
+                progressBar.setColor(Color.parseColor("#fcd849"));
                 break;
             case "Moira":
-                progressBar.setColor(Color.parseColor("#803c51"));
+                progressBar.setColor(Color.parseColor("#7112f4"));
                 break;
             case "Orisa":
                 progressBar.setColor(Color.parseColor("#468c43"));
                 break;
             case "Pharah":
-                progressBar.setColor(Color.parseColor("#3e7dca"));
+                progressBar.setColor(Color.parseColor("#3461a4"));
                 break;
             case "Reaper":
-                progressBar.setColor(Color.parseColor("#7d3e51"));
+                progressBar.setColor(Color.parseColor("#333333"));
                 break;
             case "Reinhardt":
                 progressBar.setColor(Color.parseColor("#929da3"));
                 break;
             case "Roadhog":
-                progressBar.setColor(Color.parseColor("#b68c52"));
+                progressBar.setColor(Color.parseColor("#54515a"));
                 break;
             case "Sigma":
                 progressBar.setColor(Color.parseColor("#33bbaa"));
                 break;
             case "Soldier76":
-                progressBar.setColor(Color.parseColor("#697794"));
+                progressBar.setColor(Color.parseColor("#525d9b"));
                 break;
             case "Sombra":
-                progressBar.setColor(Color.parseColor("#7359ba"));
+                progressBar.setColor(Color.parseColor("#9762ec"));
                 break;
             case "Symmetra":
-                progressBar.setColor(Color.parseColor("#8ebccc"));
+                progressBar.setColor(Color.parseColor("#3e90b5"));
                 break;
             case "Torbjörn":
-                progressBar.setColor(Color.parseColor("#c0726e"));
+                progressBar.setColor(Color.parseColor("#b04a33"));
                 break;
             case "Tracer":
-                progressBar.setColor(Color.parseColor("#d79342"));
+                progressBar.setColor(Color.parseColor("#ffcf35"));
                 break;
             case "Widowmaker":
-                progressBar.setColor(Color.parseColor("#9e6aa8"));
+                progressBar.setColor(Color.parseColor("#af5e9e"));
                 break;
             case "Winston":
-                progressBar.setColor(Color.parseColor("#a2a6bf"));
+                progressBar.setColor(Color.parseColor("#595959"));
                 break;
             case "WreckingBall":
                 progressBar.setColor(Color.parseColor("#4a575f"));
                 break;
             case "Zarya":
-                progressBar.setColor(Color.parseColor("#e77eb6"));
+                progressBar.setColor(Color.parseColor("#ff73c1"));
                 break;
             case "Zenyatta":
-                progressBar.setColor(Color.parseColor("#ede582"));
+                progressBar.setColor(Color.parseColor("#e1c931"));
                 break;
         }
         backgroundColor.setBackground(progressBar);

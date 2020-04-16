@@ -18,7 +18,6 @@ import com.BlizzardArmory.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.warcraft.statistic.Statistic
 import com.BlizzardArmory.warcraft.talents.Talents
-import com.google.api.client.auth.oauth2.TokenResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -32,7 +31,7 @@ interface NetworkServices {
     @GET("oauth/token")
     fun getAccessToken(@Query("code") clientId: String?,
                        @Query("region") region: String?,
-                       @Query("redirect_uri") redirectUri: String?): Call<TokenResponse>
+                       @Query("redirect_uri") redirectUri: String?): Call<com.BlizzardArmory.connection.oauth.TokenResponse>
 
     /**
      * Gets user info.
@@ -71,8 +70,7 @@ interface NetworkServices {
      */
     @GET
     fun getDynamicEquipmentMedia(@Url url: String?,
-                                 @Query("locale") locale: String?,
-                                 @Query("token") accessToken: String?): Call<com.BlizzardArmory.warcraft.equipment.media.Media>
+                                 @Query("locale") locale: String?): Call<com.BlizzardArmory.warcraft.equipment.media.Media>
 
     /**
      * Gets encounters.
@@ -202,8 +200,7 @@ interface NetworkServices {
      */
     @GET
     fun getDynamicTier(@Url url: String?,
-                       @Query("locale") locale: String?,
-                       @Query("token") accessToken: String?): Call<Tier>
+                       @Query("locale") locale: String?): Call<Tier>
 
     /**
      * Gets reputations.
@@ -273,8 +270,7 @@ interface NetworkServices {
      */
     @GET("d3/data/{item}")
     fun getItem(@Path("item") item: String?,
-                @Query("locale") locale: String?,
-                @Query("token") accessToken: String?): Call<SingleItem>
+                @Query("locale") locale: String?): Call<SingleItem>
 
     /**
      * Gets sc 2 player.

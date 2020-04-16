@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo
+package com.BlizzardArmory.ui.ui_diablo.fragments
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -24,6 +24,7 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.diablo.character.CharacterInformation
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.ui_diablo.CharacterEvent
 import kotlinx.android.synthetic.main.d3_character_fragment.*
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
@@ -62,7 +63,7 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Params: BnOAuth2Params = requireActivity().intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
-
+        setCharacterInformation()
     }
 
     private fun setCharacterInformation() {

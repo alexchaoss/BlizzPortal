@@ -5,6 +5,7 @@ import android.util.Log
 import com.BlizzardArmory.connection.RetroClient
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow
 import com.google.api.client.auth.oauth2.CredentialStore
+import com.google.api.client.auth.oauth2.TokenResponse
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -25,15 +26,21 @@ class BnOAuth2Helper(sharedPreferences: SharedPreferences?, oauth2Params: BnOAut
     fun retrieveAndStoreAccessToken(authorizationCode: String) {
         Log.i(BnConstants.TAG, "retrieveAndStoreAccessToken for code $authorizationCode")
         val tokenResponse = RetroClient.getClient.getAccessToken(authorizationCode, oauth2Params.zone.toLowerCase(Locale.ROOT), oauth2Params.rederictUri).execute().body()
+        Log.i("TOKEN", tokenResponse.toString())
+        val token: TokenResponse = TokenResponse()
+        token.expiresInSeconds = tokenResponse?.expiresIn
+        token.accessToken = tokenResponse?.accessToken
+        token.scope = tokenResponse?.scope
+        token.tokenType = tokenResponse?.tokenType
         //val tokenResponse: TokenResponse = gson?.fromJson(call, TokenResponse::class.java)!!
-        Log.i(BnConstants.TAG, "Found tokenResponse: " + tokenResponse?.accessToken)
-        if (null != tokenResponse?.accessToken) {
-            Log.i(BnConstants.TAG, "Access Token : " + tokenResponse.accessToken)
+        Log.i(BnConstants.TAG, "Found tokenResponse: " + token.accessToken)
+        if (null != token.accessToken) {
+            Log.i(BnConstants.TAG, "Access Token : " + token.accessToken)
         }
-        if (null != tokenResponse?.refreshToken) {
-            Log.i(BnConstants.TAG, "Refresh Token : " + tokenResponse.refreshToken)
+        if (null != token.refreshToken) {
+            Log.i(BnConstants.TAG, "Refresh Token : " + token.refreshToken)
         }
-        flow.createAndStoreCredential(tokenResponse, oauth2Params.userId)
+        flow.createAndStoreCredential(token, oauth2Params.userId)
     }
 
     @get:Throws(IOException::class)

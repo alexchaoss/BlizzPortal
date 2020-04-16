@@ -30,6 +30,7 @@ import com.BlizzardArmory.diablo.account.Hero
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.ui_diablo.fragments.CharacterStatsFragment
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
