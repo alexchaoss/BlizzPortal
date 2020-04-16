@@ -7,11 +7,14 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.R
+import kotlinx.android.synthetic.main.token_activity.*
 import java.net.URLDecoder
+
 
 class AuthorizationTokenActivity : AppCompatActivity() {
 
@@ -21,14 +24,15 @@ class AuthorizationTokenActivity : AppCompatActivity() {
     private var hasLoggedIn = false
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var redirectActivity: Class<*>? = null
+    private lateinit var authorizationTokenActivity: AuthorizationTokenActivity
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.token_activity)
         Log.i(BnConstants.TAG, "Starting task to retrieve request token")
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val bundle = this.intent.extras
-
-        window.decorView.setBackgroundResource(R.color.backgroundColor)
+        authorizationTokenActivity = this
         // Receiving redirection activity class
         redirectActivity = bundle[BnConstants.BUNDLE_REDIRECT_ACTIVITY] as Class<*>
         // Receiving BnOAuth2Params from intent
@@ -48,6 +52,11 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                 Log.d(BnConstants.TAG, "onPageFinished : $url handled = $handled")
                 if (url.startsWith(bnOAuth2Params!!.rederictUri)) {
                     webview.visibility = View.INVISIBLE
+                    setContentView(R.layout.token_activity)
+                    val rotation = AnimationUtils.loadAnimation(authorizationTokenActivity, R.anim.rotate)
+                    rotation.fillAfter = true
+                    loading_image.startAnimation(rotation)
+
                     if (!handled) {
                         ProcessToken(url).execute()
                     }
