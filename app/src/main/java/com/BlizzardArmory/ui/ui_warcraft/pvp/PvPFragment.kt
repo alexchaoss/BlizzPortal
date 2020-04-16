@@ -130,8 +130,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
-                        setTierImage(tierimagerbg, tier!!)
-                        showBracketInformationOnTouch(layoutrbg, tier, pvp3v3!!)
+                        setTierImage(tierimage3v3, tier!!)
+                        showBracketInformationOnTouch(layout3v3, tier, pvp3v3!!)
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
@@ -159,8 +159,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         val tier = response.body()
-                        setTierImage(tierimagerbg, tier!!)
-                        showBracketInformationOnTouch(layoutrbg, tier, pvp2v2!!)
+                        setTierImage(tierimage2v2, tier!!)
+                        showBracketInformationOnTouch(layout2v2, tier, pvp2v2!!)
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
@@ -188,9 +188,11 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     kills.text = pvpSummary.honorable_kills.toString()
                     level.text = "LEVEL " + pvpSummary.honor_level.toString()
                     setHonorRankIcon(pvpSummary)
-                    recyclerviewbg.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
+                    if (pvpSummary.pvp_map_statistics != null) {
+                        recyclerviewbg.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
+                        }
                     }
                 }
             }

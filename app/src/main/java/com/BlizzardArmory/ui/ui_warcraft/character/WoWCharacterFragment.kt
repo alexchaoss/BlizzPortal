@@ -209,13 +209,14 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                     }
                     else -> {
                         characterSummary = response.body()!!
+                        setBackgroundColor()
                         character_name.text = characterSummary.name
                         EventBus.getDefault().post(FactionEvent(characterSummary.faction.name.toLowerCase(Locale.ROOT)))
                         EventBus.getDefault().post(ClassEvent(characterSummary.characterClass.id))
                         item_lvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
-                        val levelRaceString = characterSummary.level.toString() + " " + characterSummary.race.name
-                        level_race.text = levelRaceString
-                        character_class.text = characterSummary.characterClass.name
+                        val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
+                        level_race_class.text = levelRaceClassString
+                        //character_class.text = characterSummary.characterClass.name
                         downloadEquipment()
                     }
                 }
@@ -273,6 +274,47 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                     callErrorAlertDialog(0)
                 }
             })
+        }
+    }
+
+    private fun setBackgroundColor() {
+        when (characterSummary.characterClass.id) {
+            6 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#080812"))
+            }
+            12 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#000900"))
+            }
+            11 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#04100a"))
+            }
+            3 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#0f091b"))
+            }
+            8 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#110617"))
+            }
+            10 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#040b17"))
+            }
+            2 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#13040a"))
+            }
+            5 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#15060e"))
+            }
+            4 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#160720"))
+            }
+            7 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#050414"))
+            }
+            9 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#080516"))
+            }
+            1 -> {
+                item_fragment.setBackgroundColor(Color.parseColor("#1a0407"))
+            }
         }
     }
 
@@ -633,17 +675,11 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             description = "<font color=#edc201>" + equippedItem.description + "</font>"
         }
 
-        if (equippedItem.nameDescription != "") {
-            Log.i("name descript", equippedItem.nameDescription)
-            nameDescription = "<font color=#00ff00>" + equippedItem.nameDescription + "</font><br>"
-        } else {
-            try {
-                Log.i("name descript obj", equippedItem.nameDescriptionObject.displayString)
-                nameDescription = "<font color=#" + getNameDescriptionColor(equippedItem) + ">" + equippedItem.nameDescriptionObject.displayString + "</font><br>"
-            } catch (e: Exception) {
-                Log.e("Error", e.toString())
-                Log.e("Name description", "none")
-            }
+        try {
+            Log.i("name descript obj", equippedItem.nameDescriptionObject.displayString)
+            nameDescription = "<font color=#" + getNameDescriptionColor(equippedItem) + ">" + equippedItem.nameDescriptionObject.displayString + "</font><br>"
+        } catch (e: Exception) {
+            Log.e("name descript obj", "none")
         }
         try {
             trigger = if (equippedItem.spells[0].color != null) {
