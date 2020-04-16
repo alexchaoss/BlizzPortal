@@ -26,7 +26,7 @@ public class ErrorMessageDialog {
      * @param responseCode the response code
      * @return the int
      */
-    public int showNoConnectionMessage(Activity activity, final int responseCode) {
+    public static int showNoConnectionMessage(Activity activity, final int responseCode) {
         int retry = 0;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

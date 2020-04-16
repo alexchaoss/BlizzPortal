@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             webview?.loadUrl(URLConstants.PAYPAL_URL)
         }
 
-        openLoginToBattlenet()
+        setLoginButtonToBattlenet()
 
         clear_credentials.setOnClickListener { showNoConnectionMessage(this@MainActivity, 100) }
     }
@@ -164,23 +164,28 @@ class MainActivity : AppCompatActivity() {
             "Korean" -> locale = "ko_KR"
             "Chinese" -> locale = "zh_CN"
             "Taiwanese" -> locale = "zh_TW"
+            else -> locale = "en_US"
         }
         sharedPreferences!!.edit().putString("locale", locale).apply()
     }
 
-    private fun openLoginToBattlenet() {
+    private fun setLoginButtonToBattlenet() {
         buttonLogin.setOnClickListener {
             if (selectedRegion == "Select Region") {
                 Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT).show()
             } else {
-                if (isNetworkAvailable()) {
-                    bnOAuth2Params = BnOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
-                            URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2)
-                    startOauthFlow(bnOAuth2Params!!)
-                } else {
-                    showNoConnectionMessage(this@MainActivity, 0)
-                }
+                openLoginToBattleNet()
             }
+        }
+    }
+
+    private fun openLoginToBattleNet() {
+        if (isNetworkAvailable()) {
+            bnOAuth2Params = BnOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
+                    URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2)
+            startOauthFlow(bnOAuth2Params!!)
+        } else {
+            showNoConnectionMessage(this@MainActivity, 0)
         }
     }
 
@@ -274,9 +279,11 @@ class MainActivity : AppCompatActivity() {
         button2.layoutParams = layoutParams
         button2.background = context.getDrawable(R.drawable.buttonstyle)
         when (responseCode) {
-            -10 -> {
-                button.text = "RETRY"
+            0 -> {
+                button.text = "OK"
+                button2.text = "RETRY"
                 buttonLayout.addView(button)
+                buttonLayout.addView(button2)
             }
             100 -> {
                 button.text = "Yes"
@@ -306,6 +313,10 @@ class MainActivity : AppCompatActivity() {
         if (responseCode == 100) {
             button2.setOnClickListener { dialog.cancel() }
             button.setOnClickListener { clearCredentials() }
+        } else if (responseCode == 0) {
+            dialog.setOnCancelListener { obj: DialogInterface -> obj.cancel() }
+            button2.setOnClickListener { openLoginToBattleNet() }
+            button.setOnClickListener { dialog.cancel() }
         } else {
             button.setOnClickListener { dialog.cancel() }
             dialog.setOnCancelListener { obj: DialogInterface -> obj.cancel() }

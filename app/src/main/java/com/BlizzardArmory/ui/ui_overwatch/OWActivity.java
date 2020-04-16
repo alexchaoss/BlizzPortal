@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -490,21 +492,21 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void setSpecificCareerList(HashMap<String, String> list, LinearLayout parentLayout, int marginStart) {
-        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+        final float scale = this.getResources().getDisplayMetrics().density;
         int i = 0;
         for (String key : list.keySet()) {
-            LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+            LinearLayout linearLayout = new LinearLayout(this);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins((int) (marginStart * scale + 0.5f), 0, 0, 0);
             linearLayout.setLayoutParams(layoutParams);
 
-            TextView value = new TextView(getApplicationContext());
+            TextView value = new TextView(this);
             value.setText(list.get(key));
             value.setPadding(10, 10, 10, 10);
             value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
             value.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            TextView text = new TextView(getApplicationContext());
+            TextView text = new TextView(this);
             text.setText(key);
             text.setPadding(10, 10, 10, 10);
 
@@ -527,7 +529,7 @@ public class OWActivity extends AppCompatActivity {
 
         Log.i("test", heroes.get(0).getClass().getSimpleName());
         for (int i = 0; i < heroes.size(); i++) {
-            LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+            LinearLayout linearLayout = new LinearLayout(this);
             heroList.addView(linearLayout);
 
             LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(100, 100);
@@ -542,14 +544,14 @@ public class OWActivity extends AppCompatActivity {
             dataParams.addRule(RelativeLayout.CENTER_VERTICAL);
             dataParams.setMarginEnd(10);
 
-            ImageView icon = new ImageView(getApplicationContext());
+            ImageView icon = new ImageView(this);
             icon.setBackgroundResource(getHeroIcon(heroes.get(i).getClass().getSimpleName()));
             GradientDrawable iconBorder = new GradientDrawable();
             iconBorder.setCornerRadius(5);
             iconBorder.setStroke(3, Color.parseColor("#CCCCCC"));
             icon.setImageDrawable(iconBorder);
 
-            RelativeLayout relativeLayout = new RelativeLayout(getApplicationContext());
+            RelativeLayout relativeLayout = new RelativeLayout(this);
             relativeLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             GradientDrawable layoutBackground = new GradientDrawable();
             layoutBackground.setCornerRadius(5);
@@ -557,7 +559,7 @@ public class OWActivity extends AppCompatActivity {
             relativeLayout.setBackground(layoutBackground);
             relativeLayout.setPadding(5, 5, 5, 5);
 
-            TextView name = new TextView(getApplicationContext());
+            TextView name = new TextView(this);
             name.setAllCaps(true);
             name.setTextColor(Color.WHITE);
             name.setTextSize(20);
@@ -576,198 +578,163 @@ public class OWActivity extends AppCompatActivity {
             Typeface face = ResourcesCompat.getFont(this, R.font.bignoodletoo);
             name.setTypeface(face);
 
-            TextView data = new TextView(getApplicationContext());
+            TextView data = new TextView(this);
             data.setTextColor(Color.WHITE);
             data.setTextSize(15);
 
             linearLayout.addView(icon, iconParams);
             linearLayout.addView(relativeLayout);
+            ProgressBar progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+            progressBar.setProgressDrawable(this.getDrawable(R.drawable.ow_progressbar));
 
-            View backgroundColor = new View(getApplicationContext());
-
-            double viewWidth;
-
-            if (i > 0) {
-                switch (itemSelected) {
-                    case TIME_PLAYED:
-                        double fullWidth = getSeconds(heroes.get(0));
-                        viewWidth = (getSeconds(heroes.get(i)) * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(heroes.get(i).getTimePlayed());
-                        break;
-                    case GAMES_WON:
-                        fullWidth = heroes.get(0).getGamesWon();
-                        viewWidth = (heroes.get(i).getGamesWon() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf((int) heroes.get(i).getGamesWon()));
-                        break;
-                    case WEAPON_ACCURACY:
-                        fullWidth = heroes.get(0).getWeaponAccuracy();
-                        viewWidth = (heroes.get(i).getWeaponAccuracy() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
-                        String tempData = (int) heroes.get(i).getWeaponAccuracy() + "%";
-                        data.setText(tempData);
-                        break;
-                    case ELIMINATIONS_PER_LIFE:
-                        fullWidth = heroes.get(0).getEliminationsPerLife();
-                        viewWidth = (heroes.get(i).getEliminationsPerLife() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getEliminationsPerLife()));
-                        break;
-                    case MULTIKILL_BEST:
-                        fullWidth = heroes.get(0).getMultiKillBest();
-                        viewWidth = (heroes.get(i).getMultiKillBest() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf((int) heroes.get(i).getMultiKillBest()));
-                        break;
-                    case OBJECTIVE_KILLS:
-                        fullWidth = heroes.get(0).getObjectiveKills();
-                        viewWidth = (heroes.get(i).getObjectiveKills() * 100) / fullWidth;
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams((int) (viewWidth * 8.5), RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
-                }
-            } else {
-                switch (itemSelected) {
-                    case TIME_PLAYED:
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getTimePlayed()));
-                        break;
-                    case GAMES_WON:
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf((int) heroes.get(i).getGamesWon()));
-                        break;
-                    case WEAPON_ACCURACY:
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        String tempData = (int) heroes.get(i).getWeaponAccuracy() + "%";
-                        data.setText(tempData);
-                        break;
-                    case ELIMINATIONS_PER_LIFE:
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf(heroes.get(i).getEliminationsPerLife()));
-                        break;
-                    case MULTIKILL_BEST:
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf((int) heroes.get(i).getMultiKillBest()));
-                        break;
-                    case OBJECTIVE_KILLS:
-                        backgroundColor.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                        data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
-                }
-
+            switch (itemSelected) {
+                case TIME_PLAYED:
+                    progressBar.setMax(getSeconds(heroes.get(0)));
+                    progressBar.setProgress(getSeconds(heroes.get(i)));
+                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                    data.setText(heroes.get(i).getTimePlayed());
+                    break;
+                case GAMES_WON:
+                    progressBar.setMax((int) heroes.get(0).getGamesWon());
+                    progressBar.setProgress((int) heroes.get(i).getGamesWon());
+                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                    data.setText(String.valueOf((int) heroes.get(i).getGamesWon()));
+                    break;
+                case WEAPON_ACCURACY:
+                    progressBar.setMax((int) heroes.get(0).getWeaponAccuracy());
+                    progressBar.setProgress((int) heroes.get(i).getWeaponAccuracy());
+                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                    String tempData = (int) heroes.get(i).getWeaponAccuracy() + "%";
+                    data.setText(tempData);
+                    break;
+                case ELIMINATIONS_PER_LIFE:
+                    progressBar.setMax((int) heroes.get(0).getEliminationsPerLife());
+                    progressBar.setProgress((int) heroes.get(i).getEliminationsPerLife());
+                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                    data.setText(String.valueOf(heroes.get(i).getEliminationsPerLife()));
+                    break;
+                case MULTIKILL_BEST:
+                    progressBar.setMax((int) heroes.get(0).getMultiKillBest());
+                    progressBar.setProgress((int) heroes.get(i).getMultiKillBest());
+                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                    data.setText(String.valueOf((int) heroes.get(i).getMultiKillBest()));
+                    break;
+                case OBJECTIVE_KILLS:
+                    progressBar.setMax((int) heroes.get(0).getObjectiveKills());
+                    progressBar.setProgress((int) heroes.get(i).getObjectiveKills());
+                    data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
             }
 
-            setBackgroundColor(backgroundColor, heroes.get(i).getClass().getSimpleName());
+            setBackgroundColor(progressBar, heroes.get(i).getClass().getSimpleName());
 
-            relativeLayout.addView(backgroundColor);
+            relativeLayout.addView(progressBar);
             relativeLayout.addView(name, nameParams);
             relativeLayout.addView(data, dataParams);
         }
     }
 
-    private void setBackgroundColor(View backgroundColor, String topCharacterName) {
-        GradientDrawable progressBar = new GradientDrawable();
-        progressBar.setCornerRadius(5);
-
+    private void setBackgroundColor(ProgressBar backgroundColor, String topCharacterName) {
+        int progressBar = 0;
 
         switch (topCharacterName) {
             case "Ana":
-                progressBar.setColor(Color.parseColor("#9c978a"));
+                progressBar = Color.parseColor("#9c978a");
                 break;
             case "Ashe":
-                progressBar.setColor(Color.parseColor("#b3a05f"));
+                progressBar = Color.parseColor("#b3a05f");
                 break;
             case "Baptiste":
-                progressBar.setColor(Color.parseColor("#2892a8"));
+                progressBar = Color.parseColor("#2892a8");
                 break;
             case "Bastion":
-                progressBar.setColor(Color.parseColor("#24f9f8"));
+                progressBar = Color.parseColor("#24f9f8");
                 break;
             case "Brigitte":
-                progressBar.setColor(Color.parseColor("#efb016"));
+                progressBar = Color.parseColor("#efb016");
                 break;
             case "DVa":
-                progressBar.setColor(Color.parseColor("#ee4bb5"));
+                progressBar = Color.parseColor("#ee4bb5");
                 break;
             case "Echo":
-                progressBar.setColor(Color.parseColor("#89c8ff"));
+                progressBar = Color.parseColor("#89c8ff");
                 break;
             case "Doomfist":
-                progressBar.setColor(Color.parseColor("#762c21"));
+                progressBar = Color.parseColor("#762c21");
                 break;
             case "Genji":
-                progressBar.setColor(Color.parseColor("#abe50b"));
+                progressBar = Color.parseColor("#abe50b");
                 break;
             case "Hanzo":
-                progressBar.setColor(Color.parseColor("#837c46"));
+                progressBar = Color.parseColor("#837c46");
                 break;
             case "Junkrat":
-                progressBar.setColor(Color.parseColor("#fbd73a"));
+                progressBar = Color.parseColor("#fbd73a");
                 break;
             case "Lúcio":
-                progressBar.setColor(Color.parseColor("#aaf531"));
+                progressBar = Color.parseColor("#aaf531");
                 break;
             case "Mccree":
-                progressBar.setColor(Color.parseColor("#c23f46"));
+                progressBar = Color.parseColor("#c23f46");
                 break;
             case "Mei":
-                progressBar.setColor(Color.parseColor("#87d7f6"));
+                progressBar = Color.parseColor("#87d7f6");
                 break;
             case "Mercy":
-                progressBar.setColor(Color.parseColor("#fcd849"));
+                progressBar = Color.parseColor("#fcd849");
                 break;
             case "Moira":
-                progressBar.setColor(Color.parseColor("#7112f4"));
+                progressBar = Color.parseColor("#7112f4");
                 break;
             case "Orisa":
-                progressBar.setColor(Color.parseColor("#468c43"));
+                progressBar = Color.parseColor("#468c43");
                 break;
             case "Pharah":
-                progressBar.setColor(Color.parseColor("#3461a4"));
+                progressBar = Color.parseColor("#3461a4");
                 break;
             case "Reaper":
-                progressBar.setColor(Color.parseColor("#333333"));
+                progressBar = Color.parseColor("#333333");
                 break;
             case "Reinhardt":
-                progressBar.setColor(Color.parseColor("#929da3"));
+                progressBar = Color.parseColor("#929da3");
                 break;
             case "Roadhog":
-                progressBar.setColor(Color.parseColor("#54515a"));
+                progressBar = Color.parseColor("#54515a");
                 break;
             case "Sigma":
-                progressBar.setColor(Color.parseColor("#33bbaa"));
+                progressBar = Color.parseColor("#33bbaa");
                 break;
             case "Soldier76":
-                progressBar.setColor(Color.parseColor("#525d9b"));
+                progressBar = Color.parseColor("#525d9b");
                 break;
             case "Sombra":
-                progressBar.setColor(Color.parseColor("#9762ec"));
+                progressBar = Color.parseColor("#9762ec");
                 break;
             case "Symmetra":
-                progressBar.setColor(Color.parseColor("#3e90b5"));
+                progressBar = Color.parseColor("#3e90b5");
                 break;
             case "Torbjörn":
-                progressBar.setColor(Color.parseColor("#b04a33"));
+                progressBar = Color.parseColor("#b04a33");
                 break;
             case "Tracer":
-                progressBar.setColor(Color.parseColor("#ffcf35"));
+                progressBar = Color.parseColor("#ffcf35");
                 break;
             case "Widowmaker":
-                progressBar.setColor(Color.parseColor("#af5e9e"));
+                progressBar = Color.parseColor("#af5e9e");
                 break;
             case "Winston":
-                progressBar.setColor(Color.parseColor("#595959"));
+                progressBar = Color.parseColor("#595959");
                 break;
             case "WreckingBall":
-                progressBar.setColor(Color.parseColor("#4a575f"));
+                progressBar = Color.parseColor("#4a575f");
                 break;
             case "Zarya":
-                progressBar.setColor(Color.parseColor("#ff73c1"));
+                progressBar = Color.parseColor("#ff73c1");
                 break;
             case "Zenyatta":
-                progressBar.setColor(Color.parseColor("#e1c931"));
+                progressBar = Color.parseColor("#e1c931");
                 break;
         }
-        backgroundColor.setBackground(progressBar);
+        backgroundColor.setProgressTintList(ColorStateList.valueOf(progressBar));
     }
 
     private int getHeroIcon(String topCharacterName) {
