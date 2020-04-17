@@ -26,7 +26,6 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
 import com.BlizzardArmory.ui.ui_warcraft.events.ClassEvent
 import com.BlizzardArmory.ui.ui_warcraft.events.FactionEvent
 import com.BlizzardArmory.ui.ui_warcraft.events.RetryEvent
@@ -927,23 +926,25 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             val buttonLayout = LinearLayout(context)
             buttonLayout.orientation = LinearLayout.HORIZONTAL
             buttonLayout.gravity = Gravity.CENTER
-            buttonLayout.addView(button)
             when (responseCode) {
                 in 400..499 -> {
                     titleText.text = ErrorMessages.INFORMATION_OUTDATED
                     messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                    button.text = ErrorMessages.BACK
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
                 }
                 500 -> {
                     titleText.text = ErrorMessages.SERVERS_ERROR
                     messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                    button.text = ErrorMessages.BACK
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
                 }
                 else -> {
                     titleText.text = ErrorMessages.NO_INTERNET
                     messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
                     button.text = ErrorMessages.RETRY
                     button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button)
                     buttonLayout.addView(button2)
                 }
             }
@@ -960,7 +961,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             layoutParams.setMargins(20, 20, 20, 20)
             dialog?.addContentView(linearLayout, layoutParamsWindow)
             dialog?.setOnCancelListener {
-                (context as WoWActivity?)?.onBackPressed()
+
             }
             button.setOnClickListener {
                 Log.i("RETRY", "CLICKED")

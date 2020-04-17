@@ -238,6 +238,9 @@ class WoWActivity : AppCompatActivity() {
         dialog.addContentView(linearLayout, layoutParams)
         dialog.setOnCancelListener { downloadWoWCharacters() }
         button.setOnClickListener { dialog.cancel() }
-        button2.setOnClickListener { onBackPressed() }
+        button2.setOnClickListener {
+            dialog.dismiss()
+            onBackPressed()
+        }
     }
 }

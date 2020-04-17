@@ -31,7 +31,7 @@ class AuthorizationTokenActivity : AppCompatActivity() {
         setContentView(R.layout.token_activity)
         Log.i(BnConstants.TAG, "Starting task to retrieve request token")
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val bundle = this.intent.extras
+        val bundle = this.intent.extras!!
         authorizationTokenActivity = this
         // Receiving redirection activity class
         redirectActivity = bundle[BnConstants.BUNDLE_REDIRECT_ACTIVITY] as Class<*>

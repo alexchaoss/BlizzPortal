@@ -30,7 +30,7 @@ import com.BlizzardArmory.diablo.account.Hero
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_diablo.fragments.CharacterStatsFragment
+import com.BlizzardArmory.ui.ui_diablo.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
@@ -431,12 +431,12 @@ class D3Activity : AppCompatActivity() {
         bundle.putString("battletag", battleTag)
         bundle.putLong("id", characterID)
         bundle.putString("region", selectedRegion)
-        val d3CharacterFragment = CharacterStatsFragment()
-        d3CharacterFragment.arguments = bundle
+        val d3CharacterNav = D3CharacterNav()
+        d3CharacterNav.arguments = bundle
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-        fragmentTransaction.replace(R.id.fragment, d3CharacterFragment)
+        fragmentTransaction.replace(R.id.fragment, d3CharacterNav)
         fragmentTransaction.addToBackStack(null).commit()
         supportFragmentManager.executePendingTransactions()
     }
@@ -521,7 +521,10 @@ class D3Activity : AppCompatActivity() {
         dialog.addContentView(linearLayout, layoutParams)
         dialog.setOnCancelListener { downloadAccountInformation() }
         button.setOnClickListener { dialog.cancel() }
-        button2.setOnClickListener { onBackPressed() }
+        button2.setOnClickListener {
+            dialog.dismiss()
+            onBackPressed()
+        }
     }
 
     companion object {

@@ -52,8 +52,6 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
         val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
-        cubeIcons
-        downloadCubeItems()
     }
 
     override fun onStart() {
@@ -111,6 +109,7 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
 
     private fun downloadCubeItems() {
         for (i in characterInformation!!.legendaryPowers.indices) {
+            Log.i("Cube", characterInformation!!.legendaryPowers[i].tooltipParams)
             val call: Call<SingleItem> = RetroClient.getClient.getItem(characterInformation!!.legendaryPowers[i].tooltipParams, MainActivity.locale)
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
@@ -160,6 +159,8 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(characterEvent: CharacterEvent) {
         characterInformation = characterEvent.data
+        cubeIcons
+        downloadCubeItems()
     }
 
     override fun onBackPressed(): Boolean {

@@ -263,13 +263,13 @@ interface NetworkServices {
     /**
      * Gets item.
      *
-     * @param item        the item
+     * @param slug        the slug
      * @param locale      the locale
      * @param accessToken the access token
      * @return the item
      */
-    @GET("d3/data/{item}")
-    fun getItem(@Path("item") item: String?,
+    @GET("d3/data/{slug}")
+    fun getItem(@Path("slug") slug: String?,
                 @Query("locale") locale: String?): Call<SingleItem>
 
     /**
