@@ -499,6 +499,9 @@ class SC2Activity : AppCompatActivity() {
             dialog.setOnCancelListener { downloadAccountInformation() }
         }
         button.setOnClickListener { dialog.cancel() }
-        button2.setOnClickListener { onBackPressed() }
+        button2.setOnClickListener {
+            dialog.dismiss()
+            onBackPressed()
+        }
     }
 }

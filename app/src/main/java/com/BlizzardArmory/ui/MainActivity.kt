@@ -300,7 +300,11 @@ class MainActivity : AppCompatActivity() {
         }
         val dialog = builder.show()
         Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setLayout(800, 500)
+        if (responseCode == 100) {
+            dialog?.window?.setLayout(800, 600)
+        } else {
+            dialog?.window?.setLayout(800, 500)
+        }
         val linearLayout = LinearLayout(context)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.gravity = Gravity.CENTER

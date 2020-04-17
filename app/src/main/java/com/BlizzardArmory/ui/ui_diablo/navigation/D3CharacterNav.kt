@@ -17,10 +17,10 @@ private const val ID = "id"
 private const val REGION = "region"
 
 
-class WoWNavFragment : Fragment(), IOnBackPressed {
+class D3CharacterNav : Fragment(), IOnBackPressed {
 
     private var btag: String? = null
-    private var id: String? = null
+    private var id: Long? = null
     private var region: String? = null
 
     private var tabLayout: TabLayout? = null
@@ -30,21 +30,21 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
         super.onCreate(savedInstanceState)
         arguments?.let {
             btag = it.getString(BTAG)
-            id = it.getString(ID)
+            id = it.getLong(ID)
             region = it.getString(REGION)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.wow_navbar_fragment, container, false)
+        val view: View = inflater.inflate(R.layout.d3_navbar_fragment, container, false)
 
         tabLayout = view.findViewById(R.id.nav_bar)
         viewPager = view.findViewById(R.id.wow_pager)
         viewPager?.offscreenPageLimit = 3
 
         val bundle = Bundle()
-        bundle.putString("btag", btag)
-        bundle.putString("id", id)
+        bundle.putString("battletag", btag)
+        bundle.putLong("id", id!!)
         bundle.putString("region", region)
         val adapter = MyAdapter(childFragmentManager, tabLayout!!.tabCount, bundle)
         viewPager!!.adapter = adapter
@@ -68,11 +68,11 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
 
     companion object {
         @JvmStatic
-        fun newInstance(btag: String, id: String, region: String) =
-                WoWNavFragment().apply {
+        fun newInstance(btag: String, id: Long, region: String) =
+                D3CharacterNav().apply {
                     arguments = Bundle().apply {
                         putString(BTAG, btag)
-                        putString(ID, id)
+                        putLong(ID, id)
                         putString(REGION, region)
                     }
                 }

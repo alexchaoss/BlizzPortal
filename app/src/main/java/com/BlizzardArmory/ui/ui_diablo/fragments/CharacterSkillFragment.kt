@@ -69,7 +69,7 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
         val skillTooltipBG = GradientDrawable()
         skillTooltipBG.setStroke(6, Color.parseColor("#2e2a27"))
         skillTooltipBG.setColor(Color.BLACK)
-        skill_tooltip_scroll.background = skillTooltipBG
+        //skill_tooltip_scroll.background = skillTooltipBG
         Collections.addAll(skillList, skill1_icon, skill2_icon, skill3_icon, skill4_icon, skill5_icon, skill6_icon)
         Collections.addAll(skillRuneList, skill1_rune, skill2_rune, skill3_rune, skill4_rune, skill5_rune, skill6_rune)
         Collections.addAll(skillNameList, skill1_name, skill2_name, skill3_name, skill4_name, skill5_name, skill6_name)
@@ -78,9 +78,6 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
         passiveList.add(passive2)
         passiveList.add(passive3)
         passiveList.add(passive4)
-
-        downloadSkillIcons()
-        downloadPssiveIcons()
     }
 
     private fun downloadSkillIcons() {
@@ -245,6 +242,8 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(characterEvent: CharacterEvent) {
         characterInformation = characterEvent.data
+        downloadSkillIcons()
+        downloadPssiveIcons()
     }
 
     override fun onBackPressed(): Boolean {

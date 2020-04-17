@@ -45,7 +45,7 @@ public class OWPlatformChoiceDialog {
     private static final String ENTER_PSN = "Enter your Playstation username";
 
     private static void callOverWatchActivity(Activity activity, BnOAuth2Params bnOAuth2Params) {
-        if (activity.getClass().getSimpleName().equalsIgnoreCase("OWActivity")) {
+        if (activity.getClass().getSimpleName().equalsIgnoreCase("OWActivity.java")) {
             activity.finish();
         }
         final Intent intent = new Intent(activity, OWActivity.class);
