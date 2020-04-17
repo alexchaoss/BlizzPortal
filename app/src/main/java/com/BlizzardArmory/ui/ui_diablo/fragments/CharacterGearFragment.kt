@@ -91,8 +91,72 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0F)
         params.setMargins(0, 0, 0, 20)
         closeButton!!.layoutParams = params
+        setCloseButton()
+
+        item_name.setTextColor(Color.WHITE)
+        item_name.gravity = View.TEXT_ALIGNMENT_CENTER
+        dps = TextView(view.context)
+        dps!!.setTextColor(Color.WHITE)
+        armor = TextView(view.context)
+        armor!!.setTextColor(Color.WHITE)
+        primarystats = TextView(view.context)
+        primarystats!!.setTextColor(Color.WHITE)
+        secondarystats = TextView(view.context)
+        secondarystats!!.setTextColor(Color.WHITE)
+        gems = TextView(view.context)
+        gems!!.setTextColor(Color.WHITE)
+        set = TextView(view.context)
+        transmog = TextView(view.context)
+        transmog!!.setTextColor(Color.WHITE)
+        flavortext = TextView(view.context)
+        flavortext!!.setTextColor(Color.WHITE)
+        misctext = TextView(view.context)
+        misctext!!.setTextColor(Color.WHITE)
+        layoutParamsStats = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+        layoutParamsStats!!.setMargins(20, 0, 20, 0)
+
         addImageViewItemsToList()
         setItemInformation()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setCloseButton() {
+        closeButton!!.setOnTouchListener { v: View, event: MotionEvent ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                v.performClick()
+                Log.i("CLOSE", "CLICKED")
+                item_scroll_view!!.visibility = View.GONE
+                item_stats!!.removeView(primarystats)
+                item_stats!!.removeView(secondarystats)
+                item_stats!!.removeView(gems)
+                item_stats!!.removeView(transmog)
+                item_stats!!.removeView(flavortext)
+                item_stats!!.removeView(misctext)
+                armor_damage!!.removeView(dps)
+                armor_damage!!.removeView(armor)
+                item_stats!!.removeView(closeButton)
+                item_stats!!.removeView(set)
+                weapon_effect!!.setImageDrawable(null)
+                item_scroll_view!!.scrollTo(0, 0)
+            }
+            false
+        }
+    }
+
+    private fun closeViewsWithoutButton() {
+        item_scroll_view!!.visibility = View.GONE
+        item_stats!!.removeView(primarystats)
+        item_stats!!.removeView(secondarystats)
+        item_stats!!.removeView(gems)
+        item_stats!!.removeView(transmog)
+        item_stats!!.removeView(flavortext)
+        item_stats!!.removeView(misctext)
+        armor_damage!!.removeView(dps)
+        armor_damage!!.removeView(armor)
+        item_stats!!.removeView(closeButton)
+        item_stats!!.removeView(set)
+        weapon_effect!!.setImageDrawable(null)
+        item_scroll_view!!.scrollTo(0, 0)
     }
 
     @Throws(IOException::class)
@@ -158,13 +222,12 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
             for (j in items[index].attributesHtml.primary.indices) {
                 var attribute = items[index].attributesHtml.primary[j].replace("<span class=\"tooltip-icon-enchant\"></span>".toRegex(), "<img src=\"utility\">")
                 attribute = attribute.replace("<span class=\"tooltip-icon-utility\"></span>".toRegex(), "<img src=\"utility\">")
-                attribute = attribute.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "<img src=\"primary" +
-                        "\">")
+                attribute = attribute.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "<img src=\"primary" + "\">")
                 attribute = attribute.replace("span class=\"d3-color-ff".toRegex(), "font color=\"#")
                 attribute = attribute.replace("span class=\"d3-color-magic".toRegex(), "font color=\"#7979d4")
                 primary.append(attribute.replace("</span>".toRegex(), "</font>")).append("<br>")
             }
-            Log.i("Test secondary", primary.toString())
+            Log.i("Test primary", primary.toString())
         } catch (e: Exception) {
             primary.append("")
         }
@@ -209,7 +272,7 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
         secondaryStatsMap[index] = secondary.toString()
         gemsMap[index] = gem.toString()
         try {
-            setOnPressItemInformation(imageViewItem[items[index].slots], index)
+            setOnPressItemInformation(imageViewItem[items[index].slots]!!, index)
         } catch (e: Exception) {
             Log.e("Item", "empty")
         }
@@ -217,13 +280,13 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnPressItemInformation(imageView: ImageView?, index: Int) {
-        imageView!!.setOnTouchListener { _: View?, event: MotionEvent ->
+        imageView?.setOnTouchListener { _: View?, event: MotionEvent ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val backgroundStroke = GradientDrawable()
                 backgroundStroke.setColor(Color.parseColor("#000000"))
                 backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(index)))
-                item_scroll_view!!.background = backgroundStroke
-                item_name!!.background = getHeaderBackground(index)
+                item_scroll_view.background = backgroundStroke
+                item_name.background = getHeaderBackground(index)
                 val background = selectBackgroundColor(items[index].displayColor)
                 val backgroundStrokeTooltipIcon = GradientDrawable()
                 backgroundStrokeTooltipIcon.setStroke(3, Color.parseColor(selectColor(items[index].displayColor)))
@@ -232,30 +295,29 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                 layers[0] = background
                 layers[1] = backgroundStrokeTooltipIcon
                 val layerList = LayerDrawable(layers)
-                item_icon!!.background = layerList
-                item_icon!!.setImageDrawable(imageView.drawable)
-                val jewelleryParams = RelativeLayout.LayoutParams((67 * Resources.getSystem().displayMetrics.density).toInt(),
-                        (67 * Resources.getSystem().displayMetrics.density).toInt())
-                resources
+                item_icon.background = layerList
+                item_icon.setImageDrawable(imageView.drawable)
+
+                val jewelleryParams = RelativeLayout.LayoutParams((67 * Resources.getSystem().displayMetrics.density).toInt(), (67 * Resources.getSystem().displayMetrics.density).toInt())
                 jewelleryParams.addRule(RelativeLayout.CENTER_IN_PARENT)
-                val normalIconParams = RelativeLayout.LayoutParams((67 * Resources.getSystem().displayMetrics.density).toInt(),
-                        (130 * Resources.getSystem().displayMetrics.density).toInt())
+                val normalIconParams = RelativeLayout.LayoutParams((67 * Resources.getSystem().displayMetrics.density).toInt(), (130 * Resources.getSystem().displayMetrics.density).toInt())
                 normalIconParams.addRule(RelativeLayout.CENTER_IN_PARENT)
+
                 if (items[index].slots == "neck" || items[index].slots == "leftFinger" || items[index].slots == "rightFinger" || items[index].slots == "waist") {
-                    item_icon!!.layoutParams = jewelleryParams
+                    item_icon.layoutParams = jewelleryParams
                 } else {
-                    item_icon!!.layoutParams = normalIconParams
+                    item_icon.layoutParams = normalIconParams
                 }
                 try {
                     val color = selectColor(items[index].displayColor)
-                    item_name!!.text = Html.fromHtml("<font color=\"" + color + "\">" + items[index].name + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                    item_name.text = Html.fromHtml("<font color=\"" + color + "\">" + items[index].name + "</font>", Html.FROM_HTML_MODE_LEGACY)
                     if (items[index].name.length > 23) {
-                        item_name!!.textSize = 18f
+                        item_name.textSize = 18f
                     }
-                    item_name!!.gravity = Gravity.CENTER_HORIZONTAL
-                    item_name!!.gravity = Gravity.CENTER_VERTICAL
+                    item_name.gravity = Gravity.CENTER_HORIZONTAL
+                    item_name.gravity = Gravity.CENTER_VERTICAL
                 } catch (e: Exception) {
-                    Log.e("Error", e.toString())
+                    Log.e("Error", "Name", e)
                 }
                 var typeNameString = items[index].typeName
                 if (typeNameString.length > 22) {
@@ -264,33 +326,33 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                     val lastSpace2 = beforeLastSpace.lastIndexOf(" ")
                     typeNameString = typeNameString.substring(0, lastSpace2) + "<br>" + typeNameString.substring(lastSpace2)
                 }
-                typeName!!.text = Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY)
-                typeName!!.setTextColor(Color.parseColor(selectColor(items[index].displayColor)))
-                slot!!.text = items[index].slots
+                typeName.text = Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY)
+                typeName.setTextColor(Color.parseColor(selectColor(items[index].displayColor)))
+                slot.text = items[index].slots
                 try {
                     if (items[index].armor > 0) {
                         armor!!.text = Html.fromHtml("<big><big><big><big><big>" + Math.round(items[index].armor).toInt() + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>", Html.FROM_HTML_MODE_LEGACY)
                         armor_damage!!.addView(armor, layoutParamsStats)
                     }
                 } catch (e: Exception) {
-                    Log.e("Error", e.toString())
+                    Log.e("Error", "Armor", e)
                 }
                 try {
                     if (!items[index].type.twoHanded && items[index].minDamage > 0) {
-                        slot!!.text = Html.fromHtml("1-Hand", Html.FROM_HTML_MODE_LEGACY)
+                        slot.text = Html.fromHtml("1-Hand", Html.FROM_HTML_MODE_LEGACY)
                     } else if (items[index].type.twoHanded && items[index].minDamage > 0) {
-                        slot!!.text = Html.fromHtml("2-Hand", Html.FROM_HTML_MODE_LEGACY)
+                        slot.text = Html.fromHtml("2-Hand", Html.FROM_HTML_MODE_LEGACY)
                     } else {
-                        slot!!.text = items[index].slots
+                        slot.text = items[index].slots
                     }
                 } catch (e: Exception) {
-                    Log.e("Error", "No TYPE")
+                    Log.e("Error", "No TYPE", e)
                 }
                 try {
                     if (items[index].minDamage > 0 && items[index].maxDamage > 0) {
                         val formatter: NumberFormat = DecimalFormat("#0.0")
                         val dpsText = ((items[index].minDamage + items[index].maxDamage) / 2 * items[index].attacksPerSecond * 10 / 10).roundToInt().toDouble()
-                        dps!!.text = Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
+                        dps?.text = Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
                                 + formatter.format(items[index].minDamage) + " - "
                                 + formatter.format(items[index].maxDamage) + "<font color=\"#696969\"> Damage</font><br>"
                                 + formatter.format(items[index].attacksPerSecond) + "<font color=\"#696969\"> Attacks per Second</font><br>", Html.FROM_HTML_MODE_LEGACY)
@@ -309,7 +371,7 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                     }
                 } catch (e: Exception) {
                     image_stats?.setBackgroundResource(0)
-                    dps!!.text = ""
+                    dps?.text = ""
                 }
                 try {
                     primarystats!!.text = Html.fromHtml("Primary<br>" + primaryStatsMap[index], Html.FROM_HTML_MODE_LEGACY, Html.ImageGetter { source: String? ->
@@ -337,7 +399,7 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                     gems!!.gravity = Gravity.CENTER_VERTICAL
                     item_stats!!.addView(gems, gemParams)
                 } catch (e: Exception) {
-                    Log.e("Error", e.toString())
+                    Log.e("Error", "Gems", e)
                 }
                 try {
                     var setText = items[index].set.descriptionHtml
@@ -346,8 +408,7 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                     firstPart = firstPart.replace("<br />".toRegex(), "<br />&nbsp;&nbsp;&nbsp;")
                     val lastPart = setText.substring(setText.indexOf("(2)") - 38)
                     setText = firstPart + lastPart
-                    setText = setText.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"primary" +
-                            "\">")
+                    setText = setText.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"primary" + "\">")
                     setText = setText.replace("<span class=\"tooltip-icon-utility\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"utility\">")
                     setText = setText.replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#").replace("</span>".toRegex(), "</font>")
                     Log.i("TEST", setText)
@@ -359,14 +420,14 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                     }, null)
                     item_stats!!.addView(set, layoutParamsStats)
                 } catch (e: Exception) {
-                    Log.e("Error", e.toString())
+                    Log.e("Error", "Set", e)
                 }
                 try {
                     transmog!!.text = Html.fromHtml("<font color=\"#7979d4\">Transmogrification:</font><br>" + "<font color=\""
                             + selectColor(items[index].transmog.displayColor) + "\">" + items[index].transmog.name + "</font><br>", Html.FROM_HTML_MODE_LEGACY)
                     item_stats!!.addView(transmog, layoutParamsStats)
                 } catch (e: Exception) {
-                    Log.e("Error", e.toString())
+                    Log.e("Error", "Transmog", e)
                 }
                 try {
                     if (items[index].flavorText != null) {
@@ -374,7 +435,7 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                         item_stats!!.addView(flavortext, layoutParamsStats)
                     }
                 } catch (e: Exception) {
-                    Log.e("Error", e.toString())
+                    Log.e("Error", "FlavorText", e)
                 }
                 try {
                     if (items[index].accountBound) {
@@ -386,15 +447,15 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
                     }
                     item_stats!!.addView(misctext, layoutParamsStats)
                 } catch (e: Exception) {
-                    Log.e("Error", e.toString())
+                    Log.e("Error", "Misc", e)
                 }
                 try {
                     (closeButton!!.parent as ViewGroup).removeView(closeButton)
                 } catch (e: Exception) {
                     Log.e("Parent", "None")
                 }
-                item_stats!!.addView(closeButton)
-                item_scroll_view!!.visibility = View.VISIBLE
+                item_stats.addView(closeButton)
+                item_scroll_view.visibility = View.VISIBLE
             }
             true
         }
@@ -506,7 +567,16 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        TODO("Not yet implemented")
+        return if (URLConstants.loading) {
+            true
+        } else {
+            if (item_scroll_view!!.visibility == View.VISIBLE) {
+                closeViewsWithoutButton()
+                true
+            } else {
+                false
+            }
+        }
     }
 
 }

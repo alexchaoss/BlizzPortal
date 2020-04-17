@@ -105,14 +105,14 @@ class SC2Activity : AppCompatActivity() {
     }
 
     private fun downloadAccountInformation() {
-        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation.userID, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation.userID, MainActivity.locale, bnOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<List<Player>> {
             override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
                 when {
                     response.isSuccessful -> {
                         accountInformation = response.body()!!
                         if (accountInformation.isNotEmpty()) {
-                            val call2: Call<Profile> = RetroClient.getClient.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                            val call2: Call<Profile> = RetroClient.getClient.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, MainActivity.locale, bnOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
                             call2.enqueue(object : Callback<Profile> {
                                 override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
                                     when {
