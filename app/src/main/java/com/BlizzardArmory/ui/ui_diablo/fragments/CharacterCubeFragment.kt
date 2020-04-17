@@ -39,10 +39,6 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
     private val singleItem = ArrayList<SingleItem>()
     private var characterInformation: CharacterInformation? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.d3_cube_fragment, container, false)
     }
@@ -52,6 +48,10 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
         val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+
+        cube_armor_item.setImageResource(0)
+        cube_sword_item.setImageResource(0)
+        cube_ring_item.setImageResource(0)
     }
 
     override fun onStart() {
@@ -110,7 +110,8 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
     private fun downloadCubeItems() {
         for (i in characterInformation!!.legendaryPowers.indices) {
             Log.i("Cube", characterInformation!!.legendaryPowers[i].tooltipParams)
-            val call: Call<SingleItem> = RetroClient.getClient.getItem(characterInformation!!.legendaryPowers[i].tooltipParams, MainActivity.locale)
+            val endpoint = characterInformation!!.legendaryPowers[i].tooltipParams.replace("/item/", "")
+            val call: Call<SingleItem> = RetroClient.getClient.getItem(endpoint, MainActivity.locale)
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
                     when {
@@ -164,7 +165,7 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        TODO("Not yet implemented")
+        return URLConstants.loading
     }
 
 }

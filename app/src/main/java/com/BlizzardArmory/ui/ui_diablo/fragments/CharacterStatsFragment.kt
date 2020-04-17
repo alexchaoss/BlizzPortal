@@ -157,24 +157,6 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
         }
     }
 
-    /*private fun closeViewsWithoutButton() {
-        item_scroll_view!!.visibility = View.GONE
-        skill_tooltip_scroll!!.visibility = View.GONE
-        item_stats!!.removeView(primarystats)
-        item_stats!!.removeView(secondarystats)
-        item_stats!!.removeView(gems)
-        item_stats!!.removeView(transmog)
-        item_stats!!.removeView(flavortext)
-        item_stats!!.removeView(misctext)
-        armor_damage!!.removeView(dps)
-        armor_damage!!.removeView(armor)
-        item_stats!!.removeView(closeButton)
-        item_stats!!.removeView(set)
-        weapon_effect!!.setImageDrawable(null)
-        item_scroll_view!!.scrollTo(0, 0)
-    }*/
-
-
     private fun setName() {
         val levelClass = ("<font color=#d4a94e>" + characterInformation!!.level + "</font>" + "<font color=#555da5> (" + characterInformation!!.paragonLevel
                 + ")</font> <font color=#d4a94e>" + characterInformation!!.class_)

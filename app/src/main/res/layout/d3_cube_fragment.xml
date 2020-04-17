@@ -18,10 +18,9 @@
             android:id="@+id/cube_sword"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:layout_marginBottom="190dp"
             android:contentDescription="@string/sword_for_cube"
             android:src="@drawable/cubeframe_sword"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/cube_ring"
             app:layout_constraintEnd_toStartOf="@id/cube_armor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,10 +42,9 @@
             android:id="@+id/cube_armor"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:layout_marginBottom="190dp"
             android:contentDescription="@string/armor_for_cube"
             android:src="@drawable/cubeframe_armor"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/cube_ring"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cube_sword"
             app:layout_constraintTop_toTopOf="parent" />
@@ -64,25 +62,17 @@
             app:layout_constraintStart_toStartOf="@id/cube_armor"
             app:layout_constraintTop_toTopOf="@id/cube_armor" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/labelBarrier"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="cube_armor,cube_armor_item,cube_sword,cube_sword_item"
-            app:layout_constraintBottom_toBottomOf="@id/cube_armor" />
 
         <ImageView
             android:id="@+id/cube_ring"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:layout_marginTop="40dp"
             android:contentDescription="@string/ring_for_cube"
             android:src="@drawable/cubeframe_ring"
-            app:layout_constraintBottom_toTopOf="@id/labelBarrier2"
+            app:layout_constraintBottom_toTopOf="@id/cube_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/labelBarrier" />
+            app:layout_constraintTop_toBottomOf="@id/cube_armor" />
 
         <ImageView
             android:id="@+id/cube_ring_item"
@@ -97,29 +87,19 @@
             app:layout_constraintStart_toStartOf="@id/cube_ring"
             app:layout_constraintTop_toTopOf="@id/cube_ring" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/labelBarrier2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="cube_ring,cube_ring_item"
-            app:layout_constraintBottom_toBottomOf="@id/cube_ring" />
-
         <TextView
             android:id="@+id/cube_text"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginStart="25dp"
-            android:layout_marginTop="10dp"
             android:layout_marginEnd="25dp"
-            android:layout_marginBottom="50dp"
             android:gravity="center_horizontal|center_vertical"
             android:textAlignment="center"
             android:textColor="#fff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/labelBarrier2" />
+            app:layout_constraintTop_toBottomOf="@id/cube_ring" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

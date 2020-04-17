@@ -268,7 +268,7 @@ interface NetworkServices {
      * @param accessToken the access token
      * @return the item
      */
-    @GET("d3/data/{slug}")
+    @GET("d3/data/item/{slug}")
     fun getItem(@Path("slug") slug: String?,
                 @Query("locale") locale: String?): Call<SingleItem>
 
@@ -284,7 +284,8 @@ interface NetworkServices {
     @GET("sc2/player/{id}")
     fun getSc2Player(@Path("id") id: String?,
                      @Query("locale") locale: String?,
-                     @Query("token") accessToken: String?): Call<List<Player>>
+                     @Query("token") accessToken: String?,
+                     @Query("region") region: String?): Call<List<Player>>
 
     /**
      * Gets sc 2 profile.
@@ -301,7 +302,8 @@ interface NetworkServices {
                       @Path("realm_id") realmId: Int,
                       @Path("profile_id") profileId: String?,
                       @Query("locale") locale: String?,
-                      @Query("token") accessToken: String?): Call<Profile>
+                      @Query("token") accessToken: String?,
+                      @Query("region") region: String?): Call<Profile>
 
     /**
      * Gets ow profile.

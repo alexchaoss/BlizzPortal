@@ -32,6 +32,7 @@ import com.BlizzardArmory.ui.ui_diablo.CharacterEvent
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_skill_fragment.*
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -51,7 +52,7 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
     private val skillLayoutList = ArrayList<ImageView>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.d3_gear_fragment, container, false)
+        return inflater.inflate(R.layout.d3_skill_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,11 +66,12 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0F)
         params.setMargins(0, 0, 0, 20)
         closeButton!!.layoutParams = params
+        setCloseButton()
 
         val skillTooltipBG = GradientDrawable()
         skillTooltipBG.setStroke(6, Color.parseColor("#2e2a27"))
         skillTooltipBG.setColor(Color.BLACK)
-        //skill_tooltip_scroll.background = skillTooltipBG
+        skill_tooltip_scroll.background = skillTooltipBG
         Collections.addAll(skillList, skill1_icon, skill2_icon, skill3_icon, skill4_icon, skill5_icon, skill6_icon)
         Collections.addAll(skillRuneList, skill1_rune, skill2_rune, skill3_rune, skill4_rune, skill5_rune, skill6_rune)
         Collections.addAll(skillNameList, skill1_name, skill2_name, skill3_name, skill4_name, skill5_name, skill6_name)
@@ -78,6 +80,21 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
         passiveList.add(passive2)
         passiveList.add(passive3)
         passiveList.add(passive4)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    private fun closeViewsWithoutButton() {
+        skill_tooltip_scroll!!.visibility = View.GONE
+        skill_tooltip_scroll!!.scrollTo(0, 0)
     }
 
     private fun downloadSkillIcons() {
@@ -119,11 +136,11 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
         skillLayoutList[Objects.requireNonNull(skillIcons[tempKey])!!.first].setOnTouchListener { _: View?, event: MotionEvent ->
             tooltip_rune_icon!!.visibility = View.VISIBLE
             try {
-                //(closeButton!!.parent as ViewGroup).removeView(closeButton)
+                (closeButton!!.parent as ViewGroup).removeView(closeButton)
             } catch (e: Exception) {
                 Log.e("Parent", "None")
             }
-            //skill_tooltip!!.addView(closeButton)
+            skill_tooltip!!.addView(closeButton)
             if (event.action == MotionEvent.ACTION_DOWN) {
                 skill_name!!.text = Objects.requireNonNull(skillIcons[tempKey])!!.second.skill.name
                 tooltip_skill_icon!!.setImageDrawable(icon)
@@ -200,11 +217,11 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
             tooltip_rune_icon!!.setImageResource(0)
             tooltip_rune_icon!!.visibility = View.GONE
             try {
-                //(closeButton!!.parent as ViewGroup).removeView(closeButton)
+                (closeButton!!.parent as ViewGroup).removeView(closeButton)
             } catch (e: Exception) {
                 Log.e("Parent", "None")
             }
-            //skill_tooltip!!.addView(closeButton)
+            skill_tooltip!!.addView(closeButton)
             if (event.action == MotionEvent.ACTION_DOWN) {
                 skill_name!!.text = Objects.requireNonNull(passiveIcons[tempKey])!!.second.name
                 tooltip_skill_icon!!.setImageDrawable(icon)
@@ -247,7 +264,16 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        TODO("Not yet implemented")
+        return if (URLConstants.loading) {
+            true
+        } else {
+            if (skill_tooltip_scroll!!.visibility == View.VISIBLE) {
+                closeViewsWithoutButton()
+                true
+            } else {
+                false
+            }
+        }
     }
 
 }
