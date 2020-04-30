@@ -24,11 +24,12 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.events.ClassEvent
+import com.BlizzardArmory.events.FactionEvent
+import com.BlizzardArmory.events.NetworkEvent
+import com.BlizzardArmory.events.RetryEvent
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_warcraft.events.ClassEvent
-import com.BlizzardArmory.ui.ui_warcraft.events.FactionEvent
-import com.BlizzardArmory.ui.ui_warcraft.events.RetryEvent
 import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.warcraft.equipment.Equipment
 import com.BlizzardArmory.warcraft.equipment.EquippedItem
@@ -156,7 +157,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
     private fun downloadTalents() {
         val call: Call<Talents> = RetroClient.getClient.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Talents> {
             override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
                 if (response.isSuccessful) {
@@ -176,7 +177,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
     private fun downloadStats() {
         val call: Call<Statistic> = RetroClient.getClient.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Statistic> {
             override fun onResponse(call: Call<Statistic>, response: retrofit2.Response<Statistic>) {
                 when {
@@ -199,7 +200,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
     private fun downloadAndSetCharacterInformation() {
         val call: Call<CharacterSummary> = RetroClient.getClient.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<CharacterSummary> {
             override fun onResponse(call: Call<CharacterSummary>, response: retrofit2.Response<CharacterSummary>) {
                 when {
@@ -230,7 +231,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
 
     private fun downloadEquipment() {
         val call2: Call<Equipment> = RetroClient.getClient.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call2.enqueue(object : Callback<Equipment> {
             override fun onResponse(call: Call<Equipment>, response: retrofit2.Response<Equipment>) {
                 when {
@@ -259,7 +260,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Picasso.get().load(media?.renderUrl).into(background)
         } else {
             val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
-                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
             call.enqueue(object : Callback<Media> {
                 override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                     if (response.isSuccessful) {
@@ -324,7 +325,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Log.i("IMAGE", url)
         }
         url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-        val call: Call<com.BlizzardArmory.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale)
+        val call: Call<com.BlizzardArmory.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<com.BlizzardArmory.warcraft.equipment.media.Media> {
             override fun onResponse(call: Call<com.BlizzardArmory.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.warcraft.equipment.media.Media>) {
                 when {
@@ -891,7 +892,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     }
 
     private fun callErrorAlertDialog(responseCode: Int) {
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loading_circle?.visibility = View.GONE
         URLConstants.loading = false
         if (dialog == null) {
@@ -961,7 +962,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             layoutParams.setMargins(20, 20, 20, 20)
             dialog?.addContentView(linearLayout, layoutParamsWindow)
             dialog?.setOnCancelListener {
-
+                EventBus.getDefault().post(NetworkEvent(true))
             }
             button.setOnClickListener {
                 Log.i("RETRY", "CLICKED")

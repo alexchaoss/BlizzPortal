@@ -134,7 +134,8 @@ public class OWActivity extends AppCompatActivity {
         TextView btag = findViewById(R.id.btag_header);
         loadingCircle = findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
-        btag.setText(GamesActivity.userInformation.getBattleTag());
+        assert GamesActivity.Companion.getUserInformation() != null;
+        btag.setText(GamesActivity.Companion.getUserInformation().getBattleTag());
         avatar = findViewById(R.id.avatar);
         name = findViewById(R.id.name);
         levelIcon = findViewById(R.id.level_icon);
@@ -178,7 +179,7 @@ public class OWActivity extends AppCompatActivity {
         switchCompQuickRadius.setColor(Color.parseColor("#FFFFFF"));
         quickplay.setBackground(switchCompQuickRadius);
 
-        btag.setText(GamesActivity.userInformation.getBattleTag());
+        btag.setText(GamesActivity.Companion.getUserInformation().getBattleTag());
 
         bnOAuth2Params = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
 

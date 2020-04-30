@@ -8,8 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.events.BackPressEvent
+import com.BlizzardArmory.events.NetworkEvent
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.d3_gear_fragment.*
+import kotlinx.android.synthetic.main.d3_skill_fragment.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 private const val BTAG = "battletag"
@@ -66,6 +73,16 @@ class D3CharacterNav : Fragment(), IOnBackPressed {
         return view
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(btag: String, id: Long, region: String) =
@@ -78,7 +95,19 @@ class D3CharacterNav : Fragment(), IOnBackPressed {
                 }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun networkEventReceived(networkEvent: NetworkEvent) {
+        if (networkEvent.data) {
+            parentFragmentManager.beginTransaction().remove(this).commit()
+        }
+    }
+
     override fun onBackPressed(): Boolean {
-        return URLConstants.loading
+        return if (URLConstants.loading || skill_tooltip_scroll!!.visibility == View.VISIBLE || item_scroll_view!!.visibility == View.VISIBLE) {
+            EventBus.getDefault().post(BackPressEvent(true))
+            true
+        } else {
+            false
+        }
     }
 }

@@ -21,10 +21,10 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.events.ClassEvent
+import com.BlizzardArmory.events.RetryEvent
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_warcraft.events.ClassEvent
-import com.BlizzardArmory.ui.ui_warcraft.events.RetryEvent
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.warcraft.encounters.Expansions
@@ -95,7 +95,7 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
 
     private fun downloadEncounterInformation() {
         val call: Call<EncountersInformation> = RetroClient.getClient.getEncounters(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<EncountersInformation> {
             override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
                 val encounters = response.body()

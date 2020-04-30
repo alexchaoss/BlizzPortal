@@ -52,6 +52,7 @@ class SC2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sc2_activity)
+        btag_header.text = GamesActivity.userInformation!!.battleTag
 
         val summaryBG = GradientDrawable()
         summaryBG.setStroke(6, Color.parseColor("#122a42"))
@@ -97,7 +98,7 @@ class SC2Activity : AppCompatActivity() {
 
         //Button calls
         wowButton.setOnClickListener { callNextActivity(WoWActivity::class.java) }
-        diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@SC2Activity, bnOAuth2Params) }
+        diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@SC2Activity, bnOAuth2Params!!) }
         overwatchButton.setOnClickListener {
             OWPlatformChoiceDialog.myProfileChosen = false
             OWPlatformChoiceDialog.overwatchPrompt(this@SC2Activity, bnOAuth2Params)
@@ -105,14 +106,15 @@ class SC2Activity : AppCompatActivity() {
     }
 
     private fun downloadAccountInformation() {
-        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation.userID, MainActivity.locale, bnOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation!!.userID, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<List<Player>> {
             override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
                 when {
                     response.isSuccessful -> {
                         accountInformation = response.body()!!
                         if (accountInformation.isNotEmpty()) {
-                            val call2: Call<Profile> = RetroClient.getClient.getSc2Profile(accountInformation[0].regionId, accountInformation[0].realmId, accountInformation[0].profileId, MainActivity.locale, bnOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+                            val call2: Call<Profile> = RetroClient.getClient.getSc2Profile(parseRegionId(accountInformation[0].regionId), accountInformation[0].realmId,
+                                    accountInformation[0].profileId, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
                             call2.enqueue(object : Callback<Profile> {
                                 override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
                                     when {
@@ -228,6 +230,16 @@ class SC2Activity : AppCompatActivity() {
         terran_level!!.text = terranTemp
         zerg_level!!.text = zergTemp
         protoss_level!!.text = protossTemp
+    }
+
+    private fun parseRegionId(regionId: Int): String {
+        when (regionId) {
+            1 -> return "US"
+            2 -> return "EU"
+            3 -> return "KO"
+            5 -> return "CN"
+        }
+        return "US"
     }
 
     private fun setStatisticsInformation() {

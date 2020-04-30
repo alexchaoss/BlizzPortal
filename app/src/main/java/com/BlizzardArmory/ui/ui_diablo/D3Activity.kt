@@ -54,7 +54,7 @@ class D3Activity : AppCompatActivity() {
         setContentView(R.layout.d3_activity)
 
         loadingCircle.visibility = View.VISIBLE
-        btag_header.text = GamesActivity.userInformation.battleTag
+        btag_header.text = GamesActivity.userInformation?.battleTag
         battleTag = intent.extras?.getString("battletag")
         selectedRegion = intent.extras?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -70,11 +70,11 @@ class D3Activity : AppCompatActivity() {
             OWPlatformChoiceDialog.myProfileChosen = false
             OWPlatformChoiceDialog.overwatchPrompt(this@D3Activity, bnOAuth2Params)
         }
-        search.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@D3Activity, bnOAuth2Params) }
+        search.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@D3Activity, bnOAuth2Params!!) }
     }
 
     private fun downloadAccountInformation() {
-        val call: Call<AccountInformation> = RetroClient.getClient.getD3Profile(battleTag, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<AccountInformation> = RetroClient.getClient.getD3Profile(battleTag, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<AccountInformation> {
             override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
                 if (response.isSuccessful) {
@@ -452,7 +452,7 @@ class D3Activity : AppCompatActivity() {
         }
     }
 
-    public fun showNoConnectionMessage(context: Context, responseCode: Int) {
+    fun showNoConnectionMessage(context: Context, responseCode: Int) {
         loadingCircle!!.visibility = View.GONE
         val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)

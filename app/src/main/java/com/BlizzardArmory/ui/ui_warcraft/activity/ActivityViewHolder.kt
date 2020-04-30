@@ -16,8 +16,8 @@ import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.events.NetworkEvent
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_warcraft.events.NetworkEvent
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.warcraft.account.Character
 import com.BlizzardArmory.warcraft.media.Media
@@ -83,7 +83,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
 
-        val call: Call<Media> = RetroClient.getClient.getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient.getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                 val media: Media? = response.body()

@@ -212,7 +212,7 @@ public class OWPlatformChoiceDialog {
             psButton.setTextColor(Color.BLACK);
             pcButton.setTextColor(Color.BLACK);
             myProfile.setTextColor(Color.WHITE);
-            username = GamesActivity.userInformation.getBattleTag();
+            username = GamesActivity.Companion.getUserInformation().getBattleTag();
             platform = "pc";
         });
     }

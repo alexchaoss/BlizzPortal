@@ -27,8 +27,8 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.diablo.character.Active
 import com.BlizzardArmory.diablo.character.CharacterInformation
 import com.BlizzardArmory.diablo.character.Skill
-import com.BlizzardArmory.ui.IOnBackPressed
-import com.BlizzardArmory.ui.ui_diablo.CharacterEvent
+import com.BlizzardArmory.events.BackPressEvent
+import com.BlizzardArmory.events.CharacterEvent
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_skill_fragment.*
@@ -37,7 +37,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
-class CharacterSkillFragment : Fragment(), IOnBackPressed {
+class CharacterSkillFragment : Fragment() {
 
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
@@ -257,23 +257,16 @@ class CharacterSkillFragment : Fragment(), IOnBackPressed {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(characterEvent: CharacterEvent) {
+    public fun characterEventReceived(characterEvent: CharacterEvent) {
         characterInformation = characterEvent.data
         downloadSkillIcons()
         downloadPssiveIcons()
     }
 
-    override fun onBackPressed(): Boolean {
-        return if (URLConstants.loading) {
-            true
-        } else {
-            if (skill_tooltip_scroll!!.visibility == View.VISIBLE) {
-                closeViewsWithoutButton()
-                true
-            } else {
-                false
-            }
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun backPressEventReceived(backPressEvent: BackPressEvent) {
+        if (backPressEvent.data) {
+            closeViewsWithoutButton()
         }
     }
-
 }
