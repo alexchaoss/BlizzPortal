@@ -22,10 +22,14 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.diablo.items.Item
 import com.BlizzardArmory.diablo.items.Items
-import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.events.BackPressEvent
+import com.BlizzardArmory.events.RetryEvent
 import com.BlizzardArmory.ui.MainActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_gear_fragment.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import java.io.IOException
 import java.text.DecimalFormat
@@ -37,7 +41,7 @@ private const val BATTLETAG = "battletag"
 private const val SELECTED_REGION = "region"
 private const val ID = "id"
 
-class CharacterGearFragment : Fragment(), IOnBackPressed {
+class CharacterGearFragment : Fragment() {
 
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
@@ -119,6 +123,16 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
         setItemInformation()
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setCloseButton() {
         closeButton!!.setOnTouchListener { v: View, event: MotionEvent ->
@@ -161,7 +175,7 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
 
     @Throws(IOException::class)
     private fun setItemInformation() {
-        val call: Call<Items> = RetroClient.getClient.getHeroItems(battletag, id, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<Items> = RetroClient.getClient.getHeroItems(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<Items> {
             override fun onResponse(call: Call<Items>, response: retrofit2.Response<Items>) {
                 when {
@@ -566,17 +580,18 @@ class CharacterGearFragment : Fragment(), IOnBackPressed {
         }
     }
 
-    override fun onBackPressed(): Boolean {
-        return if (URLConstants.loading) {
-            true
-        } else {
-            if (item_scroll_view!!.visibility == View.VISIBLE) {
-                closeViewsWithoutButton()
-                true
-            } else {
-                false
-            }
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun backPressReceived(backPressEvent: BackPressEvent) {
+        if (backPressEvent.data) {
+            closeViewsWithoutButton()
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun retryEventReceived(retryEvent: RetryEvent) {
+        if (retryEvent.data) {
+            addImageViewItemsToList()
+            setItemInformation()
+        }
+    }
 }

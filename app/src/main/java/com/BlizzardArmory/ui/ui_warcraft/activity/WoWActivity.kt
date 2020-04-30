@@ -48,7 +48,7 @@ class WoWActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.wow_activity)
-        btag_header.text = GamesActivity.userInformation.battleTag
+        btag_header.text = GamesActivity.userInformation!!.battleTag
 
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loadingCircle.visibility = View.VISIBLE
@@ -60,7 +60,7 @@ class WoWActivity : AppCompatActivity() {
         downloadWoWCharacters()
 
         //Button calls
-        diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@WoWActivity, bnOAuth2Params) }
+        diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@WoWActivity, bnOAuth2Params!!) }
         starcraft2Button.setOnClickListener { callNextActivity(SC2Activity::class.java) }
         overwatchButton.setOnClickListener {
             OWPlatformChoiceDialog.myProfileChosen = false
@@ -73,7 +73,7 @@ class WoWActivity : AppCompatActivity() {
     }
 
     private fun downloadWoWCharacters() {
-        val call: Call<Account> = RetroClient.getClient.getAccount(MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        val call: Call<Account> = RetroClient.getClient.getAccount(MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 when {

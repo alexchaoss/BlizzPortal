@@ -635,7 +635,7 @@
 
                 <ImageView
                     android:id="@+id/terran_image"
-                    android:layout_width="120dp"
+                    android:layout_width="0dp"
                     android:layout_height="170dp"
                     android:background="@drawable/summary_racelevel_terran_image"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -679,7 +679,7 @@
 
                 <ImageView
                     android:id="@+id/zerg_image"
-                    android:layout_width="120dp"
+                    android:layout_width="0dp"
                     android:layout_height="170dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
@@ -725,7 +725,7 @@
 
                 <ImageView
                     android:id="@+id/protoss_image"
-                    android:layout_width="120dp"
+                    android:layout_width="0dp"
                     android:layout_height="170dp"
                     android:background="@drawable/summary_racelevel_protoss_image"
                     app:layout_constraintBottom_toBottomOf="parent"

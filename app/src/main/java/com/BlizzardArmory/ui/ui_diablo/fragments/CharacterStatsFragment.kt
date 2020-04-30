@@ -22,17 +22,18 @@ import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.diablo.character.CharacterInformation
-import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.events.CharacterEvent
+import com.BlizzardArmory.events.NetworkEvent
+import com.BlizzardArmory.events.RetryEvent
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_diablo.CharacterEvent
 import kotlinx.android.synthetic.main.d3_character_fragment.*
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import java.text.DecimalFormat
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.*
 import kotlin.math.roundToInt
 
-class CharacterStatsFragment : Fragment(), IOnBackPressed {
+class CharacterStatsFragment : Fragment() {
     private var bnOAuth2Helper: BnOAuth2Helper? = null
 
     private var characterInformation: CharacterInformation? = null
@@ -48,7 +49,7 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        URLConstants.loading = true
+
         val bundle = requireArguments()
         id = bundle.getLong("id")
         battletag = bundle.getString("battletag")!!
@@ -58,7 +59,6 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
         skillTooltipBG.setStroke(6, Color.parseColor("#2e2a27"))
         skillTooltipBG.setColor(Color.BLACK)
         //setChatGem()
-        loading_circle.visibility = View.VISIBLE
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Params: BnOAuth2Params = requireActivity().intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
@@ -67,7 +67,10 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
     }
 
     private fun setCharacterInformation() {
-        val call: Call<CharacterInformation> = RetroClient.getClient.getD3Hero(battletag, id, MainActivity.locale, bnOAuth2Helper!!.accessToken)
+        URLConstants.loading = true
+        loading_circle.visibility = View.VISIBLE
+        dialog = null
+        val call: Call<CharacterInformation> = RetroClient.getClient.getD3Hero(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<CharacterInformation> {
             override fun onResponse(call: Call<CharacterInformation>, response: retrofit2.Response<CharacterInformation>) {
                 when {
@@ -170,13 +173,8 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
         character_name!!.text = characterInformation!!.name
     }
 
-    override fun onBackPressed(): Boolean {
-        return URLConstants.loading
-    }
-
     fun callErrorAlertDialog(responseCode: Int) {
-        val btn2 = AtomicBoolean(false)
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loading_circle!!.visibility = View.GONE
         URLConstants.loading = false
         if (dialog == null) {
@@ -210,23 +208,25 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
             val buttonLayout = LinearLayout(context)
             buttonLayout.orientation = LinearLayout.HORIZONTAL
             buttonLayout.gravity = Gravity.CENTER
-            buttonLayout.addView(button)
             when (responseCode) {
                 in 400..499 -> {
                     titleText.text = ErrorMessages.INFORMATION_OUTDATED
                     messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                    button.text = ErrorMessages.BACK
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
                 }
                 500 -> {
                     titleText.text = ErrorMessages.SERVERS_ERROR
                     messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                    button.text = ErrorMessages.BACK
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
                 }
                 else -> {
                     titleText.text = ErrorMessages.NO_INTERNET
                     messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
                     button.text = ErrorMessages.RETRY
                     button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button)
                     buttonLayout.addView(button2)
                 }
             }
@@ -243,23 +243,15 @@ class CharacterStatsFragment : Fragment(), IOnBackPressed {
             layoutParams.setMargins(20, 20, 20, 20)
             dialog?.addContentView(linearLayout, layoutParamsWindow)
             dialog?.setOnCancelListener {
-                if (btn2.get()) {
-                    parentFragmentManager.beginTransaction().remove(this@CharacterStatsFragment).commit()
-                } else {
-                    if (responseCode == 0) {
-                        val fragment = parentFragmentManager.findFragmentById(R.id.fragment) as CharacterStatsFragment?
-                        parentFragmentManager.beginTransaction()
-                                .detach(fragment!!)
-                                .attach(fragment)
-                                .commit()
-                    } else {
-                        parentFragmentManager.beginTransaction().remove(this@CharacterStatsFragment).commit()
-                    }
-                }
+                EventBus.getDefault().post(NetworkEvent(true))
             }
-            button.setOnClickListener { dialog?.cancel() }
+            button.setOnClickListener {
+                Log.i("RETRY", "CLICKED")
+                dialog?.hide()
+                setCharacterInformation()
+                EventBus.getDefault().post(RetryEvent(true))
+            }
             button2.setOnClickListener {
-                btn2.set(true)
                 dialog?.cancel()
             }
         }

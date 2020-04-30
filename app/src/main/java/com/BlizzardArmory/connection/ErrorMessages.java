@@ -29,6 +29,8 @@ public class ErrorMessages {
      * The constant UNAVAILABLE.
      */
     public static final String UNAVAILABLE = "Unavailable";
+
+    public static final String UNEXPECTED = "There was an unexpected error, please try again.";
     /**
      * The constant ACCOUNT_NOT_FOUND.
      */

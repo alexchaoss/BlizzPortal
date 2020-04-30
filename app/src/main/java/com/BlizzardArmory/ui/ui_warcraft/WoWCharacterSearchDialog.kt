@@ -164,7 +164,7 @@ object WoWCharacterSearchDialog {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         regions.adapter = arrayAdapter
         regions.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedRegion = parent.getItemAtPosition(position) as String
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
@@ -187,7 +187,7 @@ object WoWCharacterSearchDialog {
         val bnOAuth2Params: BnOAuth2Params = Objects.requireNonNull(activity).intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
         val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
 
-        val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT), MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: Response<Media>) {
                 media = response.body()

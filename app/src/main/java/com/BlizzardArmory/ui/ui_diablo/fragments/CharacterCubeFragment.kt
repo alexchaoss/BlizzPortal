@@ -19,9 +19,8 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.diablo.character.CharacterInformation
 import com.BlizzardArmory.diablo.item.SingleItem
-import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.events.CharacterEvent
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_diablo.CharacterEvent
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_cube_fragment.*
 import org.greenrobot.eventbus.EventBus
@@ -30,7 +29,7 @@ import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import java.util.*
 
-class CharacterCubeFragment : Fragment(), IOnBackPressed {
+class CharacterCubeFragment : Fragment() {
 
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
@@ -111,7 +110,7 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
         for (i in characterInformation!!.legendaryPowers.indices) {
             Log.i("Cube", characterInformation!!.legendaryPowers[i].tooltipParams)
             val endpoint = characterInformation!!.legendaryPowers[i].tooltipParams.replace("/item/", "")
-            val call: Call<SingleItem> = RetroClient.getClient.getItem(endpoint, MainActivity.locale)
+            val call: Call<SingleItem> = RetroClient.getClient.getItem(endpoint, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
                     when {
@@ -162,10 +161,6 @@ class CharacterCubeFragment : Fragment(), IOnBackPressed {
         characterInformation = characterEvent.data
         cubeIcons
         downloadCubeItems()
-    }
-
-    override fun onBackPressed(): Boolean {
-        return URLConstants.loading
     }
 
 }

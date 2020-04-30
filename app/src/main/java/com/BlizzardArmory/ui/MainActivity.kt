@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun spinnerSelector(spinner: Spinner) {
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 if (regionList.contains(parent.getItemAtPosition(position))) {
                     selectedRegion = parent.getItemAtPosition(position) as String
                 } else {
@@ -153,18 +153,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLocale() {
-        when (selectedLanguage) {
-            "English" -> locale = "en_US"
-            "Spanish" -> locale = "es_ES"
-            "French" -> locale = "fr_FR"
-            "Russian" -> locale = "ru_RU"
-            "German" -> locale = "de_DE"
-            "Portuguese" -> locale = "pt_BR"
-            "Italian" -> locale = "it_IT"
-            "Korean" -> locale = "ko_KR"
-            "Chinese" -> locale = "zh_CN"
-            "Taiwanese" -> locale = "zh_TW"
-            else -> locale = "en_US"
+        locale = when (selectedLanguage) {
+            "English" -> "en_US"
+            "Spanish" -> "es_ES"
+            "French" -> "fr_FR"
+            "Russian" -> "ru_RU"
+            "German" -> "de_DE"
+            "Portuguese" -> "pt_BR"
+            "Italian" -> "it_IT"
+            "Korean" -> "ko_KR"
+            "Chinese" -> "zh_CN"
+            "Taiwanese" -> "zh_TW"
+            else -> "en_US"
         }
         sharedPreferences!!.edit().putString("locale", locale).apply()
     }

@@ -58,6 +58,7 @@ interface NetworkServices {
     fun getMedia(@Path("character") character: String?,
                  @Path("realm") realm: String?,
                  @Query("locale") locale: String?,
+                 @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Media>
 
     /**
@@ -65,12 +66,12 @@ interface NetworkServices {
      *
      * @param url         the url
      * @param locale      the locale
-     * @param accessToken the access token
      * @return the dynamic equipment media
      */
     @GET
     fun getDynamicEquipmentMedia(@Url url: String?,
-                                 @Query("locale") locale: String?): Call<com.BlizzardArmory.warcraft.equipment.media.Media>
+                                 @Query("locale") locale: String?,
+                                 @Query("region") region: String?): Call<com.BlizzardArmory.warcraft.equipment.media.Media>
 
     /**
      * Gets encounters.
@@ -85,6 +86,7 @@ interface NetworkServices {
     fun getEncounters(@Path("character") character: String?,
                       @Path("realm") realm: String?,
                       @Query("locale") locale: String?,
+                      @Query("region") region: String?,
                       @Query("token") accessToken: String?): Call<EncountersInformation>
 
     /**
@@ -100,6 +102,7 @@ interface NetworkServices {
     fun getEquippedItems(@Path("character") character: String?,
                          @Path("realm") realm: String?,
                          @Query("locale") locale: String?,
+                         @Query("region") region: String?,
                          @Query("token") accessToken: String?): Call<Equipment>
 
     /**
@@ -115,6 +118,7 @@ interface NetworkServices {
     fun getStats(@Path("character") character: String?,
                  @Path("realm") realm: String?,
                  @Query("locale") locale: String?,
+                 @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Statistic>
 
     /**
@@ -130,6 +134,7 @@ interface NetworkServices {
     fun getSpecs(@Path("character") character: String?,
                  @Path("realm") realm: String?,
                  @Query("locale") locale: String?,
+                 @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Talents>
 
     /**
@@ -145,6 +150,7 @@ interface NetworkServices {
     fun getCharacter(@Path("character") character: String?,
                      @Path("realm") realm: String?,
                      @Query("locale") locale: String?,
+                     @Query("region") region: String?,
                      @Query("token") accessToken: String?): Call<CharacterSummary>
 
     /**
@@ -156,6 +162,7 @@ interface NetworkServices {
      */
     @GET("profile/user/wow")
     fun getAccount(@Query("locale") locale: String?,
+                   @Query("region") region: String?,
                    @Query("token") accessToken: String?): Call<Account>
 
     /**
@@ -171,6 +178,7 @@ interface NetworkServices {
     fun getPvPSummary(@Path("character") character: String?,
                       @Path("realm") realm: String?,
                       @Query("locale") locale: String?,
+                      @Query("region") region: String?,
                       @Query("token") accessToken: String?): Call<PvPSummary>
 
     /**
@@ -188,6 +196,7 @@ interface NetworkServices {
                        @Path("realm") realm: String?,
                        @Path("BRACKET") bracket: String?,
                        @Query("locale") locale: String?,
+                       @Query("region") region: String?,
                        @Query("token") accessToken: String?): Call<BracketStatistics>
 
     /**
@@ -195,11 +204,11 @@ interface NetworkServices {
      *
      * @param url         the url
      * @param locale      the locale
-     * @param accessToken the access token
      * @return the dynamic tier
      */
     @GET
     fun getDynamicTier(@Url url: String?,
+                       @Query("region") region: String?,
                        @Query("locale") locale: String?): Call<Tier>
 
     /**
@@ -215,10 +224,11 @@ interface NetworkServices {
     fun getReputations(@Path("character") character: String?,
                        @Path("realm") realm: String?,
                        @Query("locale") locale: String?,
+                       @Query("region") region: String?,
                        @Query("token") accessToken: String?): Call<Reputation>
     //D3 Endpoints
     /**
-     * Gets d 3 profile.
+     * Gets D3 profile.
      *
      * @param battletag   the battletag
      * @param locale      the locale
@@ -228,6 +238,7 @@ interface NetworkServices {
     @GET("d3/profile/{battletag}/")
     fun getD3Profile(@Path("battletag") battletag: String?,
                      @Query("locale") locale: String?,
+                     @Query("region") region: String?,
                      @Query("token") accessToken: String?): Call<AccountInformation>
 
     /**
@@ -243,6 +254,7 @@ interface NetworkServices {
     fun getD3Hero(@Path("battletag") battletag: String?,
                   @Path("id") id: Long,
                   @Query("locale") locale: String?,
+                  @Query("region") region: String?,
                   @Query("token") accessToken: String?): Call<CharacterInformation>
 
     /**
@@ -258,6 +270,7 @@ interface NetworkServices {
     fun getHeroItems(@Path("battletag") battletag: String?,
                      @Path("id") id: Long,
                      @Query("locale") locale: String?,
+                     @Query("region") region: String?,
                      @Query("token") accessToken: String?): Call<Items>
 
     /**
@@ -265,11 +278,11 @@ interface NetworkServices {
      *
      * @param slug        the slug
      * @param locale      the locale
-     * @param accessToken the access token
      * @return the item
      */
     @GET("d3/data/item/{slug}")
     fun getItem(@Path("slug") slug: String?,
+                @Query("region") region: String?,
                 @Query("locale") locale: String?): Call<SingleItem>
 
     /**
@@ -284,8 +297,8 @@ interface NetworkServices {
     @GET("sc2/player/{id}")
     fun getSc2Player(@Path("id") id: String?,
                      @Query("locale") locale: String?,
-                     @Query("token") accessToken: String?,
-                     @Query("region") region: String?): Call<List<Player>>
+                     @Query("region") region: String?,
+                     @Query("token") accessToken: String?): Call<List<Player>>
 
     /**
      * Gets sc 2 profile.
@@ -298,12 +311,12 @@ interface NetworkServices {
      * @return the sc 2 profile
      */
     @GET("sc2/profile/{region_id}/{realm_id}/{profile_id}")
-    fun getSc2Profile(@Path("region_id") regionId: Int,
+    fun getSc2Profile(@Path("region_id") regionId: String,
                       @Path("realm_id") realmId: Int,
                       @Path("profile_id") profileId: String?,
                       @Query("locale") locale: String?,
-                      @Query("token") accessToken: String?,
-                      @Query("region") region: String?): Call<Profile>
+                      @Query("region") region: String?,
+                      @Query("token") accessToken: String?): Call<Profile>
 
     /**
      * Gets ow profile.

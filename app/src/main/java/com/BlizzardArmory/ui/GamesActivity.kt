@@ -23,6 +23,7 @@ import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
+import com.crashlytics.android.Crashlytics
 import kotlinx.android.synthetic.main.activity_games.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,7 +40,6 @@ class GamesActivity : AppCompatActivity() {
         bnOAuth2Params = this.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
-
         downloadUserInfo()
     }
 
@@ -47,19 +47,30 @@ class GamesActivity : AppCompatActivity() {
         val call: Call<UserInformation> = RetroClient.getClient.getUserInfo(bnOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<UserInformation> {
             override fun onResponse(call: Call<UserInformation>, response: retrofit2.Response<UserInformation>) {
-                userInformation = response.body()!!
-                btag_header.text = userInformation.battleTag
-                Log.i("Btag", userInformation.battleTag)
-                Log.i("USER_ID", userInformation.userID)
-                wowButton.setOnClickListener { callNextActivity(WoWActivity::class.java) }
-                diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@GamesActivity, bnOAuth2Params) }
-                starcraft2Button.setOnClickListener { callNextActivity(SC2Activity::class.java) }
-                overwatchButton.setOnClickListener { OWPlatformChoiceDialog.overwatchPrompt(this@GamesActivity, bnOAuth2Params) }
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        userInformation = response.body()
+                        try {
+                            Crashlytics.log(Log.INFO, "Battle tag", response.body()!!.battleTag)
+                        } catch (e: Exception) {
+                            Crashlytics.log(Log.ERROR, "NULL BODY", "Body was null and crashed the app.")
+                        }
+                        btag_header.text = userInformation?.battleTag
+                        wowButton.setOnClickListener { callNextActivity(WoWActivity::class.java) }
+                        diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@GamesActivity, bnOAuth2Params!!) }
+                        starcraft2Button.setOnClickListener { callNextActivity(SC2Activity::class.java) }
+                        overwatchButton.setOnClickListener { OWPlatformChoiceDialog.overwatchPrompt(this@GamesActivity, bnOAuth2Params) }
+                    } else {
+                        callErrorAlertDialog(500)
+                    }
+                } else if (response.code() == 500) {
+                    callErrorAlertDialog(response.code())
+                }
             }
 
             override fun onFailure(call: Call<UserInformation>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
-                callErrorAlertDialog()
+                callErrorAlertDialog(0)
             }
         })
     }
@@ -77,7 +88,7 @@ class GamesActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun callErrorAlertDialog() {
+    private fun callErrorAlertDialog(responseCode: Int) {
         val builder = AlertDialog.Builder(this@GamesActivity, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val titleText = TextView(this@GamesActivity)
@@ -113,24 +124,54 @@ class GamesActivity : AppCompatActivity() {
         val buttonLayout = LinearLayout(this@GamesActivity)
         buttonLayout.orientation = LinearLayout.HORIZONTAL
         buttonLayout.gravity = Gravity.CENTER
-        buttonLayout.addView(button)
-        buttonLayout.addView(button2)
+        when (responseCode) {
+            in 201..499 -> {
+                titleText.text = ErrorMessages.UNAVAILABLE
+                messageText.text = ErrorMessages.UNEXPECTED
+                button.text = ErrorMessages.RETRY
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button)
+                buttonLayout.addView(button2)
+            }
+            500 -> {
+                titleText.text = ErrorMessages.SERVERS_ERROR
+                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                button.text = ErrorMessages.BACK
+                buttonLayout.addView(button)
+            }
+            else -> {
+                titleText.text = ErrorMessages.NO_INTERNET
+                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                button.text = ErrorMessages.RETRY
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button)
+                buttonLayout.addView(button2)
+            }
+        }
         val dialog = builder.show()
         Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val linearLayout = LinearLayout(this@GamesActivity)
+        val linearLayout = LinearLayout(this)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.gravity = Gravity.CENTER
+        linearLayout.setPadding(20, 20, 20, 20)
         linearLayout.addView(titleText)
         linearLayout.addView(messageText)
         linearLayout.addView(buttonLayout)
         dialog.addContentView(linearLayout, layoutParams)
-        dialog.setOnCancelListener { downloadUserInfo() }
+        if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
+            dialog.setOnCancelListener { finish() }
+        } else {
+            dialog.setOnCancelListener { downloadUserInfo() }
+        }
         button.setOnClickListener { dialog.cancel() }
-        button2.setOnClickListener { dialog.dismiss() }
+        button2.setOnClickListener {
+            dialog.dismiss()
+            onBackPressed()
+        }
     }
 
     companion object {
-        lateinit var userInformation: UserInformation
+        var userInformation: UserInformation? = null
     }
 }

@@ -21,10 +21,10 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.events.ClassEvent
+import com.BlizzardArmory.events.RetryEvent
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_warcraft.events.ClassEvent
-import com.BlizzardArmory.ui.ui_warcraft.events.RetryEvent
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.warcraft.reputations.characterreputations.RepByExpansion
 import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation
@@ -104,7 +104,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
 
     private fun downloadReputations() {
         val call: Call<Reputation> = RetroClient.getClient.getReputations(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper!!.accessToken)
+                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Reputation> {
             override fun onResponse(call: Call<Reputation>, response: Response<Reputation>) {
                 val reputation = response.body()

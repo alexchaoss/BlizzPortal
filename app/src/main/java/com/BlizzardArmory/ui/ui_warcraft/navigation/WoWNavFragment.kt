@@ -8,8 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.events.NetworkEvent
 import com.BlizzardArmory.ui.IOnBackPressed
 import com.google.android.material.tabs.TabLayout
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 private const val CHARACTER = "character"
@@ -68,6 +72,23 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
             }
         })
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun networkEventReceived(networkEvent: NetworkEvent) {
+        if (networkEvent.data) {
+            parentFragmentManager.beginTransaction().remove(this).commit()
+        }
     }
 
     companion object {
