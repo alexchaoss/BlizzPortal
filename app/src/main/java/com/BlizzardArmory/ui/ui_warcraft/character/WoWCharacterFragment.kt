@@ -351,7 +351,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                         val mediaItem = response.body()!!
                         imageURLs[itemSlot] = mediaItem.assets[0].value
                         Log.i("Icon URL", mediaItem.assets[0].value)
-                        Picasso.get().load(imageURLs[itemSlot]).into(gearImageView[itemSlot])
+                        Picasso.get().load(imageURLs[itemSlot]).placeholder(R.drawable.loading_placeholder).into(gearImageView[itemSlot])
                         setIcons(itemSlot, equipment, null)
                         if (index == equipment?.equippedItems!!.size - 1) {
                             loading_circle?.visibility = View.GONE

@@ -109,7 +109,7 @@ class ActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
-        Picasso.get().load(fullURL).into(avatar)
+        Picasso.get().load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar)
     }
 
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {

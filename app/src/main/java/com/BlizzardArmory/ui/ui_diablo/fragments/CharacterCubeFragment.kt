@@ -110,7 +110,7 @@ class CharacterCubeFragment : Fragment() {
         for (i in characterInformation!!.legendaryPowers.indices) {
             Log.i("Cube", characterInformation!!.legendaryPowers[i].tooltipParams)
             val endpoint = characterInformation!!.legendaryPowers[i].tooltipParams.replace("/item/", "")
-            val call: Call<SingleItem> = RetroClient.getClient.getItem(endpoint, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+            val call: Call<SingleItem> = RetroClient.getClient.getItem(endpoint, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale)
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
                     when {

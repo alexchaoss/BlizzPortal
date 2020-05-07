@@ -1,6 +1,5 @@
 package com.BlizzardArmory.ui
 
-import android.app.ActivityManager
 import android.content.*
 import android.graphics.Color
 import android.net.ConnectivityManager
@@ -13,6 +12,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AlertDialog
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         setLoginButtonToBattlenet()
 
-        clear_credentials.setOnClickListener { showNoConnectionMessage(this@MainActivity, 100) }
+        logout.setOnClickListener { clearCredentials() }
     }
 
     override fun onResume() {
@@ -212,7 +213,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearCredentials() {
-        (this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+        val webview = WebView(this)
+        webview.settings.javaScriptEnabled = true
+        webview.visibility = View.GONE
+        webview.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                Toast.makeText(applicationContext, "Logout Successful", Toast.LENGTH_SHORT).show()
+            }
+        }
+        webview.loadUrl("https://battle.net/login/logout")
     }
 
     override fun onBackPressed() {
@@ -285,14 +294,14 @@ class MainActivity : AppCompatActivity() {
                 buttonLayout.addView(button)
                 buttonLayout.addView(button2)
             }
-            100 -> {
+            /*100 -> {
                 button.text = "Yes"
                 button2.text = "Cancel"
                 titleText.text = "Warning"
                 buttonLayout.addView(button)
                 buttonLayout.addView(button2)
                 messageText.text = "You are about to clear the application data, this will close the application.\n Are you sure you want to continue?"
-            }
+            }*/
             else -> {
                 buttonLayout.addView(button)
                 button.text = "OK"

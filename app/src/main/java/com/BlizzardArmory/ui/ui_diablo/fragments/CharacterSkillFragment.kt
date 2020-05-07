@@ -121,7 +121,7 @@ class CharacterSkillFragment : Fragment() {
                 }, null)
             }
             Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(skillIcons[key])!!.second.skill.icon))
-                    .into(skillList[Objects.requireNonNull(skillIcons[key])!!.first], object : Callback {
+                    .placeholder(R.drawable.loading_placeholder).into(skillList[Objects.requireNonNull(skillIcons[key])!!.first], object : Callback {
                         override fun onSuccess() {
                             setOnTouchSkillTooltip(key, runeText, skillList[Objects.requireNonNull(skillIcons[key])!!.first].drawable)
                         }
@@ -200,7 +200,7 @@ class CharacterSkillFragment : Fragment() {
         }
         for (key in passiveIcons.keys) {
             Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(passiveIcons[key])!!.second.icon))
-                    .into(passiveList[Objects.requireNonNull(passiveIcons[key])!!.first], object : Callback {
+                    .placeholder(R.drawable.loading_placeholder).into(passiveList[Objects.requireNonNull(passiveIcons[key])!!.first], object : Callback {
                         override fun onSuccess() {
                             setOnTouchPassiveTooltip(key, passiveList[Objects.requireNonNull(passiveIcons[key])!!.first].drawable)
                         }
