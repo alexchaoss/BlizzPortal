@@ -43,7 +43,6 @@ class AuthorizationTokenActivity : AppCompatActivity() {
         webview = WebView(applicationContext)
         webview.settings.javaScriptEnabled = true
         webview.visibility = View.VISIBLE
-        setContentView(webview)
         val authorizationUrl = oAuth2Helper!!.authorizationUrl
         Log.i(BnConstants.TAG, "Using authorizationUrl = $authorizationUrl")
         handled = false
@@ -66,6 +65,7 @@ class AuthorizationTokenActivity : AppCompatActivity() {
             }
         }
         webview.loadUrl(authorizationUrl)
+        setContentView(webview)
     }
 
     override fun onResume() {

@@ -155,4 +155,5 @@
     <string name="rate_my_app">Rate my app!</string>
     <string name="rate_it">Here!</string>
     <string name="select_a_language">Select a language</string>
+    <string name="logout">LOGOUT</string>
 </resources>

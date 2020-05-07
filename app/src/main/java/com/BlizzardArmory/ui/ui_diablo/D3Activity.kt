@@ -52,8 +52,6 @@ class D3Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.d3_activity)
-
-        loadingCircle.visibility = View.VISIBLE
         btag_header.text = GamesActivity.userInformation?.battleTag
         battleTag = intent.extras?.getString("battletag")
         selectedRegion = intent.extras?.getString("region")
@@ -61,6 +59,11 @@ class D3Activity : AppCompatActivity() {
         bnOAuth2Params = intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         downloadAccountInformation()
 
         //Button calls

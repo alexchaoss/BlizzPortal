@@ -18,6 +18,7 @@ import com.BlizzardArmory.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.warcraft.statistic.Statistic
 import com.BlizzardArmory.warcraft.talents.Talents
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -28,6 +29,9 @@ import retrofit2.http.Url
  * The interface Network services.
  */
 interface NetworkServices {
+    @GET
+    fun logout(@Url url: String): Call<ResponseBody>
+
     @GET("oauth/token")
     fun getAccessToken(@Query("code") clientId: String?,
                        @Query("region") region: String?,

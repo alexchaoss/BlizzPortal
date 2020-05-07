@@ -223,7 +223,7 @@ class CharacterGearFragment : Fragment() {
         get() {
             for (key in itemIconURL.keys) {
                 if (itemIconURL[key] != null) {
-                    Picasso.get().load(itemIconURL[key]).into(imageViewItem[key])
+                    Picasso.get().load(itemIconURL[key]).placeholder(R.drawable.loading_placeholder).into(imageViewItem[key])
                 }
             }
         }

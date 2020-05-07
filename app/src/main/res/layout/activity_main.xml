@@ -52,12 +52,12 @@
             tools:layout_editor_absoluteY="436dp" />
 
         <Button
-            android:id="@+id/clear_credentials"
+            android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="50dp"
             android:background="@drawable/buttonstyle"
-            android:text="@string/clear_credentials"
+            android:text="@string/logout"
             android:textColor="#FFFFFF"
             android:textSize="23sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +86,7 @@
         android:layout_height="35dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/cog_settings"
+        android:src="@drawable/settings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/settings" />
