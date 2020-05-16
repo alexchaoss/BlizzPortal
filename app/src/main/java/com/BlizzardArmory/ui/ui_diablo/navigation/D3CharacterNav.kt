@@ -103,10 +103,14 @@ class D3CharacterNav : Fragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        return if (URLConstants.loading || skill_tooltip_scroll!!.visibility == View.VISIBLE || item_scroll_view!!.visibility == View.VISIBLE) {
-            EventBus.getDefault().post(BackPressEvent(true))
-            true
-        } else {
+        return try {
+            if (URLConstants.loading || skill_tooltip_scroll!!.visibility == View.VISIBLE || item_scroll_view!!.visibility == View.VISIBLE) {
+                EventBus.getDefault().post(BackPressEvent(true))
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
             false
         }
     }

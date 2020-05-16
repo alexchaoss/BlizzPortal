@@ -63,7 +63,8 @@ class D3Activity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
+        loadingCircle.visibility = View.VISIBLE
+        URLConstants.loading = true
         downloadAccountInformation()
 
         //Button calls
@@ -456,77 +457,79 @@ class D3Activity : AppCompatActivity() {
     }
 
     fun showNoConnectionMessage(context: Context, responseCode: Int) {
-        loadingCircle!!.visibility = View.GONE
-        val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        buttonParams.setMargins(10, 20, 10, 20)
-        val titleText = TextView(context)
-        titleText.textSize = 20f
-        titleText.gravity = Gravity.CENTER_HORIZONTAL
-        titleText.setPadding(0, 20, 0, 20)
-        titleText.layoutParams = layoutParams
-        titleText.setTextColor(Color.WHITE)
-        val messageText = TextView(context)
-        messageText.gravity = Gravity.CENTER_HORIZONTAL
-        messageText.layoutParams = layoutParams
-        messageText.setTextColor(Color.WHITE)
-        val button = Button(context)
-        button.textSize = 18f
-        button.setTextColor(Color.WHITE)
-        button.gravity = Gravity.CENTER
-        button.width = 200
-        button.layoutParams = buttonParams
-        button.background = context.getDrawable(R.drawable.buttonstyle)
-        val button2 = Button(context)
-        button2.textSize = 20f
-        button2.setTextColor(Color.WHITE)
-        button2.gravity = Gravity.CENTER
-        button2.width = 200
-        button2.height = 100
-        button2.layoutParams = buttonParams
-        button2.background = context.getDrawable(R.drawable.buttonstyle)
-        val buttonLayout = LinearLayout(context)
-        buttonLayout.orientation = LinearLayout.HORIZONTAL
-        buttonLayout.gravity = Gravity.CENTER
-        when (responseCode) {
-            in 400..499 -> {
-                titleText.text = ErrorMessages.INFORMATION_OUTDATED
-                messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                button2.text = ErrorMessages.BACK
-                buttonLayout.addView(button2)
+        if (!isFinishing) {
+            loadingCircle!!.visibility = View.GONE
+            val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
+            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            buttonParams.setMargins(10, 20, 10, 20)
+            val titleText = TextView(context)
+            titleText.textSize = 20f
+            titleText.gravity = Gravity.CENTER_HORIZONTAL
+            titleText.setPadding(0, 20, 0, 20)
+            titleText.layoutParams = layoutParams
+            titleText.setTextColor(Color.WHITE)
+            val messageText = TextView(context)
+            messageText.gravity = Gravity.CENTER_HORIZONTAL
+            messageText.layoutParams = layoutParams
+            messageText.setTextColor(Color.WHITE)
+            val button = Button(context)
+            button.textSize = 18f
+            button.setTextColor(Color.WHITE)
+            button.gravity = Gravity.CENTER
+            button.width = 200
+            button.layoutParams = buttonParams
+            button.background = context.getDrawable(R.drawable.buttonstyle)
+            val button2 = Button(context)
+            button2.textSize = 20f
+            button2.setTextColor(Color.WHITE)
+            button2.gravity = Gravity.CENTER
+            button2.width = 200
+            button2.height = 100
+            button2.layoutParams = buttonParams
+            button2.background = context.getDrawable(R.drawable.buttonstyle)
+            val buttonLayout = LinearLayout(context)
+            buttonLayout.orientation = LinearLayout.HORIZONTAL
+            buttonLayout.gravity = Gravity.CENTER
+            when (responseCode) {
+                in 400..499 -> {
+                    titleText.text = ErrorMessages.INFORMATION_OUTDATED
+                    messageText.text = ErrorMessages.LOGIN_TO_UPDATE
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
+                }
+                500 -> {
+                    titleText.text = ErrorMessages.SERVERS_ERROR
+                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button2)
+                }
+                else -> {
+                    titleText.text = ErrorMessages.NO_INTERNET
+                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                    button.text = ErrorMessages.RETRY
+                    button2.text = ErrorMessages.BACK
+                    buttonLayout.addView(button)
+                    buttonLayout.addView(button2)
+                }
             }
-            500 -> {
-                titleText.text = ErrorMessages.SERVERS_ERROR
-                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                button2.text = ErrorMessages.BACK
-                buttonLayout.addView(button2)
+            val dialog = builder.show()
+            Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+            val linearLayout = LinearLayout(context)
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.gravity = Gravity.CENTER
+            linearLayout.setPadding(20, 20, 20, 20)
+            linearLayout.addView(titleText)
+            linearLayout.addView(messageText)
+            linearLayout.addView(buttonLayout)
+            dialog.addContentView(linearLayout, layoutParams)
+            dialog.setOnCancelListener { downloadAccountInformation() }
+            button.setOnClickListener { dialog.cancel() }
+            button2.setOnClickListener {
+                dialog.dismiss()
+                onBackPressed()
             }
-            else -> {
-                titleText.text = ErrorMessages.NO_INTERNET
-                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                button.text = ErrorMessages.RETRY
-                button2.text = ErrorMessages.BACK
-                buttonLayout.addView(button)
-                buttonLayout.addView(button2)
-            }
-        }
-        val dialog = builder.show()
-        Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val linearLayout = LinearLayout(context)
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.gravity = Gravity.CENTER
-        linearLayout.setPadding(20, 20, 20, 20)
-        linearLayout.addView(titleText)
-        linearLayout.addView(messageText)
-        linearLayout.addView(buttonLayout)
-        dialog.addContentView(linearLayout, layoutParams)
-        dialog.setOnCancelListener { downloadAccountInformation() }
-        button.setOnClickListener { dialog.cancel() }
-        button2.setOnClickListener {
-            dialog.dismiss()
-            onBackPressed()
         }
     }
 
