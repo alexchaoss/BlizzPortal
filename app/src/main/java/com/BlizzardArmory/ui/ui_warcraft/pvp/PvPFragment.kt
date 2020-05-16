@@ -72,8 +72,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.wow_pvp_fragment, container, false)
-        return view
+        return inflater.inflate(R.layout.wow_pvp_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,9 +99,13 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
-                        val tier = response.body()
-                        setTierImage(tierimagerbg, tier!!)
-                        showBracketInformationOnTouch(layoutrbg, tier, pvpRBG!!)
+                        if (response.isSuccessful && response.body() != null) {
+                            val tier = response.body()
+                            setTierImage(tierimagerbg, tier!!)
+                            showBracketInformationOnTouch(layoutrbg, tier, pvpRBG!!)
+                        } else {
+                            layoutrbg.alpha = 0.4f
+                        }
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
@@ -129,9 +132,13 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
-                        val tier = response.body()
-                        setTierImage(tierimage3v3, tier!!)
-                        showBracketInformationOnTouch(layout3v3, tier, pvp3v3!!)
+                        if (response.isSuccessful && response.body() != null) {
+                            val tier = response.body()
+                            setTierImage(tierimage3v3, tier!!)
+                            showBracketInformationOnTouch(layout3v3, tier, pvp3v3!!)
+                        } else {
+                            layoutrbg.alpha = 0.4f
+                        }
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
@@ -158,9 +165,13 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 val call2: Call<Tier> = RetroClient.getClient.getDynamicTier(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
-                        val tier = response.body()
-                        setTierImage(tierimage2v2, tier!!)
-                        showBracketInformationOnTouch(layout2v2, tier, pvp2v2!!)
+                        if (response.isSuccessful && response.body() != null) {
+                            val tier = response.body()
+                            setTierImage(tierimage2v2, tier!!)
+                            showBracketInformationOnTouch(layout2v2, tier, pvp2v2!!)
+                        } else {
+                            layoutrbg.alpha = 0.4f
+                        }
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
