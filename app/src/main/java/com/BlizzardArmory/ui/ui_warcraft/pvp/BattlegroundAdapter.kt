@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.warcraft.pvp.summary.PvpMapStatistics
+import com.BlizzardArmory.model.warcraft.pvp.summary.PvpMapStatistics
 
 class BattlegroundAdapter(private val list: List<PvpMapStatistics>, private val context: Context)
     : RecyclerView.Adapter<BattlegroundViewHolder>() {

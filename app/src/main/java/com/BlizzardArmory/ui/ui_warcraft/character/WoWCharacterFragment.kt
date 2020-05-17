@@ -24,21 +24,21 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.events.ClassEvent
-import com.BlizzardArmory.events.FactionEvent
-import com.BlizzardArmory.events.NetworkEvent
-import com.BlizzardArmory.events.RetryEvent
-import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
+import com.BlizzardArmory.model.warcraft.equipment.Equipment
+import com.BlizzardArmory.model.warcraft.equipment.EquippedItem
+import com.BlizzardArmory.model.warcraft.equipment.Set
+import com.BlizzardArmory.model.warcraft.equipment.Socket
+import com.BlizzardArmory.model.warcraft.media.Media
+import com.BlizzardArmory.model.warcraft.statistic.Statistic
+import com.BlizzardArmory.model.warcraft.talents.Talent
+import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary
-import com.BlizzardArmory.warcraft.equipment.Equipment
-import com.BlizzardArmory.warcraft.equipment.EquippedItem
-import com.BlizzardArmory.warcraft.equipment.Set
-import com.BlizzardArmory.warcraft.equipment.Socket
-import com.BlizzardArmory.warcraft.media.Media
-import com.BlizzardArmory.warcraft.statistic.Statistic
-import com.BlizzardArmory.warcraft.talents.Talent
-import com.BlizzardArmory.warcraft.talents.Talents
+import com.BlizzardArmory.util.IOnBackPressed
+import com.BlizzardArmory.util.events.ClassEvent
+import com.BlizzardArmory.util.events.FactionEvent
+import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.events.RetryEvent
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
@@ -325,9 +325,9 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
             Log.i("IMAGE", url)
         }
         url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-        val call: Call<com.BlizzardArmory.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
-        call.enqueue(object : Callback<com.BlizzardArmory.warcraft.equipment.media.Media> {
-            override fun onResponse(call: Call<com.BlizzardArmory.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.warcraft.equipment.media.Media>) {
+        val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+        call.enqueue(object : Callback<com.BlizzardArmory.model.warcraft.equipment.media.Media> {
+            override fun onResponse(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>) {
                 when {
                     response.code() in 201..Int.MAX_VALUE -> {
                         if (index == equipment?.equippedItems!!.size - 1) {
@@ -361,7 +361,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
                 }
             }
 
-            override fun onFailure(call: Call<com.BlizzardArmory.warcraft.equipment.media.Media>, t: Throwable) {
+            override fun onFailure(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, t: Throwable) {
                 Log.e("Error", t.localizedMessage)
                 val errorIcon = resources.getDrawable(R.drawable.error_icon, requireContext().theme)
                 setIcons(itemSlot, equipment, errorIcon)
@@ -825,7 +825,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         return setInfo
     }
 
-    private fun rbgToHexHTML(color: com.BlizzardArmory.warcraft.equipment.Color): String {
+    private fun rbgToHexHTML(color: com.BlizzardArmory.model.warcraft.equipment.Color): String {
         return String.format("#%X", Color.rgb(color.r, color.g, color.b)).substring(3)
     }
 

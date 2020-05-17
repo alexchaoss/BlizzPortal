@@ -13,12 +13,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.R
-import com.BlizzardArmory.UserInformation
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity

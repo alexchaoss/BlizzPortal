@@ -11,9 +11,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.warcraft.encounters.Expansion
-import com.BlizzardArmory.warcraft.encounters.Instances
-import com.BlizzardArmory.warcraft.encounters.Modes
+import com.BlizzardArmory.model.warcraft.encounters.Expansion
+import com.BlizzardArmory.model.warcraft.encounters.Instances
+import com.BlizzardArmory.model.warcraft.encounters.Modes
 
 class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context, private val expansion: Expansion) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_list, parent, false)) {

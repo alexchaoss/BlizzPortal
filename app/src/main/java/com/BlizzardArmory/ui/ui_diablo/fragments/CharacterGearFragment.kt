@@ -20,11 +20,11 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.diablo.items.Item
-import com.BlizzardArmory.diablo.items.Items
-import com.BlizzardArmory.events.BackPressEvent
-import com.BlizzardArmory.events.RetryEvent
+import com.BlizzardArmory.model.diablo.items.Item
+import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.util.events.BackPressEvent
+import com.BlizzardArmory.util.events.RetryEvent
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_gear_fragment.*
 import org.greenrobot.eventbus.EventBus

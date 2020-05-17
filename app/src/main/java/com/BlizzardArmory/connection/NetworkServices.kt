@@ -1,24 +1,23 @@
 package com.BlizzardArmory.connection
 
-import com.BlizzardArmory.UserInformation
-import com.BlizzardArmory.diablo.account.AccountInformation
-import com.BlizzardArmory.diablo.character.CharacterInformation
-import com.BlizzardArmory.diablo.item.SingleItem
-import com.BlizzardArmory.diablo.items.Items
-import com.BlizzardArmory.starcraft.Player
-import com.BlizzardArmory.starcraft.profile.Profile
-import com.BlizzardArmory.warcraft.account.Account
-import com.BlizzardArmory.warcraft.charactersummary.CharacterSummary
-import com.BlizzardArmory.warcraft.encounters.EncountersInformation
-import com.BlizzardArmory.warcraft.equipment.Equipment
-import com.BlizzardArmory.warcraft.media.Media
-import com.BlizzardArmory.warcraft.pvp.bracket.BracketStatistics
-import com.BlizzardArmory.warcraft.pvp.summary.PvPSummary
-import com.BlizzardArmory.warcraft.pvp.tiers.Tier
-import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputation
-import com.BlizzardArmory.warcraft.statistic.Statistic
-import com.BlizzardArmory.warcraft.talents.Talents
-import okhttp3.ResponseBody
+import com.BlizzardArmory.model.UserInformation
+import com.BlizzardArmory.model.diablo.account.AccountInformation
+import com.BlizzardArmory.model.diablo.character.CharacterInformation
+import com.BlizzardArmory.model.diablo.item.SingleItem
+import com.BlizzardArmory.model.diablo.items.Items
+import com.BlizzardArmory.model.starcraft.Player
+import com.BlizzardArmory.model.starcraft.profile.Profile
+import com.BlizzardArmory.model.warcraft.account.Account
+import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
+import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
+import com.BlizzardArmory.model.warcraft.equipment.Equipment
+import com.BlizzardArmory.model.warcraft.media.Media
+import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
+import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
+import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
+import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
+import com.BlizzardArmory.model.warcraft.statistic.Statistic
+import com.BlizzardArmory.model.warcraft.talents.Talents
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -29,25 +28,25 @@ import retrofit2.http.Url
  * The interface Network services.
  */
 interface NetworkServices {
-    @GET
-    fun logout(@Url url: String): Call<ResponseBody>
 
     @GET("oauth/token")
     fun getAccessToken(@Query("code") clientId: String?,
                        @Query("region") region: String?,
                        @Query("redirect_uri") redirectUri: String?): Call<com.BlizzardArmory.connection.oauth.TokenResponse>
 
+    //User information
     /**
      * Gets user info.
      *
      * @param accessToken the access token
      * @return the user info
      */
-    //User information
+
     @GET("oauth/userinfo")
     fun getUserInfo(@Query("token") accessToken: String?,
                     @Query("region") region: String?): Call<UserInformation>
 
+    //WoW Endpoints
     /**
      * Gets media.
      *
@@ -57,7 +56,6 @@ interface NetworkServices {
      * @param accessToken the access token
      * @return the media
      */
-    //WoW Endpoints
     @GET("/profile/wow/character/{realm}/{character}/character-media")
     fun getMedia(@Path("character") character: String?,
                  @Path("realm") realm: String?,
@@ -75,7 +73,7 @@ interface NetworkServices {
     @GET
     fun getDynamicEquipmentMedia(@Url url: String?,
                                  @Query("locale") locale: String?,
-                                 @Query("region") region: String?): Call<com.BlizzardArmory.warcraft.equipment.media.Media>
+                                 @Query("region") region: String?): Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>
 
     /**
      * Gets encounters.
@@ -230,6 +228,7 @@ interface NetworkServices {
                        @Query("locale") locale: String?,
                        @Query("region") region: String?,
                        @Query("token") accessToken: String?): Call<Reputation>
+
     //D3 Endpoints
     /**
      * Gets D3 profile.
@@ -289,6 +288,7 @@ interface NetworkServices {
                 @Query("region") region: String?,
                 @Query("locale") locale: String?): Call<SingleItem>
 
+    //Sc2 endpoints
     /**
      * Gets sc 2 player.
      *
@@ -297,7 +297,6 @@ interface NetworkServices {
      * @param accessToken the access token
      * @return the sc 2 player
      */
-    //Sc2 endpoints
     @GET("sc2/player/{id}")
     fun getSc2Player(@Path("id") id: String?,
                      @Query("locale") locale: String?,
@@ -322,13 +321,13 @@ interface NetworkServices {
                       @Query("region") region: String?,
                       @Query("token") accessToken: String?): Call<Profile>
 
+    //Overwatch endpoint
     /**
      * Gets ow profile.
      *
      * @param url the url
      * @return the ow profile
      */
-    //Overwatch endpoint
     @GET
-    fun getOWProfile(@Url url: String?): Call<com.BlizzardArmory.overwatch.Profile>
+    fun getOWProfile(@Url url: String?): Call<com.BlizzardArmory.model.overwatch.Profile>
 }
