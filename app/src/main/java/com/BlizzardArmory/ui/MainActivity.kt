@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var selectedLanguage: String
     private var sharedPreferences: SharedPreferences? = null
     private val REQUEST_CODE_IN_APP_UPDATE = 7500
-    private val DAYS_FOR_FLEXIBLE_UPDATE = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +48,7 @@ class MainActivity : AppCompatActivity() {
         checkForAppUpdates()
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        locale = if (!sharedPreferences?.contains("locale")!!) {
-            sharedPreferences?.edit()?.putString("locale", "en_US")?.apply()
-            "en_US"
-        } else {
-            sharedPreferences?.getString("locale", "en_US")!!
-        }
+        initLocale()
 
         val regionAdapter = setAdapater(regionList)
         regionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
@@ -67,6 +61,13 @@ class MainActivity : AppCompatActivity() {
         spinnerSelector(spinner)
         spinnerSelector(spinner_language)
 
+        setSettingsButtons()
+
+        setLoginButtonToBattlenet()
+        logout.setOnClickListener { clearCredentials() }
+    }
+
+    private fun setSettingsButtons() {
         settings.setOnClickListener {
             settings_layout?.visibility = View.VISIBLE
             linearLayout.visibility = View.GONE
@@ -79,17 +80,17 @@ class MainActivity : AppCompatActivity() {
 
         OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title))
         licenses.setOnClickListener { startActivity(Intent(this@MainActivity, OssLicensesMenuActivity::class.java)) }
-
         rate.setOnClickListener { openAppStoreForReview() }
+        donation.setOnClickListener { webview?.loadUrl(URLConstants.PAYPAL_URL) }
+    }
 
-
-        donation.setOnClickListener {
-            webview?.loadUrl(URLConstants.PAYPAL_URL)
+    private fun initLocale() {
+        locale = if (!sharedPreferences?.contains("locale")!!) {
+            sharedPreferences?.edit()?.putString("locale", "en_US")?.apply()
+            "en_US"
+        } else {
+            sharedPreferences?.getString("locale", "en_US")!!
         }
-
-        setLoginButtonToBattlenet()
-
-        logout.setOnClickListener { clearCredentials() }
     }
 
     override fun onResume() {
@@ -227,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Logout Successful", Toast.LENGTH_SHORT).show()
             }
         }
-        webview.loadUrl("https://battle.net/login/logout")
+        webview.loadUrl(URLConstants.LOGOUT_URL)
     }
 
     override fun onBackPressed() {

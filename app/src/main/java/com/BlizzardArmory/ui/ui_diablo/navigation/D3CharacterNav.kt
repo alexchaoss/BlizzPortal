@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.events.BackPressEvent
-import com.BlizzardArmory.events.NetworkEvent
-import com.BlizzardArmory.ui.IOnBackPressed
+import com.BlizzardArmory.util.IOnBackPressed
+import com.BlizzardArmory.util.events.BackPressEvent
+import com.BlizzardArmory.util.events.NetworkEvent
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.d3_gear_fragment.*
 import kotlinx.android.synthetic.main.d3_skill_fragment.*

@@ -29,8 +29,8 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.starcraft.Player
-import com.BlizzardArmory.starcraft.profile.Profile
+import com.BlizzardArmory.model.starcraft.Player
+import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog

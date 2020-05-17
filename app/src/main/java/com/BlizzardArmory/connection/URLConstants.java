@@ -23,6 +23,8 @@ public class URLConstants {
      */
     public final static String CALLBACK_URL = "https://alexchaoss.github.io/BnetAuthorize";
 
+    public final static String LOGOUT_URL = "https://battle.net/login/logout";
+
     /**
      * The constant BASE_URL_USER_INFO.
      */
@@ -61,33 +63,15 @@ public class URLConstants {
     public final static String OW_PROFILE = "https://ow-api.com/v1/stats/:platform/:region/:battletag/complete";
 
     /**
-     * Gets base ur lfor user information.
+     * Gets base url for user information.
      *
-     * @return the base ur lfor user information
+     * @return the base url for user information
      */
     public static String getBaseURLforUserInformation() {
         if (MainActivity.selectedRegion.equalsIgnoreCase("cn")) {
             return URLConstants.BASE_URL_CN_USER_INFO;
         } else {
             return URLConstants.BASE_URL_USER_INFO.replace("zone", MainActivity.selectedRegion.toLowerCase());
-        }
-    }
-
-    /**
-     * Gets base ur lfor api.
-     *
-     * @param region the region
-     * @return the base ur lfor api
-     */
-    public static String getBaseURLforAPI(String region) {
-        if (region == null || "".equalsIgnoreCase(region)) {
-            if (MainActivity.selectedRegion.equals("cn")) {
-                return URLConstants.BASE_URL_CN_API;
-            } else {
-                return URLConstants.BASE_URL_API.replace("zone", MainActivity.selectedRegion.toLowerCase());
-            }
-        } else {
-            return URLConstants.BASE_URL_API.replace("zone", region.toLowerCase());
         }
     }
 

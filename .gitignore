@@ -68,10 +68,12 @@ proguard/
 /*/*/production
 captures/
 .navigation/
-/app/release
+app/release
+app/google-services.json
 *.ipr
 *~
 *.swp
+images/
 
 # Android Patch
 gen-external-apklibs

@@ -21,11 +21,11 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.diablo.character.CharacterInformation
-import com.BlizzardArmory.events.CharacterEvent
-import com.BlizzardArmory.events.NetworkEvent
-import com.BlizzardArmory.events.RetryEvent
+import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.util.events.CharacterEvent
+import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.events.RetryEvent
 import kotlinx.android.synthetic.main.d3_character_fragment.*
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call

@@ -16,8 +16,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MetricConversion
-import com.BlizzardArmory.ui.ui_diablo.D3Activity
+import com.BlizzardArmory.util.MetricConversion
 
 /**
  * The type Diablo profile search dialog.

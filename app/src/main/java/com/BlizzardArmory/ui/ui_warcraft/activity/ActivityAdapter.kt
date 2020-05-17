@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.warcraft.account.Character
+import com.BlizzardArmory.model.warcraft.account.Character
 
 class ActivityAdapter(private val list: List<Character>, private val fragmentManager: FragmentManager, private val context: Context, private val bnOAuth2Params: BnOAuth2Params)
     : RecyclerView.Adapter<ActivityViewHolder>() {

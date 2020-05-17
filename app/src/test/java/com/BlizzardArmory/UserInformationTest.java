@@ -2,12 +2,10 @@ package com.BlizzardArmory;
 
 import junit.framework.TestCase;
 
-import org.junit.jupiter.api.Test;
-
 class UserInformationTest extends TestCase {
 
 
-    @Test
+    /*@Test
     void getBattleTag() {
         UserInformation.setBattleTag("Alexchaos-1714");
         assertSame("Battle tag is: ", "Alexchaos-1714", UserInformation.getBattleTag());
@@ -25,5 +23,5 @@ class UserInformationTest extends TestCase {
 
     @Test
     void setUserID() {
-    }
+    }*/
 }

@@ -16,11 +16,11 @@ import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.events.NetworkEvent
+import com.BlizzardArmory.model.warcraft.account.Character
+import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
-import com.BlizzardArmory.warcraft.account.Character
-import com.BlizzardArmory.warcraft.media.Media
+import com.BlizzardArmory.util.events.NetworkEvent
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso

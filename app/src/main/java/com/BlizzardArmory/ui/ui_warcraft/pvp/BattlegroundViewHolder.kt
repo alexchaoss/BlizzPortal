@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.warcraft.pvp.summary.PvpMapStatistics
+import com.BlizzardArmory.model.warcraft.pvp.summary.PvpMapStatistics
 
 class BattlegroundViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_battleground_list, parent, false)) {

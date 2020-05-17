@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.warcraft.encounters.Expansion
-import com.BlizzardArmory.warcraft.encounters.Instances
+import com.BlizzardArmory.model.warcraft.encounters.Expansion
+import com.BlizzardArmory.model.warcraft.encounters.Instances
 import java.util.*
 
 class EncounterAdapter(private val list: List<Instances>, private val raidLevel: String, private val context: Context, private val expansion: Expansion)

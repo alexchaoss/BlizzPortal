@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.warcraft.reputations.characterreputations.Reputations
+import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
 import java.util.*
 import kotlin.collections.ArrayList
 

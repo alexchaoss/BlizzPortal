@@ -19,10 +19,10 @@ import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.MetricConversion
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment.Companion.newInstance
-import com.BlizzardArmory.warcraft.media.Media
+import com.BlizzardArmory.util.MetricConversion
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback

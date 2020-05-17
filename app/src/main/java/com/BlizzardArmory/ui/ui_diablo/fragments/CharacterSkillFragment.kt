@@ -24,11 +24,11 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.diablo.character.Active
-import com.BlizzardArmory.diablo.character.CharacterInformation
-import com.BlizzardArmory.diablo.character.Skill
-import com.BlizzardArmory.events.BackPressEvent
-import com.BlizzardArmory.events.CharacterEvent
+import com.BlizzardArmory.model.diablo.character.Active
+import com.BlizzardArmory.model.diablo.character.CharacterInformation
+import com.BlizzardArmory.model.diablo.character.Skill
+import com.BlizzardArmory.util.events.BackPressEvent
+import com.BlizzardArmory.util.events.CharacterEvent
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_skill_fragment.*
