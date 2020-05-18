@@ -98,7 +98,6 @@ class CharacterGearFragment : Fragment() {
         setCloseButton()
 
         item_name.setTextColor(Color.WHITE)
-        item_name.gravity = View.TEXT_ALIGNMENT_CENTER
         dps = TextView(view.context)
         dps!!.setTextColor(Color.WHITE)
         armor = TextView(view.context)
@@ -328,8 +327,6 @@ class CharacterGearFragment : Fragment() {
                     if (items[index].name.length > 23) {
                         item_name.textSize = 18f
                     }
-                    item_name.gravity = Gravity.CENTER_HORIZONTAL
-                    item_name.gravity = Gravity.CENTER_VERTICAL
                 } catch (e: Exception) {
                     Log.e("Error", "Name", e)
                 }

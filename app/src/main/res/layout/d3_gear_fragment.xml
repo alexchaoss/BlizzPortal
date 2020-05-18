@@ -190,7 +190,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:scrollbars="none"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -200,7 +200,7 @@
             android:id="@+id/item_stats"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <TextView
@@ -209,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:fontFamily="@font/diablo_light"
-                android:gravity="center_horizontal"
+                android:gravity="center"
                 android:textAlignment="center"
                 android:textSize="20sp" />
 
