@@ -156,4 +156,10 @@
     <string name="rate_it">Here!</string>
     <string name="select_a_language">Select a language</string>
     <string name="logout">LOGOUT</string>
+    <string name="world_of_warcraft">World of Warcraft</string>
+    <string name="diablo_3">Diablo 3</string>
+    <string name="starcraft_2">Starcraft 2</string>
+    <string name="overwatch">Overwatch</string>
+    <string name="search_character">Search character</string>
+    <string name="search_user">Search user</string>
 </resources>

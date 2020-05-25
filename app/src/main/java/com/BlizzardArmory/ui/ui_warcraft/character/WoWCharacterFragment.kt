@@ -34,7 +34,6 @@ import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talent
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -49,7 +48,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import java.util.*
 
-class WoWCharacterFragment : Fragment(), IOnBackPressed {
+class WoWCharacterFragment : Fragment() {
     private var characterRealm: String? = null
     private var characterClicked: String? = null
     private var region: String? = null
@@ -74,6 +73,7 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
     private val stats = HashMap<String, String>()
     private val nameList = HashMap<String, String>()
     private var bnOAuth2Helper: BnOAuth2Helper? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.wow_character_fragment, container, false)
     }
@@ -885,10 +885,6 @@ class WoWCharacterFragment : Fragment(), IOnBackPressed {
         haste?.text = String.format(Locale.ENGLISH, "Haste: %.2f%%", statistic.meleeHaste.value.toDouble())
         mastery?.text = String.format(Locale.ENGLISH, "Mastery: %.2f%%", statistic.mastery.value.toDouble())
         versatility?.text = String.format(Locale.ENGLISH, "Versatility: %.2f%%", statistic.versatilityDamageDoneBonus.toDouble())
-    }
-
-    override fun onBackPressed(): Boolean {
-        return URLConstants.loading
     }
 
     private fun callErrorAlertDialog(responseCode: Int) {

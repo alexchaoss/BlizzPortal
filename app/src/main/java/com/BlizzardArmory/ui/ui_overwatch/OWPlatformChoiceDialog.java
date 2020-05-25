@@ -1,9 +1,9 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.connection.oauth.BnConstants;
@@ -44,15 +46,15 @@ public class OWPlatformChoiceDialog {
     private static final String ENTER_XBL = "Enter your Xbox live username";
     private static final String ENTER_PSN = "Enter your Playstation username";
 
-    private static void callOverWatchActivity(Activity activity, BnOAuth2Params bnOAuth2Params) {
-        if (activity.getClass().getSimpleName().equalsIgnoreCase("OWActivity.java")) {
-            activity.finish();
-        }
-        final Intent intent = new Intent(activity, OWActivity.class);
-        intent.putExtra("username", username);
-        intent.putExtra("platform", platform);
-        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
-        activity.startActivity(intent);
+    private static void callOverWatchActivity(Activity activity, FragmentManager fragmentManager, BnOAuth2Params bnOAuth2Params) {
+        Fragment fragment = new OWActivity();
+        Bundle bundle = new Bundle();
+        bundle.putString("username", username);
+        bundle.putString("platform", platform);
+        bundle.putParcelable(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment").commit();
+        fragmentManager.executePendingTransactions();
     }
 
     /**
@@ -61,7 +63,7 @@ public class OWPlatformChoiceDialog {
      * @param activity       the activity
      * @param bnOAuth2Params the bn o auth 2 params
      */
-    public static void overwatchPrompt(Activity activity, BnOAuth2Params bnOAuth2Params) {
+    public static void overwatchPrompt(Activity activity, FragmentManager fragmentManager, BnOAuth2Params bnOAuth2Params) {
         myProfileChosen = false;
         AlertDialog.Builder builderOW = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -202,7 +204,7 @@ public class OWPlatformChoiceDialog {
                     username = usernameField.getText().toString();
                 }
                 dialogOW.cancel();
-                callOverWatchActivity(activity, bnOAuth2Params);
+                callOverWatchActivity(activity, fragmentManager, bnOAuth2Params);
             }
         });
 

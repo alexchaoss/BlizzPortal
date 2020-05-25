@@ -1,6 +1,5 @@
 package com.BlizzardArmory.ui.ui_starcraft
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -12,15 +11,13 @@ import android.preference.PreferenceManager
 import android.text.Html
 import android.text.Html.ImageGetter
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
@@ -33,26 +30,25 @@ import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
-import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
-import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.sc2_activity.*
 import retrofit2.Call
 import retrofit2.Callback
 import java.util.*
 
-class SC2Activity : AppCompatActivity() {
+class SC2Activity : Fragment() {
     private var prefs: SharedPreferences? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var accountInformation = listOf<Player>()
     private var sc2Profile: Profile? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.sc2_activity, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.sc2_activity)
-        btag_header.text = GamesActivity.userInformation!!.battleTag
 
         val summaryBG = GradientDrawable()
         summaryBG.setStroke(6, Color.parseColor("#122a42"))
@@ -90,19 +86,11 @@ class SC2Activity : AppCompatActivity() {
         avatar.setImageDrawable(avatarShadow)
 
         loadingCircle.visibility = View.VISIBLE
-        prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        bnOAuth2Params = intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
+        prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
         downloadAccountInformation()
-
-        //Button calls
-        wowButton.setOnClickListener { callNextActivity(WoWActivity::class.java) }
-        diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@SC2Activity, bnOAuth2Params!!) }
-        overwatchButton.setOnClickListener {
-            OWPlatformChoiceDialog.myProfileChosen = false
-            OWPlatformChoiceDialog.overwatchPrompt(this@SC2Activity, bnOAuth2Params)
-        }
     }
 
     private fun downloadAccountInformation() {
@@ -125,7 +113,7 @@ class SC2Activity : AppCompatActivity() {
                                             setStatisticsInformation()
                                             setRaceLevelInformation()
                                             setCampaignInformation()
-                                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                             loadingCircle!!.visibility = View.GONE
                                             URLConstants.loading = false
                                             downloadAvatar()
@@ -402,7 +390,7 @@ class SC2Activity : AppCompatActivity() {
         }
         achievement_points!!.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, ImageGetter { source: String? ->
             val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-            val drawable = resources.getDrawable(resourceId, this@SC2Activity.theme)
+            val drawable = resources.getDrawable(resourceId, requireActivity().theme)
             drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
             drawable
         }, null)
@@ -419,55 +407,42 @@ class SC2Activity : AppCompatActivity() {
         })
     }
 
-    private fun callNextActivity(activity: Class<*>) {
-        val intent = Intent(this, activity)
-        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
-        startActivity(intent)
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, GamesActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-    }
-
     private fun showNoConnectionMessage(responseCode: Int) {
-        if (!isFinishing) {
-            this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loadingCircle!!.visibility = View.GONE
             URLConstants.loading = false
-            val builder = AlertDialog.Builder(this, R.style.DialogTransparent)
+        val builder = AlertDialog.Builder(requireActivity(), R.style.DialogTransparent)
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             buttonParams.setMargins(10, 20, 10, 20)
-            val titleText = TextView(this)
+        val titleText = TextView(requireActivity())
             titleText.textSize = 20f
             titleText.gravity = Gravity.CENTER_HORIZONTAL
             titleText.setPadding(0, 20, 0, 20)
             titleText.layoutParams = layoutParams
             titleText.setTextColor(Color.WHITE)
-            val messageText = TextView(this)
+        val messageText = TextView(requireActivity())
             messageText.gravity = Gravity.CENTER_HORIZONTAL
             messageText.setPadding(0, 0, 0, 20)
             messageText.layoutParams = layoutParams
             messageText.setTextColor(Color.WHITE)
-            val button = Button(this)
+        val button = Button(requireActivity())
             button.textSize = 20f
             button.setTextColor(Color.WHITE)
             button.gravity = Gravity.CENTER
             button.width = 200
             button.height = 100
             button.layoutParams = buttonParams
-            button.background = this.getDrawable(R.drawable.buttonstyle)
-            val button2 = Button(this)
+        button.background = requireActivity().getDrawable(R.drawable.buttonstyle)
+        val button2 = Button(requireActivity())
             button2.textSize = 20f
             button2.setTextColor(Color.WHITE)
             button2.gravity = Gravity.CENTER
             button2.width = 200
             button2.height = 100
             button2.layoutParams = buttonParams
-            button2.background = this.getDrawable(R.drawable.buttonstyle)
-            val buttonLayout = LinearLayout(this)
+        button2.background = requireActivity().getDrawable(R.drawable.buttonstyle)
+        val buttonLayout = LinearLayout(requireActivity())
             buttonLayout.orientation = LinearLayout.HORIZONTAL
             buttonLayout.gravity = Gravity.CENTER
             buttonLayout.addView(button)
@@ -498,7 +473,7 @@ class SC2Activity : AppCompatActivity() {
             val dialog = builder.show()
             Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-            val linearLayout = LinearLayout(this)
+        val linearLayout = LinearLayout(requireActivity())
             linearLayout.orientation = LinearLayout.VERTICAL
             linearLayout.gravity = Gravity.CENTER
             linearLayout.setPadding(20, 20, 20, 20)
@@ -507,15 +482,14 @@ class SC2Activity : AppCompatActivity() {
             linearLayout.addView(buttonLayout)
             dialog.addContentView(linearLayout, layoutParams)
             if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
-                dialog.setOnCancelListener { finish() }
+                dialog.setOnCancelListener { parentFragmentManager.popBackStack() }
             } else {
                 dialog.setOnCancelListener { downloadAccountInformation() }
             }
             button.setOnClickListener { dialog.cancel() }
             button2.setOnClickListener {
                 dialog.dismiss()
-                onBackPressed()
+                parentFragmentManager.popBackStack()
             }
-        }
     }
 }

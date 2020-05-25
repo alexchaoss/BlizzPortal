@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/wowgroup">
+        <item
+            android:id="@+id/wow_button"
+            android:icon="@drawable/wow_icon"
+            android:title="@string/world_of_warcraft" />
+        <item
+            android:id="@+id/wow_search"
+            android:icon="@drawable/search_icon"
+            android:title="@string/search_character" />
+    </group>
+
+    <group android:id="@+id/d3group">
+        <item
+            android:id="@+id/d3_button"
+            android:icon="@drawable/diablo3_icon"
+            android:title="@string/diablo_3" />
+        <item
+            android:id="@+id/d3_search"
+            android:icon="@drawable/search_icon"
+            android:title="@string/search_user" />
+    </group>
+
+    <group android:id="@+id/sc2group">
+        <item
+            android:id="@+id/sc2_button"
+            android:icon="@drawable/sc2_icon"
+            android:title="@string/starcraft_2" />
+    </group>
+
+    <group android:id="@+id/owgroup">
+        <item
+            android:id="@+id/ow_button"
+            android:icon="@drawable/overwatch_icon"
+            android:title="@string/overwatch" />
+        <item
+            android:id="@+id/ow_search"
+            android:icon="@drawable/search_icon"
+            android:title="@string/search_user" />
+    </group>
+
+
+</menu>
