@@ -8,13 +8,13 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -23,9 +23,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.connection.ErrorMessages;
@@ -37,9 +38,6 @@ import com.BlizzardArmory.model.overwatch.Profile;
 import com.BlizzardArmory.model.overwatch.heroes.Hero;
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero;
 import com.BlizzardArmory.ui.GamesActivity;
-import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog;
-import com.BlizzardArmory.ui.ui_starcraft.SC2Activity;
-import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -60,7 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * The type Ow activity.
  */
-public class OWActivity extends AppCompatActivity {
+public class OWActivity extends Fragment {
 
     private BnOAuth2Params bnOAuth2Params;
     private NetworkServices networkServices;
@@ -121,53 +119,53 @@ public class OWActivity extends AppCompatActivity {
     private LinearLayout misc;
     private LinearLayout matchAwards;
 
-    private String privateProfile = "This profile is private and the information unavailable";
+    private String privateProfile = "requireActivity() profile is private and the information unavailable";
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        inflater.inflate(R.layout.ow_activity, container);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ow_activity);
-        ImageButton wowButton = findViewById(R.id.wowButton);
-        ImageButton sc2Button = findViewById(R.id.starcraft2Button);
-        ImageButton d3Button = findViewById(R.id.diablo3Button);
-        ImageView search = findViewById(R.id.search);
-        TextView btag = findViewById(R.id.btag_header);
-        loadingCircle = findViewById(R.id.loadingCircle);
+        loadingCircle = requireActivity().findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
         assert GamesActivity.Companion.getUserInformation() != null;
-        btag.setText(GamesActivity.Companion.getUserInformation().getBattleTag());
-        avatar = findViewById(R.id.avatar);
-        name = findViewById(R.id.name);
-        levelIcon = findViewById(R.id.level_icon);
-        ratingIconTank = findViewById(R.id.rating_icon_tank);
-        ratingRankIconTank = findViewById(R.id.rating_icon_rank_tank);
-        ratingTank = findViewById(R.id.rating_tank);
-        ratingIconDamage = findViewById(R.id.rating_icon_damage);
-        ratingRankIconDamage = findViewById(R.id.rating_icon_rank_damage);
-        ratingDamage = findViewById(R.id.rating_damage);
-        ratingIconSupport = findViewById(R.id.rating_icon_support);
-        ratingRankIconSupport = findViewById(R.id.rating_icon_rank_support);
-        ratingSupport = findViewById(R.id.rating_support);
-        level = findViewById(R.id.level);
-        gamesWon = findViewById(R.id.games_won);
-        topCharacter = findViewById(R.id.top_character);
+        avatar = requireActivity().findViewById(R.id.avatar);
+        name = requireActivity().findViewById(R.id.name);
+        levelIcon = requireActivity().findViewById(R.id.level_icon);
+        ratingIconTank = requireActivity().findViewById(R.id.rating_icon_tank);
+        ratingRankIconTank = requireActivity().findViewById(R.id.rating_icon_rank_tank);
+        ratingTank = requireActivity().findViewById(R.id.rating_tank);
+        ratingIconDamage = requireActivity().findViewById(R.id.rating_icon_damage);
+        ratingRankIconDamage = requireActivity().findViewById(R.id.rating_icon_rank_damage);
+        ratingDamage = requireActivity().findViewById(R.id.rating_damage);
+        ratingIconSupport = requireActivity().findViewById(R.id.rating_icon_support);
+        ratingRankIconSupport = requireActivity().findViewById(R.id.rating_icon_rank_support);
+        ratingSupport = requireActivity().findViewById(R.id.rating_support);
+        level = requireActivity().findViewById(R.id.level);
+        gamesWon = requireActivity().findViewById(R.id.games_won);
+        topCharacter = requireActivity().findViewById(R.id.top_character);
         /*endorsementIcon = findViewById(R.id.endorsement_icon);
         endorsementIcon.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         endorsement = findViewById(R.id.endorsement_level);*/
-        prestigeIcon = findViewById(R.id.prestige_icon);
-        topHeroesListSpinner = findViewById(R.id.spinner);
-        careerListSpinner = findViewById(R.id.spinner_career);
-        heroList = findViewById(R.id.hero_list);
-        competitive = findViewById(R.id.competitive);
-        quickplay = findViewById(R.id.quickplay);
-        LinearLayout quickComp = findViewById(R.id.quick_comp);
-        best = findViewById(R.id.best);
-        assists = findViewById(R.id.assist);
-        game = findViewById(R.id.game);
-        average = findViewById(R.id.average);
-        combat = findViewById(R.id.combat);
-        misc = findViewById(R.id.misc);
-        matchAwards = findViewById(R.id.match);
+        prestigeIcon = requireActivity().findViewById(R.id.prestige_icon);
+        topHeroesListSpinner = requireActivity().findViewById(R.id.spinner);
+        careerListSpinner = requireActivity().findViewById(R.id.spinner_career);
+        heroList = requireActivity().findViewById(R.id.hero_list);
+        competitive = requireActivity().findViewById(R.id.competitive);
+        quickplay = requireActivity().findViewById(R.id.quickplay);
+        LinearLayout quickComp = requireActivity().findViewById(R.id.quick_comp);
+        best = requireActivity().findViewById(R.id.best);
+        assists = requireActivity().findViewById(R.id.assist);
+        game = requireActivity().findViewById(R.id.game);
+        average = requireActivity().findViewById(R.id.average);
+        combat = requireActivity().findViewById(R.id.combat);
+        misc = requireActivity().findViewById(R.id.misc);
+        matchAwards = requireActivity().findViewById(R.id.match);
 
         GradientDrawable switchCompQuickBorder = new GradientDrawable();
         switchCompQuickBorder.setCornerRadius(5);
@@ -179,37 +177,28 @@ public class OWActivity extends AppCompatActivity {
         switchCompQuickRadius.setColor(Color.parseColor("#FFFFFF"));
         quickplay.setBackground(switchCompQuickRadius);
 
-        btag.setText(GamesActivity.Companion.getUserInformation().getBattleTag());
-
-        bnOAuth2Params = Objects.requireNonNull(OWActivity.this.getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        bnOAuth2Params = Objects.requireNonNull(requireActivity().getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
 
         Gson gson = new GsonBuilder().create();
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://ow-api.com/v1/stats/").addConverterFactory(GsonConverterFactory.create(gson)).build();
         networkServices = retrofit.create(NetworkServices.class);
 
-        username = OWActivity.this.getIntent().getExtras().getString("username");
-        platform = OWActivity.this.getIntent().getExtras().getString("platform");
+        username = requireActivity().getIntent().getExtras().getString("username");
+        platform = requireActivity().getIntent().getExtras().getString("platform");
 
         downloadAccountInformation();
 
-        //Button calls
-        wowButton.setOnClickListener(v -> callNextActivity(WoWActivity.class));
-
-        d3Button.setOnClickListener(v -> DiabloProfileSearchDialog.diabloPrompt(OWActivity.this, bnOAuth2Params));
-
-        sc2Button.setOnClickListener(v -> callNextActivity(SC2Activity.class));
-
-        search.setOnClickListener(v -> {
+        /*search.setOnClickListener(v -> {
             OWPlatformChoiceDialog.myProfileChosen = false;
-            OWPlatformChoiceDialog.overwatchPrompt(OWActivity.this, bnOAuth2Params);
-        });
+            OWPlatformChoiceDialog.overwatchPrompt(OWActivity.requireActivity(), bnOAuth2Params);
+        });*/
     }
 
     private void downloadAccountInformation() {
         //String testURL = "https://ow-api.com/v1/stats/xbl/global/Hcpeful/complete";
         Log.i("URL", URLConstants.getOWProfile(platform, username));
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         URLConstants.loading = true;
 
         Call<Profile> call = networkServices.getOWProfile(URLConstants.getOWProfile(username, platform));
@@ -273,13 +262,13 @@ public class OWActivity extends AppCompatActivity {
                             }
                         });
 
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                         URLConstants.loading = false;
                     } catch (Exception e) {
                         gamesWon.setText(privateProfile);
                         gamesWon.setTextSize(18);
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                         URLConstants.loading = false;
                         Log.e("Error", Arrays.toString(e.getStackTrace()));
@@ -361,7 +350,7 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void setSpinnerTopHeroes(Spinner spinner) {
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, sortHeroList) {
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, sortHeroList) {
 
             @Override
             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -405,7 +394,7 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void setSpinnerCareer(Spinner spinner) {
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, sortCareerHeroes) {
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, sortCareerHeroes) {
 
             @Override
             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -493,21 +482,21 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void setSpecificCareerList(HashMap<String, String> list, LinearLayout parentLayout, int marginStart) {
-        final float scale = this.getResources().getDisplayMetrics().density;
+        final float scale = requireActivity().getResources().getDisplayMetrics().density;
         int i = 0;
         for (String key : list.keySet()) {
-            LinearLayout linearLayout = new LinearLayout(this);
+            LinearLayout linearLayout = new LinearLayout(requireActivity());
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins((int) (marginStart * scale + 0.5f), 0, 0, 0);
             linearLayout.setLayoutParams(layoutParams);
 
-            TextView value = new TextView(this);
+            TextView value = new TextView(requireActivity());
             value.setText(list.get(key));
             value.setPadding(10, 10, 10, 10);
             value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
             value.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            TextView text = new TextView(this);
+            TextView text = new TextView(requireActivity());
             text.setText(key);
             text.setPadding(10, 10, 10, 10);
 
@@ -530,7 +519,7 @@ public class OWActivity extends AppCompatActivity {
 
         Log.i("test", heroes.get(0).getClass().getSimpleName());
         for (int i = 0; i < heroes.size(); i++) {
-            LinearLayout linearLayout = new LinearLayout(this);
+            LinearLayout linearLayout = new LinearLayout(requireActivity());
             heroList.addView(linearLayout);
 
             LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(100, 100);
@@ -545,14 +534,14 @@ public class OWActivity extends AppCompatActivity {
             dataParams.addRule(RelativeLayout.CENTER_VERTICAL);
             dataParams.setMarginEnd(10);
 
-            ImageView icon = new ImageView(this);
+            ImageView icon = new ImageView(requireActivity());
             icon.setBackgroundResource(getHeroIcon(heroes.get(i).getClass().getSimpleName()));
             GradientDrawable iconBorder = new GradientDrawable();
             iconBorder.setCornerRadius(5);
             iconBorder.setStroke(3, Color.parseColor("#CCCCCC"));
             icon.setImageDrawable(iconBorder);
 
-            RelativeLayout relativeLayout = new RelativeLayout(this);
+            RelativeLayout relativeLayout = new RelativeLayout(requireActivity());
             relativeLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             GradientDrawable layoutBackground = new GradientDrawable();
             layoutBackground.setCornerRadius(5);
@@ -560,7 +549,7 @@ public class OWActivity extends AppCompatActivity {
             relativeLayout.setBackground(layoutBackground);
             relativeLayout.setPadding(5, 5, 5, 5);
 
-            TextView name = new TextView(this);
+            TextView name = new TextView(requireActivity());
             name.setAllCaps(true);
             name.setTextColor(Color.WHITE);
             name.setTextSize(20);
@@ -576,17 +565,17 @@ public class OWActivity extends AppCompatActivity {
                 tempName = heroes.get(i).getClass().getSimpleName() + " ";
             }
             name.setText(tempName);
-            Typeface face = ResourcesCompat.getFont(this, R.font.bignoodletoo);
+            Typeface face = ResourcesCompat.getFont(requireActivity(), R.font.bignoodletoo);
             name.setTypeface(face);
 
-            TextView data = new TextView(this);
+            TextView data = new TextView(requireActivity());
             data.setTextColor(Color.WHITE);
             data.setTextSize(15);
 
             linearLayout.addView(icon, iconParams);
             linearLayout.addView(relativeLayout);
-            ProgressBar progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-            progressBar.setProgressDrawable(this.getDrawable(R.drawable.ow_progressbar));
+            ProgressBar progressBar = new ProgressBar(requireActivity(), null, android.R.attr.progressBarStyleHorizontal);
+            progressBar.setProgressDrawable(requireActivity().getDrawable(R.drawable.ow_progressbar));
 
             switch (itemSelected) {
                 case TIME_PLAYED:
@@ -1071,7 +1060,7 @@ public class OWActivity extends AppCompatActivity {
             ratingIconTank.setVisibility(View.GONE);
             ratingRankIconTank.setVisibility(View.GONE);
             ratingTank.setVisibility(View.GONE);
-            View view = findViewById(R.id.view2);
+            View view = requireActivity().findViewById(R.id.view2);
             view.setVisibility(View.GONE);
         }
     }
@@ -1094,7 +1083,7 @@ public class OWActivity extends AppCompatActivity {
     }
 
     private void callNextActivity(Class activity) {
-        final Intent intent = new Intent(this, activity);
+        final Intent intent = new Intent(requireActivity(), activity);
         intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         startActivity(intent);
     }
@@ -1115,7 +1104,7 @@ public class OWActivity extends AppCompatActivity {
 
         },
                 e -> showNoConnectionMessage(0));
-        RequestQueueSingleton.Companion.getInstance(this).addToRequestQueue(stringRequest);
+        RequestQueueSingleton.Companion.getInstance(requireActivity()).addToRequestQueue(stringRequest);
     }*/
 
     private void downloadRatingIcon(String url, ImageView imageView) {
@@ -1127,31 +1116,22 @@ public class OWActivity extends AppCompatActivity {
         Picasso.get().load(accountInformation.getPrestigeIcon()).into(prestigeIcon);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!URLConstants.loading) {
-            Intent intent = new Intent(this, GamesActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
-    }
-
     /**
      * Show no connection message.
      *
      * @param responseCode the response code
      */
     public void showNoConnectionMessage(final int responseCode) {
-        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);
         URLConstants.loading = false;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTransparent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         buttonParams.setMargins(10, 20, 10, 20);
 
-        TextView titleText = new TextView(this);
+        TextView titleText = new TextView(requireActivity());
 
         titleText.setTextSize(20);
         titleText.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -1159,14 +1139,14 @@ public class OWActivity extends AppCompatActivity {
         titleText.setLayoutParams(layoutParams);
         titleText.setTextColor(Color.WHITE);
 
-        TextView messageText = new TextView(this);
+        TextView messageText = new TextView(requireActivity());
 
         messageText.setGravity(Gravity.CENTER_HORIZONTAL);
         messageText.setPadding(0, 0, 0, 20);
         messageText.setLayoutParams(layoutParams);
         messageText.setTextColor(Color.WHITE);
 
-        Button button = new Button(this);
+        Button button = new Button(requireActivity());
 
         button.setTextSize(20);
         button.setTextColor(Color.WHITE);
@@ -1174,9 +1154,9 @@ public class OWActivity extends AppCompatActivity {
         button.setWidth(200);
         button.setHeight(100);
         button.setLayoutParams(buttonParams);
-        button.setBackground(this.getDrawable(R.drawable.buttonstyle));
+        button.setBackground(requireActivity().getDrawable(R.drawable.buttonstyle));
 
-        Button button2 = new Button(this);
+        Button button2 = new Button(requireActivity());
 
         button2.setTextSize(20);
         button2.setTextColor(Color.WHITE);
@@ -1184,9 +1164,9 @@ public class OWActivity extends AppCompatActivity {
         button2.setWidth(200);
         button2.setHeight(100);
         button2.setLayoutParams(buttonParams);
-        button2.setBackground(this.getDrawable(R.drawable.buttonstyle));
+        button2.setBackground(requireActivity().getDrawable(R.drawable.buttonstyle));
 
-        LinearLayout buttonLayout = new LinearLayout(this);
+        LinearLayout buttonLayout = new LinearLayout(requireActivity());
         buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
         buttonLayout.setGravity(Gravity.CENTER);
         buttonLayout.addView(button);
@@ -1208,7 +1188,7 @@ public class OWActivity extends AppCompatActivity {
         Objects.requireNonNull(dialog.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-        LinearLayout linearLayout = new LinearLayout(this);
+        LinearLayout linearLayout = new LinearLayout(requireActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setPadding(20, 20, 20, 20);
@@ -1220,12 +1200,12 @@ public class OWActivity extends AppCompatActivity {
         dialog.addContentView(linearLayout, layoutParams);
 
         if (responseCode == 404) {
-            dialog.setOnCancelListener(dialog1 -> OWActivity.this.finish());
+            dialog.setOnCancelListener(dialog1 -> getParentFragmentManager().popBackStack());
         } else {
             dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
         }
 
         button.setOnClickListener(v -> dialog.cancel());
-        button2.setOnClickListener(v -> onBackPressed());
+        button2.setOnClickListener(v -> getParentFragmentManager().popBackStack());
     }
 }

@@ -6,12 +6,16 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Gravity
+import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
@@ -19,27 +23,44 @@ import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.UserInformation
-import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
+import com.BlizzardArmory.ui.ui_diablo.D3Activity
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
 import com.crashlytics.android.Crashlytics
-import kotlinx.android.synthetic.main.activity_games.*
+import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.games_activity.*
+import kotlinx.android.synthetic.main.games_activity_bar.*
+import kotlinx.android.synthetic.main.games_activity_nav_header.*
 import retrofit2.Call
 import retrofit2.Callback
 import java.util.*
 
-class GamesActivity : AppCompatActivity() {
+class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_games)
+        setContentView(R.layout.games_activity)
+        drawer_layout.setScrimColor(Color.TRANSPARENT)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         bnOAuth2Params = this.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         assert(bnOAuth2Params != null)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+
+        nav_view.setNavigationItemSelectedListener(this)
+        nav_view.itemIconTintList = null
+        setSupportActionBar(toolbar_main)
+
+        toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar_main, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.title = ""
+
         downloadUserInfo()
     }
 
@@ -55,11 +76,12 @@ class GamesActivity : AppCompatActivity() {
                         } catch (e: Exception) {
                             Crashlytics.log(Log.ERROR, "NULL BODY", "Body was null and crashed the app.")
                         }
-                        btag_header.text = userInformation?.battleTag
-                        wowButton.setOnClickListener { callNextActivity(WoWActivity::class.java) }
+                        supportActionBar?.title = userInformation?.battleTag
+                        battletag.text = userInformation?.battleTag
+                        /*wowButton.setOnClickListener { callNextActivity(WoWActivity::class.java) }
                         diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@GamesActivity, bnOAuth2Params!!) }
                         starcraft2Button.setOnClickListener { callNextActivity(SC2Activity::class.java) }
-                        overwatchButton.setOnClickListener { OWPlatformChoiceDialog.overwatchPrompt(this@GamesActivity, bnOAuth2Params) }
+                        overwatchButton.setOnClickListener { OWPlatformChoiceDialog.overwatchPrompt(this@GamesActivity, bnOAuth2Params) }*/
                     } else {
                         callErrorAlertDialog(500)
                     }
@@ -76,16 +98,21 @@ class GamesActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-    }
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawers()
+        } else if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
+            if (supportFragmentManager.findFragmentById(R.id.nav_fragment) != null) {
+                supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.nav_fragment)!!).commit()
+            } else {
+                supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
+            }
+        } else {
+            super.onBackPressed()
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+        }
 
-    private fun callNextActivity(activity: Class<*>) {
-        val intent = Intent(this, activity)
-        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
-        startActivity(intent)
     }
 
     private fun callErrorAlertDialog(responseCode: Int) {
@@ -173,5 +200,34 @@ class GamesActivity : AppCompatActivity() {
 
     companion object {
         var userInformation: UserInformation? = null
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val fragment: Fragment
+        when (item.title) {
+            "World of Warcraft" -> {
+                fragment = WoWActivity()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").commit()
+                supportFragmentManager.executePendingTransactions()
+                drawer_layout.closeDrawers()
+            }
+            "Diablo 3" -> {
+                fragment = D3Activity()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "diablo3fragment").commit()
+                supportFragmentManager.executePendingTransactions()
+                drawer_layout.closeDrawers()
+            }
+            "Starcraft 2" -> {
+                fragment = SC2Activity()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "sc2fragment").commit()
+                supportFragmentManager.executePendingTransactions()
+                drawer_layout.closeDrawers()
+            }
+            "Overwatch" -> {
+                OWPlatformChoiceDialog.overwatchPrompt(this, supportFragmentManager, bnOAuth2Params)
+                drawer_layout.closeDrawers()
+            }
+        }
+        return true
     }
 }
