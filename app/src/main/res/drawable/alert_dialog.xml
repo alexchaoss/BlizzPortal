@@ -3,6 +3,6 @@
     <stroke
         android:width="5px"
         android:color="#000" />
-    <solid android:color="@color/backgroundColor" />
+    <solid android:color="#272931" />
     <corners android:radius="5dp" />
 </shape>

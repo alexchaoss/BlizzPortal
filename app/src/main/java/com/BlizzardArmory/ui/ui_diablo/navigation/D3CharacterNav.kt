@@ -7,13 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.util.IOnBackPressed
-import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.d3_gear_fragment.*
-import kotlinx.android.synthetic.main.d3_skill_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -24,7 +19,7 @@ private const val ID = "id"
 private const val REGION = "region"
 
 
-class D3CharacterNav : Fragment(), IOnBackPressed {
+class D3CharacterNav : Fragment() {
 
     private var btag: String? = null
     private var id: Long? = null
@@ -99,19 +94,6 @@ class D3CharacterNav : Fragment(), IOnBackPressed {
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
             parentFragmentManager.beginTransaction().remove(this).commit()
-        }
-    }
-
-    override fun onBackPressed(): Boolean {
-        return try {
-            if (URLConstants.loading || skill_tooltip_scroll!!.visibility == View.VISIBLE || item_scroll_view!!.visibility == View.VISIBLE) {
-                EventBus.getDefault().post(BackPressEvent(true))
-                true
-            } else {
-                false
-            }
-        } catch (e: Exception) {
-            false
         }
     }
 }

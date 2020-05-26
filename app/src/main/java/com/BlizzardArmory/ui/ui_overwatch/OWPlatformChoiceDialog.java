@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,9 +18,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.BlizzardArmory.R;
-import com.BlizzardArmory.connection.oauth.BnConstants;
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params;
 import com.BlizzardArmory.ui.GamesActivity;
+import com.BlizzardArmory.util.MetricConversion;
 
 import java.util.Objects;
 
@@ -46,12 +46,11 @@ public class OWPlatformChoiceDialog {
     private static final String ENTER_XBL = "Enter your Xbox live username";
     private static final String ENTER_PSN = "Enter your Playstation username";
 
-    private static void callOverWatchActivity(Activity activity, FragmentManager fragmentManager, BnOAuth2Params bnOAuth2Params) {
-        Fragment fragment = new OWActivity();
+    private static void callOverWatchActivity(FragmentManager fragmentManager) {
+        Fragment fragment = new OWFragment();
         Bundle bundle = new Bundle();
         bundle.putString("username", username);
         bundle.putString("platform", platform);
-        bundle.putParcelable(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
         fragment.setArguments(bundle);
         fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment").commit();
         fragmentManager.executePendingTransactions();
@@ -61,9 +60,9 @@ public class OWPlatformChoiceDialog {
      * Overwatch prompt.
      *
      * @param activity       the activity
-     * @param bnOAuth2Params the bn o auth 2 params
+     * @param fragmentManager the fragment manager
      */
-    public static void overwatchPrompt(Activity activity, FragmentManager fragmentManager, BnOAuth2Params bnOAuth2Params) {
+    public static void overwatchPrompt(Activity activity, FragmentManager fragmentManager) {
         myProfileChosen = false;
         AlertDialog.Builder builderOW = new AlertDialog.Builder(activity, R.style.DialogTransparent);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -147,7 +146,7 @@ public class OWPlatformChoiceDialog {
         Objects.requireNonNull(dialogOW.getWindow()).addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         dialogOW.show();
         dialogOW.getWindow().setGravity(Gravity.CENTER);
-        dialogOW.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialogOW.getWindow().setLayout(MetricConversion.getDPMetric(320, activity), WindowManager.LayoutParams.WRAP_CONTENT);
         dialogOW.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         dialogOW.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -173,6 +172,8 @@ public class OWPlatformChoiceDialog {
             pcButton.setTextColor(Color.WHITE);
             myProfile.setTextColor(Color.BLACK);
             messageText.setText(ENTER_BTAG);
+            messageText.setVisibility(View.VISIBLE);
+            usernameField.setVisibility(View.VISIBLE);
             platform = "pc";
         });
 
@@ -183,6 +184,8 @@ public class OWPlatformChoiceDialog {
             pcButton.setTextColor(Color.BLACK);
             myProfile.setTextColor(Color.BLACK);
             messageText.setText(ENTER_XBL);
+            messageText.setVisibility(View.VISIBLE);
+            usernameField.setVisibility(View.VISIBLE);
             platform = "xbl";
         });
 
@@ -193,6 +196,8 @@ public class OWPlatformChoiceDialog {
             pcButton.setTextColor(Color.BLACK);
             myProfile.setTextColor(Color.BLACK);
             messageText.setText(ENTER_PSN);
+            messageText.setVisibility(View.VISIBLE);
+            usernameField.setVisibility(View.VISIBLE);
             platform = "psn";
         });
 
@@ -204,7 +209,7 @@ public class OWPlatformChoiceDialog {
                     username = usernameField.getText().toString();
                 }
                 dialogOW.cancel();
-                callOverWatchActivity(activity, fragmentManager, bnOAuth2Params);
+                callOverWatchActivity(fragmentManager);
             }
         });
 
@@ -214,6 +219,8 @@ public class OWPlatformChoiceDialog {
             psButton.setTextColor(Color.BLACK);
             pcButton.setTextColor(Color.BLACK);
             myProfile.setTextColor(Color.WHITE);
+            messageText.setVisibility(View.GONE);
+            usernameField.setVisibility(View.GONE);
             username = GamesActivity.Companion.getUserInformation().getBattleTag();
             platform = "pc";
         });

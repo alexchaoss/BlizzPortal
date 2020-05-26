@@ -10,8 +10,10 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.BlizzardArmory.R
+import com.BlizzardArmory.ui.MainActivity
 import kotlinx.android.synthetic.main.token_activity.*
 import java.net.URLDecoder
 
@@ -87,10 +89,11 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                         val authorizationCode = extractCodeFromUrl(url)
                         Log.i(BnConstants.TAG, "Found code = $authorizationCode")
                         oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode)
+
                         startActivity = true
                         hasLoggedIn = true
-                    } else if (url.contains("error=")) {
-                        startActivity = true
+                    } else if (url.contains("error=") || oAuth2Helper?.accessToken == null) {
+                        startActivity = false
                     }
                 } catch (e: Exception) {
                     Log.e(BnConstants.TAG, "Error processing token", e)
@@ -115,6 +118,11 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                 intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
                 startActivity(intent)
                 finish()
+            } else {
+                Toast.makeText(this@AuthorizationTokenActivity, "Oops! There was an error, please try again!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@AuthorizationTokenActivity, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
         }
 

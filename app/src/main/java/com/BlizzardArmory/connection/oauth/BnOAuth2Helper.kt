@@ -27,12 +27,11 @@ class BnOAuth2Helper(sharedPreferences: SharedPreferences?, oauth2Params: BnOAut
         Log.i(BnConstants.TAG, "retrieveAndStoreAccessToken for code $authorizationCode")
         val tokenResponse = RetroClient.getClient.getAccessToken(authorizationCode, oauth2Params.zone.toLowerCase(Locale.ROOT), oauth2Params.rederictUri).execute().body()
         Log.i("TOKEN", tokenResponse.toString())
-        val token: TokenResponse = TokenResponse()
+        val token = TokenResponse()
         token.expiresInSeconds = tokenResponse?.expiresIn
         token.accessToken = tokenResponse?.accessToken
         token.scope = tokenResponse?.scope
         token.tokenType = tokenResponse?.tokenType
-        //val tokenResponse: TokenResponse = gson?.fromJson(call, TokenResponse::class.java)!!
         Log.i(BnConstants.TAG, "Found tokenResponse: " + token.accessToken)
         if (null != token.accessToken) {
             Log.i(BnConstants.TAG, "Access Token : " + token.accessToken)

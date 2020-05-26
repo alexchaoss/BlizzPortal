@@ -46,13 +46,13 @@
             android:screenOrientation="unspecified"
             android:launchMode="singleTop" />
         <activity
-            android:name="com.BlizzardArmory.ui.ui_starcraft.SC2Activity"
+            android:name="com.BlizzardArmory.ui.ui_starcraft.SC2Fragment"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"
             android:launchMode="singleTop" />
         <activity
-            android:name="com.BlizzardArmory.ui.ui_overwatch.OWActivity"
+            android:name="com.BlizzardArmory.ui.ui_overwatch.OWFragment"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"

@@ -28,7 +28,6 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.diablo.account.AccountInformation
 import com.BlizzardArmory.model.diablo.account.Hero
-import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.navigation.D3CharacterNav
 import kotlinx.android.synthetic.main.d3_activity.*
@@ -52,26 +51,17 @@ class D3Activity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        battleTag = GamesActivity.userInformation?.battleTag
-        selectedRegion = MainActivity.selectedRegion
+        battleTag = arguments?.getString("battletag")
+        selectedRegion = arguments?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        assert(bnOAuth2Params != null)
+        bnOAuth2Params = arguments?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        loadingCircle.visibility = View.VISIBLE
-        URLConstants.loading = true
         downloadAccountInformation()
-
-        //Button calls
-
-        //search.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(requireActivity(), bnOAuth2Params!!) }
     }
 
     private fun downloadAccountInformation() {
+        URLConstants.loading = true
+        loadingCircle.visibility = View.VISIBLE
         val call: Call<AccountInformation> = RetroClient.getClient.getD3Profile(battleTag, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<AccountInformation> {
             override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
@@ -91,7 +81,9 @@ class D3Activity : Fragment() {
                     setTimePlayed()
                     setCharacterFrames()
                     setFallenCharacterFrames()
-                    loadingCircle!!.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    URLConstants.loading = false
+                    loadingCircle.visibility = View.GONE
                 } else if (response.code() >= 400) {
                     showNoConnectionMessage(requireActivity(), response.code())
                 }
@@ -432,94 +424,85 @@ class D3Activity : Fragment() {
         val fragmentManager = parentFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-        fragmentTransaction.replace(R.id.nav_fragment, d3CharacterNav)
+        fragmentTransaction.replace(R.id.nav_fragment, d3CharacterNav, "d3nav")
         fragmentTransaction.addToBackStack(null).commit()
         parentFragmentManager.executePendingTransactions()
     }
 
-    /*   override fun onBackPressed() {
-           val fragment = parentFragmentManager.findFragmentById(R.id.nav_fragment)
-           if (fragment !is IOnBackPressed || !(fragment as IOnBackPressed).onBackPressed()) {
-              // super.onBackPressed()
-           } else if (!URLConstants.loading && !fragment.isAdded) {
-               val intent = Intent(requireContext(), GamesActivity::class.java)
-               intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-               startActivity(intent)
-           }
-       }*/
-
     fun showNoConnectionMessage(context: Context, responseCode: Int) {
-            loadingCircle!!.visibility = View.GONE
-            val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
-            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            buttonParams.setMargins(10, 20, 10, 20)
-            val titleText = TextView(context)
-            titleText.textSize = 20f
-            titleText.gravity = Gravity.CENTER_HORIZONTAL
-            titleText.setPadding(0, 20, 0, 20)
-            titleText.layoutParams = layoutParams
-            titleText.setTextColor(Color.WHITE)
-            val messageText = TextView(context)
-            messageText.gravity = Gravity.CENTER_HORIZONTAL
-            messageText.layoutParams = layoutParams
-            messageText.setTextColor(Color.WHITE)
-            val button = Button(context)
-            button.textSize = 18f
-            button.setTextColor(Color.WHITE)
-            button.gravity = Gravity.CENTER
-            button.width = 200
-            button.layoutParams = buttonParams
-            button.background = context.getDrawable(R.drawable.buttonstyle)
-            val button2 = Button(context)
-            button2.textSize = 20f
-            button2.setTextColor(Color.WHITE)
-            button2.gravity = Gravity.CENTER
-            button2.width = 200
-            button2.height = 100
-            button2.layoutParams = buttonParams
-            button2.background = context.getDrawable(R.drawable.buttonstyle)
-            val buttonLayout = LinearLayout(context)
-            buttonLayout.orientation = LinearLayout.HORIZONTAL
-            buttonLayout.gravity = Gravity.CENTER
-            when (responseCode) {
-                in 400..499 -> {
-                    titleText.text = ErrorMessages.INFORMATION_OUTDATED
-                    messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
-                500 -> {
-                    titleText.text = ErrorMessages.SERVERS_ERROR
-                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
-                else -> {
-                    titleText.text = ErrorMessages.NO_INTERNET
-                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                    button.text = ErrorMessages.RETRY
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button)
-                    buttonLayout.addView(button2)
-                }
+        loadingCircle!!.visibility = View.GONE
+        URLConstants.loading = false
+        val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        buttonParams.setMargins(10, 20, 10, 20)
+        val titleText = TextView(context)
+        titleText.textSize = 20f
+        titleText.gravity = Gravity.CENTER_HORIZONTAL
+        titleText.setPadding(0, 20, 0, 20)
+        titleText.layoutParams = layoutParams
+        titleText.setTextColor(Color.WHITE)
+        val messageText = TextView(context)
+        messageText.gravity = Gravity.CENTER_HORIZONTAL
+        messageText.layoutParams = layoutParams
+        messageText.setTextColor(Color.WHITE)
+        val button = Button(context)
+        button.textSize = 18f
+        button.setTextColor(Color.WHITE)
+        button.gravity = Gravity.CENTER
+        button.width = 200
+        button.layoutParams = buttonParams
+        button.background = context.getDrawable(R.drawable.buttonstyle)
+        val button2 = Button(context)
+        button2.textSize = 20f
+        button2.setTextColor(Color.WHITE)
+        button2.gravity = Gravity.CENTER
+        button2.width = 200
+        button2.height = 100
+        button2.layoutParams = buttonParams
+        button2.background = context.getDrawable(R.drawable.buttonstyle)
+        val buttonLayout = LinearLayout(context)
+        buttonLayout.orientation = LinearLayout.HORIZONTAL
+        buttonLayout.gravity = Gravity.CENTER
+        when (responseCode) {
+            in 400..499 -> {
+                titleText.text = ErrorMessages.INFORMATION_OUTDATED
+                messageText.text = ErrorMessages.LOGIN_TO_UPDATE
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
             }
-            val dialog = builder.show()
-            Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-            val linearLayout = LinearLayout(context)
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.gravity = Gravity.CENTER
-            linearLayout.setPadding(20, 20, 20, 20)
-            linearLayout.addView(titleText)
-            linearLayout.addView(messageText)
-            linearLayout.addView(buttonLayout)
-            dialog.addContentView(linearLayout, layoutParams)
-            dialog.setOnCancelListener { downloadAccountInformation() }
-            button.setOnClickListener { dialog.cancel() }
-            button2.setOnClickListener {
-                dialog.dismiss()
+            500 -> {
+                titleText.text = ErrorMessages.SERVERS_ERROR
+                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
             }
+            else -> {
+                titleText.text = ErrorMessages.NO_INTERNET
+                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                button.text = ErrorMessages.RETRY
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button)
+                buttonLayout.addView(button2)
+            }
+        }
+        val dialog = builder.show()
+        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        val linearLayout = LinearLayout(context)
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.gravity = Gravity.CENTER
+        linearLayout.setPadding(20, 20, 20, 20)
+        linearLayout.addView(titleText)
+        linearLayout.addView(messageText)
+        linearLayout.addView(buttonLayout)
+        dialog.addContentView(linearLayout, layoutParams)
+        dialog.setOnCancelListener { downloadAccountInformation() }
+        button.setOnClickListener { dialog.cancel() }
+        button2.setOnClickListener {
+            dialog.dismiss()
+            parentFragmentManager.beginTransaction().remove(this).commit()
+        }
     }
 
     companion object {

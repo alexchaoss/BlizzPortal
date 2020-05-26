@@ -4,9 +4,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
@@ -19,19 +22,25 @@ import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
+import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.UserInformation
-import com.BlizzardArmory.ui.ui_diablo.D3Activity
+import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
-import com.BlizzardArmory.ui.ui_starcraft.SC2Activity
+import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
+import com.BlizzardArmory.ui.ui_warcraft.WoWCharacterSearchDialog
 import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
+import com.BlizzardArmory.util.events.BackPressEvent
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.d3_gear_fragment.*
+import kotlinx.android.synthetic.main.d3_skill_fragment.*
 import kotlinx.android.synthetic.main.games_activity.*
 import kotlinx.android.synthetic.main.games_activity_bar.*
 import kotlinx.android.synthetic.main.games_activity_nav_header.*
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import java.util.*
@@ -40,6 +49,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
     private lateinit var toggle: ActionBarDrawerToggle
+    var searchText: SpannableString? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +70,16 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = ""
+        searchText = SpannableString(nav_view.menu.findItem(R.id.wow_search).title)
+        searchText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, searchText!!.length, 0)
+        nav_view.menu.findItem(R.id.wow_search).title = searchText
+
+        settings.setOnClickListener {
+            val fragment = SettingsFragment()
+            supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").commit()
+            supportFragmentManager.executePendingTransactions()
+            drawer_layout.closeDrawers()
+        }
 
         downloadUserInfo()
     }
@@ -78,10 +98,6 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                         }
                         supportActionBar?.title = userInformation?.battleTag
                         battletag.text = userInformation?.battleTag
-                        /*wowButton.setOnClickListener { callNextActivity(WoWActivity::class.java) }
-                        diablo3Button.setOnClickListener { DiabloProfileSearchDialog.diabloPrompt(this@GamesActivity, bnOAuth2Params!!) }
-                        starcraft2Button.setOnClickListener { callNextActivity(SC2Activity::class.java) }
-                        overwatchButton.setOnClickListener { OWPlatformChoiceDialog.overwatchPrompt(this@GamesActivity, bnOAuth2Params) }*/
                     } else {
                         callErrorAlertDialog(500)
                     }
@@ -98,19 +114,30 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     }
 
     override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
+        val navFragment = supportFragmentManager.findFragmentById(R.id.nav_fragment)
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawers()
-        } else if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
-            if (supportFragmentManager.findFragmentById(R.id.nav_fragment) != null) {
-                supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.nav_fragment)!!).commit()
-            } else {
-                supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
+        } else if (!URLConstants.loading && fragment != null) {
+            if (navFragment != null && navFragment.isVisible) {
+                if (navFragment.tag == "d3nav") {
+                    if (URLConstants.loading || skill_tooltip_scroll!!.visibility == View.VISIBLE || item_scroll_view!!.visibility == View.VISIBLE) {
+                        EventBus.getDefault().post(BackPressEvent(true))
+                    }
+                } else if (!URLConstants.loading) {
+                    supportFragmentManager.beginTransaction().remove(navFragment).commit()
+                }
+            } else if (!URLConstants.loading) {
+                Log.i("FRAG1", "closed")
+                supportFragmentManager.beginTransaction().remove(fragment).commit()
             }
-        } else {
+        } else if (!URLConstants.loading) {
             super.onBackPressed()
             val intent = Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
+        } else {
+            Log.e("FAIL", "BACKPRESS not working")
         }
 
     }
@@ -204,6 +231,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val fragment: Fragment
+
         when (item.title) {
             "World of Warcraft" -> {
                 fragment = WoWActivity()
@@ -211,20 +239,22 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
+            searchText -> {
+                WoWCharacterSearchDialog.characterSearchPrompt(this, supportFragmentManager.primaryNavigationFragment)
+                drawer_layout.closeDrawers()
+            }
             "Diablo 3" -> {
-                fragment = D3Activity()
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "diablo3fragment").commit()
-                supportFragmentManager.executePendingTransactions()
+                DiabloProfileSearchDialog.diabloPrompt(this, bnOAuth2Params!!, supportFragmentManager)
                 drawer_layout.closeDrawers()
             }
             "Starcraft 2" -> {
-                fragment = SC2Activity()
+                fragment = SC2Fragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "sc2fragment").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
             "Overwatch" -> {
-                OWPlatformChoiceDialog.overwatchPrompt(this, supportFragmentManager, bnOAuth2Params)
+                OWPlatformChoiceDialog.overwatchPrompt(this, supportFragmentManager)
                 drawer_layout.closeDrawers()
             }
         }
