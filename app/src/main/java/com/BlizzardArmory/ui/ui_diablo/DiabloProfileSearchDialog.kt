@@ -1,9 +1,9 @@
 package com.BlizzardArmory.ui.ui_diablo
 
 import android.app.Activity
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -12,6 +12,8 @@ import android.view.WindowManager
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
@@ -24,15 +26,15 @@ import com.BlizzardArmory.util.MetricConversion
 object DiabloProfileSearchDialog {
     private var battleTag = ""
     private var selectedRegion = ""
-    private fun callD3Activity(activity: Activity, bnOAuth2Params: BnOAuth2Params) {
-        if (activity.javaClass.simpleName.equals("D3Activity", ignoreCase = true)) {
-            activity.finish()
-        }
-        val intent = Intent(activity, D3Activity::class.java)
-        intent.putExtra("battletag", battleTag)
-        intent.putExtra("region", selectedRegion)
-        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
-        activity.startActivity(intent)
+    private fun callD3Activity(bnOAuth2Params: BnOAuth2Params, fragmentManager: FragmentManager) {
+        val fragment: Fragment = D3Activity()
+        val bundle = Bundle()
+        bundle.putString("battletag", battleTag)
+        bundle.putString("region", selectedRegion)
+        bundle.putParcelable(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
+        fragment.arguments = bundle
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3fragment").commit()
+        fragmentManager.executePendingTransactions()
     }
 
     /**
@@ -42,7 +44,7 @@ object DiabloProfileSearchDialog {
      * @param bnOAuth2Params the bn o auth 2 params
      */
     @JvmStatic
-    fun diabloPrompt(activity: Activity, bnOAuth2Params: BnOAuth2Params) {
+    fun diabloPrompt(activity: Activity, bnOAuth2Params: BnOAuth2Params, fragmentManager: FragmentManager) {
         val builderOW = AlertDialog.Builder(activity, R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams.gravity = Gravity.CENTER
@@ -130,7 +132,7 @@ object DiabloProfileSearchDialog {
         dialogD3.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialogD3.show()
         dialogD3.window?.setGravity(Gravity.CENTER)
-        dialogD3.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogD3.window?.setLayout(MetricConversion.getDPMetric(320, activity), WindowManager.LayoutParams.WRAP_CONTENT)
         dialogD3.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
         dialogD3.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         val linearLayout = LinearLayout(activity)
@@ -151,14 +153,14 @@ object DiabloProfileSearchDialog {
             } else {
                 battleTag = battleTagField.text.toString()
                 dialogD3.cancel()
-                callD3Activity(activity, bnOAuth2Params)
+                callD3Activity(bnOAuth2Params, fragmentManager)
             }
         }
         myProfile.setOnClickListener {
             battleTag = GamesActivity.userInformation!!.battleTag
             selectedRegion = ""
             dialogD3.cancel()
-            callD3Activity(activity, bnOAuth2Params)
+            callD3Activity(bnOAuth2Params, fragmentManager)
         }
     }
 }

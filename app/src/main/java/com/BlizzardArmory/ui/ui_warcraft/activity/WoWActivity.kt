@@ -44,22 +44,15 @@ class WoWActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        loadingCircle.visibility = View.VISIBLE
-        URLConstants.loading = true
-
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
         downloadWoWCharacters()
-
-        /*search.setOnClickListener {
-            val fragment = parentFragmentManager.findFragmentById(R.id.fragment)
-            WoWCharacterSearchDialog.characterSearchPrompt(requireActivity(), fragment)
-        }*/
     }
 
     private fun downloadWoWCharacters() {
+        loadingCircle.visibility = View.VISIBLE
+        URLConstants.loading = true
         val call: Call<Account> = RetroClient.getClient.getAccount(MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
@@ -68,6 +61,9 @@ class WoWActivity : Fragment() {
                         Log.i("TEST", response.raw().request.url.toString())
                         charaters = response.body()
                         populateRecyclerView()
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        URLConstants.loading = false
+                        loadingCircle.visibility = View.GONE
                     }
                     response.code() >= 400 -> {
                         Log.e("Error", "Response code: " + response.code())
@@ -101,8 +97,8 @@ class WoWActivity : Fragment() {
             val button = TextView(requireActivity())
             button.setBackgroundResource(R.drawable.progress_collapse_header)
             button.setTextColor(Color.WHITE)
-            var realmNamePlus = "+ " + realm[0].realm.name
-            var realmNameMinus = "- " + realm[0].realm.name
+            val realmNamePlus = "+ " + realm[0].realm.name
+            val realmNameMinus = "- " + realm[0].realm.name
             button.text = realmNamePlus
             button.textSize = 18F
             button.layoutParams = paramsButton
@@ -139,6 +135,7 @@ class WoWActivity : Fragment() {
 
     private fun callErrorAlertDialog(responseCode: Int) {
         URLConstants.loading = false
+        loadingCircle.visibility = View.GONE
         val builder = AlertDialog.Builder(requireActivity(), R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -194,10 +191,8 @@ class WoWActivity : Fragment() {
             }
         }
         val dialog = builder.show()
-        dialog.show()
-        Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        requireActivity().window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        requireActivity().window.setGravity(Gravity.CENTER)
+        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val linearLayout = LinearLayout(requireActivity())
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.gravity = Gravity.CENTER
@@ -210,6 +205,7 @@ class WoWActivity : Fragment() {
         button.setOnClickListener { dialog.cancel() }
         button2.setOnClickListener {
             dialog.dismiss()
+            parentFragmentManager.beginTransaction().remove(this).commit()
         }
     }
 }

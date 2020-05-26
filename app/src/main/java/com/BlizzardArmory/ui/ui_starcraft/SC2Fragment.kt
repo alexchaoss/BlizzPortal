@@ -36,7 +36,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import java.util.*
 
-class SC2Activity : Fragment() {
+class SC2Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
@@ -94,6 +94,7 @@ class SC2Activity : Fragment() {
     }
 
     private fun downloadAccountInformation() {
+        URLConstants.loading = true
         val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation!!.userID, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<List<Player>> {
             override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
@@ -408,88 +409,87 @@ class SC2Activity : Fragment() {
     }
 
     private fun showNoConnectionMessage(responseCode: Int) {
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            loadingCircle!!.visibility = View.GONE
-            URLConstants.loading = false
+        loadingCircle!!.visibility = View.GONE
+        URLConstants.loading = false
         val builder = AlertDialog.Builder(requireActivity(), R.style.DialogTransparent)
-            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            buttonParams.setMargins(10, 20, 10, 20)
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        buttonParams.setMargins(10, 20, 10, 20)
         val titleText = TextView(requireActivity())
-            titleText.textSize = 20f
-            titleText.gravity = Gravity.CENTER_HORIZONTAL
-            titleText.setPadding(0, 20, 0, 20)
-            titleText.layoutParams = layoutParams
-            titleText.setTextColor(Color.WHITE)
+        titleText.textSize = 20f
+        titleText.gravity = Gravity.CENTER_HORIZONTAL
+        titleText.setPadding(0, 20, 0, 20)
+        titleText.layoutParams = layoutParams
+        titleText.setTextColor(Color.WHITE)
         val messageText = TextView(requireActivity())
-            messageText.gravity = Gravity.CENTER_HORIZONTAL
-            messageText.setPadding(0, 0, 0, 20)
-            messageText.layoutParams = layoutParams
-            messageText.setTextColor(Color.WHITE)
+        messageText.gravity = Gravity.CENTER_HORIZONTAL
+        messageText.setPadding(0, 0, 0, 20)
+        messageText.layoutParams = layoutParams
+        messageText.setTextColor(Color.WHITE)
         val button = Button(requireActivity())
-            button.textSize = 20f
-            button.setTextColor(Color.WHITE)
-            button.gravity = Gravity.CENTER
-            button.width = 200
-            button.height = 100
-            button.layoutParams = buttonParams
+        button.textSize = 20f
+        button.setTextColor(Color.WHITE)
+        button.gravity = Gravity.CENTER
+        button.width = 200
+        button.height = 100
+        button.layoutParams = buttonParams
         button.background = requireActivity().getDrawable(R.drawable.buttonstyle)
         val button2 = Button(requireActivity())
-            button2.textSize = 20f
-            button2.setTextColor(Color.WHITE)
-            button2.gravity = Gravity.CENTER
-            button2.width = 200
-            button2.height = 100
-            button2.layoutParams = buttonParams
+        button2.textSize = 20f
+        button2.setTextColor(Color.WHITE)
+        button2.gravity = Gravity.CENTER
+        button2.width = 200
+        button2.height = 100
+        button2.layoutParams = buttonParams
         button2.background = requireActivity().getDrawable(R.drawable.buttonstyle)
         val buttonLayout = LinearLayout(requireActivity())
-            buttonLayout.orientation = LinearLayout.HORIZONTAL
-            buttonLayout.gravity = Gravity.CENTER
-            buttonLayout.addView(button)
-            when (responseCode) {
-                404 -> {
-                    titleText.text = ErrorMessages.ACCOUNT_NOT_FOUND
-                    messageText.text = ErrorMessages.SC2_ACCOUNT_NOT_FOUND
-                    button.text = ErrorMessages.OK
-                }
-                403 -> {
-                    titleText.text = ErrorMessages.UNAVAILABLE
-                    messageText.text = ErrorMessages.SC2_SERVERS_DOWN
-                    button.text = ErrorMessages.BACK
-                }
-                500 -> {
-                    titleText.text = ErrorMessages.SERVERS_ERROR
-                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                    button.text = ErrorMessages.BACK
-                }
-                else -> {
-                    titleText.text = ErrorMessages.NO_INTERNET
-                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                    button.text = ErrorMessages.RETRY
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
+        buttonLayout.orientation = LinearLayout.HORIZONTAL
+        buttonLayout.gravity = Gravity.CENTER
+        buttonLayout.addView(button)
+        when (responseCode) {
+            404 -> {
+                titleText.text = ErrorMessages.ACCOUNT_NOT_FOUND
+                messageText.text = ErrorMessages.SC2_ACCOUNT_NOT_FOUND
+                button.text = ErrorMessages.OK
             }
-            val dialog = builder.show()
-            Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+            403 -> {
+                titleText.text = ErrorMessages.UNAVAILABLE
+                messageText.text = ErrorMessages.SC2_SERVERS_DOWN
+                button.text = ErrorMessages.BACK
+            }
+            500 -> {
+                titleText.text = ErrorMessages.SERVERS_ERROR
+                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
+                button.text = ErrorMessages.BACK
+            }
+            else -> {
+                titleText.text = ErrorMessages.NO_INTERNET
+                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                button.text = ErrorMessages.RETRY
+                button2.text = ErrorMessages.BACK
+                buttonLayout.addView(button2)
+            }
+        }
+        val dialog = builder.show()
+        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val linearLayout = LinearLayout(requireActivity())
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.gravity = Gravity.CENTER
-            linearLayout.setPadding(20, 20, 20, 20)
-            linearLayout.addView(titleText)
-            linearLayout.addView(messageText)
-            linearLayout.addView(buttonLayout)
-            dialog.addContentView(linearLayout, layoutParams)
-            if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
-                dialog.setOnCancelListener { parentFragmentManager.popBackStack() }
-            } else {
-                dialog.setOnCancelListener { downloadAccountInformation() }
-            }
-            button.setOnClickListener { dialog.cancel() }
-            button2.setOnClickListener {
-                dialog.dismiss()
-                parentFragmentManager.popBackStack()
-            }
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.gravity = Gravity.CENTER
+        linearLayout.setPadding(20, 20, 20, 20)
+        linearLayout.addView(titleText)
+        linearLayout.addView(messageText)
+        linearLayout.addView(buttonLayout)
+        dialog.addContentView(linearLayout, layoutParams)
+        if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
+            dialog.setOnCancelListener { parentFragmentManager.beginTransaction().remove(this).commit() }
+        } else {
+            dialog.setOnCancelListener { downloadAccountInformation() }
+        }
+        button.setOnClickListener { dialog.cancel() }
+        button2.setOnClickListener {
+            dialog.dismiss()
+            parentFragmentManager.beginTransaction().remove(this).commit()
+        }
     }
 }

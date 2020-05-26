@@ -32,8 +32,6 @@ import com.BlizzardArmory.R;
 import com.BlizzardArmory.connection.ErrorMessages;
 import com.BlizzardArmory.connection.NetworkServices;
 import com.BlizzardArmory.connection.URLConstants;
-import com.BlizzardArmory.connection.oauth.BnConstants;
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params;
 import com.BlizzardArmory.model.overwatch.Profile;
 import com.BlizzardArmory.model.overwatch.heroes.Hero;
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero;
@@ -58,9 +56,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * The type Ow activity.
  */
-public class OWActivity extends Fragment {
+public class OWFragment extends Fragment {
 
-    private BnOAuth2Params bnOAuth2Params;
     private NetworkServices networkServices;
 
     private String username;
@@ -119,53 +116,52 @@ public class OWActivity extends Fragment {
     private LinearLayout misc;
     private LinearLayout matchAwards;
 
-    private String privateProfile = "requireActivity() profile is private and the information unavailable";
+    private String privateProfile = "This profile is private and the information unavailable";
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        inflater.inflate(R.layout.ow_activity, container);
-        return super.onCreateView(inflater, container, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.ow_activity, container, false);
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadingCircle = requireActivity().findViewById(R.id.loadingCircle);
+        Log.i("TEST", "TEST");
+        loadingCircle = view.findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
         assert GamesActivity.Companion.getUserInformation() != null;
-        avatar = requireActivity().findViewById(R.id.avatar);
-        name = requireActivity().findViewById(R.id.name);
-        levelIcon = requireActivity().findViewById(R.id.level_icon);
-        ratingIconTank = requireActivity().findViewById(R.id.rating_icon_tank);
-        ratingRankIconTank = requireActivity().findViewById(R.id.rating_icon_rank_tank);
-        ratingTank = requireActivity().findViewById(R.id.rating_tank);
-        ratingIconDamage = requireActivity().findViewById(R.id.rating_icon_damage);
-        ratingRankIconDamage = requireActivity().findViewById(R.id.rating_icon_rank_damage);
-        ratingDamage = requireActivity().findViewById(R.id.rating_damage);
-        ratingIconSupport = requireActivity().findViewById(R.id.rating_icon_support);
-        ratingRankIconSupport = requireActivity().findViewById(R.id.rating_icon_rank_support);
-        ratingSupport = requireActivity().findViewById(R.id.rating_support);
-        level = requireActivity().findViewById(R.id.level);
-        gamesWon = requireActivity().findViewById(R.id.games_won);
-        topCharacter = requireActivity().findViewById(R.id.top_character);
+        avatar = view.findViewById(R.id.avatar);
+        name = view.findViewById(R.id.name);
+        levelIcon = view.findViewById(R.id.level_icon);
+        ratingIconTank = view.findViewById(R.id.rating_icon_tank);
+        ratingRankIconTank = view.findViewById(R.id.rating_icon_rank_tank);
+        ratingTank = view.findViewById(R.id.rating_tank);
+        ratingIconDamage = view.findViewById(R.id.rating_icon_damage);
+        ratingRankIconDamage = view.findViewById(R.id.rating_icon_rank_damage);
+        ratingDamage = view.findViewById(R.id.rating_damage);
+        ratingIconSupport = view.findViewById(R.id.rating_icon_support);
+        ratingRankIconSupport = view.findViewById(R.id.rating_icon_rank_support);
+        ratingSupport = view.findViewById(R.id.rating_support);
+        level = view.findViewById(R.id.level);
+        gamesWon = view.findViewById(R.id.games_won);
+        topCharacter = view.findViewById(R.id.top_character);
         /*endorsementIcon = findViewById(R.id.endorsement_icon);
         endorsementIcon.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         endorsement = findViewById(R.id.endorsement_level);*/
-        prestigeIcon = requireActivity().findViewById(R.id.prestige_icon);
-        topHeroesListSpinner = requireActivity().findViewById(R.id.spinner);
-        careerListSpinner = requireActivity().findViewById(R.id.spinner_career);
-        heroList = requireActivity().findViewById(R.id.hero_list);
-        competitive = requireActivity().findViewById(R.id.competitive);
-        quickplay = requireActivity().findViewById(R.id.quickplay);
-        LinearLayout quickComp = requireActivity().findViewById(R.id.quick_comp);
-        best = requireActivity().findViewById(R.id.best);
-        assists = requireActivity().findViewById(R.id.assist);
-        game = requireActivity().findViewById(R.id.game);
-        average = requireActivity().findViewById(R.id.average);
-        combat = requireActivity().findViewById(R.id.combat);
-        misc = requireActivity().findViewById(R.id.misc);
-        matchAwards = requireActivity().findViewById(R.id.match);
+        prestigeIcon = view.findViewById(R.id.prestige_icon);
+        topHeroesListSpinner = view.findViewById(R.id.spinner);
+        careerListSpinner = view.findViewById(R.id.spinner_career);
+        heroList = view.findViewById(R.id.hero_list);
+        competitive = view.findViewById(R.id.competitive);
+        quickplay = view.findViewById(R.id.quickplay);
+        LinearLayout quickComp = view.findViewById(R.id.quick_comp);
+        best = view.findViewById(R.id.best);
+        assists = view.findViewById(R.id.assist);
+        game = view.findViewById(R.id.game);
+        average = view.findViewById(R.id.average);
+        combat = view.findViewById(R.id.combat);
+        misc = view.findViewById(R.id.misc);
+        matchAwards = view.findViewById(R.id.match);
 
         GradientDrawable switchCompQuickBorder = new GradientDrawable();
         switchCompQuickBorder.setCornerRadius(5);
@@ -177,21 +173,14 @@ public class OWActivity extends Fragment {
         switchCompQuickRadius.setColor(Color.parseColor("#FFFFFF"));
         quickplay.setBackground(switchCompQuickRadius);
 
-        bnOAuth2Params = Objects.requireNonNull(requireActivity().getIntent().getExtras()).getParcelable(BnConstants.BUNDLE_BNPARAMS);
+        username = this.getArguments().getString("username");
+        platform = this.getArguments().getString("platform");
 
         Gson gson = new GsonBuilder().create();
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://ow-api.com/v1/stats/").addConverterFactory(GsonConverterFactory.create(gson)).build();
         networkServices = retrofit.create(NetworkServices.class);
 
-        username = requireActivity().getIntent().getExtras().getString("username");
-        platform = requireActivity().getIntent().getExtras().getString("platform");
-
         downloadAccountInformation();
-
-        /*search.setOnClickListener(v -> {
-            OWPlatformChoiceDialog.myProfileChosen = false;
-            OWPlatformChoiceDialog.overwatchPrompt(OWActivity.requireActivity(), bnOAuth2Params);
-        });*/
     }
 
     private void downloadAccountInformation() {
@@ -1082,12 +1071,6 @@ public class OWActivity extends Fragment {
         level.setText(String.valueOf(accountInformation.getLevel()));
     }
 
-    private void callNextActivity(Class activity) {
-        final Intent intent = new Intent(requireActivity(), activity);
-        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params);
-        startActivity(intent);
-    }
-
     private void downloadAvatar() {
         Picasso.get().load(accountInformation.getIcon()).into(avatar);
     }
@@ -1200,12 +1183,15 @@ public class OWActivity extends Fragment {
         dialog.addContentView(linearLayout, layoutParams);
 
         if (responseCode == 404) {
-            dialog.setOnCancelListener(dialog1 -> getParentFragmentManager().popBackStack());
+            dialog.setOnCancelListener(dialog1 -> getParentFragmentManager().beginTransaction().remove(this).commit());
         } else {
             dialog.setOnCancelListener(dialog1 -> downloadAccountInformation());
         }
 
         button.setOnClickListener(v -> dialog.cancel());
-        button2.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        button2.setOnClickListener(v -> {
+            dialog.dismiss();
+            getParentFragmentManager().beginTransaction().remove(this).commit();
+        });
     }
 }

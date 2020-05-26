@@ -47,7 +47,7 @@ object WoWCharacterSearchDialog {
         val fragmentManager = (activity as FragmentActivity).supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-        fragmentTransaction.replace(R.id.nav_fragment, woWNavFragment)
+        fragmentTransaction.replace(R.id.fragment, woWNavFragment)
         fragmentTransaction.addToBackStack(null).commit()
         activity.supportFragmentManager.executePendingTransactions()
     }
@@ -107,7 +107,7 @@ object WoWCharacterSearchDialog {
         dialogWoW.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialogWoW.show()
         dialogWoW.window?.setGravity(Gravity.CENTER)
-        dialogWoW.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogWoW.window?.setLayout(MetricConversion.getDPMetric(320, activity), WindowManager.LayoutParams.WRAP_CONTENT)
         dialogWoW.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
         dialogWoW.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         val linearLayout = LinearLayout(activity)
