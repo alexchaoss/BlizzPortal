@@ -1,6 +1,5 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -23,7 +22,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -173,6 +171,7 @@ public class OWFragment extends Fragment {
         switchCompQuickRadius.setColor(Color.parseColor("#FFFFFF"));
         quickplay.setBackground(switchCompQuickRadius);
 
+        assert this.getArguments() != null;
         username = this.getArguments().getString("username");
         platform = this.getArguments().getString("platform");
 
@@ -484,6 +483,7 @@ public class OWFragment extends Fragment {
             value.setText(list.get(key));
             value.setPadding(10, 10, 10, 10);
             value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            value.setGravity(Gravity.END);
             value.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             TextView text = new TextView(requireActivity());
             text.setText(key);
@@ -1104,7 +1104,7 @@ public class OWFragment extends Fragment {
      *
      * @param responseCode the response code
      */
-    public void showNoConnectionMessage(final int responseCode) {
+    private void showNoConnectionMessage(final int responseCode) {
         requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         loadingCircle.setVisibility(View.GONE);
         URLConstants.loading = false;

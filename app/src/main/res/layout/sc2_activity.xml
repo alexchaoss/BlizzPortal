@@ -329,6 +329,7 @@
                         android:id="@+id/terran_wins"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="end"
                         android:textAlignment="viewEnd"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
@@ -352,6 +353,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -374,6 +376,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -397,6 +400,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -420,6 +424,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>

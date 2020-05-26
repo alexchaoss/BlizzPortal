@@ -15,8 +15,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 70
-        versionName "3.0"
+        versionCode 71
+        versionName "3.01"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

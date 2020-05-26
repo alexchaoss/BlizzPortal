@@ -97,7 +97,7 @@
     <string name="protoss_wins">Protoss Wins</string>
     <string name="zerg_wins">Zerg Wins</string>
     <string name="terran_wins">Terran Wins</string>
-    <string name="not_yet_ranked">- Not Yet Ranked</string>
+    <string name="not_yet_ranked"> - Not Yet Ranked</string>
     <string name="_4v4" translatable="false">4v4</string>
     <string name="_3v3" translatable="false">3v3</string>
     <string name="_2v2" translatable="false">2v2</string>
@@ -162,4 +162,5 @@
     <string name="overwatch">Overwatch</string>
     <string name="search_character">Search character</string>
     <string name="search_user">Search user</string>
+    <string name="honorable_kills">Honorable Kills</string>
 </resources>
