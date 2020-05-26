@@ -57,6 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/honor"
+                        android:gravity="center"
                         android:textAlignment="center"
                         android:textColor="#fff"
                         android:textSize="18sp" />
@@ -65,6 +66,7 @@
                         android:id="@+id/level"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:textAlignment="center"
                         android:textColor="#fff"
                         android:textSize="18sp" />
@@ -87,7 +89,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Honorable Kills"
+                        android:gravity="center"
+                        android:text="@string/honorable_kills"
                         android:textAlignment="center"
                         android:textColor="#fff"
                         android:textSize="18sp" />
@@ -97,6 +100,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#fff"
                         android:textSize="18sp" />
 
@@ -149,6 +153,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/_2v2"
+                            android:gravity="center"
                             android:textAlignment="center"
                             android:textColor="#f8b700"
                             android:textSize="18sp" />
@@ -159,6 +164,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="@string/arena"
+                            android:gravity="center"
                             android:textAlignment="center"
                             android:textColor="#fff"
                             android:textSize="14sp" />
@@ -201,6 +207,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/_3v3"
+                            android:gravity="center"
                             android:textAlignment="center"
                             android:textColor="#f8b700"
                             android:textSize="18sp" />
@@ -211,6 +218,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="@string/arena"
+                            android:gravity="center"
                             android:textAlignment="center"
                             android:textColor="#fff"
                             android:textSize="12sp" />
@@ -253,6 +261,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/_10v10"
+                            android:gravity="center"
                             android:textAlignment="center"
                             android:textColor="#f8b700"
                             android:textSize="18sp" />
@@ -262,6 +271,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:gravity="center"
                             android:text="@string/battlegrounds"
                             android:textAlignment="center"
                             android:textColor="#fff"

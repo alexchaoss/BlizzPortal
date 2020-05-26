@@ -27,7 +27,7 @@ object DiabloProfileSearchDialog {
     private var battleTag = ""
     private var selectedRegion = ""
     private fun callD3Activity(bnOAuth2Params: BnOAuth2Params, fragmentManager: FragmentManager) {
-        val fragment: Fragment = D3Activity()
+        val fragment: Fragment = D3Fragment()
         val bundle = Bundle()
         bundle.putString("battletag", battleTag)
         bundle.putString("region", selectedRegion)

@@ -123,6 +123,8 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 if (navFragment.tag == "d3nav") {
                     if (URLConstants.loading || skill_tooltip_scroll!!.visibility == View.VISIBLE || item_scroll_view!!.visibility == View.VISIBLE) {
                         EventBus.getDefault().post(BackPressEvent(true))
+                    } else {
+                        supportFragmentManager.beginTransaction().remove(navFragment).commit()
                     }
                 } else if (!URLConstants.loading) {
                     supportFragmentManager.beginTransaction().remove(navFragment).commit()

@@ -36,7 +36,7 @@ import retrofit2.Callback
 import java.text.SimpleDateFormat
 import java.util.*
 
-class D3Activity : Fragment() {
+class D3Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
@@ -131,7 +131,7 @@ class D3Activity : Fragment() {
                 name.setTextColor(Color.parseColor("#a99877"))
                 name.text = accountInformation!!.fallenHeroes[i].name
                 name.id = (i + 1000) * 2
-                val format = SimpleDateFormat("MM/dd/yy")
+                val format = SimpleDateFormat("MM/dd/yy", Locale.getDefault())
                 val dateFormatted = Date(accountInformation!!.fallenHeroes[i].death.time.toLong() * 1000L)
                 val dateString = format.format(dateFormatted)
                 val date = TextView(requireContext())
