@@ -29,10 +29,11 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
+import com.BlizzardArmory.ui.ui_overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
 import com.BlizzardArmory.ui.ui_warcraft.WoWCharacterSearchDialog
 import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
-import com.BlizzardArmory.ui.ui_warcraft.favorites.FavoritesFragment
+import com.BlizzardArmory.ui.ui_warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.navigation.NavigationView
@@ -271,23 +272,23 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 drawer_layout.closeDrawers()
             }
             wowFavoritesText -> {
-                fragment = FavoritesFragment()
+                fragment = WoWFavoritesFragment()
                 favorite.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
             d3FavoritesText -> {
-                fragment = FavoritesFragment()
+                fragment = WoWFavoritesFragment()
                 favorite.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
             owFavoritesText -> {
-                fragment = FavoritesFragment()
+                fragment = OWFavoritesFragment()
                 favorite.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "owfavorites").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }

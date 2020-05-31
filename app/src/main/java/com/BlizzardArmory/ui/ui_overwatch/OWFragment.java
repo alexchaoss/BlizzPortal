@@ -1,10 +1,12 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -31,6 +34,8 @@ import com.BlizzardArmory.connection.ErrorMessages;
 import com.BlizzardArmory.connection.NetworkServices;
 import com.BlizzardArmory.connection.URLConstants;
 import com.BlizzardArmory.model.overwatch.Profile;
+import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfile;
+import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfiles;
 import com.BlizzardArmory.model.overwatch.heroes.Hero;
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero;
 import com.BlizzardArmory.ui.GamesActivity;
@@ -42,9 +47,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,6 +121,8 @@ public class OWFragment extends Fragment {
 
     private String privateProfile = "This profile is private and the information unavailable";
 
+    private ImageView favorite;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ow_activity, container, false);
@@ -161,6 +168,11 @@ public class OWFragment extends Fragment {
         misc = view.findViewById(R.id.misc);
         matchAwards = view.findViewById(R.id.match);
 
+        favorite = requireActivity().findViewById(R.id.favorite);
+        favorite.setVisibility(View.VISIBLE);
+        favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
+        favorite.setTag(R.drawable.ic_star_border_black_24dp);
+
         GradientDrawable switchCompQuickBorder = new GradientDrawable();
         switchCompQuickBorder.setCornerRadius(5);
         switchCompQuickBorder.setStroke(3, Color.parseColor("#FFFFFF"));
@@ -197,6 +209,7 @@ public class OWFragment extends Fragment {
                 if (response.isSuccessful()) {
                     try {
                         accountInformation = response.body();
+                        manageFavorite();
                         downloadAvatar();
                         setName();
                         downloadLevelIcon();
@@ -259,7 +272,7 @@ public class OWFragment extends Fragment {
                         requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                         URLConstants.loading = false;
-                        Log.e("Error", Arrays.toString(e.getStackTrace()));
+                        Log.e("Error", "Exception", e);
                     }
 
                 } else if (response.code() >= 400) {
@@ -275,6 +288,66 @@ public class OWFragment extends Fragment {
 
 
         });
+    }
+
+    private void manageFavorite() {
+        FavoriteProfiles profiles = new FavoriteProfiles();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        Gson gson = new GsonBuilder().create();
+        int index = -1;
+        int indexTemp = 0;
+        String favorites = prefs.getString("ow-favorites", "DEFAULT");
+        Log.i("TEST", favorites);
+        if (favorites != null && !favorites.equals("DEFAULT") && !favorites.equals("{\"profile_list\":[]}")) {
+            profiles = gson.fromJson(favorites, FavoriteProfiles.class);
+            for (FavoriteProfile profile : profiles.getProfiles()) {
+                if (profile.getUsername().equals(username) && profile.getPlatform().equals(platform)) {
+                    favorite.setImageResource(R.drawable.ic_star_black_24dp);
+                    favorite.setTag(R.drawable.ic_star_black_24dp);
+                    index = indexTemp;
+                } else {
+                    addToFavorites(profiles, prefs, gson, index);
+                }
+                indexTemp++;
+            }
+            removeFavorite(profiles, prefs, gson, index);
+        } else {
+            addToFavorites(profiles, prefs, gson, index);
+        }
+    }
+
+    private void removeFavorite(FavoriteProfiles profiles, SharedPreferences prefs, Gson gson, int index) {
+        if ((int) favorite.getTag() == R.drawable.ic_star_black_24dp && index != -1) {
+            favorite.setOnClickListener(v -> {
+                favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
+                favorite.setTag(R.drawable.ic_star_black_24dp);
+                profiles.getProfiles().remove(index);
+                prefs.edit().putString("ow-favorites", gson.toJson(profiles)).apply();
+                addToFavorites(profiles, prefs, gson, index);
+                Toast.makeText(requireActivity(), "Profile removed from favorites", Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+
+    private void addToFavorites(FavoriteProfiles profiles, SharedPreferences prefs, Gson gson, int index) {
+        AtomicBoolean containsProfiles = new AtomicBoolean(false);
+        favorite.setOnClickListener(v -> {
+            for (FavoriteProfile profile : profiles.getProfiles()) {
+                if (profile.getUsername().equals(username) && profile.getPlatform().equals(platform)) {
+                    containsProfiles.set(true);
+                    break;
+                }
+            }
+            if (!containsProfiles.get()) {
+                favorite.setImageResource(R.drawable.ic_star_black_24dp);
+                favorite.setTag(R.drawable.ic_star_black_24dp);
+                profiles.getProfiles().add(new FavoriteProfile(platform, username, accountInformation));
+                prefs.edit().putString("ow-favorites", gson.toJson(profiles)).apply();
+                Toast.makeText(requireActivity(), "Profile added to favorites", Toast.LENGTH_SHORT).show();
+            }
+            removeFavorite(profiles, prefs, gson, index);
+        });
+
     }
 
     private void setCareerLists() {
