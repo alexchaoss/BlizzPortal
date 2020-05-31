@@ -601,6 +601,7 @@ public class OWFragment extends Fragment {
                 case OBJECTIVE_KILLS:
                     progressBar.setMax((int) heroes.get(0).getObjectiveKills());
                     progressBar.setProgress((int) heroes.get(i).getObjectiveKills());
+                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
                     data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
             }
 
