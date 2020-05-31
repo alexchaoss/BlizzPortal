@@ -54,6 +54,7 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
         bundle.putString("realm", realm)
         bundle.putString("media", media)
         bundle.putString("region", region)
+
         val adapter = NavAdapter(childFragmentManager, tabLayout!!.tabCount, bundle)
         viewPager!!.adapter = adapter
         viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))

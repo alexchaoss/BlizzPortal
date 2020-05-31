@@ -32,6 +32,7 @@ import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
 import com.BlizzardArmory.ui.ui_warcraft.WoWCharacterSearchDialog
 import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
+import com.BlizzardArmory.ui.ui_warcraft.favorites.FavoritesFragment
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.navigation.NavigationView
@@ -115,7 +116,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                         } catch (e: Exception) {
                             Crashlytics.log(Log.ERROR, "NULL BODY", "Body was null and crashed the app.")
                         }
-                        supportActionBar?.title = userInformation?.battleTag
+                        bar_title.text = userInformation?.battleTag
                         battletag.text = userInformation?.battleTag
                     } else {
                         callErrorAlertDialog(500)
@@ -146,10 +147,14 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                         supportFragmentManager.beginTransaction().remove(navFragment).commit()
                     }
                 } else if (!URLConstants.loading) {
+                    favorite.visibility = View.GONE
+                    favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                     supportFragmentManager.beginTransaction().remove(navFragment).commit()
                 }
             } else if (!URLConstants.loading) {
                 Log.i("FRAG1", "closed")
+                favorite.visibility = View.GONE
+                favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                 supportFragmentManager.beginTransaction().remove(fragment).commit()
             }
         } else if (!URLConstants.loading) {
@@ -256,6 +261,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         when (item.title) {
             "World of Warcraft" -> {
                 fragment = AccountFragment()
+                favorite.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
@@ -264,11 +270,35 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 WoWCharacterSearchDialog.characterSearchPrompt(this, supportFragmentManager.primaryNavigationFragment)
                 drawer_layout.closeDrawers()
             }
+            wowFavoritesText -> {
+                fragment = FavoritesFragment()
+                favorite.visibility = View.GONE
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
+                supportFragmentManager.executePendingTransactions()
+                drawer_layout.closeDrawers()
+            }
+            d3FavoritesText -> {
+                fragment = FavoritesFragment()
+                favorite.visibility = View.GONE
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
+                supportFragmentManager.executePendingTransactions()
+                drawer_layout.closeDrawers()
+            }
+            owFavoritesText -> {
+                fragment = FavoritesFragment()
+                favorite.visibility = View.GONE
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
+                supportFragmentManager.executePendingTransactions()
+                drawer_layout.closeDrawers()
+            }
             "Diablo 3" -> {
+                favorite.visibility = View.VISIBLE
+                favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                 DiabloProfileSearchDialog.diabloPrompt(this, bnOAuth2Params!!, supportFragmentManager)
                 drawer_layout.closeDrawers()
             }
             "Starcraft 2" -> {
+                favorite.visibility = View.GONE
                 fragment = SC2Fragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "sc2fragment").commit()
                 supportFragmentManager.executePendingTransactions()

@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 class FavoriteCharacters {
     @SerializedName("characters")
-    val characters = listOf<FavoriteCharacter>()
+    val characters = arrayListOf<FavoriteCharacter>()
 }

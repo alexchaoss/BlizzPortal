@@ -27,12 +27,12 @@ class FavoritesFragment : Fragment() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Params: BnOAuth2Params? = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
 
-        val favoriteCharactersString = prefs.getString("wow-favorites", "")
-        if (favoriteCharactersString != null) {
+        var favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
+        if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
             val favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
             characters_recycler.apply {
                 layoutManager = LinearLayoutManager(requireActivity())
-                adapter = FavoritesAdapter(favoriteCharacters.characters, parentFragmentManager, context, bnOAuth2Params!!)
+                adapter = FavoritesAdapter(favoriteCharacters.characters, parentFragmentManager, requireActivity(), bnOAuth2Params!!)
             }
         }
     }

@@ -111,7 +111,6 @@
                         android:layout_width="72dp"
                         android:layout_height="67dp"
                         android:layout_centerInParent="true"
-                        android:layout_marginBottom="5dp"
                         android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
                 </RelativeLayout>
@@ -124,7 +123,6 @@
                     android:background="@drawable/empty_slot_border"
                     android:padding="1dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="5dp"
                     android:src="@drawable/empty_neck"
                     android:contentDescription="@string/itemsCharacter"
                     app:srcCompat="@android:color/transparent" />
@@ -151,7 +149,6 @@
                         android:layout_width="72dp"
                         android:layout_height="67dp"
                         android:layout_centerInParent="true"
-                        android:layout_marginBottom="5dp"
                         android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
                 </RelativeLayout>
@@ -163,7 +160,6 @@
                     android:background="@drawable/empty_slot_border"
                     android:padding="1dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="5dp"
                     android:src="@drawable/empty_chest"
                     android:contentDescription="@string/itemsCharacter"
                     app:srcCompat="@android:color/transparent" />
@@ -190,7 +186,6 @@
                         android:layout_width="72dp"
                         android:layout_height="67dp"
                         android:layout_centerInParent="true"
-                        android:layout_marginBottom="5dp"
                         android:contentDescription="@string/itemsCharacter"
                         app:srcCompat="@android:color/transparent" />
                 </RelativeLayout>

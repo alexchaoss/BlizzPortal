@@ -18,7 +18,7 @@ class FavoritesAdapter(private val list: List<FavoriteCharacter>, private val fr
 
     override fun onBindViewHolder(holder: FavoritesViewHolder, position: Int) {
         val character: FavoriteCharacter = list[position]
-        holder.bind(character, fragmentManager, bnOAuth2Params)
+        holder.bind(character, bnOAuth2Params, fragmentManager)
     }
 
     override fun getItemCount(): Int = list.size
