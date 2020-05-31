@@ -11,10 +11,7 @@ import android.text.Html
 import android.text.Html.ImageGetter
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.BuildConfig
@@ -30,8 +27,8 @@ import com.BlizzardArmory.model.warcraft.equipment.Equipment
 import com.BlizzardArmory.model.warcraft.equipment.EquippedItem
 import com.BlizzardArmory.model.warcraft.equipment.Set
 import com.BlizzardArmory.model.warcraft.equipment.Socket
-import com.BlizzardArmory.model.warcraft.favorites.FavoriteCharacter
-import com.BlizzardArmory.model.warcraft.favorites.FavoriteCharacters
+import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
+import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacters
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talent
@@ -242,8 +239,7 @@ class WoWCharacterFragment : Fragment() {
         var favoriteCharacters = FavoriteCharacters()
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val gson = GsonBuilder().create()
-        var favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
-        Log.i("TEST", favoriteCharactersString)
+        val favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
             favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
             var indexOfCharacter = -1
@@ -280,8 +276,9 @@ class WoWCharacterFragment : Fragment() {
                 favoriteCharacters.characters.removeAt(indexOfCharacter)
                 favoriteCharactersString1 = gson.toJson(favoriteCharacters)
                 prefs.edit().putString("wow-favorites", favoriteCharactersString1).apply()
-
+                Toast.makeText(requireActivity(), "Character removed from favorites", Toast.LENGTH_SHORT).show()
                 addToFavorite(favoriteCharacters, characterSummary, favoriteCharactersString1, gson, prefs)
+
             }
         }
     }
@@ -305,6 +302,7 @@ class WoWCharacterFragment : Fragment() {
                 favoriteCharacters.characters.add(favoriteCharacter)
                 favoriteCharactersString1 = gson.toJson(favoriteCharacters)
                 prefs.edit().putString("wow-favorites", favoriteCharactersString1).apply()
+                Toast.makeText(requireActivity(), "Character added to favorites", Toast.LENGTH_SHORT).show()
                 deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, favoriteCharactersString1, gson, prefs)
             }
         }

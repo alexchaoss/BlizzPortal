@@ -1,4 +1,4 @@
-package com.BlizzardArmory.model.warcraft.favorites
+package com.BlizzardArmory.model.warcraft.favorite
 
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.google.gson.annotations.SerializedName
