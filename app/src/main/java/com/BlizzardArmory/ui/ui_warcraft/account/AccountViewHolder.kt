@@ -35,7 +35,7 @@ import java.util.*
 
 
 class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_activity_character_list, parent, false)) {
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_character_list, parent, false)) {
 
     private var avatar: ImageView? = null
     private var faction: ImageView? = null

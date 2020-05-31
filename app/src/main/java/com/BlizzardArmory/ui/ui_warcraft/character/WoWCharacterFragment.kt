@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.ui_warcraft.character
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -29,6 +30,8 @@ import com.BlizzardArmory.model.warcraft.equipment.Equipment
 import com.BlizzardArmory.model.warcraft.equipment.EquippedItem
 import com.BlizzardArmory.model.warcraft.equipment.Set
 import com.BlizzardArmory.model.warcraft.equipment.Socket
+import com.BlizzardArmory.model.warcraft.favorites.FavoriteCharacter
+import com.BlizzardArmory.model.warcraft.favorites.FavoriteCharacters
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talent
@@ -41,6 +44,7 @@ import com.BlizzardArmory.util.events.RetryEvent
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wow_character_fragment.*
 import org.greenrobot.eventbus.EventBus
@@ -53,6 +57,7 @@ class WoWCharacterFragment : Fragment() {
     private var characterClicked: String? = null
     private var region: String? = null
     private var dialog: AlertDialog? = null
+    private var favorite: ImageView? = null
 
     //Character information
     private lateinit var characterSummary: CharacterSummary
@@ -98,6 +103,9 @@ class WoWCharacterFragment : Fragment() {
         linearLayoutItemStats.addView(nameView)
         linearLayoutItemStats.addView(statsView)
         no_talent?.visibility = View.INVISIBLE
+
+        favorite = activity?.findViewById(R.id.favorite)
+        favorite?.visibility = View.VISIBLE
 
         activateCloseButton()
 
@@ -211,6 +219,7 @@ class WoWCharacterFragment : Fragment() {
                         characterSummary = response.body()!!
                         setBackgroundColor()
                         character_name.text = characterSummary.name
+                        manageFavorite(characterSummary)
                         EventBus.getDefault().post(FactionEvent(characterSummary.faction.name.toLowerCase(Locale.ROOT)))
                         EventBus.getDefault().post(ClassEvent(characterSummary.characterClass.id))
                         item_lvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
@@ -227,6 +236,78 @@ class WoWCharacterFragment : Fragment() {
                 callErrorAlertDialog(0)
             }
         })
+    }
+
+    private fun manageFavorite(characterSummary: CharacterSummary) {
+        var favoriteCharacters = FavoriteCharacters()
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val gson = GsonBuilder().create()
+        var favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
+        Log.i("TEST", favoriteCharactersString)
+        if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
+            favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
+            var indexOfCharacter = -1
+            var indexTemp = 0
+            for (favoriteCharacter in favoriteCharacters.characters) {
+                if (hasCharacter(favoriteCharacter, characterSummary)) {
+                    indexOfCharacter = indexTemp
+                    favorite?.setImageResource(R.drawable.ic_star_black_24dp)
+                    favorite?.tag = R.drawable.ic_star_black_24dp
+                    break
+                } else {
+                    addToFavorite(favoriteCharacters, characterSummary, favoriteCharactersString, gson, prefs)
+                }
+                indexTemp++
+            }
+            deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, favoriteCharactersString, gson, prefs)
+        } else {
+            addToFavorite(favoriteCharacters, characterSummary, favoriteCharactersString, gson, prefs)
+        }
+    }
+
+    private fun hasCharacter(favoriteCharacter: FavoriteCharacter, characterSummary: CharacterSummary): Boolean {
+        return (characterSummary.name?.toLowerCase(Locale.ROOT) == favoriteCharacter.characterSummary?.name?.toLowerCase(Locale.ROOT)
+                && characterSummary.realm.slug == favoriteCharacter.characterSummary?.realm?.slug
+                && region?.toLowerCase(Locale.ROOT) == favoriteCharacter.region?.toLowerCase(Locale.ROOT))
+    }
+
+    private fun deleteFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, indexOfCharacter: Int, favoriteCharactersString: String?, gson: Gson, prefs: SharedPreferences) {
+        var favoriteCharactersString1 = favoriteCharactersString
+        if (favorite?.tag == R.drawable.ic_star_black_24dp && indexOfCharacter != -1) {
+            favorite?.setOnClickListener {
+                favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favorite?.tag = R.drawable.ic_star_border_black_24dp
+                favoriteCharacters.characters.removeAt(indexOfCharacter)
+                favoriteCharactersString1 = gson.toJson(favoriteCharacters)
+                prefs.edit().putString("wow-favorites", favoriteCharactersString1).apply()
+
+                addToFavorite(favoriteCharacters, characterSummary, favoriteCharactersString1, gson, prefs)
+            }
+        }
+    }
+
+    private fun addToFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, favoriteCharactersString: String?, gson: Gson, prefs: SharedPreferences) {
+        var favoriteCharactersString1 = favoriteCharactersString
+        favorite?.setOnClickListener {
+            var containsCharacter = false
+            var indexOfCharacter = 0
+            for (characters in favoriteCharacters.characters) {
+                if (hasCharacter(characters, characterSummary)) {
+                    containsCharacter = true
+                    break
+                }
+                indexOfCharacter++
+            }
+            if (!containsCharacter) {
+                favorite?.setImageResource(R.drawable.ic_star_black_24dp)
+                favorite?.tag = R.drawable.ic_star_black_24dp
+                val favoriteCharacter = FavoriteCharacter(characterSummary, region!!)
+                favoriteCharacters.characters.add(favoriteCharacter)
+                favoriteCharactersString1 = gson.toJson(favoriteCharacters)
+                prefs.edit().putString("wow-favorites", favoriteCharactersString1).apply()
+                deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, favoriteCharactersString1, gson, prefs)
+            }
+        }
     }
 
     private fun downloadEquipment() {

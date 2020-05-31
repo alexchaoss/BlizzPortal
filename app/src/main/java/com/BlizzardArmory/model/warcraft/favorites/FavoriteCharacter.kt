@@ -1,14 +1,18 @@
 package com.BlizzardArmory.model.warcraft.favorites
 
+import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.google.gson.annotations.SerializedName
 
-class FavoriteCharacter {
-    @SerializedName("character_name")
-    val name: String? = null
+class FavoriteCharacter(characterSummary: CharacterSummary, region: String) {
 
-    @SerializedName("realm")
-    val realm: String? = null
+    @SerializedName("character_summary")
+    var characterSummary: CharacterSummary? = null
 
     @SerializedName("region")
-    val region: String? = null
+    var region: String? = null
+
+    init {
+        this.characterSummary = characterSummary
+        this.region = region
+    }
 }
