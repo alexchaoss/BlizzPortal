@@ -31,7 +31,7 @@ import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
 import com.BlizzardArmory.ui.ui_warcraft.WoWCharacterSearchDialog
-import com.BlizzardArmory.ui.ui_warcraft.activity.WoWActivity
+import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.navigation.NavigationView
@@ -50,6 +50,9 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private var bnOAuth2Params: BnOAuth2Params? = null
     private lateinit var toggle: ActionBarDrawerToggle
     var searchText: SpannableString? = null
+    var wowFavoritesText: SpannableString? = null
+    var d3FavoritesText: SpannableString? = null
+    var owFavoritesText: SpannableString? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,9 +73,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = ""
-        searchText = SpannableString(nav_view.menu.findItem(R.id.wow_search).title)
-        searchText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, searchText!!.length, 0)
-        nav_view.menu.findItem(R.id.wow_search).title = searchText
+        makeTitlesTransparent()
 
         settings.setOnClickListener {
             val fragment = SettingsFragment()
@@ -82,6 +83,24 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         }
 
         downloadUserInfo()
+    }
+
+    private fun makeTitlesTransparent() {
+        searchText = SpannableString(nav_view.menu.findItem(R.id.wow_search).title)
+        searchText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, searchText!!.length, 0)
+        nav_view.menu.findItem(R.id.wow_search).title = searchText
+
+        wowFavoritesText = SpannableString(nav_view.menu.findItem(R.id.wow_favorite).title)
+        wowFavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, wowFavoritesText!!.length, 0)
+        nav_view.menu.findItem(R.id.wow_favorite).title = wowFavoritesText
+
+        d3FavoritesText = SpannableString(nav_view.menu.findItem(R.id.d3_favorite).title)
+        d3FavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, d3FavoritesText!!.length, 0)
+        nav_view.menu.findItem(R.id.d3_favorite).title = d3FavoritesText
+
+        owFavoritesText = SpannableString(nav_view.menu.findItem(R.id.ow_favorite).title)
+        owFavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, owFavoritesText!!.length, 0)
+        nav_view.menu.findItem(R.id.ow_favorite).title = owFavoritesText
     }
 
     private fun downloadUserInfo() {
@@ -236,7 +255,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         when (item.title) {
             "World of Warcraft" -> {
-                fragment = WoWActivity()
+                fragment = AccountFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()

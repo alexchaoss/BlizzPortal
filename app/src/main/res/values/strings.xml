@@ -163,4 +163,8 @@
     <string name="search_character">Search character</string>
     <string name="search_user">Search user</string>
     <string name="honorable_kills">Honorable Kills</string>
+    <string name="favorites">Favorites</string>
+    <string name="d3_favorites">D3 Favorites</string>
+    <string name="wow_favorites">WoW Favorites</string>
+    <string name="ow_favorites">OW Favorites</string>
 </resources>
