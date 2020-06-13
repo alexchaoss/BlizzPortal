@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Html
 import android.text.Html.ImageGetter
 import android.util.Log
@@ -18,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
@@ -127,7 +127,7 @@ class SC2Fragment : Fragment() {
                                 }
 
                                 override fun onFailure(call: Call<Profile>, t: Throwable) {
-                                    Log.e("Error", t.localizedMessage)
+                                    Log.e("Error", "trace", t)
                                     showNoConnectionMessage(0)
                                 }
                             })
@@ -143,7 +143,7 @@ class SC2Fragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<Player>>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 showNoConnectionMessage(0)
             }
         })
@@ -381,7 +381,9 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setSummaryInformation() {
-        total_level_text!!.text = sc2Profile!!.swarmLevels.level.toString()
+        if (sc2Profile!!.swarmLevels != null) {
+            total_level_text!!.text = sc2Profile!!.swarmLevels.level.toString()
+        }
         name!!.text = sc2Profile!!.summary.displayName
         if (sc2Profile!!.summary.clanName != null) {
             val clanName = "[" + sc2Profile!!.summary.clanTag + "] " + sc2Profile!!.summary.clanName

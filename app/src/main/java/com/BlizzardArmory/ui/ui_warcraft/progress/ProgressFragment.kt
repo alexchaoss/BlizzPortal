@@ -3,7 +3,6 @@ package com.BlizzardArmory.ui.ui_warcraft.progress
 
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -13,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
@@ -112,7 +112,7 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
             }
 
             override fun onFailure(call: Call<EncountersInformation>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 showOutdatedTextView()
             }
         })

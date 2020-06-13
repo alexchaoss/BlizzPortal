@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -12,6 +11,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.MainActivity
 import kotlinx.android.synthetic.main.token_activity.*

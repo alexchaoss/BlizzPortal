@@ -6,9 +6,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -20,6 +19,7 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
@@ -165,8 +165,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected
+        val nw = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+        return when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
     }
 
     private fun checkForAppUpdates() {
@@ -240,7 +245,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val dialog = builder.show()
-        Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         if (responseCode == 100) {
             dialog?.window?.setLayout(800, 600)
         } else {

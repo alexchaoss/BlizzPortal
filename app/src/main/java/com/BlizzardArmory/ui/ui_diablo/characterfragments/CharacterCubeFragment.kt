@@ -2,7 +2,6 @@ package com.BlizzardArmory.ui.ui_diablo.characterfragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
@@ -131,7 +131,7 @@ class CharacterCubeFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<SingleItem>, t: Throwable) {
-                    Log.e("Error", t.localizedMessage)
+                    Log.e("Error", "trace", t)
                     //callErrorAlertDialog(0)
                 }
             })

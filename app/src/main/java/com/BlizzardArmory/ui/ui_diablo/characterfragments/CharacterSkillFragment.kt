@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Html
 import android.util.Log
 import android.util.Pair
@@ -18,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
@@ -103,27 +103,27 @@ class CharacterSkillFragment : Fragment() {
             skillIcons[characterInformation!!.skills.active[i].skill.name] = tempPair
         }
         for (key in skillIcons.keys) {
-            skillNameList[Objects.requireNonNull(skillIcons[key])!!.first].text = Objects.requireNonNull(skillIcons[key])!!.second.skill.name
+            skillNameList[skillIcons[key]!!.first].text = skillIcons[key]!!.second.skill.name
             var smallRune = ""
             try {
-                smallRune = getSmallRuneIcon(Objects.requireNonNull(skillIcons[key])!!.second.rune.type)
+                smallRune = getSmallRuneIcon(skillIcons[key]!!.second.rune.type)
             } catch (e: Exception) {
                 Log.e("Rune", "none")
             }
             val runeText = smallRune
             if (smallRune != "") {
-                skillRuneList[Objects.requireNonNull(skillIcons[key])!!.first].text = Html.fromHtml("<img src=\"" + smallRune + "\">" +
-                        Objects.requireNonNull(skillIcons[key])!!.second.rune.name, Html.FROM_HTML_MODE_LEGACY, Html.ImageGetter { source: String? ->
+                skillRuneList[skillIcons[key]!!.first].text = Html.fromHtml("<img src=\"" + smallRune + "\">" +
+                        skillIcons[key]!!.second.rune.name, Html.FROM_HTML_MODE_LEGACY, Html.ImageGetter { source: String? ->
                     val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
                     val drawable = resources.getDrawable(resourceId, requireContext().theme)
                     drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
                     drawable
                 }, null)
             }
-            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(skillIcons[key])!!.second.skill.icon))
-                    .placeholder(R.drawable.loading_placeholder).into(skillList[Objects.requireNonNull(skillIcons[key])!!.first], object : Callback {
+            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
+                    .placeholder(R.drawable.loading_placeholder).into(skillList[skillIcons[key]!!.first], object : Callback {
                         override fun onSuccess() {
-                            setOnTouchSkillTooltip(key, runeText, skillList[Objects.requireNonNull(skillIcons[key])!!.first].drawable)
+                            setOnTouchSkillTooltip(key, runeText, skillList[skillIcons[key]!!.first].drawable)
                         }
 
                         override fun onError(e: Exception) {}
@@ -133,7 +133,7 @@ class CharacterSkillFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchSkillTooltip(tempKey: String, runeText: String, icon: Drawable) {
-        skillLayoutList[Objects.requireNonNull(skillIcons[tempKey])!!.first].setOnTouchListener { _: View?, event: MotionEvent ->
+        skillLayoutList[skillIcons[tempKey]!!.first].setOnTouchListener { _: View?, event: MotionEvent ->
             tooltip_rune_icon!!.visibility = View.VISIBLE
             try {
                 (closeButton!!.parent as ViewGroup).removeView(closeButton)
@@ -142,20 +142,20 @@ class CharacterSkillFragment : Fragment() {
             }
             skill_tooltip!!.addView(closeButton)
             if (event.action == MotionEvent.ACTION_DOWN) {
-                skill_name!!.text = Objects.requireNonNull(skillIcons[tempKey])!!.second.skill.name
+                skill_name!!.text = skillIcons[tempKey]!!.second.skill.name
                 tooltip_skill_icon!!.setImageDrawable(icon)
                 tooltip_skill_icon!!.setBackgroundResource(0)
                 tooltip_skill_icon!!.setPadding(0, 0, 0, 0)
-                skill_tooltip_text!!.text = Html.fromHtml(Objects.requireNonNull(skillIcons[tempKey])!!.second.skill.descriptionHtml
+                skill_tooltip_text!!.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
                         .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                         .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                         .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                         .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                 if (runeText != "") {
                     rune_separator!!.visibility = View.VISIBLE
-                    tooltip_rune_icon!!.setImageResource(getRuneIcon(Objects.requireNonNull(skillIcons[tempKey])!!.second.rune.type))
-                    rune_tooltip_text!!.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + Objects.requireNonNull(skillIcons[tempKey])!!.second.rune.name + "</font></big><br>"
-                            + Objects.requireNonNull(skillIcons[tempKey])!!.second.rune.descriptionHtml)
+                    tooltip_rune_icon!!.setImageResource(getRuneIcon(skillIcons[tempKey]!!.second.rune.type))
+                    rune_tooltip_text!!.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
+                            + skillIcons[tempKey]!!.second.rune.descriptionHtml)
                             .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                             .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                             .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
@@ -199,10 +199,10 @@ class CharacterSkillFragment : Fragment() {
             passiveIcons[characterInformation!!.skills.passive[i].skill.name] = tempPair
         }
         for (key in passiveIcons.keys) {
-            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", Objects.requireNonNull(passiveIcons[key])!!.second.icon))
-                    .placeholder(R.drawable.loading_placeholder).into(passiveList[Objects.requireNonNull(passiveIcons[key])!!.first], object : Callback {
+            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))
+                    .placeholder(R.drawable.loading_placeholder).into(passiveList[passiveIcons[key]!!.first], object : Callback {
                         override fun onSuccess() {
-                            setOnTouchPassiveTooltip(key, passiveList[Objects.requireNonNull(passiveIcons[key])!!.first].drawable)
+                            setOnTouchPassiveTooltip(key, passiveList[passiveIcons[key]!!.first].drawable)
                         }
 
                         override fun onError(e: Exception) {}
@@ -212,7 +212,7 @@ class CharacterSkillFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchPassiveTooltip(tempKey: String, icon: Drawable) {
-        passiveList[Objects.requireNonNull(passiveIcons[tempKey])!!.first].setOnTouchListener { _: View?, event: MotionEvent ->
+        passiveList[passiveIcons[tempKey]!!.first].setOnTouchListener { _: View?, event: MotionEvent ->
             rune_separator!!.visibility = View.VISIBLE
             tooltip_rune_icon!!.setImageResource(0)
             tooltip_rune_icon!!.visibility = View.GONE
@@ -223,18 +223,18 @@ class CharacterSkillFragment : Fragment() {
             }
             skill_tooltip!!.addView(closeButton)
             if (event.action == MotionEvent.ACTION_DOWN) {
-                skill_name!!.text = Objects.requireNonNull(passiveIcons[tempKey])!!.second.name
+                skill_name!!.text = passiveIcons[tempKey]!!.second.name
                 tooltip_skill_icon!!.setImageDrawable(icon)
                 tooltip_skill_icon!!.setBackgroundResource(R.drawable.d3_passive_unselected)
                 tooltip_skill_icon!!.setPadding(15, 15, 15, 15)
-                skill_tooltip_text!!.text = Html.fromHtml(Objects.requireNonNull(passiveIcons[tempKey])!!.second.descriptionHtml
+                skill_tooltip_text!!.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
                         .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                         .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                         .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                         .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                 skill_tooltip_scroll!!.visibility = View.VISIBLE
                 try {
-                    rune_tooltip_text!!.text = Html.fromHtml("<i>" + Objects.requireNonNull(passiveIcons[tempKey])!!.second.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
+                    rune_tooltip_text!!.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
                 } catch (e: Exception) {
                     rune_separator!!.visibility = View.GONE
                 }

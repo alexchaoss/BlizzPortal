@@ -7,18 +7,15 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Html
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
@@ -28,8 +25,12 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.diablo.account.AccountInformation
 import com.BlizzardArmory.model.diablo.account.Hero
+import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
+import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.navigation.D3CharacterNav
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.d3_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,6 +45,7 @@ class D3Fragment : Fragment() {
     private var battleTag: String? = ""
     private var selectedRegion: String? = ""
     private var characterID: Long = 0
+    private var favorite: ImageView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.d3_activity, container, false)
@@ -56,6 +58,10 @@ class D3Fragment : Fragment() {
         prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
         bnOAuth2Params = arguments?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        favorite = activity?.findViewById(R.id.favorite)
+        favorite?.visibility = View.VISIBLE
+        favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
+        favorite?.tag = R.drawable.ic_star_border_black_24dp
         downloadAccountInformation()
     }
 
@@ -67,6 +73,7 @@ class D3Fragment : Fragment() {
             override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
                 if (response.isSuccessful) {
                     accountInformation = response.body()
+                    manageFavorite(accountInformation!!)
                     sortHeroes()
                     portraits = accountInformation?.heroes?.let { getCharacterImage(it, requireContext()) }
                     val paragon = accountInformation?.paragonLevel.toString() +
@@ -90,10 +97,81 @@ class D3Fragment : Fragment() {
             }
 
             override fun onFailure(call: Call<AccountInformation>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 showNoConnectionMessage(requireActivity(), 0)
             }
         })
+    }
+
+    private fun manageFavorite(accountInformation: AccountInformation) {
+        var favoriteProfiles = D3FavoriteProfiles()
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val gson = GsonBuilder().create()
+        val favoriteCharactersString = prefs.getString("d3-favorites", "DEFAULT")
+        if (favoriteCharactersString != null && favoriteCharactersString != "DEFAULT") {
+            favoriteProfiles = gson.fromJson(favoriteCharactersString, D3FavoriteProfiles::class.java)
+            var indexOfProfile = -1
+            var indexTemp = 0
+            for (profile in favoriteProfiles.profiles) {
+                if (hasCharacter(profile)) {
+                    indexOfProfile = indexTemp
+                    favorite?.setImageResource(R.drawable.ic_star_black_24dp)
+                    favorite?.tag = R.drawable.ic_star_black_24dp
+                    break
+                } else {
+                    addToFavorite(favoriteProfiles, accountInformation, gson, prefs)
+                }
+                indexTemp++
+            }
+            deleteFavorite(favoriteProfiles, accountInformation, indexOfProfile, gson, prefs)
+        } else {
+            addToFavorite(favoriteProfiles, accountInformation, gson, prefs)
+        }
+    }
+
+    private fun hasCharacter(profile: D3FavoriteProfile): Boolean {
+        return battleTag == profile.battletag && selectedRegion == profile.region
+    }
+
+    private fun deleteFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, indexOfProfile: Int, gson: Gson, prefs: SharedPreferences) {
+        var favoriteCharactersString: String
+        if (favorite?.tag == R.drawable.ic_star_black_24dp && indexOfProfile != -1) {
+            favorite?.setOnClickListener {
+                favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favorite?.tag = R.drawable.ic_star_border_black_24dp
+                profiles.profiles.removeAt(indexOfProfile)
+                favoriteCharactersString = gson.toJson(profiles)
+                prefs.edit().putString("d3-favorites", favoriteCharactersString).apply()
+                Toast.makeText(requireActivity(), "Profile removed from favorites", Toast.LENGTH_SHORT).show()
+                addToFavorite(profiles, accountInformation, gson, prefs)
+
+            }
+        }
+    }
+
+    private fun addToFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, gson: Gson, prefs: SharedPreferences) {
+        var favoriteCharactersString: String
+        favorite?.setOnClickListener {
+            var containsProfile = false
+            var indexOfProfile = 0
+            for (profile in profiles.profiles) {
+                if (hasCharacter(profile)) {
+                    containsProfile = true
+                    break
+                }
+                indexOfProfile++
+            }
+            if (!containsProfile) {
+                favorite?.setImageResource(R.drawable.ic_star_black_24dp)
+                favorite?.tag = R.drawable.ic_star_black_24dp
+                val profile = D3FavoriteProfile(accountInformation, selectedRegion!!, battleTag!!)
+                profiles.profiles.add(profile)
+                favoriteCharactersString = gson.toJson(profiles)
+                prefs.edit().putString("d3-favorites", favoriteCharactersString).apply()
+                Toast.makeText(requireActivity(), "Profile added to favorites", Toast.LENGTH_SHORT).show()
+                deleteFavorite(profiles, accountInformation, indexOfProfile, gson, prefs)
+            }
+        }
     }
 
     private fun setTimePlayed() {
