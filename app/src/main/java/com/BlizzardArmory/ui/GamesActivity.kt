@@ -3,7 +3,6 @@ package com.BlizzardArmory.ui
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
@@ -19,6 +18,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
+import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
@@ -28,6 +29,7 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
+import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
@@ -62,7 +64,9 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         drawer_layout.setScrimColor(Color.TRANSPARENT)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         bnOAuth2Params = this.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        assert(bnOAuth2Params != null)
+        if (BuildConfig.DEBUG && bnOAuth2Params == null) {
+            error("Assertion failed")
+        }
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
 
         nav_view.setNavigationItemSelectedListener(this)
@@ -79,6 +83,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         settings.setOnClickListener {
             val fragment = SettingsFragment()
+            favorite.visibility = View.GONE
             supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").commit()
             supportFragmentManager.executePendingTransactions()
             drawer_layout.closeDrawers()
@@ -112,6 +117,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 if (response.isSuccessful) {
                     if (response.body() != null) {
                         userInformation = response.body()
+
                         try {
                             Crashlytics.log(Log.INFO, "Battle tag", response.body()!!.battleTag)
                         } catch (e: Exception) {
@@ -125,10 +131,13 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 } else if (response.code() == 500) {
                     callErrorAlertDialog(response.code())
                 }
+                if (userInformation?.battleTag == null) {
+                    callErrorAlertDialog(404)
+                }
             }
 
             override fun onFailure(call: Call<UserInformation>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 callErrorAlertDialog(0)
             }
         })
@@ -150,12 +159,14 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 } else if (!URLConstants.loading) {
                     favorite.visibility = View.GONE
                     favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
+                    favorite.tag = R.drawable.ic_star_border_black_24dp
                     supportFragmentManager.beginTransaction().remove(navFragment).commit()
                 }
             } else if (!URLConstants.loading) {
                 Log.i("FRAG1", "closed")
                 favorite.visibility = View.GONE
                 favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favorite.tag = R.drawable.ic_star_border_black_24dp
                 supportFragmentManager.beginTransaction().remove(fragment).commit()
             }
         } else if (!URLConstants.loading) {
@@ -230,7 +241,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             }
         }
         val dialog = builder.show()
-        Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val linearLayout = LinearLayout(this)
         linearLayout.orientation = LinearLayout.VERTICAL
@@ -279,9 +290,9 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 drawer_layout.closeDrawers()
             }
             d3FavoritesText -> {
-                fragment = WoWFavoritesFragment()
+                fragment = D3FavoriteFragment()
                 favorite.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3favorites").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }

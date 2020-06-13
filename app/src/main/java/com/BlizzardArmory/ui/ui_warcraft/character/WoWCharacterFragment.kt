@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Html
 import android.text.Html.ImageGetter
 import android.util.Log
@@ -14,6 +13,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
@@ -103,6 +103,8 @@ class WoWCharacterFragment : Fragment() {
 
         favorite = activity?.findViewById(R.id.favorite)
         favorite?.visibility = View.VISIBLE
+        favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
+        favorite?.setTag(R.drawable.ic_star_border_black_24dp)
 
         activateCloseButton()
 
@@ -172,7 +174,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Talents>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 no_talent?.visibility = View.VISIBLE
                 val noTalent = "Talent information outdated"
                 no_talent?.text = noTalent
@@ -197,7 +199,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Statistic>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 callErrorAlertDialog(0)
             }
         })
@@ -229,7 +231,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<CharacterSummary>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 callErrorAlertDialog(0)
             }
         })
@@ -251,13 +253,13 @@ class WoWCharacterFragment : Fragment() {
                     favorite?.tag = R.drawable.ic_star_black_24dp
                     break
                 } else {
-                    addToFavorite(favoriteCharacters, characterSummary, favoriteCharactersString, gson, prefs)
+                    addToFavorite(favoriteCharacters, characterSummary, gson, prefs)
                 }
                 indexTemp++
             }
-            deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, favoriteCharactersString, gson, prefs)
+            deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, gson, prefs)
         } else {
-            addToFavorite(favoriteCharacters, characterSummary, favoriteCharactersString, gson, prefs)
+            addToFavorite(favoriteCharacters, characterSummary, gson, prefs)
         }
     }
 
@@ -267,24 +269,24 @@ class WoWCharacterFragment : Fragment() {
                 && region?.toLowerCase(Locale.ROOT) == favoriteCharacter.region?.toLowerCase(Locale.ROOT))
     }
 
-    private fun deleteFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, indexOfCharacter: Int, favoriteCharactersString: String?, gson: Gson, prefs: SharedPreferences) {
-        var favoriteCharactersString1 = favoriteCharactersString
+    private fun deleteFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, indexOfCharacter: Int, gson: Gson, prefs: SharedPreferences) {
+        var favoriteCharactersString: String?
         if (favorite?.tag == R.drawable.ic_star_black_24dp && indexOfCharacter != -1) {
             favorite?.setOnClickListener {
                 favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
                 favorite?.tag = R.drawable.ic_star_border_black_24dp
                 favoriteCharacters.characters.removeAt(indexOfCharacter)
-                favoriteCharactersString1 = gson.toJson(favoriteCharacters)
-                prefs.edit().putString("wow-favorites", favoriteCharactersString1).apply()
+                favoriteCharactersString = gson.toJson(favoriteCharacters)
+                prefs.edit().putString("wow-favorites", favoriteCharactersString).apply()
                 Toast.makeText(requireActivity(), "Character removed from favorites", Toast.LENGTH_SHORT).show()
-                addToFavorite(favoriteCharacters, characterSummary, favoriteCharactersString1, gson, prefs)
+                addToFavorite(favoriteCharacters, characterSummary, gson, prefs)
 
             }
         }
     }
 
-    private fun addToFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, favoriteCharactersString: String?, gson: Gson, prefs: SharedPreferences) {
-        var favoriteCharactersString1 = favoriteCharactersString
+    private fun addToFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, gson: Gson, prefs: SharedPreferences) {
+        var favoriteCharactersString: String?
         favorite?.setOnClickListener {
             var containsCharacter = false
             var indexOfCharacter = 0
@@ -300,10 +302,10 @@ class WoWCharacterFragment : Fragment() {
                 favorite?.tag = R.drawable.ic_star_black_24dp
                 val favoriteCharacter = FavoriteCharacter(characterSummary, region!!)
                 favoriteCharacters.characters.add(favoriteCharacter)
-                favoriteCharactersString1 = gson.toJson(favoriteCharacters)
-                prefs.edit().putString("wow-favorites", favoriteCharactersString1).apply()
+                favoriteCharactersString = gson.toJson(favoriteCharacters)
+                prefs.edit().putString("wow-favorites", favoriteCharactersString).apply()
                 Toast.makeText(requireActivity(), "Character added to favorites", Toast.LENGTH_SHORT).show()
-                deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, favoriteCharactersString1, gson, prefs)
+                deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, gson, prefs)
             }
         }
     }
@@ -328,7 +330,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Equipment>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 callErrorAlertDialog(0)
             }
         })
@@ -349,7 +351,7 @@ class WoWCharacterFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<Media>, t: Throwable) {
-                    Log.e("Error", t.localizedMessage)
+                    Log.e("Error", "trace", t)
                     callErrorAlertDialog(0)
                 }
             })
@@ -441,7 +443,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 val errorIcon = resources.getDrawable(R.drawable.error_icon, requireContext().theme)
                 setIcons(itemSlot, equipment, errorIcon)
                 if (index == equipment?.equippedItems!!.size - 1) {
@@ -554,7 +556,7 @@ class WoWCharacterFragment : Fragment() {
         }
         for (i in talentsInfo.specializations.indices) {
             val tab = tabLayout?.getTabAt(i)
-            Objects.requireNonNull(tab)?.text = talentsInfo.specializations[i].specialization.name
+            tab?.text = talentsInfo.specializations[i].specialization.name
             Log.i("spec", talentsInfo.specializations[i].specialization.name)
         }
         if (talentsInfo.specializations.size == 2) {
@@ -1025,7 +1027,7 @@ class WoWCharacterFragment : Fragment() {
                 }
             }
             dialog = builder.show()
-            Objects.requireNonNull(dialog?.window)?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             dialog?.window?.setLayout(800, 500)
             val linearLayout = LinearLayout(context)
             linearLayout.orientation = LinearLayout.VERTICAL

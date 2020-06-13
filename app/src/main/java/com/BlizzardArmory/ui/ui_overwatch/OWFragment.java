@@ -272,6 +272,7 @@ public class OWFragment extends Fragment {
                         requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         loadingCircle.setVisibility(View.GONE);
                         URLConstants.loading = false;
+                        favorite.setOnClickListener(v -> Toast.makeText(requireActivity(), "Can't add private profile to favorites", Toast.LENGTH_SHORT).show());
                         Log.e("Error", "Exception", e);
                     }
 
@@ -282,7 +283,7 @@ public class OWFragment extends Fragment {
 
             @Override
             public void onFailure(@NotNull Call<Profile> call, @NotNull Throwable t) {
-                Log.e("Error", t.getLocalizedMessage());
+                Log.e("Error", "trace", t);
                 showNoConnectionMessage(0);
             }
 
@@ -297,11 +298,11 @@ public class OWFragment extends Fragment {
         int index = -1;
         int indexTemp = 0;
         String favorites = prefs.getString("ow-favorites", "DEFAULT");
-        Log.i("TEST", favorites);
-        if (favorites != null && !favorites.equals("DEFAULT") && !favorites.equals("{\"profile_list\":[]}")) {
+        assert favorites != null;
+        if (!favorites.equals("DEFAULT") && !favorites.equals("{\"profile_list\":[]}")) {
             profiles = gson.fromJson(favorites, FavoriteProfiles.class);
             for (FavoriteProfile profile : profiles.getProfiles()) {
-                if (profile.getUsername().equals(username) && profile.getPlatform().equals(platform)) {
+                if (Objects.equals(profile.getUsername(), username) && Objects.equals(profile.getPlatform(), platform)) {
                     favorite.setImageResource(R.drawable.ic_star_black_24dp);
                     favorite.setTag(R.drawable.ic_star_black_24dp);
                     index = indexTemp;
@@ -333,7 +334,7 @@ public class OWFragment extends Fragment {
         AtomicBoolean containsProfiles = new AtomicBoolean(false);
         favorite.setOnClickListener(v -> {
             for (FavoriteProfile profile : profiles.getProfiles()) {
-                if (profile.getUsername().equals(username) && profile.getPlatform().equals(platform)) {
+                if (Objects.equals(profile.getUsername(), username) && Objects.equals(profile.getPlatform(), platform)) {
                     containsProfiles.set(true);
                     break;
                 }

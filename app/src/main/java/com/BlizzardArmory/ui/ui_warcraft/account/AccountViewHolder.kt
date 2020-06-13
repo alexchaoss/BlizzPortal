@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.ui_warcraft.account
 
 import android.content.Context
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.R
@@ -93,7 +93,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
             }
 
             override fun onFailure(call: Call<Media>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 val media: Media? = null
                 downloadAvatar(media, character!!)
                 onClickCharacter(character!!, "", fragmentManager!!)

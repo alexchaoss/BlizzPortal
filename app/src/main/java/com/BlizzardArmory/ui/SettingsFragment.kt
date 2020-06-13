@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -17,6 +16,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.ui.MainActivity.Companion.locale

@@ -2,7 +2,6 @@ package com.BlizzardArmory.ui.ui_warcraft.account
 
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
 import android.widget.Button
@@ -11,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
@@ -74,7 +74,7 @@ class AccountFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Account>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 callErrorAlertDialog(0)
             }
         })
@@ -86,7 +86,7 @@ class AccountFragment : Fragment() {
                 characterList.addAll(wowAccount.characters)
             }
         }
-        Log.i("TEST", characterList.get(0).realm.name)
+        Log.i("TEST", characterList[0].realm.name)
         for (characters in characterList.groupBy { it.realm.name }) {
             charactersByRealm.add(characters.value.sortedBy { it.level.toInt() }.reversed())
         }
@@ -135,7 +135,9 @@ class AccountFragment : Fragment() {
 
     private fun callErrorAlertDialog(responseCode: Int) {
         URLConstants.loading = false
-        loadingCircle.visibility = View.GONE
+        if (loadingCircle != null) {
+            loadingCircle.visibility = View.GONE
+        }
         val builder = AlertDialog.Builder(requireActivity(), R.style.DialogTransparent)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)

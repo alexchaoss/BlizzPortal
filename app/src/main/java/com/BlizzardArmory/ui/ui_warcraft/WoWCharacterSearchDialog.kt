@@ -3,7 +3,6 @@ package com.BlizzardArmory.ui.ui_warcraft
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -14,6 +13,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.oauth.BnConstants
@@ -196,7 +196,7 @@ object WoWCharacterSearchDialog {
             }
 
             override fun onFailure(call: Call<Media>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 callCharacterFragment(activity, fragment)
             }
         })

@@ -1,9 +1,9 @@
 package com.BlizzardArmory.ui.ui_warcraft.pvp
 
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
@@ -109,14 +110,14 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", t.localizedMessage)
+                        Log.e("Error", "trace", t)
                         layoutrbg.alpha = 0.4f
                     }
                 })
             }
 
             override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 layoutrbg.alpha = 0.4f
             }
         })
@@ -142,14 +143,14 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", t.localizedMessage)
+                        Log.e("Error", "trace", t)
                         layout3v3.alpha = 0.4f
                     }
                 })
             }
 
             override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 layout3v3.alpha = 0.4f
             }
         })
@@ -175,14 +176,14 @@ class PvPFragment : Fragment(), IOnBackPressed {
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", t.localizedMessage)
+                        Log.e("Error", "trace", t)
                         layout2v2.alpha = 0.4f
                     }
                 })
             }
 
             override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
                 layout2v2.alpha = 0.4f
             }
         })
@@ -209,11 +210,12 @@ class PvPFragment : Fragment(), IOnBackPressed {
             }
 
             override fun onFailure(call: Call<PvPSummary>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", "trace", t)
             }
         })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun showBracketInformationOnTouch(layout: View, tier: Tier, bracket: BracketStatistics) {
         layout.setOnTouchListener { _, event ->
             when (event.action) {
