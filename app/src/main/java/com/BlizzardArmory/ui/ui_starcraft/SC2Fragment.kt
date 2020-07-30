@@ -381,8 +381,10 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setSummaryInformation() {
-        if (sc2Profile!!.swarmLevels != null) {
+        if (sc2Profile?.swarmLevels != null && sc2Profile?.swarmLevels?.level != null) {
             total_level_text!!.text = sc2Profile!!.swarmLevels.level.toString()
+        } else {
+            total_level_text!!.text = "0"
         }
         name!!.text = sc2Profile!!.summary.displayName
         if (sc2Profile!!.summary.clanName != null) {

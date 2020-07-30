@@ -1,8 +1,6 @@
 package com.BlizzardArmory.connection.oauth
 
 import android.content.Intent
-import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,10 +9,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.MainActivity
 import kotlinx.android.synthetic.main.token_activity.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.net.URLDecoder
 
 
@@ -27,6 +29,8 @@ class AuthorizationTokenActivity : AppCompatActivity() {
     private var bnOAuth2Params: BnOAuth2Params? = null
     private var redirectActivity: Class<*>? = null
     private lateinit var authorizationTokenActivity: AuthorizationTokenActivity
+
+    private var startActivity = false
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +63,13 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                     loading_image.startAnimation(rotation)
 
                     if (!handled) {
-                        ProcessToken(url).execute()
+                        lifecycleScope.launch {
+                            val job = async(Dispatchers.Default) {
+                                processToken(url)
+                            }
+                            job.join()
+                            onTokenProcessed()
+                        }
                     }
                 } else {
                     webview.visibility = View.VISIBLE
@@ -78,53 +88,47 @@ class AuthorizationTokenActivity : AppCompatActivity() {
         }
     }
 
-    private inner class ProcessToken internal constructor(var url: String) : AsyncTask<Uri?, Void?, Void?>() {
-        var startActivity = false
-        override fun doInBackground(vararg params: Uri?): Void? {
-            if (url.startsWith(bnOAuth2Params!!.rederictUri)) {
-                Log.i(BnConstants.TAG, "Redirect URL found: $url")
-                handled = true
-                try {
-                    if (url.contains("code=")) {
-                        val authorizationCode = extractCodeFromUrl(url)
-                        Log.i(BnConstants.TAG, "Found code = $authorizationCode")
-                        oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode)
+    private fun processToken(url: String) {
+        if (url.startsWith(bnOAuth2Params!!.rederictUri)) {
+            Log.i(BnConstants.TAG, "Redirect URL found: $url")
+            handled = true
+            try {
+                if (url.contains("code=")) {
+                    val authorizationCode = extractCodeFromUrl(url)
+                    Log.i(BnConstants.TAG, "Found code = $authorizationCode")
+                    oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode)
 
-                        startActivity = true
-                        hasLoggedIn = true
-                    } else if (url.contains("error=") || oAuth2Helper?.accessToken == null) {
-                        startActivity = false
-                    }
-                } catch (e: Exception) {
-                    Log.e(BnConstants.TAG, "Error processing token", e)
+                    startActivity = true
+                    hasLoggedIn = true
+                } else if (url.contains("error=") || oAuth2Helper?.accessToken == null) {
+                    startActivity = false
                 }
-            } else {
-                Log.i(BnConstants.TAG, "Not doing anything for url $url")
+            } catch (e: Exception) {
+                Log.e(BnConstants.TAG, "Error processing token", e)
             }
-            return null
+        } else {
+            Log.i(BnConstants.TAG, "Not doing anything for url $url")
         }
+    }
 
-        @Throws(Exception::class)
-        private fun extractCodeFromUrl(url: String): String {
-            val encodedCode = url.substring(bnOAuth2Params!!.rederictUri.length + 7, url.length)
-            return URLDecoder.decode(encodedCode, "UTF-8")
+    private fun extractCodeFromUrl(url: String): String {
+        val encodedCode = url.substring(bnOAuth2Params!!.rederictUri.length + 7, url.length)
+        return URLDecoder.decode(encodedCode, "UTF-8")
+    }
+
+    private fun onTokenProcessed() {
+        if (startActivity) {
+            startActivity = false
+            Log.i(BnConstants.TAG, " Redirect to the activity you want: " + redirectActivity!!.name)
+            val intent = Intent(this@AuthorizationTokenActivity, redirectActivity)
+            intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
+            startActivity(intent)
+            finish()
+        } else {
+            Toast.makeText(this@AuthorizationTokenActivity, "Oops! There was an error, please try again!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@AuthorizationTokenActivity, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
-
-        override fun onPreExecute() {}
-        override fun onPostExecute(result: Void?) {
-            if (startActivity) {
-                Log.i(BnConstants.TAG, " Redirect to the activity you want: " + redirectActivity!!.name)
-                val intent = Intent(this@AuthorizationTokenActivity, redirectActivity)
-                intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
-                startActivity(intent)
-                finish()
-            } else {
-                Toast.makeText(this@AuthorizationTokenActivity, "Oops! There was an error, please try again!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this@AuthorizationTokenActivity, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            }
-        }
-
     }
 }

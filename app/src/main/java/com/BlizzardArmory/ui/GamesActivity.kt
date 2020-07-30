@@ -170,10 +170,16 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 supportFragmentManager.beginTransaction().remove(fragment).commit()
             }
         } else if (!URLConstants.loading) {
-            super.onBackPressed()
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            try {
+                super.onBackPressed()
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+            } catch (e: java.lang.Exception) {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+            }
         } else {
             Log.e("FAIL", "BACKPRESS not working")
         }

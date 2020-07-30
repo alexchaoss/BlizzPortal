@@ -167,7 +167,7 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
 
     private fun showOutdatedTextView() {
         if (progress_container.childCount < 1) {
-            val outdatedInfo = TextView(context)
+            val outdatedInfo = TextView(activity)
             val outdated = "Outdated information\nPlease login in game to refresh data"
             outdatedInfo.text = outdated
             outdatedInfo.setTextColor(Color.WHITE)
