@@ -572,14 +572,16 @@ class WoWCharacterFragment : Fragment() {
             if (talents.size > 0) {
                 for (i in talents.indices) {
                     no_talent?.visibility = View.GONE
-                    (talentsTierContainer as ArrayList<TextView?>)[i]?.gravity = Gravity.CENTER
-                    (talentsTierContainer as ArrayList<TextView?>)[i]?.text = (talentsTier as ArrayList<String>)[i]
-                    if (talents[i].talent != null) {
-                        no_talent?.visibility = View.GONE
-                        (talentsContainer as ArrayList<TextView?>)[i]?.text = talents[i].talent.name
-                    } else {
-                        removeTalents()
-                        no_talent?.visibility = View.VISIBLE
+                    if ((talentsTierContainer as ArrayList<TextView?>).size > i) {
+                        (talentsTierContainer as ArrayList<TextView?>)[i]?.gravity = Gravity.CENTER
+                        (talentsTierContainer as ArrayList<TextView?>)[i]?.text = (talentsTier as ArrayList<String>)[i]
+                        if (talents[i].talent != null) {
+                            no_talent?.visibility = View.GONE
+                            (talentsContainer as ArrayList<TextView?>)[i]?.text = talents[i].talent.name
+                        } else {
+                            removeTalents()
+                            no_talent?.visibility = View.VISIBLE
+                        }
                     }
                 }
             } else {

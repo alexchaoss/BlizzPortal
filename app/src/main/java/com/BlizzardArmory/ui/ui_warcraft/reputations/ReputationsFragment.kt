@@ -186,7 +186,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
     }
 
     private fun showOutdatedTextView() {
-        val outdatedInfo = TextView(context)
+        val outdatedInfo = TextView(activity)
         outdatedInfo.text = "Outdated information\nPlease login in game to refresh data"
         outdatedInfo.setTextColor(Color.WHITE)
         outdatedInfo.gravity = Gravity.CENTER

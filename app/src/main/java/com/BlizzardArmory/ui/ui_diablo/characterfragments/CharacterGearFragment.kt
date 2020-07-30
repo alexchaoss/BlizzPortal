@@ -7,12 +7,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Html
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
@@ -195,7 +195,7 @@ class CharacterGearFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Items>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", t.localizedMessage!!)
                 //callErrorAlertDialog(0)
             }
         })

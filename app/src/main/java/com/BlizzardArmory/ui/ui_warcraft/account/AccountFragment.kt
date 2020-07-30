@@ -23,6 +23,7 @@ import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.warcraft.account.Account
 import com.BlizzardArmory.model.warcraft.account.Character
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.util.MetricConversion
 import kotlinx.android.synthetic.main.wow_account_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -70,7 +71,6 @@ class AccountFragment : Fragment() {
                         callErrorAlertDialog(response.code())
                     }
                 }
-
             }
 
             override fun onFailure(call: Call<Account>, t: Throwable) {
@@ -88,7 +88,7 @@ class AccountFragment : Fragment() {
         }
         Log.i("TEST", characterList[0].realm.name)
         for (characters in characterList.groupBy { it.realm.name }) {
-            charactersByRealm.add(characters.value.sortedBy { it.level.toInt() }.reversed())
+            charactersByRealm.add(characters.value.sortedBy { if (it.level != null) it.level.toInt() else 0 }.reversed())
         }
         charactersByRealm.sortBy { it[0].realm.name }
 
@@ -105,7 +105,12 @@ class AccountFragment : Fragment() {
             linear_wow_characters.addView(button)
 
             var expand = false
-            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            var recyclerViewSize = if (realm.size * 65 < 300) {
+                realm.size * 64
+            } else {
+                300
+            }
+            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(recyclerViewSize, activity))
             val recyclerView = RecyclerView(requireActivity())
             recyclerView.layoutParams = paramsRecyclerView
             linear_wow_characters.addView(recyclerView)

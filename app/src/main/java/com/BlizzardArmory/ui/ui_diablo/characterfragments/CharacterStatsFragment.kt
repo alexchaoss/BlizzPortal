@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Html
 import android.util.Log
 import android.util.TypedValue
@@ -14,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
@@ -97,7 +97,7 @@ class CharacterStatsFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<CharacterInformation>, t: Throwable) {
-                Log.e("Error", t.localizedMessage)
+                Log.e("Error", t.localizedMessage!!)
                 callErrorAlertDialog(0)
             }
         })
