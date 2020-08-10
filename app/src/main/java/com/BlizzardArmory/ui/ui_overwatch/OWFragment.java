@@ -2,8 +2,11 @@ package com.BlizzardArmory.ui.ui_overwatch;
 
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +45,7 @@ import com.BlizzardArmory.ui.GamesActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -131,7 +135,7 @@ public class OWFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("TEST", "TEST");
+        Picasso.get().setLoggingEnabled(true);
         loadingCircle = view.findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
         assert GamesActivity.Companion.getUserInformation() != null;
@@ -598,7 +602,22 @@ public class OWFragment extends Fragment {
             dataParams.setMarginEnd(10);
 
             ImageView icon = new ImageView(requireActivity());
-            icon.setBackgroundResource(getHeroIcon(heroes.get(i).getClass().getSimpleName()));
+            Picasso.get().load(URLConstants.getOWIconImage(heroes.get(i).getClass().getSimpleName().toLowerCase())).into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    icon.setBackground(new BitmapDrawable(requireActivity().getResources(), bitmap));
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                    Log.e("Failed", "Could not load icon", e);
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
+            });
+
             GradientDrawable iconBorder = new GradientDrawable();
             iconBorder.setCornerRadius(5);
             iconBorder.setStroke(3, Color.parseColor("#CCCCCC"));
@@ -791,208 +810,8 @@ public class OWFragment extends Fragment {
         backgroundColor.setProgressTintList(ColorStateList.valueOf(progressBar));
     }
 
-    private int getHeroIcon(String topCharacterName) {
-        int id = 0;
-        switch (topCharacterName) {
-            case "Ana":
-                id = R.drawable.ana_icon;
-                break;
-            case "Ashe":
-                id = R.drawable.ashe_icon;
-                break;
-            case "Baptiste":
-                id = R.drawable.baptiste_icon;
-                break;
-            case "Bastion":
-                id = R.drawable.bastion_icon;
-                break;
-            case "Brigitte":
-                id = R.drawable.brigitte_icon;
-                break;
-            case "DVa":
-                id = R.drawable.dva_icon;
-                break;
-            case "Echo":
-                id = R.drawable.echo_icon;
-                break;
-            case "Doomfist":
-                id = R.drawable.doomfist_icon;
-                break;
-            case "Genji":
-                id = R.drawable.genji_icon;
-                break;
-            case "Hanzo":
-                id = R.drawable.hanzo_icon;
-                break;
-            case "Junkrat":
-                id = R.drawable.junkrat_icon;
-                break;
-            case "Lúcio":
-                id = R.drawable.lucio_icon;
-                break;
-            case "Mccree":
-                id = R.drawable.mccree_icon;
-                break;
-            case "Mei":
-                id = R.drawable.mei_icon;
-                break;
-            case "Mercy":
-                id = R.drawable.mercy_icon;
-                break;
-            case "Moira":
-                id = R.drawable.moira_icon;
-                break;
-            case "Orisa":
-                id = R.drawable.orisa_icon;
-                break;
-            case "Pharah":
-                id = R.drawable.pharah_icon;
-                break;
-            case "Reaper":
-                id = R.drawable.reaper_icon;
-                break;
-            case "Reinhardt":
-                id = R.drawable.reinhardt_icon;
-                break;
-            case "Roadhog":
-                id = R.drawable.roadhog_icon;
-                break;
-            case "Sigma":
-                id = R.drawable.sigma_icon;
-                break;
-            case "Soldier76":
-                id = R.drawable.soldier_icon;
-                break;
-            case "Sombra":
-                id = R.drawable.sombra_icon;
-                break;
-            case "Symmetra":
-                id = R.drawable.symmetra_icon;
-                break;
-            case "Torbjörn":
-                id = R.drawable.torbjorn_icon;
-                break;
-            case "Tracer":
-                id = R.drawable.tracer_icon;
-                break;
-            case "Widowmaker":
-                id = R.drawable.widow_icon;
-                break;
-            case "Winston":
-                id = R.drawable.winston_icon;
-                break;
-            case "WreckingBall":
-                id = R.drawable.wrecking_ball_icon;
-                break;
-            case "Zarya":
-                id = R.drawable.zarya_icon;
-                break;
-            case "Zenyatta":
-                id = R.drawable.zenyatta_icon;
-                break;
-        }
-        return id;
-    }
-
     private void setTopCharacterImage(String topCharacterName) {
-        switch (topCharacterName) {
-            case "Ana":
-                topCharacter.setImageResource(R.drawable.ana_portrait);
-                break;
-            case "Ashe":
-                topCharacter.setImageResource(R.drawable.ashe_portrait);
-                break;
-            case "Baptiste":
-                topCharacter.setImageResource(R.drawable.baptiste_portrait);
-                break;
-            case "Bastion":
-                topCharacter.setImageResource(R.drawable.bastion_portrait);
-                break;
-            case "Brigitte":
-                topCharacter.setImageResource(R.drawable.brigitte_portrait);
-                break;
-            case "DVa":
-                topCharacter.setImageResource(R.drawable.dva_portrait);
-                break;
-            case "Echo":
-                topCharacter.setImageResource(R.drawable.echo_portrait);
-                break;
-            case "Doomfist":
-                topCharacter.setImageResource(R.drawable.doomfist_portrait);
-                break;
-            case "Genji":
-                topCharacter.setImageResource(R.drawable.genji_portrait);
-                break;
-            case "Hanzo":
-                topCharacter.setImageResource(R.drawable.hanzo_portrait);
-                break;
-            case "Junkrat":
-                topCharacter.setImageResource(R.drawable.junkrat_portrait);
-                break;
-            case "Lúcio":
-                topCharacter.setImageResource(R.drawable.lucio_portrait);
-                break;
-            case "Mccree":
-                topCharacter.setImageResource(R.drawable.mccree_portrait);
-                break;
-            case "Mei":
-                topCharacter.setImageResource(R.drawable.mei_portrait);
-                break;
-            case "Mercy":
-                topCharacter.setImageResource(R.drawable.mercy_portrait);
-                break;
-            case "Moira":
-                topCharacter.setImageResource(R.drawable.moira_portrait);
-                break;
-            case "Orisa":
-                topCharacter.setImageResource(R.drawable.orisa_portrait);
-                break;
-            case "Pharah":
-                topCharacter.setImageResource(R.drawable.pharah_portrait);
-                break;
-            case "Reaper":
-                topCharacter.setImageResource(R.drawable.reaper_portrait);
-                break;
-            case "Reinhardt":
-                topCharacter.setImageResource(R.drawable.reinhardt_portrait);
-                break;
-            case "Roadhog":
-                topCharacter.setImageResource(R.drawable.roadhog_portrait);
-                break;
-            case "Sigma":
-                topCharacter.setImageResource(R.drawable.sigma_portrait);
-                break;
-            case "Soldier76":
-                topCharacter.setImageResource(R.drawable.soldier_portrait);
-                break;
-            case "Sombra":
-                topCharacter.setImageResource(R.drawable.sombra_portrait);
-                break;
-            case "Symmetra":
-                topCharacter.setImageResource(R.drawable.symmetra_portrait);
-                break;
-            case "Torbjörn":
-                topCharacter.setImageResource(R.drawable.torbjorn_portrait);
-                break;
-            case "Tracer":
-                topCharacter.setImageResource(R.drawable.tracer_portrait);
-                break;
-            case "Widowmaker":
-                topCharacter.setImageResource(R.drawable.widow_portrait);
-                break;
-            case "Winston":
-                topCharacter.setImageResource(R.drawable.winston_portrait);
-                break;
-            case "WreckingBall":
-                topCharacter.setImageResource(R.drawable.wrecking_ball_portrait);
-                break;
-            case "Zarya":
-                topCharacter.setImageResource(R.drawable.zarya_portrait);
-                break;
-            case "Zenyatta":
-                topCharacter.setImageResource(R.drawable.zenyatta_portrait);
-                break;
-        }
+        Picasso.get().load(URLConstants.getOWPortraitImage(topCharacterName.toLowerCase())).into(topCharacter);
     }
 
     private void sortList(ArrayList<TopHero> topHeroes, String howToSort) {

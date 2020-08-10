@@ -23,6 +23,11 @@ public class URLConstants {
      */
     public final static String CALLBACK_URL = "https://alexchaoss.github.io/BnetAuthorize";
 
+    /**
+     * Overwatch images
+     */
+    public final static String OW_IMAGES = "https://alexchaoss.github.io/BnetAuthorize/img/image.png";
+
     public final static String LOGOUT_URL = "https://battle.net/login/logout";
 
     /**
@@ -107,5 +112,13 @@ public class URLConstants {
             url = url.replace(":region", "global");
         }
         return url;
+    }
+
+    public static String getOWPortraitImage(String character) {
+        return OW_IMAGES.replace("image", character + "_portrait");
+    }
+
+    public static String getOWIconImage(String character) {
+        return OW_IMAGES.replace("image", character + "_icon");
     }
 }
