@@ -82,23 +82,23 @@ class AccountFragment : Fragment() {
 
     private fun populateRecyclerView() {
         if (charaters?.wowAccounts != null) {
-            for (wowAccount in charaters!!.wowAccounts) {
-                characterList.addAll(wowAccount.characters)
+            for (wowAccount in charaters!!.wowAccounts!!) {
+                characterList.addAll(wowAccount.characters!!)
             }
         }
-        Log.i("TEST", characterList[0].realm.name)
-        for (characters in characterList.groupBy { it.realm.name }) {
-            charactersByRealm.add(characters.value.sortedBy { if (it.level != null) it.level.toInt() else 0 }.reversed())
+        Log.i("TEST", characterList[0].realm?.name!!)
+        for (characters in characterList.groupBy { it.realm?.name }) {
+            charactersByRealm.add(characters.value.sortedBy { if (it.level != null) it.level!!.toInt() else 0 }.reversed())
         }
-        charactersByRealm.sortBy { it[0].realm.name }
+        charactersByRealm.sortBy { it[0].realm?.name }
 
         for (realm in charactersByRealm) run {
             val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             val button = TextView(requireActivity())
             button.setBackgroundResource(R.drawable.progress_collapse_header)
             button.setTextColor(Color.WHITE)
-            val realmNamePlus = "+ " + realm[0].realm.name
-            val realmNameMinus = "- " + realm[0].realm.name
+            val realmNamePlus = "+ " + realm[0].realm?.name
+            val realmNameMinus = "- " + realm[0].realm?.name
             button.text = realmNamePlus
             button.textSize = 18F
             button.layoutParams = paramsButton
@@ -110,7 +110,7 @@ class AccountFragment : Fragment() {
             } else {
                 300
             }
-            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(recyclerViewSize, activity))
+            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(recyclerViewSize, requireActivity()))
             val recyclerView = RecyclerView(requireActivity())
             recyclerView.layoutParams = paramsRecyclerView
             linear_wow_characters.addView(recyclerView)

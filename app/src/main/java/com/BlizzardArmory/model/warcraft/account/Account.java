@@ -24,6 +24,13 @@ public class Account {
     @Expose
     private Collections collections;
 
+    public Account(Links links, long id, List<WowAccount> wowAccounts, Collections collections) {
+        this.links = links;
+        this.id = id;
+        this.wowAccounts = wowAccounts;
+        this.collections = collections;
+    }
+
     /**
      * Gets links.
      *

@@ -14,7 +14,7 @@ object RetroClient {
         get() {
 
             val cacheSize: Long = 30 * 1024 * 1024 // 10 MB
-            val cache = Cache(BlizzardArmory.getInstance().cacheDir, cacheSize)
+            val cache = Cache(BlizzardArmory.instance?.cacheDir!!, cacheSize)
 
             val gson = GsonBuilder().create()
 
@@ -33,6 +33,5 @@ object RetroClient {
                     .build()
 
             return retrofit.create(NetworkServices::class.java)
-
         }
 }

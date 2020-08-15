@@ -31,6 +31,7 @@ import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.sc2_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,6 +68,10 @@ class SC2Fragment : Fragment() {
         statistics.background = statsBG
         campaign.background = campaignBG
 
+        getRaceImage(zerg_image, "summary_racelevel_zerg_image")
+        getRaceImage(protoss_image, "summary_racelevel_protoss_image")
+        getRaceImage(terran_image, "summary_racelevel_terran_image")
+
         val startColor = -0xff9934
         val endColor = 0x00000000
         val avatarShadow = GradientDrawable()
@@ -91,6 +96,21 @@ class SC2Fragment : Fragment() {
         assert(bnOAuth2Params != null)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
         downloadAccountInformation()
+    }
+
+    private fun getRaceImage(imageView: ImageView, name: String) {
+        Picasso.get().load(URLConstants.getSC2Asset(name)).into(object : Target {
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                Log.i("Image Failed", "Couldn't download image", e)
+            }
+
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                imageView.background = BitmapDrawable(activity?.resources, bitmap)
+            }
+        })
     }
 
     private fun downloadAccountInformation() {

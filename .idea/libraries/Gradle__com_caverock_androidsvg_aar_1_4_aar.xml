@@ -1,6 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: com.caverock:androidsvg-aar:1.4@aar">
     <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67e8bd40232b3a361cb4425929b6daa8/jetified-androidsvg-aar-1.4/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67e8bd40232b3a361cb4425929b6daa8/jetified-androidsvg-aar-1.4/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67e8bd40232b3a361cb4425929b6daa8/jetified-androidsvg-aar-1.4/res" />
     </CLASSES>

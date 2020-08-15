@@ -1,11 +1,9 @@
 package com.BlizzardArmory.ui.ui_diablo
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
@@ -24,13 +22,14 @@ import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
 import com.BlizzardArmory.model.diablo.account.AccountInformation
-import com.BlizzardArmory.model.diablo.account.Hero
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.navigation.D3CharacterNav
+import com.BlizzardArmory.util.MetricConversion
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -41,7 +40,6 @@ class D3Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
     private var bnOAuth2Helper: BnOAuth2Helper? = null
     private var bnOAuth2Params: BnOAuth2Params? = null
-    private var portraits: List<Drawable>? = null
     private var battleTag: String? = ""
     private var selectedRegion: String? = ""
     private var characterID: Long = 0
@@ -75,7 +73,6 @@ class D3Fragment : Fragment() {
                     accountInformation = response.body()
                     manageFavorite(accountInformation!!)
                     sortHeroes()
-                    portraits = accountInformation?.heroes?.let { getCharacterImage(it, requireContext()) }
                     val paragon = accountInformation?.paragonLevel.toString() +
                             " | " +
                             "<font color=#b00000>" +
@@ -196,12 +193,14 @@ class D3Fragment : Fragment() {
             for (i in accountInformation!!.fallenHeroes.indices) {
                 val frameLayout = ConstraintLayout(requireContext())
                 frameLayout.id = (i + 1) * 2
-                val frameParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
-                frameParams.marginEnd = 20
-                frameLayout.layoutParams = frameParams
+                val frameLayoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+                frameLayoutParams.marginEnd = 20
+                frameLayout.layoutParams = frameLayoutParams
+
+                val frameParams = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(113, requireActivity()), MetricConversion.getDPMetric(154, requireActivity()))
                 val frame = ImageView(requireContext())
                 frame.id = (i + 10) * 2
-                getFallenHeroFrame(i, frame)
+                Picasso.get().load(URLConstants.getD3Asset(getFallenHeroFrame(i))).into(frame)
                 val levelFrame = ImageView(requireContext())
                 levelFrame.id = (i + 100) * 2
                 levelFrame.setImageResource(R.drawable.fallen_hero_level)
@@ -223,7 +222,7 @@ class D3Fragment : Fragment() {
                 level.text = accountInformation!!.fallenHeroes[i].level.toString()
                 level.setTypeface(null, Typeface.BOLD)
                 level.id = (i + 100000) * 2
-                frameLayout.addView(frame)
+                frameLayout.addView(frame, frameParams)
                 frameLayout.addView(name)
                 frameLayout.addView(date)
                 frameLayout.addView(levelFrame)
@@ -258,49 +257,51 @@ class D3Fragment : Fragment() {
         }
     }
 
-    private fun getFallenHeroFrame(i: Int, frame: ImageView) {
+    private fun getFallenHeroFrame(i: Int): String {
+        var imageName = ""
         when (accountInformation!!.fallenHeroes[i].class_) {
             "barbarian" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                frame.setImageResource(R.drawable.d3_male_barb_dead)
+                imageName = "male_barb_dead"
             } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                frame.setImageResource(R.drawable.d3_female_barb_dead)
+                imageName = "female_barb_dead"
             }
             "wizard" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                frame.setImageResource(R.drawable.d3_male_wizard_dead)
+                imageName = "male_wizard_dead"
             } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                frame.setImageResource(R.drawable.d3_female_wizard_dead)
+                imageName = "female_wizard_dead"
             }
             "demon-hunter" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                frame.setImageResource(R.drawable.d3_male_dh_dead)
+                imageName = "male_dh_dead"
             } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                frame.setImageResource(R.drawable.d3_female_dh_dead)
+                imageName = "female_dh_dead"
             }
             "witch-doctor" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                frame.setImageResource(R.drawable.d3_male_wd_dead)
+                imageName = "male_wd_dead"
             } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                frame.setImageResource(R.drawable.d3_female_wd_dead)
+                imageName = "female_wd_dead"
             }
             "necromancer" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                frame.setImageResource(R.drawable.d3_male_necromancer_dead)
+                imageName = "male_necromancer_dead"
             } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                frame.setImageResource(R.drawable.d3_female_necromancer_dead)
+                imageName = "female_necromancer_dead"
             }
             "monk" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                frame.setImageResource(R.drawable.d3_male_monk_dead)
+                imageName = "male_monk_dead"
             } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                frame.setImageResource(R.drawable.d3_female_monk_dead)
+                imageName = "female_monk_dead"
             }
             "crusader" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                frame.setImageResource(R.drawable.d3_male_crusader_dead)
+                imageName = "male_crusader_dead"
             } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                frame.setImageResource(R.drawable.d3_female_crusader_dead)
+                imageName = "female_crusader_dead"
             }
         }
+        return imageName
     }
 
     private fun sortHeroes() {
-        accountInformation!!.heroes.sortBy { it.lastUpdated }
-        accountInformation!!.heroes.reverse()
+        accountInformation!!.heroes.sortedBy { it.lastUpdated }
+        accountInformation!!.heroes.reversed()
     }
 
     private fun setCharacterFrames() {
@@ -317,10 +318,10 @@ class D3Fragment : Fragment() {
             } else {
                 frame.setImageResource(R.drawable.d3_character_frame)
             }
-            val portraitParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, 320)
+            val portraitParams = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(129, requireActivity()), MetricConversion.getDPMetric(100, requireActivity()))
             val portrait = ImageView(requireContext())
             portrait.id = i + 1000
-            portrait.setImageDrawable(portraits!![i])
+            Picasso.get().load(URLConstants.getD3Asset(getGender(i))).into(portrait)
             portrait.layoutParams = portraitParams
             val name = TextView(requireContext())
             name.text = accountInformation!!.heroes[i].name
@@ -401,95 +402,73 @@ class D3Fragment : Fragment() {
 
     private fun setProgression() {
         if (accountInformation!!.progression.act1) {
-            prog_act1!!.setImageDrawable(resources.getDrawable(R.drawable.act1_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act1_done")).into(prog_act1)
         } else {
-            prog_act1!!.setImageDrawable(resources.getDrawable(R.drawable.act1_not_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act1_not_done")).into(prog_act1)
         }
         if (accountInformation!!.progression.act2) {
-            prog_act2!!.setImageDrawable(resources.getDrawable(R.drawable.act2_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act2_done")).into(prog_act2)
         } else {
-            prog_act2!!.setImageDrawable(resources.getDrawable(R.drawable.act2_not_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act2_not_done")).into(prog_act2)
         }
         if (accountInformation!!.progression.act3) {
-            prog_act3!!.setImageDrawable(resources.getDrawable(R.drawable.act3_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act3_done")).into(prog_act3)
         } else {
-            prog_act3!!.setImageDrawable(resources.getDrawable(R.drawable.act3_not_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act3_not_done")).into(prog_act3)
         }
         if (accountInformation!!.progression.act4) {
-            prog_act4!!.setImageDrawable(resources.getDrawable(R.drawable.act4_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act4_done")).into(prog_act4)
         } else {
-            prog_act4!!.setImageDrawable(resources.getDrawable(R.drawable.act4_not_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act4_not_done")).into(prog_act4)
         }
         if (accountInformation!!.progression.act5) {
-            prog_act5!!.setImageDrawable(resources.getDrawable(R.drawable.act5_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act5_done")).into(prog_act5)
         } else {
-            prog_act5!!.setImageDrawable(resources.getDrawable(R.drawable.act5_not_done, activity?.theme))
+            Picasso.get().load(URLConstants.getD3Asset("act5_not_done")).into(prog_act5)
         }
     }
 
-    private fun callNextActivity(activity: Class<*>) {
-        val intent = Intent(requireActivity(), activity)
-        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
-        startActivity(intent)
-    }
-
-    fun getCharacterImage(heroes: List<Hero>, context: Context): List<Drawable> {
-        val portraits: MutableList<Drawable> = ArrayList()
-        for (i in heroes.indices) {
-            var characterImage: Drawable
-            when (heroes[i].classSlug) {
-                "barbarian" -> if (accountInformation!!.heroes[i].gender == 0) {
-                    characterImage = context.resources.getDrawable(R.drawable.barb_male, context.theme)
-                    portraits.add(characterImage)
-                } else if (accountInformation!!.heroes[i].gender == 1) {
-                    characterImage = context.resources.getDrawable(R.drawable.barb_female, context.theme)
-                    portraits.add(characterImage)
-                }
-                "wizard" -> if (accountInformation!!.heroes[i].gender == 0) {
-                    characterImage = context.resources.getDrawable(R.drawable.wizard_male, context.theme)
-                    portraits.add(characterImage)
-                } else if (accountInformation!!.heroes[i].gender == 1) {
-                    characterImage = context.resources.getDrawable(R.drawable.wizard_female, context.theme)
-                    portraits.add(characterImage)
-                }
-                "demon-hunter" -> if (accountInformation!!.heroes[i].gender == 0) {
-                    characterImage = context.resources.getDrawable(R.drawable.dh_male, context.theme)
-                    portraits.add(characterImage)
-                } else if (accountInformation!!.heroes[i].gender == 1) {
-                    characterImage = context.resources.getDrawable(R.drawable.dh_female, context.theme)
-                    portraits.add(characterImage)
-                }
-                "witch-doctor" -> if (accountInformation!!.heroes[i].gender == 0) {
-                    characterImage = context.resources.getDrawable(R.drawable.wd_male, context.theme)
-                    portraits.add(characterImage)
-                } else if (accountInformation!!.heroes[i].gender == 1) {
-                    characterImage = context.resources.getDrawable(R.drawable.wd_female, context.theme)
-                    portraits.add(characterImage)
-                }
-                "necromancer" -> if (accountInformation!!.heroes[i].gender == 0) {
-                    characterImage = context.resources.getDrawable(R.drawable.necro_male, context.theme)
-                    portraits.add(characterImage)
-                } else if (accountInformation!!.heroes[i].gender == 1) {
-                    characterImage = context.resources.getDrawable(R.drawable.necro_female, context.theme)
-                    portraits.add(characterImage)
-                }
-                "monk" -> if (accountInformation!!.heroes[i].gender == 0) {
-                    characterImage = context.resources.getDrawable(R.drawable.monk_male, context.theme)
-                    portraits.add(characterImage)
-                } else if (accountInformation!!.heroes[i].gender == 1) {
-                    characterImage = context.resources.getDrawable(R.drawable.monk_female, context.theme)
-                    portraits.add(characterImage)
-                }
-                "crusader" -> if (accountInformation!!.heroes[i].gender == 0) {
-                    characterImage = context.resources.getDrawable(R.drawable.crusader_male, context.theme)
-                    portraits.add(characterImage)
-                } else if (accountInformation!!.heroes[i].gender == 1) {
-                    characterImage = context.resources.getDrawable(R.drawable.crusader_female, context.theme)
-                    portraits.add(characterImage)
-                }
+    private fun getGender(i: Int): String {
+        var imageName = ""
+        val hero = accountInformation?.heroes?.get(i)!!
+        when (hero.classSlug) {
+            "barbarian" -> if (hero.gender == 0) {
+                imageName = "barb_male"
+            } else if (hero.gender == 1) {
+                imageName = "barb_female"
+            }
+            "wizard" -> if (hero.gender == 0) {
+                imageName = "wizard_male"
+            } else if (hero.gender == 1) {
+                imageName = "wizard_female"
+            }
+            "demon-hunter" -> if (hero.gender == 0) {
+                imageName = "dh_male"
+            } else if (hero.gender == 1) {
+                imageName = "dh_female"
+            }
+            "witch-doctor" -> if (hero.gender == 0) {
+                imageName = "wd_male"
+            } else if (hero.gender == 1) {
+                imageName = "wd_female"
+            }
+            "necromancer" -> if (hero.gender == 0) {
+                imageName = "necro_male"
+            } else if (hero.gender == 1) {
+                imageName = "necro_female"
+            }
+            "monk" -> if (hero.gender == 0) {
+                imageName = "monk_male"
+            } else if (hero.gender == 1) {
+                imageName = "monk_female"
+            }
+            "crusader" -> if (hero.gender == 0) {
+                imageName = "crusader_male"
+            } else if (hero.gender == 1) {
+                imageName = "crusader_female"
             }
         }
-        return portraits
+        return imageName
     }
 
     private fun displayFragment() {

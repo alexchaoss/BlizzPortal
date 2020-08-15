@@ -11,9 +11,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
+import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.model.warcraft.encounters.Expansion
 import com.BlizzardArmory.model.warcraft.encounters.Instances
 import com.BlizzardArmory.model.warcraft.encounters.Modes
+import com.squareup.picasso.Picasso
 
 class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context, private val expansion: Expansion) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_list, parent, false)) {
@@ -57,7 +59,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     fun bind(instances: Instances, level: String) {
-        banner?.setImageResource(findBanner(instances))
+        Picasso.get().load(URLConstants.getWoWAsset(findBanner(instances))).resize(0, 600).into(banner)
         raidName?.text = instances.instance.name
         raidLevel?.text = level
         setVisibilityBar()
@@ -194,54 +196,54 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         }
     }
 
-    private fun findBanner(instances: Instances): Int {
+    private fun findBanner(instances: Instances): String {
         when (instances.instance.id) {
-            1031L -> return R.drawable.uldir_small
-            1176L -> return R.drawable.battle_of_dazaralor_small
-            1177L -> return R.drawable.crucible_of_storms_small
-            1179L -> return R.drawable.the_eternal_palace_small
-            1180L -> return R.drawable.nyalotha_the_waking_city_small
-            768L -> return R.drawable.the_emerald_nightmare_small
-            861L -> return R.drawable.trial_of_valor_small
-            786L -> return R.drawable.the_nighthold_small
-            875L -> return R.drawable.tomb_of_sargeras_small
-            946L -> return R.drawable.antorus_the_burning_throne_small
-            477L -> return R.drawable.highmaul_small
-            457L -> return R.drawable.blackrock_foundry_small
-            669L -> return R.drawable.hellfire_citadel_small
-            317L -> return R.drawable.mogushan_vaults_small
-            330L -> return R.drawable.heart_of_fear_small
-            320L -> return R.drawable.terrace_of_endless_spring_small
-            362L -> return R.drawable.throne_of_thunder_small
-            369L -> return R.drawable.siege_of_orgrimmar_small
-            75L -> return R.drawable.baradin_hold_small
-            73L -> return R.drawable.blackwing_descent_small
-            72L -> return R.drawable.the_bastion_of_twilight_small
-            74L -> return R.drawable.throne_of_the_four_winds_small
-            78L -> return R.drawable.firelands_small
-            187L -> return R.drawable.dragon_soul_small
-            753L -> return R.drawable.vault_of_archavon_small
-            754L -> return R.drawable.naxxramas_small
-            755L -> return R.drawable.the_obsidian_sanctum_small
-            756L -> return R.drawable.the_eye_of_eternity_small
-            759L -> return R.drawable.ulduar_small
-            757L -> return R.drawable.trial_of_the_crusader_small
-            760L -> return R.drawable.onyxias_lair_small
-            758L -> return R.drawable.icecrown_citadel_small
-            761L -> return R.drawable.the_ruby_sanctum_small
-            745L -> return R.drawable.karazhan_small
-            746L -> return R.drawable.gruuls_lair_small
-            747L -> return R.drawable.magtheridons_lair_small
-            748L -> return R.drawable.serpentshrine_cavern_small
-            749L -> return R.drawable.the_eye_small
-            750L -> return R.drawable.the_battle_for_mount_hyjal_small
-            751L -> return R.drawable.black_temple_small
-            752L -> return R.drawable.sunwell_plateau_small
-            741L -> return R.drawable.molten_core_small
-            742L -> return R.drawable.blackwing_lair_small
-            743L -> return R.drawable.ruins_of_ahnqiraj_small
-            744L -> return R.drawable.temple_of_ahnqiraj_small
-            else -> return 0
+            1031L -> return "uldir_small"
+            1176L -> return "battle_of_dazaralor_small"
+            1177L -> return "crucible_of_storms_small"
+            1179L -> return "the_eternal_palace_small"
+            1180L -> return "nyalotha_the_waking_city_small"
+            768L -> return "the_emerald_nightmare_small"
+            861L -> return "trial_of_valor_small"
+            786L -> return "the_nighthold_small"
+            875L -> return "tomb_of_sargeras_small"
+            946L -> return "antorus_the_burning_throne_small"
+            477L -> return "highmaul_small"
+            457L -> return "blackrock_foundry_small"
+            669L -> return "hellfire_citadel_small"
+            317L -> return "mogushan_vaults_small"
+            330L -> return "heart_of_fear_small"
+            320L -> return "terrace_of_endless_spring_small"
+            362L -> return "throne_of_thunder_small"
+            369L -> return "siege_of_orgrimmar_small"
+            75L -> return "baradin_hold_small"
+            73L -> return "blackwing_descent_small"
+            72L -> return "the_bastion_of_twilight_small"
+            74L -> return "throne_of_the_four_winds_small"
+            78L -> return "firelands_small"
+            187L -> return "dragon_soul_small"
+            753L -> return "vault_of_archavon_small"
+            754L -> return "naxxramas_small"
+            755L -> return "the_obsidian_sanctum_small"
+            756L -> return "the_eye_of_eternity_small"
+            759L -> return "ulduar_small"
+            757L -> return "trial_of_the_crusader_small"
+            760L -> return "onyxias_lair_small"
+            758L -> return "icecrown_citadel_small"
+            761L -> return "the_ruby_sanctum_small"
+            745L -> return "karazhan_small"
+            746L -> return "gruuls_lair_small"
+            747L -> return "magtheridons_lair_small"
+            748L -> return "serpentshrine_cavern_small"
+            749L -> return "the_eye_small"
+            750L -> return "the_battle_for_mount_hyjal_small"
+            751L -> return "black_temple_small"
+            752L -> return "sunwell_plateau_small"
+            741L -> return "molten_core_small"
+            742L -> return "blackwing_lair_small"
+            743L -> return "ruins_of_ahnqiraj_small"
+            744L -> return "temple_of_ahnqiraj_small"
+            else -> return ""
         }
     }
 

@@ -1,12 +1,7 @@
 package com.BlizzardArmory.ui.ui_overwatch;
 
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,9 +22,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.BlizzardArmory.R;
 import com.BlizzardArmory.connection.ErrorMessages;
@@ -45,7 +39,6 @@ import com.BlizzardArmory.ui.GamesActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -109,8 +102,6 @@ public class OWFragment extends Fragment {
     private final String[] sortHeroList = {TIME_PLAYED, GAMES_WON, WEAPON_ACCURACY, ELIMINATIONS_PER_LIFE, MULTIKILL_BEST, OBJECTIVE_KILLS};
     private ArrayList<String> sortCareerHeroes = new ArrayList<>();
 
-    private LinearLayout heroList;
-
     private TextView quickplay;
     private TextView competitive;
     private boolean comp = false;
@@ -127,9 +118,11 @@ public class OWFragment extends Fragment {
 
     private ImageView favorite;
 
+    private RecyclerView topHeroRecycler;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.ow_activity, container, false);
+        return inflater.inflate(R.layout.ow_fragment, container, false);
     }
 
     @Override
@@ -160,7 +153,6 @@ public class OWFragment extends Fragment {
         prestigeIcon = view.findViewById(R.id.prestige_icon);
         topHeroesListSpinner = view.findViewById(R.id.spinner);
         careerListSpinner = view.findViewById(R.id.spinner_career);
-        heroList = view.findViewById(R.id.hero_list);
         competitive = view.findViewById(R.id.competitive);
         quickplay = view.findViewById(R.id.quickplay);
         LinearLayout quickComp = view.findViewById(R.id.quick_comp);
@@ -171,6 +163,8 @@ public class OWFragment extends Fragment {
         combat = view.findViewById(R.id.combat);
         misc = view.findViewById(R.id.misc);
         matchAwards = view.findViewById(R.id.match);
+
+        topHeroRecycler = view.findViewById(R.id.top_hero_recycler);
 
         favorite = requireActivity().findViewById(R.id.favorite);
         favorite.setVisibility(View.VISIBLE);
@@ -416,7 +410,7 @@ public class OWFragment extends Fragment {
     }
 
     private void setSpinnerTopHeroes(Spinner spinner) {
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, sortHeroList) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, sortHeroList) {
 
             @Override
             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -443,11 +437,12 @@ public class OWFragment extends Fragment {
                 ((TextView) view).setGravity(Gravity.CENTER_VERTICAL);
 
                 if (comp) {
+
                     sortList(topHeroesCompetitive, sortHeroList[position]);
-                    setProgressBarsTopHeroes((String) parent.getItemAtPosition(position), topHeroesCompetitive);
+                    topHeroRecycler.setAdapter(new OWProgressAdapter(topHeroesCompetitive, requireActivity(), sortHeroList[position]));
                 } else {
                     sortList(topHeroesQuickPlay, sortHeroList[position]);
-                    setProgressBarsTopHeroes((String) parent.getItemAtPosition(position), topHeroesQuickPlay);
+                    topHeroRecycler.setAdapter(new OWProgressAdapter(topHeroesQuickPlay, requireActivity(), sortHeroList[position]));
                 }
             }
 
@@ -460,7 +455,7 @@ public class OWFragment extends Fragment {
     }
 
     private void setSpinnerCareer(Spinner spinner) {
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, sortCareerHeroes) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, sortCareerHeroes) {
 
             @Override
             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -579,235 +574,6 @@ public class OWFragment extends Fragment {
             parentLayout.addView(linearLayout);
             i++;
         }
-    }
-
-    private void setProgressBarsTopHeroes(String itemSelected, ArrayList<TopHero> heroes) {
-        heroList.removeAllViews();
-
-        Log.i("test", heroes.get(0).getClass().getSimpleName());
-        for (int i = 0; i < heroes.size(); i++) {
-            LinearLayout linearLayout = new LinearLayout(requireActivity());
-            heroList.addView(linearLayout);
-
-            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(100, 100);
-            iconParams.setMarginEnd(5);
-
-            RelativeLayout.LayoutParams nameParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            nameParams.setMarginStart(10);
-            nameParams.addRule(RelativeLayout.CENTER_VERTICAL);
-
-            RelativeLayout.LayoutParams dataParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            dataParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            dataParams.addRule(RelativeLayout.CENTER_VERTICAL);
-            dataParams.setMarginEnd(10);
-
-            ImageView icon = new ImageView(requireActivity());
-            Picasso.get().load(URLConstants.getOWIconImage(heroes.get(i).getClass().getSimpleName().toLowerCase())).into(new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    icon.setBackground(new BitmapDrawable(requireActivity().getResources(), bitmap));
-                }
-
-                @Override
-                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                    Log.e("Failed", "Could not load icon", e);
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                }
-            });
-
-            GradientDrawable iconBorder = new GradientDrawable();
-            iconBorder.setCornerRadius(5);
-            iconBorder.setStroke(3, Color.parseColor("#CCCCCC"));
-            icon.setImageDrawable(iconBorder);
-
-            RelativeLayout relativeLayout = new RelativeLayout(requireActivity());
-            relativeLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-            GradientDrawable layoutBackground = new GradientDrawable();
-            layoutBackground.setCornerRadius(5);
-            layoutBackground.setColor(Color.parseColor("#283655"));
-            relativeLayout.setBackground(layoutBackground);
-            relativeLayout.setPadding(5, 5, 5, 5);
-
-            TextView name = new TextView(requireActivity());
-            name.setAllCaps(true);
-            name.setTextColor(Color.WHITE);
-            name.setTextSize(20);
-            String tempName;
-
-            if (heroes.get(i).getClass().getSimpleName().equals("WreckingBall")) {
-                tempName = "Wrecking Ball ";
-            } else if (heroes.get(i).getClass().getSimpleName().equals("Dva")) {
-                tempName = "D.Va ";
-            } else if (heroes.get(i).getClass().getSimpleName().equals("Soldier76")) {
-                tempName = "Soldier: 76 ";
-            } else {
-                tempName = heroes.get(i).getClass().getSimpleName() + " ";
-            }
-            name.setText(tempName);
-            Typeface face = ResourcesCompat.getFont(requireActivity(), R.font.bignoodletoo);
-            name.setTypeface(face);
-
-            TextView data = new TextView(requireActivity());
-            data.setTextColor(Color.WHITE);
-            data.setTextSize(15);
-
-            linearLayout.addView(icon, iconParams);
-            linearLayout.addView(relativeLayout);
-            ProgressBar progressBar = new ProgressBar(requireActivity(), null, android.R.attr.progressBarStyleHorizontal);
-            progressBar.setProgressDrawable(requireActivity().getDrawable(R.drawable.ow_progressbar));
-
-            switch (itemSelected) {
-                case TIME_PLAYED:
-                    progressBar.setMax(getSeconds(heroes.get(0)));
-                    progressBar.setProgress(getSeconds(heroes.get(i)));
-                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                    data.setText(heroes.get(i).getTimePlayed());
-                    break;
-                case GAMES_WON:
-                    progressBar.setMax((int) heroes.get(0).getGamesWon());
-                    progressBar.setProgress((int) heroes.get(i).getGamesWon());
-                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                    data.setText(String.valueOf((int) heroes.get(i).getGamesWon()));
-                    break;
-                case WEAPON_ACCURACY:
-                    progressBar.setMax((int) heroes.get(0).getWeaponAccuracy());
-                    progressBar.setProgress((int) heroes.get(i).getWeaponAccuracy());
-                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                    String tempData = (int) heroes.get(i).getWeaponAccuracy() + "%";
-                    data.setText(tempData);
-                    break;
-                case ELIMINATIONS_PER_LIFE:
-                    progressBar.setMax((int) heroes.get(0).getEliminationsPerLife());
-                    progressBar.setProgress((int) heroes.get(i).getEliminationsPerLife());
-                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                    data.setText(String.valueOf(heroes.get(i).getEliminationsPerLife()));
-                    break;
-                case MULTIKILL_BEST:
-                    progressBar.setMax((int) heroes.get(0).getMultiKillBest());
-                    progressBar.setProgress((int) heroes.get(i).getMultiKillBest());
-                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                    data.setText(String.valueOf((int) heroes.get(i).getMultiKillBest()));
-                    break;
-                case OBJECTIVE_KILLS:
-                    progressBar.setMax((int) heroes.get(0).getObjectiveKills());
-                    progressBar.setProgress((int) heroes.get(i).getObjectiveKills());
-                    progressBar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                    data.setText(String.valueOf((int) heroes.get(i).getObjectiveKills()));
-            }
-
-            setBackgroundColor(progressBar, heroes.get(i).getClass().getSimpleName());
-
-            relativeLayout.addView(progressBar);
-            relativeLayout.addView(name, nameParams);
-            relativeLayout.addView(data, dataParams);
-        }
-    }
-
-    private void setBackgroundColor(ProgressBar backgroundColor, String topCharacterName) {
-        int progressBar = 0;
-
-        switch (topCharacterName) {
-            case "Ana":
-                progressBar = Color.parseColor("#9c978a");
-                break;
-            case "Ashe":
-                progressBar = Color.parseColor("#b3a05f");
-                break;
-            case "Baptiste":
-                progressBar = Color.parseColor("#2892a8");
-                break;
-            case "Bastion":
-                progressBar = Color.parseColor("#24f9f8");
-                break;
-            case "Brigitte":
-                progressBar = Color.parseColor("#efb016");
-                break;
-            case "DVa":
-                progressBar = Color.parseColor("#ee4bb5");
-                break;
-            case "Echo":
-                progressBar = Color.parseColor("#89c8ff");
-                break;
-            case "Doomfist":
-                progressBar = Color.parseColor("#762c21");
-                break;
-            case "Genji":
-                progressBar = Color.parseColor("#abe50b");
-                break;
-            case "Hanzo":
-                progressBar = Color.parseColor("#837c46");
-                break;
-            case "Junkrat":
-                progressBar = Color.parseColor("#fbd73a");
-                break;
-            case "Lúcio":
-                progressBar = Color.parseColor("#aaf531");
-                break;
-            case "Mccree":
-                progressBar = Color.parseColor("#c23f46");
-                break;
-            case "Mei":
-                progressBar = Color.parseColor("#87d7f6");
-                break;
-            case "Mercy":
-                progressBar = Color.parseColor("#fcd849");
-                break;
-            case "Moira":
-                progressBar = Color.parseColor("#7112f4");
-                break;
-            case "Orisa":
-                progressBar = Color.parseColor("#468c43");
-                break;
-            case "Pharah":
-                progressBar = Color.parseColor("#3461a4");
-                break;
-            case "Reaper":
-                progressBar = Color.parseColor("#333333");
-                break;
-            case "Reinhardt":
-                progressBar = Color.parseColor("#929da3");
-                break;
-            case "Roadhog":
-                progressBar = Color.parseColor("#54515a");
-                break;
-            case "Sigma":
-                progressBar = Color.parseColor("#33bbaa");
-                break;
-            case "Soldier76":
-                progressBar = Color.parseColor("#525d9b");
-                break;
-            case "Sombra":
-                progressBar = Color.parseColor("#9762ec");
-                break;
-            case "Symmetra":
-                progressBar = Color.parseColor("#3e90b5");
-                break;
-            case "Torbjörn":
-                progressBar = Color.parseColor("#b04a33");
-                break;
-            case "Tracer":
-                progressBar = Color.parseColor("#ffcf35");
-                break;
-            case "Widowmaker":
-                progressBar = Color.parseColor("#af5e9e");
-                break;
-            case "Winston":
-                progressBar = Color.parseColor("#595959");
-                break;
-            case "WreckingBall":
-                progressBar = Color.parseColor("#4a575f");
-                break;
-            case "Zarya":
-                progressBar = Color.parseColor("#ff73c1");
-                break;
-            case "Zenyatta":
-                progressBar = Color.parseColor("#e1c931");
-                break;
-        }
-        backgroundColor.setProgressTintList(ColorStateList.valueOf(progressBar));
     }
 
     private void setTopCharacterImage(String topCharacterName) {

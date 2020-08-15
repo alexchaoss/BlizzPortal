@@ -104,7 +104,7 @@ class WoWCharacterFragment : Fragment() {
         favorite = activity?.findViewById(R.id.favorite)
         favorite?.visibility = View.VISIBLE
         favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
-        favorite?.setTag(R.drawable.ic_star_border_black_24dp)
+        favorite?.tag = R.drawable.ic_star_border_black_24dp
 
         activateCloseButton()
 
