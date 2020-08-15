@@ -29,6 +29,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wow_rep_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -232,56 +233,58 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun classEventReceived(classEvent: ClassEvent) {
+        var bgName = ""
         when (classEvent.data) {
             6 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#080812"))
-                background_rep.setBackgroundResource(R.drawable.dk_bg)
+                bgName = "dk_bg"
             }
             12 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#000900"))
-                background_rep.setBackgroundResource(R.drawable.dh_bg)
+                bgName = "dh_bg"
             }
             11 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#04100a"))
-                background_rep.setBackgroundResource(R.drawable.druid_bg)
+                bgName = "druid_bg"
             }
             3 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#0f091b"))
-                background_rep.setBackgroundResource(R.drawable.hunter_bg)
+                bgName = "hunter_bg"
             }
             8 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#110617"))
-                background_rep.setBackgroundResource(R.drawable.mage_bg)
+                bgName = "mage_bg"
             }
             10 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#040b17"))
-                background_rep.setBackgroundResource(R.drawable.monk_bg)
+                bgName = "monk_bg"
             }
             2 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#13040a"))
-                background_rep.setBackgroundResource(R.drawable.paladin_bg)
+                bgName = "paladin_bg"
             }
             5 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#15060e"))
-                background_rep.setBackgroundResource(R.drawable.priest_bg)
+                bgName = "priest_bg"
             }
             4 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#160720"))
-                background_rep.setBackgroundResource(R.drawable.rogue_bg)
+                bgName = "rogue_bg"
             }
             7 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#050414"))
-                background_rep.setBackgroundResource(R.drawable.shaman_bg)
+                bgName = "shaman_bg"
             }
             9 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#080516"))
-                background_rep.setBackgroundResource(R.drawable.warlock_bg)
+                bgName = "warlock_bg"
             }
             1 -> {
                 reputation_layout.setBackgroundColor(Color.parseColor("#1a0407"))
-                background_rep.setBackgroundResource(R.drawable.warrior_bg)
+                bgName = "warrior_bg"
             }
         }
+        Picasso.get().load(URLConstants.getWoWAsset(bgName)).into(background_rep)
         EventBus.getDefault().unregister(this)
     }
 

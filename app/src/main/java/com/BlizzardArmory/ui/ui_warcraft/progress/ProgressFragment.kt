@@ -28,6 +28,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wow_progress_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -205,6 +206,19 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
             397L -> "Level 60"
             else -> ""
         }
+        /* shadowlands
+        return when (expansion.expansion.id) {
+            68L -> "Level 25"
+            70L -> "Level 27"
+            72L -> "Level 30"
+            73L -> "Level 32"
+            74L -> "Level 35"
+            124L -> "Level 40"
+            395L -> "Level 45"
+            396L -> "Level 50"
+            397L -> "Level 60"
+            else -> ""
+        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -216,56 +230,58 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun classEventReceived(classEvent: ClassEvent) {
+        var bgName = ""
         when (classEvent.data) {
             6 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#080812"))
-                background_progress.setBackgroundResource(R.drawable.dk_bg)
+                bgName = "dk_bg"
             }
             12 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#000900"))
-                background_progress.setBackgroundResource(R.drawable.dh_bg)
+                bgName = "dh_bg"
             }
             11 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#04100a"))
-                background_progress.setBackgroundResource(R.drawable.druid_bg)
+                bgName = "druid_bg"
             }
             3 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#0f091b"))
-                background_progress.setBackgroundResource(R.drawable.hunter_bg)
+                bgName = "hunter_bg"
             }
             8 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#110617"))
-                background_progress.setBackgroundResource(R.drawable.mage_bg)
+                bgName = "mage_bg"
             }
             10 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#040b17"))
-                background_progress.setBackgroundResource(R.drawable.monk_bg)
+                bgName = "monk_bg"
             }
             2 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#13040a"))
-                background_progress.setBackgroundResource(R.drawable.paladin_bg)
+                bgName = "paladin_bg"
             }
             5 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#15060e"))
-                background_progress.setBackgroundResource(R.drawable.priest_bg)
+                bgName = "priest_bg"
             }
             4 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#160720"))
-                background_progress.setBackgroundResource(R.drawable.rogue_bg)
+                bgName = "rogue_bg"
             }
             7 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#050414"))
-                background_progress.setBackgroundResource(R.drawable.shaman_bg)
+                bgName = "shaman_bg"
             }
             9 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#080516"))
-                background_progress.setBackgroundResource(R.drawable.warlock_bg)
+                bgName = "warlock_bg"
             }
             1 -> {
                 progress_layout.setBackgroundColor(Color.parseColor("#1a0407"))
-                background_progress.setBackgroundResource(R.drawable.warrior_bg)
+                bgName = "warrior_bg"
             }
         }
+        Picasso.get().load(URLConstants.getWoWAsset(bgName)).into(background_progress)
         EventBus.getDefault().unregister(this)
     }
 
