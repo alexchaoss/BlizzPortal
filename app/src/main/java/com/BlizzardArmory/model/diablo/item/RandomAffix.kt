@@ -11,5 +11,4 @@ data class RandomAffix(
         @SerializedName("oneOf")
         @Expose
         val oneOf: List<OneOf>
-
 )
