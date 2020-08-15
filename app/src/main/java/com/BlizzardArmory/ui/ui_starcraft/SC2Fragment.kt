@@ -276,16 +276,16 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setSnapshotInformation() {
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.get1v1().leagueName, sc2Profile!!.snapshot.seasonSnapshot.get1v1().rank, one_one)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.oneVone.leagueName, sc2Profile!!.snapshot.seasonSnapshot.oneVone.rank, one_one)
         setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.archon.leagueName, sc2Profile!!.snapshot.seasonSnapshot.archon.rank, archon)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.get2v2().leagueName, sc2Profile!!.snapshot.seasonSnapshot.get2v2().rank, two_two)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.get3v3().leagueName, sc2Profile!!.snapshot.seasonSnapshot.get3v3().rank, three_three)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.get4v4().leagueName, sc2Profile!!.snapshot.seasonSnapshot.get4v4().rank, four_four)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.get1v1().totalGames, sc2Profile!!.snapshot.seasonSnapshot.get1v1().totalWins, one_one_text)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.leagueName, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.rank, two_two)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.leagueName, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.rank, three_three)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.leagueName, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.rank, four_four)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalGames, sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalWins, one_one_text)
         setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.archon.totalGames, sc2Profile!!.snapshot.seasonSnapshot.archon.totalWins, archon_text)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.get2v2().totalGames, sc2Profile!!.snapshot.seasonSnapshot.get2v2().totalWins, two_two_text)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.get3v3().totalGames, sc2Profile!!.snapshot.seasonSnapshot.get3v3().totalWins, three_three_text)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.get4v4().totalGames, sc2Profile!!.snapshot.seasonSnapshot.get4v4().totalWins, four_four_text)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalGames, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalWins, two_two_text)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalGames, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalWins, three_three_text)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalGames, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalWins, four_four_text)
     }
 
     private fun setSnapshotText(totalGames: Int, totalWins: Int, text: TextView?) {
