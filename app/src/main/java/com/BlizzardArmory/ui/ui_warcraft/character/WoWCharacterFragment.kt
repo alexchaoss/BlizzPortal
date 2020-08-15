@@ -687,7 +687,6 @@ class WoWCharacterFragment : Fragment() {
         var azeriteSpells = StringBuilder()
         val sellPrice = StringBuilder()
         try {
-            assert(equippedItem.set != null)
             setInfo.append("<font color=#edc201>").append(equippedItem.set.displayString).append("</font><br>")
             setInfo.append(formatSetItemText(equippedItem.set))
         } catch (e: Exception) {

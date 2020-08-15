@@ -128,14 +128,14 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
     private fun getSeconds(hero: TopHero): Int {
         var secondsHero1 = 0
         if (StringUtils.countMatches(hero.timePlayed, ":") == 2) {
-            secondsHero1 += hero.timePlayed.substring(0, hero.timePlayed.indexOf(":")).toInt() * 3600
-            secondsHero1 += hero.timePlayed.substring(hero.timePlayed.indexOf(":") + 1, hero.timePlayed.lastIndexOf(":")).toInt() * 60
-            secondsHero1 += hero.timePlayed.substring(hero.timePlayed.lastIndexOf(":") + 1).toInt()
+            secondsHero1 += hero.timePlayed?.substring(0, hero.timePlayed!!.indexOf(":"))!!.toInt() * 3600
+            secondsHero1 += hero.timePlayed?.substring(hero.timePlayed!!.indexOf(":") + 1, hero.timePlayed!!.lastIndexOf(":"))!!.toInt() * 60
+            secondsHero1 += hero.timePlayed?.substring(hero.timePlayed!!.lastIndexOf(":") + 1)!!.toInt()
         } else if (StringUtils.countMatches(hero.timePlayed, ":") == 1) {
-            secondsHero1 += hero.timePlayed.substring(0, hero.timePlayed.indexOf(":")).toInt() * 60
-            secondsHero1 += hero.timePlayed.substring(hero.timePlayed.lastIndexOf(":") + 1).toInt()
+            secondsHero1 += hero.timePlayed?.substring(0, hero.timePlayed!!.indexOf(":"))?.toInt()!! * 60
+            secondsHero1 += hero.timePlayed?.substring(hero.timePlayed!!.lastIndexOf(":") + 1)!!.toInt()
         } else {
-            secondsHero1 = hero.timePlayed.toInt()
+            secondsHero1 = hero.timePlayed?.toInt()!!
         }
         return secondsHero1
     }
