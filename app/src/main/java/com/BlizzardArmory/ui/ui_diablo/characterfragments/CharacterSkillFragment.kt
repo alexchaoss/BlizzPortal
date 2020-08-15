@@ -24,9 +24,9 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BnConstants
 import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BnOAuth2Params
-import com.BlizzardArmory.model.diablo.character.Active
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
-import com.BlizzardArmory.model.diablo.character.Skill
+import com.BlizzardArmory.model.diablo.character.skills.Active
+import com.BlizzardArmory.model.diablo.character.skills.Skill
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.CharacterEvent
 import com.squareup.picasso.Callback
@@ -194,9 +194,9 @@ class CharacterSkillFragment : Fragment() {
     }
 
     private fun downloadPssiveIcons() {
-        for (i in characterInformation!!.skills.passive.indices) {
-            val tempPair = Pair(i, characterInformation!!.skills.passive[i].skill)
-            passiveIcons[characterInformation!!.skills.passive[i].skill.name] = tempPair
+        for (i in characterInformation?.skills?.passive?.indices!!) {
+            val tempPair = Pair(i, characterInformation?.skills?.passive?.get(i)?.skill!!)
+            passiveIcons[characterInformation?.skills?.passive?.get(i)?.skill?.name!!] = tempPair
         }
         for (key in passiveIcons.keys) {
             Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))

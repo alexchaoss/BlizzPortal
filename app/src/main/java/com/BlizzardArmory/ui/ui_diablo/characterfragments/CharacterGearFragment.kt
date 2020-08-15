@@ -232,8 +232,8 @@ class CharacterGearFragment : Fragment() {
         val secondary = StringBuilder()
         val gem = StringBuilder()
         try {
-            for (j in items[index].attributesHtml.primary.indices) {
-                var attribute = items[index].attributesHtml.primary[j].replace("<span class=\"tooltip-icon-enchant\"></span>".toRegex(), "<img src=\"utility\">")
+            for (j in items[index].attributesHtml?.primary?.indices!!) {
+                var attribute = items[index].attributesHtml?.primary!![j].replace("<span class=\"tooltip-icon-enchant\"></span>".toRegex(), "<img src=\"utility\">")
                 attribute = attribute.replace("<span class=\"tooltip-icon-utility\"></span>".toRegex(), "<img src=\"utility\">")
                 attribute = attribute.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "<img src=\"primary" + "\">")
                 attribute = attribute.replace("span class=\"d3-color-ff".toRegex(), "font color=\"#")
@@ -245,8 +245,8 @@ class CharacterGearFragment : Fragment() {
             primary.append("")
         }
         try {
-            for (j in items[index].attributesHtml.secondary.indices) {
-                var attribute = items[index].attributesHtml.secondary[j].replace("<span class=\"tooltip-icon-enchant\"></span>".toRegex(), "<img src=\"utility\">")
+            for (j in items[index].attributesHtml?.secondary?.indices!!) {
+                var attribute = items[index].attributesHtml?.secondary!![j].replace("<span class=\"tooltip-icon-enchant\"></span>".toRegex(), "<img src=\"utility\">")
                 attribute = attribute.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "<img src=\"primary" +
                         "\">")
                 attribute = attribute.replace("<span class=\"tooltip-icon-utility\"></span>".toRegex(), "<img src=\"utility\">")
@@ -259,21 +259,21 @@ class CharacterGearFragment : Fragment() {
             secondary.append("")
         }
         try {
-            for (j in items[index].gems.indices) {
+            for (j in items[index].gems?.indices!!) {
                 val gemAttributes = StringBuilder()
-                if (items[index].gems[j].item.id.contains("Unique")) {
+                if (items[index].gems!![j].item.id.contains("Unique")) {
                     gemAttributes.append("<font color=\"#ff8000\"> ")
                 }
-                for (k in items[index].gems[j].attributes.indices) {
-                    gemAttributes.append(" <img src=\"").append(items[index].gems[j].item.icon).append("\">")
+                for (k in items[index].gems!![j].attributes.indices) {
+                    gemAttributes.append(" <img src=\"").append(items[index].gems!![j].item.icon).append("\">")
                     gemAttributes.append(" <img src=\"primary\"> ")
-                    gemAttributes.append(items[index].gems[j].attributes[k].replace("\\n".toRegex(), "<br>")).append("<br>")
+                    gemAttributes.append(items[index].gems!![j].attributes[k].replace("\\n".toRegex(), "<br>")).append("<br>")
                 }
                 gemAttributes.append("</font>")
                 gem.append(gemAttributes)
             }
-            if (items[index].openSockets > 0) {
-                for (i in 0 until items[index].openSockets.toInt()) {
+            if (items[index].openSockets!! > 0) {
+                for (i in 0 until items[index].openSockets?.toInt()!!) {
                     gem.append("<img src=\"empty_socket_d3\"> ").append("Empty Socket<br>")
                 }
             }
@@ -300,9 +300,9 @@ class CharacterGearFragment : Fragment() {
                 backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(index)))
                 item_scroll_view.background = backgroundStroke
                 item_name.background = getHeaderBackground(index)
-                val background = selectBackgroundColor(items[index].displayColor)
+                val background = selectBackgroundColor(items[index].displayColor!!)
                 val backgroundStrokeTooltipIcon = GradientDrawable()
-                backgroundStrokeTooltipIcon.setStroke(3, Color.parseColor(selectColor(items[index].displayColor)))
+                backgroundStrokeTooltipIcon.setStroke(3, Color.parseColor(selectColor(items[index].displayColor!!)))
                 backgroundStrokeTooltipIcon.cornerRadius = 5f
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = background
@@ -322,36 +322,36 @@ class CharacterGearFragment : Fragment() {
                     item_icon.layoutParams = normalIconParams
                 }
                 try {
-                    val color = selectColor(items[index].displayColor)
+                    val color = selectColor(items[index].displayColor!!)
                     item_name.text = Html.fromHtml("<font color=\"" + color + "\">" + items[index].name + "</font>", Html.FROM_HTML_MODE_LEGACY)
-                    if (items[index].name.length > 23) {
+                    if (items[index].name?.length!! > 23) {
                         item_name.textSize = 18f
                     }
                 } catch (e: Exception) {
                     Log.e("Error", "Name", e)
                 }
                 var typeNameString = items[index].typeName
-                if (typeNameString.length > 22) {
+                if (typeNameString?.length!! > 22) {
                     val lastSpace = typeNameString.lastIndexOf(" ")
                     val beforeLastSpace = typeNameString.substring(0, lastSpace)
                     val lastSpace2 = beforeLastSpace.lastIndexOf(" ")
                     typeNameString = typeNameString.substring(0, lastSpace2) + "<br>" + typeNameString.substring(lastSpace2)
                 }
                 typeName.text = Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY)
-                typeName.setTextColor(Color.parseColor(selectColor(items[index].displayColor)))
+                typeName.setTextColor(Color.parseColor(selectColor(items[index].displayColor!!)))
                 slot.text = items[index].slots
                 try {
-                    if (items[index].armor > 0) {
-                        armor!!.text = Html.fromHtml("<big><big><big><big><big>" + Math.round(items[index].armor).toInt() + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>", Html.FROM_HTML_MODE_LEGACY)
+                    if (items[index].armor!! > 0) {
+                        armor!!.text = Html.fromHtml("<big><big><big><big><big>" + Math.round(items[index].armor!!).toInt() + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>", Html.FROM_HTML_MODE_LEGACY)
                         armor_damage!!.addView(armor, layoutParamsStats)
                     }
                 } catch (e: Exception) {
                     Log.e("Error", "Armor", e)
                 }
                 try {
-                    if (!items[index].type.twoHanded && items[index].minDamage > 0) {
+                    if (!items[index].type?.twoHanded!! && items[index].minDamage!! > 0) {
                         slot.text = Html.fromHtml("1-Hand", Html.FROM_HTML_MODE_LEGACY)
-                    } else if (items[index].type.twoHanded && items[index].minDamage > 0) {
+                    } else if (items[index].type?.twoHanded!! && items[index].minDamage!! > 0) {
                         slot.text = Html.fromHtml("2-Hand", Html.FROM_HTML_MODE_LEGACY)
                     } else {
                         slot.text = items[index].slots
@@ -360,9 +360,9 @@ class CharacterGearFragment : Fragment() {
                     Log.e("Error", "No TYPE", e)
                 }
                 try {
-                    if (items[index].minDamage > 0 && items[index].maxDamage > 0) {
+                    if (items[index].minDamage!! > 0 && items[index].maxDamage!! > 0) {
                         val formatter: NumberFormat = DecimalFormat("#0.0")
-                        val dpsText = ((items[index].minDamage + items[index].maxDamage) / 2 * items[index].attacksPerSecond * 10 / 10).roundToInt().toDouble()
+                        val dpsText = ((items[index].minDamage!! + items[index].maxDamage!!) / 2 * items[index].attacksPerSecond!! * 10 / 10).roundToInt().toDouble()
                         dps?.text = Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
                                 + formatter.format(items[index].minDamage) + " - "
                                 + formatter.format(items[index].maxDamage) + "<font color=\"#696969\"> Damage</font><br>"
@@ -413,16 +413,15 @@ class CharacterGearFragment : Fragment() {
                     Log.e("Error", "Gems", e)
                 }
                 try {
-                    var setText = items[index].set.descriptionHtml
-                    var firstPart = setText.substring(0, setText.indexOf("(2)") - 38)
-                    Log.i("TEST-2", firstPart)
-                    firstPart = firstPart.replace("<br />".toRegex(), "<br />&nbsp;&nbsp;&nbsp;")
-                    val lastPart = setText.substring(setText.indexOf("(2)") - 38)
+                    var setText = items[index].set?.descriptionHtml
+                    var firstPart = setText?.substring(0, setText.indexOf("(2)") - 38)
+
+                    firstPart = firstPart?.replace("<br />".toRegex(), "<br />&nbsp;&nbsp;&nbsp;")
+                    val lastPart = setText?.substring(setText.indexOf("(2)") - 38)
                     setText = firstPart + lastPart
                     setText = setText.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"primary" + "\">")
                     setText = setText.replace("<span class=\"tooltip-icon-utility\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"utility\">")
                     setText = setText.replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#").replace("</span>".toRegex(), "</font>")
-                    Log.i("TEST", setText)
                     set!!.text = Html.fromHtml(setText, Html.FROM_HTML_MODE_LEGACY, Html.ImageGetter { source: String? ->
                         val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
                         val drawable = resources.getDrawable(resourceId, requireContext().theme)
@@ -435,7 +434,7 @@ class CharacterGearFragment : Fragment() {
                 }
                 try {
                     transmog!!.text = Html.fromHtml("<font color=\"#7979d4\">Transmogrification:</font><br>" + "<font color=\""
-                            + selectColor(items[index].transmog.displayColor) + "\">" + items[index].transmog.name + "</font><br>", Html.FROM_HTML_MODE_LEGACY)
+                            + selectColor(items[index].transmog?.displayColor!!) + "\">" + items[index].transmog?.name + "</font><br>", Html.FROM_HTML_MODE_LEGACY)
                     item_stats!!.addView(transmog, layoutParamsStats)
                 } catch (e: Exception) {
                     Log.e("Error", "Transmog", e)
@@ -449,11 +448,11 @@ class CharacterGearFragment : Fragment() {
                     Log.e("Error", "FlavorText", e)
                 }
                 try {
-                    if (items[index].accountBound) {
-                        misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + Math.round(items[index].requiredLevel).toInt() + "<br>Account bound</font>", Html.FROM_HTML_MODE_LEGACY)
+                    if (items[index].accountBound!!) {
+                        misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + Math.round(items[index].requiredLevel!!).toInt() + "<br>Account bound</font>", Html.FROM_HTML_MODE_LEGACY)
                         misctext!!.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
                     } else {
-                        misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + Math.round(items[index].requiredLevel).toInt() + "<br></font>", Html.FROM_HTML_MODE_LEGACY)
+                        misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + Math.round(items[index].requiredLevel!!).toInt() + "<br></font>", Html.FROM_HTML_MODE_LEGACY)
                         misctext!!.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
                     }
                     item_stats!!.addView(misctext, layoutParamsStats)
@@ -491,9 +490,9 @@ class CharacterGearFragment : Fragment() {
     private fun setItemBackgroundColor() {
         for (i in 0 until imageViewItem.size) {
             try {
-                val background = selectBackgroundColor(items[i].displayColor)
+                val background = selectBackgroundColor(items[i].displayColor!!)
                 val backgroundStroke = GradientDrawable()
-                backgroundStroke.setStroke(3, Color.parseColor(selectColor(items[i].displayColor)))
+                backgroundStroke.setStroke(3, Color.parseColor(selectColor(items[i].displayColor!!)))
                 backgroundStroke.cornerRadius = 5f
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = background
@@ -534,22 +533,22 @@ class CharacterGearFragment : Fragment() {
 
     private fun getHeaderBackground(index: Int): Drawable {
         when {
-            items[index].typeName.contains("Primal Legendary") -> {
+            items[index].typeName?.contains("Primal Legendary")!! -> {
                 return requireContext().getDrawable(R.drawable.d3_item_header_legendary_primal)!!
             }
-            items[index].typeName.contains("Primal Set") -> {
+            items[index].typeName?.contains("Primal Set")!! -> {
                 return requireContext().getDrawable(R.drawable.d3_item_header_legendary_primal)!!
             }
-            items[index].typeName.contains("Set") -> {
+            items[index].typeName?.contains("Set")!! -> {
                 return requireContext().getDrawable(R.drawable.d3_item_header_set)!!
             }
-            items[index].typeName.contains("Legendary") -> {
+            items[index].typeName?.contains("Legendary")!! -> {
                 return requireContext().getDrawable(R.drawable.d3_item_header_legendary)!!
             }
-            items[index].typeName.contains("Rare") -> {
+            items[index].typeName?.contains("Rare")!! -> {
                 return requireContext().getDrawable(R.drawable.d3_item_header_rare)!!
             }
-            items[index].typeName.contains("Magic") -> {
+            items[index].typeName?.contains("Magic")!! -> {
                 return requireContext().getDrawable(R.drawable.d3_item_header_magic)!!
             }
             else -> return requireContext().getDrawable(R.drawable.d3_item_header)!!
@@ -558,7 +557,7 @@ class CharacterGearFragment : Fragment() {
 
     private fun getItemBorderColor(index: Int): String {
         val type = items[index].typeName
-        if (type.contains("Ancient")) {
+        if (type?.contains("Ancient")!!) {
             return "#b47402"
         } else if (type.contains("Primal")) {
             return "#E52817"
@@ -569,7 +568,7 @@ class CharacterGearFragment : Fragment() {
     private fun getItemIconURL() {
         for (i in items.indices) {
             try {
-                itemIconURL[items[i].slots] = URLConstants.D3_ICON_ITEMS.replace("icon.png", items[i].icon) + ".png"
+                itemIconURL[items[i].slots!!] = URLConstants.D3_ICON_ITEMS.replace("icon.png", items[i].icon.toString()) + ".png"
             } catch (e: Exception) {
                 Log.e("Error", e.toString())
                 itemIconURL["empty"] = null

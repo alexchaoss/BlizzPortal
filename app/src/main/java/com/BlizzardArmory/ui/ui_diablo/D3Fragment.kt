@@ -300,8 +300,7 @@ class D3Fragment : Fragment() {
     }
 
     private fun sortHeroes() {
-        accountInformation!!.heroes.sortedBy { it.lastUpdated }
-        accountInformation!!.heroes.reversed()
+        accountInformation?.heroes = accountInformation!!.heroes.sortedBy { it.lastUpdated }.reversed()
     }
 
     private fun setCharacterFrames() {

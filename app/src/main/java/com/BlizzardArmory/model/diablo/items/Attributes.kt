@@ -1,4 +1,4 @@
-package com.BlizzardArmory.model.diablo.item
+package com.BlizzardArmory.model.diablo.items
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -8,15 +8,12 @@ import com.google.gson.annotations.SerializedName
  */
 data class Attributes(
 
-        @SerializedName("other")
-        @Expose
-        val other: List<Any>,
-
         @SerializedName("primary")
         @Expose
-        val primary: List<Primary>,
+        var primary: List<String>,
 
         @SerializedName("secondary")
         @Expose
-        val secondary: List<Secondary>
+        var secondary: List<String>
+
 )
