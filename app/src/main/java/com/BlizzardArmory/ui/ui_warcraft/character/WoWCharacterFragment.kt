@@ -70,7 +70,7 @@ class WoWCharacterFragment : Fragment() {
     private var talentsTierContainer: List<TextView?>? = null
     private var talentsContainer: List<TextView?>? = null
     private var talentsTier: List<String>? = null
-    private val talents: MutableList<Talent> = ArrayList()
+    private val talents: MutableList<Talent?> = ArrayList()
     private val gearImageView = HashMap<String, ImageView>()
     private val stats = HashMap<String, String>()
     private val nameList = HashMap<String, String>()
@@ -224,7 +224,6 @@ class WoWCharacterFragment : Fragment() {
                         item_lvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
                         val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
                         level_race_class.text = levelRaceClassString
-                        //character_class.text = characterSummary.characterClass.name
                         downloadEquipment()
                     }
                 }
@@ -464,11 +463,20 @@ class WoWCharacterFragment : Fragment() {
         for (i in equipment?.equippedItems?.indices!!) {
             if (equipment.equippedItems[i].slot.type == itemSlot) {
                 backgroundStroke = equipment.equippedItems?.get(i)?.let { itemColor(it, GradientDrawable()) }
-                if (equipment.equippedItems[i].azeriteDetails != null && equipment.equippedItems[i].item.id != 158075) {
+                if (equipment.equippedItems[i].azeriteDetails != null && equipment.equippedItems[i].item.id != 158075L) {
                     when (itemSlot) {
-                        "HEAD" -> headAzerite.setImageResource(R.drawable.azerite_gear_border)
-                        "SHOULDER" -> shoulderAzerite.setImageResource(R.drawable.azerite_gear_border)
-                        "CHEST" -> chestAzerite.setImageResource(R.drawable.azerite_gear_border)
+                        "HEAD" -> {
+                            headAzerite.setImageResource(R.drawable.azerite_gear_border)
+                            headAzerite.visibility = View.VISIBLE
+                        }
+                        "SHOULDER" -> {
+                            shoulderAzerite.setImageResource(R.drawable.azerite_gear_border)
+                            shoulderAzerite.visibility = View.VISIBLE
+                        }
+                        "CHEST" -> {
+                            chestAzerite.setImageResource(R.drawable.azerite_gear_border)
+                            chestAzerite.visibility = View.VISIBLE
+                        }
                     }
                 } else {
                     when (itemSlot) {
@@ -545,7 +553,7 @@ class WoWCharacterFragment : Fragment() {
                 try {
                     talents.addAll(talentsInfo.specializations[i].talents)
                 } catch (e: Exception) {
-                    talents.add(Talent())
+                    talents.add(null)
                 }
                 specialization?.text = String.format("Specialization: %s", talentsInfo.activeSpecialization.name)
             }
@@ -575,9 +583,9 @@ class WoWCharacterFragment : Fragment() {
                     if ((talentsTierContainer as ArrayList<TextView?>).size > i) {
                         (talentsTierContainer as ArrayList<TextView?>)[i]?.gravity = Gravity.CENTER
                         (talentsTierContainer as ArrayList<TextView?>)[i]?.text = (talentsTier as ArrayList<String>)[i]
-                        if (talents[i].talent != null) {
+                        if (talents[i]?.talent != null) {
                             no_talent?.visibility = View.GONE
-                            (talentsContainer as ArrayList<TextView?>)[i]?.text = talents[i].talent.name
+                            (talentsContainer as ArrayList<TextView?>)[i]?.text = talents[i]?.talent?.name
                         } else {
                             removeTalents()
                             no_talent?.visibility = View.VISIBLE
@@ -642,7 +650,7 @@ class WoWCharacterFragment : Fragment() {
             for (i in talents.indices) {
                 talentsTierContainer!![i]?.gravity = Gravity.CENTER
                 talentsTierContainer!![i]?.text = talentsTier?.get(i)
-                talentsContainer!![i]?.text = talents[i].talent.name
+                talentsContainer!![i]?.text = talents[i]?.talent?.name
             }
         }
     }
@@ -774,7 +782,7 @@ class WoWCharacterFragment : Fragment() {
             Log.e("trigger", "none")
         }
         try {
-            if (equippedItem.item.id == 158075) {
+            if (equippedItem.item.id == 158075L) {
                 azeriteSpells.append("<br>")
                 for (selectedEssence in equippedItem.azeriteDetails.selectedEssences) {
                     val essenceImage = "<img src=\"" + getEssenceImage(selectedEssence.slot) + "\"> "
@@ -797,7 +805,7 @@ class WoWCharacterFragment : Fragment() {
             for (currentSocket in equippedItem.sockets) {
                 if (currentSocket.displayString == null) {
                     sockets.append("<img src=\"").append(getSocketColor(currentSocket)).append("\"> ")
-                    sockets.append(currentSocket.socketType.name).append("<br>")
+                    sockets.append(currentSocket.socketType?.name).append("<br>")
                 } else {
                     sockets.append("<img src=\"").append(getSocketColor(currentSocket)).append("\"> ")
                     sockets.append(currentSocket.displayString).append("<br>")
@@ -818,10 +826,10 @@ class WoWCharacterFragment : Fragment() {
         } catch (e: Exception) {
             Log.e("bind", "none")
         }
-        if (equippedItem.item.id == 158075) {
+        if (equippedItem.item.id == 158075L) {
             hoaLevel = "<font color=#edc201>" + equippedItem.azeriteDetails.level.displayString + "</font><br>"
         }
-        if (equippedItem.itemClass.id == 2) {
+        if (equippedItem.itemClass.id == 2L) {
             damageInfo = StringBuilder(equippedItem.weapon.damage.displayString)
             var length = damageInfo.length + equippedItem.weapon.attackSpeed.displayString.length
             while (length < 43) {
@@ -832,11 +840,11 @@ class WoWCharacterFragment : Fragment() {
         }
         try {
             for (i in equippedItem.stats.indices) {
-                statsString.append("<font color=#" + rbgToHexHTML(equippedItem.stats[i].displayString.color) + ">").append(equippedItem.stats[i].displayString.displayString).append("</font>").append("<br>")
+                statsString.append("<font color=#" + rbgToHexHTML(equippedItem.stats[i].display.color) + ">").append(equippedItem.stats[i].display.displayString).append("</font>").append("<br>")
             }
         } catch (e: Exception) {
             var i = 0
-            while (i < equippedItem.stats.size) {
+            while (equippedItem.stats != null && i < equippedItem.stats.size) {
                 if (equippedItem.stats[i].isIsEquipBonus) {
                     statsString.append("<font color=#00ff00>").append(equippedItem.stats[i].display_string).append("</font>").append("<br>")
                 } else {
@@ -929,7 +937,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun getSocketColor(currentSocket: Socket): String {
-        when (currentSocket.socketType.type) {
+        when (currentSocket.socketType?.type) {
             "PRISMATIC" -> return "socket_prismatic"
             "META" -> return "socket_meta"
             "PUNCHCARDRED" -> return "socket_red"
