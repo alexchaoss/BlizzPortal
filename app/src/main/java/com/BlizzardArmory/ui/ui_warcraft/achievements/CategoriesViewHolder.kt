@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_warcraft.progress
+package com.BlizzardArmory.ui.ui_warcraft.achievements
 
 import android.util.Log
 import android.view.LayoutInflater

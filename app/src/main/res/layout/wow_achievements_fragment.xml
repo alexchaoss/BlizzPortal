@@ -89,6 +89,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sub_category_layout" />
 
+    <Button
+        android:id="@+id/download_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#15FFFFFF"
+        android:text="@string/download_achievements_n_wi_fi_recommended"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/loading"
         android:layout_width="100dp"

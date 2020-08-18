@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_warcraft.progress
+package com.BlizzardArmory.ui.ui_warcraft.achievements
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -31,10 +31,7 @@ class AcheivementsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         date = itemView.findViewById(R.id.completed_date)
     }
 
-    fun bind(detailedAchievement: DetailedAchievement, locale: String, achievements: List<Achievement>, position: Int) {
-        if (position % 2 == 0) {
-            itemView.setBackgroundColor(Color.parseColor("#15FFFFFF"))
-        }
+    fun bind(detailedAchievement: DetailedAchievement, locale: String, achievements: List<Achievement>) {
         Picasso.get().load(detailedAchievement.icon).into(icon)
         if (detailedAchievement.is_account_wide) {
             name?.setTextColor(Color.parseColor("#0081ff"))
