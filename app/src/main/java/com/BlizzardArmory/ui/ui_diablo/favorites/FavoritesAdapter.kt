@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 
-class FavoritesAdapter(private val list: List<D3FavoriteProfile>, private val fragmentManager: FragmentManager, private val bnOAuth2Params: BnOAuth2Params, private val context: Context)
+class FavoritesAdapter(private val list: List<D3FavoriteProfile>, private val fragmentManager: FragmentManager, private val battlenetOAuth2Params: BattlenetOAuth2Params, private val context: Context)
     : RecyclerView.Adapter<FavoritesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
@@ -18,7 +18,7 @@ class FavoritesAdapter(private val list: List<D3FavoriteProfile>, private val fr
 
     override fun onBindViewHolder(holder: FavoritesViewHolder, position: Int) {
         val profile: D3FavoriteProfile = list[position]
-        holder.bind(profile, fragmentManager, bnOAuth2Params)
+        holder.bind(profile, fragmentManager, battlenetOAuth2Params)
     }
 
     override fun getItemCount(): Int = list.size

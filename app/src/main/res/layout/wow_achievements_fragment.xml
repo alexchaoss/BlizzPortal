@@ -93,7 +93,7 @@
         android:id="@+id/download_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#15FFFFFF"
+        android:background="@drawable/buttonstyle"
         android:text="@string/download_achievements_n_wi_fi_recommended"
         android:textColor="#FFFFFF"
         android:visibility="gone"

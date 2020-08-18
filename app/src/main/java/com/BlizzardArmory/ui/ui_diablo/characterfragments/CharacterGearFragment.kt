@@ -17,9 +17,9 @@ import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.items.Item
 import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.ui.MainActivity
@@ -43,8 +43,8 @@ private const val ID = "id"
 
 class CharacterGearFragment : Fragment() {
 
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var closeButton: ImageButton? = null
 
     private var battletag = ""
@@ -87,8 +87,8 @@ class CharacterGearFragment : Fragment() {
         URLConstants.loading = true
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
-        bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
         closeButton = ImageButton(view.context)
         closeButton!!.background = requireContext().getDrawable(R.drawable.close_button_d3)
@@ -174,7 +174,7 @@ class CharacterGearFragment : Fragment() {
 
     @Throws(IOException::class)
     private fun setItemInformation() {
-        val call: Call<Items> = RetroClient.getClient.getHeroItems(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+        val call: Call<Items> = RetroClient.getClient.getHeroItems(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<Items> {
             override fun onResponse(call: Call<Items>, response: retrofit2.Response<Items>) {
                 when {

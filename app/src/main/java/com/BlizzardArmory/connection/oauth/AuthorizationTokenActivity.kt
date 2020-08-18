@@ -22,11 +22,11 @@ import java.net.URLDecoder
 
 class AuthorizationTokenActivity : AppCompatActivity() {
 
-    private var oAuth2Helper: BnOAuth2Helper? = null
+    private var oAuth2Helper: BattlenetOAuth2Helper? = null
     private lateinit var webview: WebView
     var handled = false
     private var hasLoggedIn = false
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var redirectActivity: Class<*>? = null
     private lateinit var authorizationTokenActivity: AuthorizationTokenActivity
 
@@ -35,27 +35,27 @@ class AuthorizationTokenActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.token_activity)
-        Log.i(BnConstants.TAG, "Starting task to retrieve request token")
+        Log.i(BattlenetConstants.TAG, "Starting task to retrieve request token")
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val bundle = this.intent.extras!!
         authorizationTokenActivity = this
         // Receiving redirection activity class
-        redirectActivity = bundle[BnConstants.BUNDLE_REDIRECT_ACTIVITY] as Class<*>
+        redirectActivity = bundle[BattlenetConstants.BUNDLE_REDIRECT_ACTIVITY] as Class<*>
         // Receiving BnOAuth2Params from intent
-        bnOAuth2Params = bundle.getParcelable(BnConstants.BUNDLE_BNPARAMS)
+        battlenetOAuth2Params = bundle.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         // Init helper and webview
-        oAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        oAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
         webview = WebView(applicationContext)
         webview.settings.javaScriptEnabled = true
         webview.visibility = View.VISIBLE
         val authorizationUrl = oAuth2Helper!!.authorizationUrl
-        Log.i(BnConstants.TAG, "Using authorizationUrl = $authorizationUrl")
+        Log.i(BattlenetConstants.TAG, "Using authorizationUrl = $authorizationUrl")
         handled = false
         webview.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
-                Log.d(BnConstants.TAG, "onPageFinished : $url handled = $handled")
-                if (url.startsWith(bnOAuth2Params!!.rederictUri)) {
+                Log.d(BattlenetConstants.TAG, "onPageFinished : $url handled = $handled")
+                if (url.startsWith(battlenetOAuth2Params!!.rederictUri)) {
                     webview.visibility = View.INVISIBLE
                     setContentView(R.layout.token_activity)
                     val rotation = AnimationUtils.loadAnimation(authorizationTokenActivity, R.anim.rotate)
@@ -82,20 +82,20 @@ class AuthorizationTokenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Log.i(BnConstants.TAG, "onResume called with $hasLoggedIn")
+        Log.i(BattlenetConstants.TAG, "onResume called with $hasLoggedIn")
         if (hasLoggedIn) {
             finish()
         }
     }
 
     private fun processToken(url: String) {
-        if (url.startsWith(bnOAuth2Params!!.rederictUri)) {
-            Log.i(BnConstants.TAG, "Redirect URL found: $url")
+        if (url.startsWith(battlenetOAuth2Params!!.rederictUri)) {
+            Log.i(BattlenetConstants.TAG, "Redirect URL found: $url")
             handled = true
             try {
                 if (url.contains("code=")) {
                     val authorizationCode = extractCodeFromUrl(url)
-                    Log.i(BnConstants.TAG, "Found code = $authorizationCode")
+                    Log.i(BattlenetConstants.TAG, "Found code = $authorizationCode")
                     oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode)
 
                     startActivity = true
@@ -104,24 +104,24 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                     startActivity = false
                 }
             } catch (e: Exception) {
-                Log.e(BnConstants.TAG, "Error processing token", e)
+                Log.e(BattlenetConstants.TAG, "Error processing token", e)
             }
         } else {
-            Log.i(BnConstants.TAG, "Not doing anything for url $url")
+            Log.i(BattlenetConstants.TAG, "Not doing anything for url $url")
         }
     }
 
     private fun extractCodeFromUrl(url: String): String {
-        val encodedCode = url.substring(bnOAuth2Params!!.rederictUri.length + 7, url.length)
+        val encodedCode = url.substring(battlenetOAuth2Params!!.rederictUri.length + 7, url.length)
         return URLDecoder.decode(encodedCode, "UTF-8")
     }
 
     private fun onTokenProcessed() {
         if (startActivity) {
             startActivity = false
-            Log.i(BnConstants.TAG, " Redirect to the activity you want: " + redirectActivity!!.name)
+            Log.i(BattlenetConstants.TAG, " Redirect to the activity you want: " + redirectActivity!!.name)
             val intent = Intent(this@AuthorizationTokenActivity, redirectActivity)
-            intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
+            intent.putExtra(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
             startActivity(intent)
             finish()
         } else {

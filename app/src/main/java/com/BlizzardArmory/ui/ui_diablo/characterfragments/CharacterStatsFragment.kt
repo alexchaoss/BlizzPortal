@@ -18,9 +18,9 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.events.CharacterEvent
@@ -34,7 +34,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 class CharacterStatsFragment : Fragment() {
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
 
     private var characterInformation: CharacterInformation? = null
     private var dialog: AlertDialog? = null
@@ -61,8 +61,8 @@ class CharacterStatsFragment : Fragment() {
         //setChatGem()
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val bnOAuth2Params: BnOAuth2Params = requireActivity().intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        val battlenetOAuth2Params: BattlenetOAuth2Params = requireActivity().intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)!!
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params)
         setCharacterInformation()
     }
 
@@ -70,7 +70,7 @@ class CharacterStatsFragment : Fragment() {
         URLConstants.loading = true
         loading_circle.visibility = View.VISIBLE
         dialog = null
-        val call: Call<CharacterInformation> = RetroClient.getClient.getD3Hero(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+        val call: Call<CharacterInformation> = RetroClient.getClient.getD3Hero(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<CharacterInformation> {
             override fun onResponse(call: Call<CharacterInformation>, response: retrofit2.Response<CharacterInformation>) {
                 when {

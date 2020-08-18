@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacters
 import com.BlizzardArmory.ui.ui_warcraft.account.FavoritesAdapter
 import com.google.gson.GsonBuilder
@@ -25,14 +25,14 @@ class WoWFavoritesFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val gson = GsonBuilder().create()
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val bnOAuth2Params: BnOAuth2Params? = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
+        val battlenetOAuth2Params: BattlenetOAuth2Params? = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         var favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
             val favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
             characters_recycler.apply {
                 layoutManager = LinearLayoutManager(requireActivity())
-                adapter = FavoritesAdapter(favoriteCharacters.characters, parentFragmentManager, requireActivity(), bnOAuth2Params!!)
+                adapter = FavoritesAdapter(favoriteCharacters.characters, parentFragmentManager, requireActivity(), battlenetOAuth2Params!!)
             }
         }
     }

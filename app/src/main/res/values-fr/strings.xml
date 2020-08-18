@@ -47,4 +47,17 @@
     <string name="rate_my_app">Noter mon application!</string>
     <string name="rate_it">Ici!</string>
     <string name="select_a_language">Choisissez une langue</string>
+    <string name="logout">DÉCONNEXION</string>
+    <string name="world_of_warcraft">World of Warcraft</string>
+    <string name="diablo_3">Diablo 3</string>
+    <string name="starcraft_2">Starcraft 2</string>
+    <string name="overwatch">Overwatch</string>
+    <string name="search_character">Rerchercher un personnage</string>
+    <string name="search_user">Rechercher un utilisateur</string>
+    <string name="honorable_kills">Victoires Honorables</string>
+    <string name="favorites">Favoris</string>
+    <string name="d3_favorites">D3 Favoris</string>
+    <string name="wow_favorites">WoW Favoris</string>
+    <string name="ow_favorites">OW Favoris</string>
+    <string name="download_achievements_n_wi_fi_recommended">Téléchargement des haut faits\n(Wi-Fi recommendé)</string>
 </resources>

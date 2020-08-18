@@ -19,9 +19,9 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.model.warcraft.equipment.Equipment
 import com.BlizzardArmory.model.warcraft.equipment.EquippedItem
@@ -74,7 +74,7 @@ class WoWCharacterFragment : Fragment() {
     private val gearImageView = HashMap<String, ImageView>()
     private val stats = HashMap<String, String>()
     private val nameList = HashMap<String, String>()
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.wow_character_fragment, container, false)
@@ -135,8 +135,8 @@ class WoWCharacterFragment : Fragment() {
         gearImageView["OFF_HAND"] = off_hand
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val bnOAuth2Params: BnOAuth2Params = requireActivity().intent.extras!!.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        val battlenetOAuth2Params: BattlenetOAuth2Params = requireActivity().intent.extras!!.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)!!
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params)
 
         downloadInfo()
     }
@@ -163,7 +163,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadTalents() {
         val call: Call<Talents> = RetroClient.getClient.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Talents> {
             override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
                 if (response.isSuccessful) {
@@ -183,7 +183,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadStats() {
         val call: Call<Statistic> = RetroClient.getClient.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Statistic> {
             override fun onResponse(call: Call<Statistic>, response: retrofit2.Response<Statistic>) {
                 when {
@@ -206,7 +206,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadAndSetCharacterInformation() {
         val call: Call<CharacterSummary> = RetroClient.getClient.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<CharacterSummary> {
             override fun onResponse(call: Call<CharacterSummary>, response: retrofit2.Response<CharacterSummary>) {
                 when {
@@ -310,7 +310,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadEquipment() {
         val call2: Call<Equipment> = RetroClient.getClient.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call2.enqueue(object : Callback<Equipment> {
             override fun onResponse(call: Call<Equipment>, response: retrofit2.Response<Equipment>) {
                 when {
@@ -339,7 +339,7 @@ class WoWCharacterFragment : Fragment() {
             Picasso.get().load(media?.renderUrl).into(background)
         } else {
             val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
-                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
             call.enqueue(object : Callback<Media> {
                 override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                     if (response.isSuccessful) {

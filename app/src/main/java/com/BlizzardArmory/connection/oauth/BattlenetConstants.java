@@ -1,6 +1,6 @@
 package com.BlizzardArmory.connection.oauth;
 
-public class BnConstants {
+public class BattlenetConstants {
 
     public static final String TAG = "Battlenet-OAuth2";
 
