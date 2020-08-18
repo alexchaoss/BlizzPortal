@@ -155,7 +155,6 @@ class WoWCharacterFragment : Fragment() {
         close_button.setOnTouchListener { v: View, event: MotionEvent ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 v.performClick()
-                Log.i("CLOSE", "CLICKED")
                 item_scroll_view?.visibility = View.GONE
             }
             false
@@ -402,7 +401,6 @@ class WoWCharacterFragment : Fragment() {
         var url = equipment?.equippedItems?.get(index)?.media?.key?.href
         if (url!!.contains("static")) {
             url = url.replace(("static-[0-9].[0-9].[0-9]_[0-9]*-" + region?.toLowerCase(Locale.ROOT)?.toRegex()).toRegex(), "static-" + region?.toLowerCase(Locale.ROOT))
-            Log.i("IMAGE", url)
         }
         url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
         val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
@@ -430,7 +428,6 @@ class WoWCharacterFragment : Fragment() {
                     else -> {
                         val mediaItem = response.body()!!
                         imageURLs[itemSlot] = mediaItem.assets[0].value
-                        Log.i("Icon URL", mediaItem.assets[0].value)
                         Picasso.get().load(imageURLs[itemSlot]).placeholder(R.drawable.loading_placeholder).into(gearImageView[itemSlot])
                         setIcons(itemSlot, equipment, null)
                         if (index == equipment?.equippedItems!!.size - 1) {
@@ -565,7 +562,6 @@ class WoWCharacterFragment : Fragment() {
         for (i in talentsInfo.specializations.indices) {
             val tab = tabLayout?.getTabAt(i)
             tab?.text = talentsInfo.specializations[i].specialization.name
-            Log.i("spec", talentsInfo.specializations[i].specialization.name)
         }
         if (talentsInfo.specializations.size == 2) {
             tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
@@ -663,7 +659,6 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun setCharacterItemsInformation(index: Int) {
-        Log.i("TEST", "item info")
         val equippedItem = equipment.equippedItems[index]
         nameList[equippedItem.slot.type] = equippedItem.name
         var slot = StringBuilder(equippedItem.inventoryType.name)
@@ -691,7 +686,6 @@ class WoWCharacterFragment : Fragment() {
             setInfo.append(formatSetItemText(equippedItem.set))
         } catch (e: Exception) {
             setInfo.replace(0, setInfo.length, "")
-            Log.e("set info", "none")
         }
         try {
             sellPrice.append(equippedItem.sellPrice.displayStrings.header).append(" ")
@@ -705,12 +699,10 @@ class WoWCharacterFragment : Fragment() {
                 sellPrice.append(equippedItem.sellPrice.displayStrings.copper).append(" <img src=\"copper\">")
             }
         } catch (e: Exception) {
-            Log.e("Sell price", "none")
         }
         try {
             durability = equippedItem.durability.displayString
         } catch (e: Exception) {
-            Log.e("Durability", "none")
         }
         try {
             for (enchantment in equippedItem.enchantments) {
@@ -719,7 +711,6 @@ class WoWCharacterFragment : Fragment() {
                 }
             }
         } catch (e: Exception) {
-            Log.e("Enchant", "none")
         }
         try {
             itemSubclass = equippedItem.itemSubclass.name
@@ -733,18 +724,15 @@ class WoWCharacterFragment : Fragment() {
                 slot.append("&nbsp;")
                 lengthSubClass++
             }
-            Log.i("length", "" + slot.length)
             if (lengthSubClass + length == 60 && itemSubclass == "Miscellaneous") {
                 slot = StringBuilder(slot.substring(0, slot.length - 12))
             }
             slot.append(itemSubclass).append("<br>")
         } catch (e: Exception) {
-            Log.e("Item sub class", "none")
         }
         try {
             transmog = "<font color=#f57bf5>" + equippedItem.transmog.displayString.replace("\n", "<br>") + "</font><br>"
         } catch (e: Exception) {
-            Log.e("Transmog", "none")
         }
         try {
             armor = if (equippedItem.armor.displayString == null) {
@@ -753,12 +741,10 @@ class WoWCharacterFragment : Fragment() {
                 equippedItem.armor.displayString + "<br>"
             }
         } catch (e: Exception) {
-            Log.e("Armor", "none")
         }
         try {
             requiredLevel = equippedItem.requirements.level.displayString
         } catch (e: Exception) {
-            Log.e("Level", "none")
         }
 
         if (equippedItem.description != null) {
@@ -766,10 +752,8 @@ class WoWCharacterFragment : Fragment() {
         }
 
         try {
-            Log.i("name descript obj", equippedItem.nameDescriptionObject.displayString)
             nameDescription = "<font color=#" + getNameDescriptionColor(equippedItem) + ">" + equippedItem.nameDescriptionObject.displayString + "</font><br>"
         } catch (e: Exception) {
-            Log.e("name descript obj", "none")
         }
         try {
             trigger = if (equippedItem.spells[0].color != null) {
@@ -778,7 +762,6 @@ class WoWCharacterFragment : Fragment() {
                 "<font color=#00ff00>" + equippedItem.spells[0].description + "</font>"
             }
         } catch (e: Exception) {
-            Log.e("trigger", "none")
         }
         try {
             if (equippedItem.item.id == 158075L) {
@@ -798,7 +781,6 @@ class WoWCharacterFragment : Fragment() {
                 }
             }
         } catch (e: Exception) {
-            Log.e("Azerite", "none")
         }
         try {
             for (currentSocket in equippedItem.sockets) {
@@ -811,19 +793,16 @@ class WoWCharacterFragment : Fragment() {
                 }
             }
         } catch (e: Exception) {
-            Log.e("Socket", "none")
         }
         try {
             if (equippedItem.socketBonus != null) {
                 socketBonus = "<font color=#00ff00>" + equippedItem.socketBonus + "</font><br>"
             }
         } catch (e: Exception) {
-            Log.e("socket bonus", "none")
         }
         try {
             bind = equippedItem.binding.name + "<br>"
         } catch (e: Exception) {
-            Log.e("bind", "none")
         }
         if (equippedItem.item.id == 158075L) {
             hoaLevel = "<font color=#edc201>" + equippedItem.azeriteDetails.level.displayString + "</font><br>"
@@ -885,7 +864,6 @@ class WoWCharacterFragment : Fragment() {
         if (equippedItem.description != null) {
             stats[equippedItem.slot.type] = stats[equippedItem.slot.type].toString() + String.format("<br>%s<br>", description)
         }
-        Log.i("Stats per slot: ", equippedItem.slot.name + ": " + stats[equippedItem.slot.type])
         setOnPressItemInformation(gearImageView[equippedItem.slot.type], index)
     }
 
@@ -982,7 +960,6 @@ class WoWCharacterFragment : Fragment() {
         loading_circle?.visibility = View.GONE
         URLConstants.loading = false
         if (dialog == null) {
-            Log.i("SHOULD BE VISIBLE", "ERROR MESSAGE")
             val builder = AlertDialog.Builder(requireContext(), R.style.DialogTransparent)
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             layoutParams.setMargins(0, 20, 0, 0)
@@ -1051,7 +1028,6 @@ class WoWCharacterFragment : Fragment() {
                 EventBus.getDefault().post(NetworkEvent(true))
             }
             button.setOnClickListener {
-                Log.i("RETRY", "CLICKED")
                 dialog?.hide()
                 downloadInfo()
                 EventBus.getDefault().post(RetryEvent(true))

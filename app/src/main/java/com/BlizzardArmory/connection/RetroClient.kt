@@ -7,22 +7,25 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
+
 
 object RetroClient {
     var BASE_URL: String = URLConstants.HEROKU_AUTHENTICATE
     val getClient: NetworkServices
         get() {
 
-            val cacheSize: Long = 30 * 1024 * 1024 // 10 MB
-            val cache = Cache(BlizzardArmory.instance?.cacheDir!!, cacheSize)
-
             val gson = GsonBuilder().create()
 
             val interceptor = HttpLoggingInterceptor()
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client = OkHttpClient
-                    .Builder()
-                    .cache(cache)
+            val client = OkHttpClient.Builder()
+                    .cache(Cache(
+                            directory = File(BlizzardArmory.instance?.cacheDir!!, "http_cache"),
+                            maxSize = 60 * 1024 * 1024
+                    ))
+                    .addInterceptor(RewriteRequestInterceptor())
+                    .addNetworkInterceptor(RewriteResponseCacheControlInterceptor())
                     .addInterceptor(interceptor)
                     .build()
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
+    android:layout_width="160dp"
+    android:layout_height="160dp"
+    android:layout_gravity="center"
+    android:layout_marginStart="7dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginEnd="7dp"
+    android:background="#666"
+    android:padding="1dp">
+
+
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/achiev_background"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/achiev_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/progress_bar_achievement"
+        app:layout_constraintEnd_toEndOf="@id/background"
+        app:layout_constraintStart_toStartOf="@id/background"
+        app:layout_constraintTop_toTopOf="@id/background" />
+
+    <TextView
+        android:id="@+id/percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFF"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@id/achiev_progress"
+        app:layout_constraintEnd_toEndOf="@id/achiev_progress"
+        app:layout_constraintStart_toStartOf="@id/achiev_progress"
+        app:layout_constraintTop_toTopOf="@id/achiev_progress" />
+
+    <TextView
+        android:id="@+id/category"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:maxWidth="135dp"
+        android:textColor="#f8b700"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/achiev_points_layout"
+        app:layout_constraintEnd_toEndOf="@id/background"
+        app:layout_constraintStart_toStartOf="@id/background" />
+
+    <LinearLayout
+        android:id="@+id/achiev_points_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/background"
+        app:layout_constraintStart_toStartOf="@id/background"
+        app:layout_constraintVertical_bias="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="3dp"
+            android:src="@drawable/achievement_icon" />
+
+        <TextView
+            android:id="@+id/achiev_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textColor="#FFF"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
