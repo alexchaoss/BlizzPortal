@@ -9,10 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/wow_nav"
-        app:tabTextAppearance="@style/MineCustomTabText"
+        app:tabMode="auto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tabTextAppearance="@style/MineCustomTabText"
         app:tabIndicatorColor="@color/owBackgroundColor"
         app:tabSelectedTextColor="@color/owBackgroundColor"
 
@@ -25,7 +26,7 @@
             android:text="@string/character" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/achiev_tab"
+            android:id="@+id/rep_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="30dp"
@@ -42,6 +43,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pvp" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/achiev_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/achievements" />
 
     </com.google.android.material.tabs.TabLayout>
 

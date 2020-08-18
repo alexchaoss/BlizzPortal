@@ -133,7 +133,6 @@
     <string name="information" translatable="false">Information</string>
     <string name="want_to_donate">Want to donate?</string>
     <string name="paypal" translatable="false">Paypal</string>
-    <string name="achievements">Achievements</string>
     <string name="character">Character</string>
     <string name="progress">Progress</string>
     <string name="pvp" translatable="false">PvP</string>
@@ -167,4 +166,5 @@
     <string name="d3_favorites">D3 Favorites</string>
     <string name="wow_favorites">WoW Favorites</string>
     <string name="ow_favorites">OW Favorites</string>
+    <string name="achievements">Achievements</string>
 </resources>

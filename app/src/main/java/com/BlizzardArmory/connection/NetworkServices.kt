@@ -8,6 +8,9 @@ import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.model.warcraft.account.Account
+import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievements
+import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
+import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.model.warcraft.equipment.Equipment
@@ -74,6 +77,38 @@ interface NetworkServices {
     fun getDynamicEquipmentMedia(@Url url: String?,
                                  @Query("locale") locale: String?,
                                  @Query("region") region: String?): Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>
+
+    /**
+     * Gets achievement categories.
+     *
+     * @return the achievement categories
+     */
+    @GET
+    fun getAchievementCategories(@Url url: String?): Call<Categories>
+
+    /**
+     * Gets all achievement.
+     *
+     * @return all achievement
+     */
+    @GET
+    fun getAllAchievements(@Url url: String?): Call<DetailedAchievements>
+
+    /**
+     * Gets character achievements.
+     *
+     * @param character   the character
+     * @param realm       the realm
+     * @param locale      the locale
+     * @param accessToken the access token
+     * @return the character achievements
+     */
+    @GET("/profile/wow/character/{realm}/{character}/achievements")
+    fun getCharacterAchievements(@Path("character") character: String?,
+                                 @Path("realm") realm: String?,
+                                 @Query("locale") locale: String?,
+                                 @Query("region") region: String?,
+                                 @Query("token") accessToken: String?): Call<Achievements>
 
     /**
      * Gets encounters.
