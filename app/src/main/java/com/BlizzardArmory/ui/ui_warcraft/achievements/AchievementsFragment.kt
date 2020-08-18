@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_warcraft.progress
+package com.BlizzardArmory.ui.ui_warcraft.achievements
 
 
 import android.content.SharedPreferences
@@ -95,7 +95,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
         bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
-        Picasso.get().load(R.drawable.loading_placeholder).placeholder(R.drawable.loading_placeholder).resize(100, 100).into(loading)
+
         back_arrow.setOnClickListener {
             if (subCurrentCategory != -1L) {
                 achievement_tab.visibility = View.VISIBLE
@@ -123,9 +123,15 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
             categories_recycler.visibility = View.GONE
             achievements_recycler.visibility = View.VISIBLE
         }
+
+        download_request.setOnClickListener {
+            downloadAchievementInformation()
+        }
     }
 
     private fun downloadAchievementInformation() {
+        download_request.visibility = View.GONE
+        Picasso.get().load(R.drawable.loading_placeholder).placeholder(R.drawable.loading_placeholder).resize(100, 100).into(loading)
         if (!prefs?.contains("detailed_achievements")!! || needToUpdate) {
             val call1: Call<DetailedAchievements> = RetroClient.getClient.getAllAchievements("https://www.wow-query.dev/%E2%9A%A1/7bcf03198334e45e.json")
             call1.enqueue(object : Callback<DetailedAchievements> {
@@ -145,8 +151,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
             })
         } else {
             allAchievements = gson!!.fromJson(prefs!!.getString("detailed_achievements", "DEFAULT"), DetailedAchievements::class.java)
-            Log.i("Achievements", "from prefs")
-            if (allAchievements?.timestamp == 0L || (System.currentTimeMillis() - allAchievements?.timestamp!!) > 435000000L) {
+            if (allAchievements?.timestamp == null || (System.currentTimeMillis() - allAchievements?.timestamp!!) > 435000000L) {
                 needToUpdate = true
                 downloadAchievementInformation()
             }
@@ -200,8 +205,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
             })
         } else {
             categories = gson!!.fromJson(prefs!!.getString("achievement_categories", "DEFAULT"), Categories::class.java)
-            Log.i("Categories", "from prefs")
-            if (categories?.timestamp == 0L || (System.currentTimeMillis() - categories?.timestamp!!) > 435000000) {
+            if (categories?.timestamp == null || (System.currentTimeMillis() - categories?.timestamp!!) > 435000000) {
                 needToUpdate = true
                 downloadCategories()
             }
@@ -214,45 +218,6 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
             adapter!!.notifyDataSetChanged()
         }
         loading.visibility = View.GONE
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(character: String, realm: String, media: String, region: String) =
-                WoWNavFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(CHARACTER, character)
-                        putString(REALM, realm)
-                        putString(MEDIA, media)
-                        putString(REGION, region)
-                    }
-                }
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public fun factionEventReceived(factionEvent: FactionEvent) {
-        faction = factionEvent.data
-        downloadAchievementInformation()
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun parentCategoryEventReceived(parentCategoryEvent: ParentCategoryEvent) {
-        currentCategory = parentCategoryEvent.data
-        setRecyclerViewToSubCategory(currentCategory)
-        sub_category_layout.visibility = View.VISIBLE
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun subCategoryEventReceived(subCategoryEvent: SubCategoryEvent) {
-        subCurrentCategory = subCategoryEvent.data
-        categories_recycler.visibility = View.GONE
-        achievements_recycler.visibility = View.VISIBLE
-        if (subCategoryEvent.data == 92L) {
-            sub_category_layout.visibility = View.VISIBLE
-        }
-        achievement_tab.visibility = View.GONE
-        sub_category_tab.visibility = View.GONE
-        setAchievementRecycler(subCurrentCategory)
     }
 
     private fun setAchievementRecycler(id: Long) {
@@ -273,6 +238,36 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 adapter!!.notifyDataSetChanged()
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun factionEventReceived(factionEvent: FactionEvent) {
+        faction = factionEvent.data
+        if (prefs?.contains("achievement_categories")!! && prefs?.contains("detailed_achievements")!!) {
+            downloadAchievementInformation()
+        } else {
+            download_request.visibility = View.VISIBLE
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun parentCategoryEventReceived(parentCategoryEvent: ParentCategoryEvent) {
+        currentCategory = parentCategoryEvent.data
+        setRecyclerViewToSubCategory(currentCategory)
+        sub_category_layout.visibility = View.VISIBLE
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun subCategoryEventReceived(subCategoryEvent: SubCategoryEvent) {
+        subCurrentCategory = subCategoryEvent.data
+        categories_recycler.visibility = View.GONE
+        achievements_recycler.visibility = View.VISIBLE
+        if (subCategoryEvent.data == 92L) {
+            sub_category_layout.visibility = View.VISIBLE
+        }
+        achievement_tab.visibility = View.GONE
+        sub_category_tab.visibility = View.GONE
+        setAchievementRecycler(subCurrentCategory)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -340,5 +335,19 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
 
     override fun onBackPressed(): Boolean {
         return URLConstants.loading
+    }
+
+
+    companion object {
+        @JvmStatic
+        fun newInstance(character: String, realm: String, media: String, region: String) =
+                WoWNavFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(CHARACTER, character)
+                        putString(REALM, realm)
+                        putString(MEDIA, media)
+                        putString(REGION, region)
+                    }
+                }
     }
 }

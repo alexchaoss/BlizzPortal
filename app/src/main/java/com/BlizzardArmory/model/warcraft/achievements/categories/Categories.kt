@@ -1,6 +1,9 @@
 package com.BlizzardArmory.model.warcraft.achievements.categories
 
+import com.google.gson.annotations.SerializedName
+
 
 class Categories : ArrayList<Category>() {
-    var timestamp: Long = 0L
+    @SerializedName("timestamp")
+    var timestamp: Long? = null
 }
