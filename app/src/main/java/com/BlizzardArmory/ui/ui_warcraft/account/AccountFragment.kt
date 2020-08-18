@@ -17,9 +17,9 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.account.Account
 import com.BlizzardArmory.model.warcraft.account.Character
 import com.BlizzardArmory.ui.MainActivity
@@ -34,8 +34,8 @@ class AccountFragment : Fragment() {
 
     private var charaters: Account? = null
     private val characterList = ArrayList<Character>()
-    private var bnOAuth2Params: BnOAuth2Params? = null
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
     private val charactersByRealm = arrayListOf<List<Character>>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,15 +46,15 @@ class AccountFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
         downloadWoWCharacters()
     }
 
     private fun downloadWoWCharacters() {
         loadingCircle.visibility = View.VISIBLE
         URLConstants.loading = true
-        val call: Call<Account> = RetroClient.getClient.getAccount(MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+        val call: Call<Account> = RetroClient.getClient.getAccount(MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 when {
@@ -117,7 +117,7 @@ class AccountFragment : Fragment() {
 
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireActivity())
-                adapter = bnOAuth2Params?.let { AccountAdapter(realm, parentFragmentManager, requireActivity(), it) }
+                adapter = battlenetOAuth2Params?.let { AccountAdapter(realm, parentFragmentManager, requireActivity(), it) }
                 loadingCircle.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }

@@ -9,7 +9,7 @@ import com.google.api.client.auth.oauth2.CredentialStore;
 import java.io.IOException;
 import java.util.Objects;
 
-public class BnSharedPreferencesCredentialStore implements CredentialStore {
+public class BattlenetSharedPreferencesCredentialStore implements CredentialStore {
 
     private static final String ACCESS_TOKEN = "_access_token";
     private static final String EXPIRES_IN = "_expires_in";
@@ -18,14 +18,14 @@ public class BnSharedPreferencesCredentialStore implements CredentialStore {
 
     private SharedPreferences prefs;
 
-    public BnSharedPreferencesCredentialStore(SharedPreferences prefs) {
+    public BattlenetSharedPreferencesCredentialStore(SharedPreferences prefs) {
         this.prefs = prefs;
     }
 
     @Override
     public boolean load(String userId, Credential credential) {
-        Log.i(BnConstants.TAG, "Loading credential for userId ".concat(userId));
-        Log.i(BnConstants.TAG, "Loaded access token = ".concat(Objects.requireNonNull(prefs.getString(userId + ACCESS_TOKEN, ""))));
+        Log.i(BattlenetConstants.TAG, "Loading credential for userId ".concat(userId));
+        Log.i(BattlenetConstants.TAG, "Loaded access token = ".concat(Objects.requireNonNull(prefs.getString(userId + ACCESS_TOKEN, ""))));
 
         credential.setAccessToken(prefs.getString(userId + ACCESS_TOKEN, null));
 
@@ -39,8 +39,8 @@ public class BnSharedPreferencesCredentialStore implements CredentialStore {
 
     @Override
     public void store(String userId, Credential credential) {
-        Log.i(BnConstants.TAG, "Storing credential for userId ".concat(userId));
-        Log.i(BnConstants.TAG, "Access Token = ".concat(credential.getAccessToken()));
+        Log.i(BattlenetConstants.TAG, "Storing credential for userId ".concat(userId));
+        Log.i(BattlenetConstants.TAG, "Access Token = ".concat(credential.getAccessToken()));
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putString(userId + ACCESS_TOKEN, credential.getAccessToken());
@@ -57,7 +57,7 @@ public class BnSharedPreferencesCredentialStore implements CredentialStore {
 
     @Override
     public void delete(String userId, Credential credential) throws IOException {
-        Log.i(BnConstants.TAG, "Deleting credential for userId ".concat(userId));
+        Log.i(BattlenetConstants.TAG, "Deleting credential for userId ".concat(userId));
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(userId + ACCESS_TOKEN);
         editor.remove(userId + EXPIRES_IN);

@@ -3,23 +3,21 @@ package com.BlizzardArmory.connection.oauth;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.HttpRequest;
 
-import java.io.IOException;
-
-public class BnQueryParamsAccessMethod implements Credential.AccessMethod {
+public class BattlenetQueryParamsAccessMethod implements Credential.AccessMethod {
 
     private static final String PARAM_NAME = "oauth_token";
 
-    private static final BnQueryParamsAccessMethod instance = new BnQueryParamsAccessMethod();
+    private static final BattlenetQueryParamsAccessMethod instance = new BattlenetQueryParamsAccessMethod();
 
-    private BnQueryParamsAccessMethod() {
+    private BattlenetQueryParamsAccessMethod() {
     }
 
-    public static BnQueryParamsAccessMethod getInstance() {
+    public static BattlenetQueryParamsAccessMethod getInstance() {
         return instance;
     }
 
     @Override
-    public void intercept(HttpRequest request, String accessToken) throws IOException {
+    public void intercept(HttpRequest request, String accessToken) {
         request.getUrl().set(PARAM_NAME, accessToken);
     }
 

@@ -18,9 +18,9 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.account.AccountInformation
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
@@ -38,8 +38,8 @@ import java.util.*
 
 class D3Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var battleTag: String? = ""
     private var selectedRegion: String? = ""
     private var characterID: Long = 0
@@ -54,8 +54,8 @@ class D3Fragment : Fragment() {
         battleTag = arguments?.getString("battletag")
         selectedRegion = arguments?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        bnOAuth2Params = arguments?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        battlenetOAuth2Params = arguments?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
         favorite = activity?.findViewById(R.id.favorite)
         favorite?.visibility = View.VISIBLE
         favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
@@ -66,7 +66,7 @@ class D3Fragment : Fragment() {
     private fun downloadAccountInformation() {
         URLConstants.loading = true
         loadingCircle.visibility = View.VISIBLE
-        val call: Call<AccountInformation> = RetroClient.getClient.getD3Profile(battleTag, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+        val call: Call<AccountInformation> = RetroClient.getClient.getD3Profile(battleTag, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<AccountInformation> {
             override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
                 if (response.isSuccessful) {

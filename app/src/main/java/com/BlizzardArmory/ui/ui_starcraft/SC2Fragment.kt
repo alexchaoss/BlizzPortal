@@ -23,9 +23,9 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
@@ -39,8 +39,8 @@ import java.util.*
 
 class SC2Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var accountInformation = listOf<Player>()
     private var sc2Profile: Profile? = null
 
@@ -92,9 +92,9 @@ class SC2Fragment : Fragment() {
 
         loadingCircle.visibility = View.VISIBLE
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        assert(bnOAuth2Params != null)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        assert(battlenetOAuth2Params != null)
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
         downloadAccountInformation()
     }
 
@@ -115,7 +115,7 @@ class SC2Fragment : Fragment() {
 
     private fun downloadAccountInformation() {
         URLConstants.loading = true
-        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation!!.userID, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation!!.userID, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<List<Player>> {
             override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
                 when {
@@ -123,7 +123,7 @@ class SC2Fragment : Fragment() {
                         accountInformation = response.body()!!
                         if (accountInformation.isNotEmpty()) {
                             val call2: Call<Profile> = RetroClient.getClient.getSc2Profile(parseRegionId(accountInformation[0].regionId), accountInformation[0].realmId,
-                                    accountInformation[0].profileId, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper!!.accessToken)
+                                    accountInformation[0].profileId, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
                             call2.enqueue(object : Callback<Profile> {
                                 override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
                                     when {

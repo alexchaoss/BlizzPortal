@@ -24,9 +24,9 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.ui.ui_diablo.DiabloProfileSearchDialog
 import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
@@ -50,8 +50,8 @@ import retrofit2.Callback
 import java.util.*
 
 class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private lateinit var toggle: ActionBarDrawerToggle
     var searchText: SpannableString? = null
     var wowFavoritesText: SpannableString? = null
@@ -63,11 +63,11 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         setContentView(R.layout.games_activity)
         drawer_layout.setScrimColor(Color.TRANSPARENT)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        bnOAuth2Params = this.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        if (BuildConfig.DEBUG && bnOAuth2Params == null) {
+        battlenetOAuth2Params = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        if (BuildConfig.DEBUG && battlenetOAuth2Params == null) {
             error("Assertion failed")
         }
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.itemIconTintList = null
@@ -111,7 +111,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     }
 
     private fun downloadUserInfo() {
-        val call: Call<UserInformation> = RetroClient.getClient.getUserInfo(bnOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+        val call: Call<UserInformation> = RetroClient.getClient.getUserInfo(battlenetOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<UserInformation> {
             override fun onResponse(call: Call<UserInformation>, response: retrofit2.Response<UserInformation>) {
                 if (response.isSuccessful) {
@@ -312,7 +312,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             "Diablo 3" -> {
                 favorite.visibility = View.VISIBLE
                 favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
-                DiabloProfileSearchDialog.diabloPrompt(this, bnOAuth2Params!!, supportFragmentManager)
+                DiabloProfileSearchDialog.diabloPrompt(this, battlenetOAuth2Params!!, supportFragmentManager)
                 drawer_layout.closeDrawers()
             }
             "Starcraft 2" -> {

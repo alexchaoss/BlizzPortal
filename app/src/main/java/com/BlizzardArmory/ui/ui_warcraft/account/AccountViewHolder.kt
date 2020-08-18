@@ -14,8 +14,8 @@ import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.account.Character
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.ui.MainActivity
@@ -44,7 +44,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
     private var level: TextView? = null
     private var characterLayout: ConstraintLayout? = null
     private var gson: Gson? = null
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var fragmentManager: FragmentManager? = null
     private var character: Character? = null
 
@@ -64,8 +64,8 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
         }
     }
 
-    fun bind(character: Character, bnOAuth2Params: BnOAuth2Params, fragmentManager: FragmentManager) {
-        this.bnOAuth2Params = bnOAuth2Params
+    fun bind(character: Character, battlenetOAuth2Params: BattlenetOAuth2Params, fragmentManager: FragmentManager) {
+        this.battlenetOAuth2Params = battlenetOAuth2Params
         this.fragmentManager = fragmentManager
         this.character = character
         name?.text = character.name
@@ -81,7 +81,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
 
     private fun downloadMedia() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
         val call: Call<Media> = RetroClient.getClient.getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {

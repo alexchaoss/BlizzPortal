@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.ui.ui_diablo.D3Fragment
 
@@ -25,7 +25,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private var lifetimeKills: TextView? = null
     private var profileLayout: ConstraintLayout? = null
     private var fragmentManager: FragmentManager? = null
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
 
     init {
         btag = itemView.findViewById(R.id.battletag)
@@ -35,9 +35,9 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         profileLayout = itemView.findViewById(R.id.profile_layout)
     }
 
-    fun bind(profile: D3FavoriteProfile, fragmentManager: FragmentManager, bnOAuth2Params: BnOAuth2Params) {
+    fun bind(profile: D3FavoriteProfile, fragmentManager: FragmentManager, battlenetOAuth2Params: BattlenetOAuth2Params) {
         this.fragmentManager = fragmentManager
-        this.bnOAuth2Params = bnOAuth2Params
+        this.battlenetOAuth2Params = battlenetOAuth2Params
         btag?.text = profile.battletag
         eliteKills?.text = profile.accountInformation?.kills?.elites.toString()
         lifetimeKills?.text = profile.accountInformation?.kills?.monsters.toString()
@@ -51,7 +51,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val bundle = Bundle()
             bundle.putString("battletag", profile.battletag)
             bundle.putString("region", profile.region)
-            bundle.putParcelable(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
+            bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
             fragment.arguments = bundle
             fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3fragment").commit()
             fragmentManager.executePendingTransactions()

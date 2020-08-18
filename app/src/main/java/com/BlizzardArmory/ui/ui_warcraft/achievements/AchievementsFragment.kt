@@ -13,9 +13,9 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
@@ -51,8 +51,8 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     private var realm: String? = null
     private var media: String? = null
     private var region: String? = null
-    private var bnOAuth2Helper: BnOAuth2Helper? = null
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var prefs: SharedPreferences? = null
     private var gson: Gson? = null
     private var faction: String? = null
@@ -93,8 +93,8 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         gson = GsonBuilder().create()
         prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
-        bnOAuth2Params = activity?.intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)
-        bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params!!)
+        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
         back_arrow.setOnClickListener {
             if (subCurrentCategory != -1L) {
@@ -159,7 +159,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadCharacterAchievements() {
-        val call: Call<Achievements> = RetroClient.getClient.getCharacterAchievements(character, realm, MainActivity.locale, region, bnOAuth2Helper?.accessToken)
+        val call: Call<Achievements> = RetroClient.getClient.getCharacterAchievements(character, realm, MainActivity.locale, region, battlenetOAuth2Helper?.accessToken)
         call.enqueue(object : Callback<Achievements> {
             override fun onResponse(call: Call<Achievements>, response: Response<Achievements>) {
                 characterAchievements = response.body()

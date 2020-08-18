@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.account.Character
 
-class AccountAdapter(private val list: List<Character>, private val fragmentManager: FragmentManager, private val context: Context, private val bnOAuth2Params: BnOAuth2Params)
+class AccountAdapter(private val list: List<Character>, private val fragmentManager: FragmentManager, private val context: Context, private val battlenetOAuth2Params: BattlenetOAuth2Params)
     : RecyclerView.Adapter<AccountViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
@@ -18,7 +18,7 @@ class AccountAdapter(private val list: List<Character>, private val fragmentMana
 
     override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
         val character: Character = list[position]
-        holder.bind(character, bnOAuth2Params, fragmentManager)
+        holder.bind(character, battlenetOAuth2Params, fragmentManager)
     }
 
     override fun getItemCount(): Int = list.size

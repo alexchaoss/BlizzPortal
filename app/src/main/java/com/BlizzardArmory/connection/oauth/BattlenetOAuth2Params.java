@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.api.client.auth.oauth2.Credential;
 
-public class BnOAuth2Params implements Parcelable {
+public class BattlenetOAuth2Params implements Parcelable {
 
     private final String TOKEN_URL_CN = "https://www.battlenet.com.cn/oauth/token";
     private final String AUTH_URL_CN = "https://www.battlenet.com.cn/oauth/authorize";
@@ -23,12 +23,12 @@ public class BnOAuth2Params implements Parcelable {
     private String tokenServerUrl;
     private String authorizationServerEncodedUrl;
 
-    public BnOAuth2Params(String clientId, String zone, String rederictUri, String userId, String... scopes) {
+    public BattlenetOAuth2Params(String clientId, String zone, String rederictUri, String userId, String... scopes) {
         this.clientId = clientId;
         this.zone = zone;
 
         // If we login in China servers, we have different URL
-        if (BnConstants.ZONE_CHINA.equalsIgnoreCase(zone)) {
+        if (BattlenetConstants.ZONE_CHINA.equalsIgnoreCase(zone)) {
             this.tokenServerUrl = TOKEN_URL_CN;
             this.authorizationServerEncodedUrl = AUTH_URL_CN;
         } else {
@@ -47,8 +47,8 @@ public class BnOAuth2Params implements Parcelable {
             }
         } else {
             // Access to WoW and SC2 data
-            sb.append(BnConstants.SCOPE_WOW).append("+");
-            sb.append(BnConstants.SCOPE_SC2).append("+");
+            sb.append(BattlenetConstants.SCOPE_WOW).append("+");
+            sb.append(BattlenetConstants.SCOPE_SC2).append("+");
         }
 
         this.scope = sb.toString().substring(0, sb.toString().length() - 1);
@@ -111,7 +111,7 @@ public class BnOAuth2Params implements Parcelable {
     }
 
     public Credential.AccessMethod getAccessMethod() {
-        return BnQueryParamsAccessMethod.getInstance();
+        return BattlenetQueryParamsAccessMethod.getInstance();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class BnOAuth2Params implements Parcelable {
         dest.writeString(this.authorizationServerEncodedUrl);
     }
 
-    protected BnOAuth2Params(Parcel in) {
+    protected BattlenetOAuth2Params(Parcel in) {
         this.clientId = in.readString();
         this.scope = in.readString();
         this.rederictUri = in.readString();
@@ -140,15 +140,15 @@ public class BnOAuth2Params implements Parcelable {
         this.authorizationServerEncodedUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<BnOAuth2Params> CREATOR = new Parcelable.Creator<BnOAuth2Params>() {
+    public static final Parcelable.Creator<BattlenetOAuth2Params> CREATOR = new Parcelable.Creator<BattlenetOAuth2Params>() {
         @Override
-        public BnOAuth2Params createFromParcel(Parcel source) {
-            return new BnOAuth2Params(source);
+        public BattlenetOAuth2Params createFromParcel(Parcel source) {
+            return new BattlenetOAuth2Params(source);
         }
 
         @Override
-        public BnOAuth2Params[] newArray(int size) {
-            return new BnOAuth2Params[size];
+        public BattlenetOAuth2Params[] newArray(int size) {
+            return new BattlenetOAuth2Params[size];
         }
     };
 }

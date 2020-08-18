@@ -16,9 +16,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment.Companion.newInstance
@@ -184,8 +184,8 @@ object WoWCharacterSearchDialog {
 
     private fun downloadMedia(activity: Activity, dialogWoW: AlertDialog, fragment: Fragment?) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        val bnOAuth2Params: BnOAuth2Params = Objects.requireNonNull(activity).intent?.extras?.getParcelable(BnConstants.BUNDLE_BNPARAMS)!!
-        val bnOAuth2Helper = BnOAuth2Helper(prefs, bnOAuth2Params)
+        val battlenetOAuth2Params: BattlenetOAuth2Params = Objects.requireNonNull(activity).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)!!
+        val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params)
 
         val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT), MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {

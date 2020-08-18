@@ -23,8 +23,8 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
-import com.BlizzardArmory.connection.oauth.BnConstants
-import com.BlizzardArmory.connection.oauth.BnOAuth2Params
+import com.BlizzardArmory.connection.oauth.BattlenetConstants
+import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
@@ -34,7 +34,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var bnOAuth2Params: BnOAuth2Params? = null
+    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
     private val regionList = arrayOf("Select Region", "CN", "US", "EU", "KR", "TW")
     private var sharedPreferences: SharedPreferences? = null
@@ -135,19 +135,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun openLoginToBattleNet() {
         if (isNetworkAvailable()) {
-            bnOAuth2Params = BnOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
-                    URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BnConstants.SCOPE_WOW, BnConstants.SCOPE_SC2)
-            startOauthFlow(bnOAuth2Params!!)
+            battlenetOAuth2Params = BattlenetOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
+                    URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BattlenetConstants.SCOPE_WOW, BattlenetConstants.SCOPE_SC2)
+            startOauthFlow(battlenetOAuth2Params!!)
         } else {
             showNoConnectionMessage(this@MainActivity, 0)
         }
     }
 
-    private fun startOauthFlow(bnOAuth2Params: BnOAuth2Params) {
+    private fun startOauthFlow(battlenetOAuth2Params: BattlenetOAuth2Params) {
         val intent = Intent(this, AuthorizationTokenActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-        intent.putExtra(BnConstants.BUNDLE_BNPARAMS, bnOAuth2Params)
-        intent.putExtra(BnConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity::class.java)
+        intent.putExtra(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
+        intent.putExtra(BattlenetConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity::class.java)
         startActivity(intent)
     }
 
