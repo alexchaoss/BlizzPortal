@@ -17,7 +17,7 @@ class AchievementsAdapter(private val list: List<DetailedAchievement>, private v
     }
 
     override fun onBindViewHolder(holder: AcheivementsViewHolder, position: Int) {
-        if (position % 2 == 0) {
+        if (position % 2 != 0) {
             holder.itemView.setBackgroundColor(Color.parseColor("#15FFFFFF"))
         } else {
             holder.itemView.setBackgroundColor(Color.parseColor("#00000000"))
