@@ -39,9 +39,15 @@ class AcheivementsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         name?.text = detailedAchievement.name
         description?.text = detailedAchievement.description
         points?.text = detailedAchievement.points.toString()
-        val stamp = Timestamp(achievements.find { it.id == detailedAchievement.id }!!.completed_timestamp)
+        val timestamp = achievements.find { it.id == detailedAchievement.id }!!.completed_timestamp
+        val stamp = Timestamp(timestamp)
         val dateFormat = SimpleDateFormat("MM/dd/yyyy")
         date?.text = dateFormat.format(Date(stamp.time))
+        if (timestamp == 0L) {
+            itemView.alpha = 0.3F
+        } else {
+            itemView.alpha = 1F
+        }
     }
 
     /*private fun getLocale(locale: String, category: Category){

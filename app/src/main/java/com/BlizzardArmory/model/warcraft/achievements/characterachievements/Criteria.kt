@@ -6,5 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class Criteria(
 
         @SerializedName("id") val id: Int,
-        @SerializedName("is_completed") val is_completed: Boolean
+        @SerializedName("amount") val amount: Int,
+        @SerializedName("is_completed") val is_completed: Boolean,
+        @SerializedName("child_criteria") val childCriteria: ArrayList<ChildCriteria>
 )

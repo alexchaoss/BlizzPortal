@@ -234,7 +234,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
 
     private fun setRecyclerViewToParentCategories() {
         categories_recycler.apply {
-            adapter = CategoriesAdapter(categories!!.filter { it.parentCategoryId == null }.sortedBy { it.displayOrder }, MainActivity.locale, faction!!, mappedAchievements)
+            adapter = CategoriesAdapter(categories!!.filter { it.parentCategoryId == null }.sortedBy { it.displayOrder }, MainActivity.locale, faction!!, mappedAchievements, characterAchievements?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
         loading.visibility = View.GONE
@@ -242,14 +242,16 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
 
     private fun setAchievementRecycler(id: Long) {
         achievements_recycler.apply {
-            adapter = AchievementsAdapter(mappedAchievements[id]!!.sortedBy { it.display_order }, characterAchievements?.achievements!!, MainActivity.locale)
+            adapter = AchievementsAdapter(
+                    mappedAchievements[id]!!.sortedWith(compareByDescending<DetailedAchievement> { characterAchievements?.achievements?.find { ac -> ac.id == it.id }?.completed_timestamp }.thenBy { it.display_order }),
+                    characterAchievements?.achievements!!, MainActivity.locale)
             adapter!!.notifyDataSetChanged()
         }
     }
 
     private fun setRecyclerViewToSubCategory(id: Long) {
         categories_recycler.apply {
-            adapter = CategoriesAdapter(categories!!.filter { it.parentCategoryId == id }.sortedBy { it.displayOrder }, MainActivity.locale, faction!!, mappedAchievements)
+            adapter = CategoriesAdapter(categories!!.filter { it.parentCategoryId == id }.sortedBy { it.displayOrder }, MainActivity.locale, faction!!, mappedAchievements, characterAchievements?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
         if (mappedAchievements[currentCategory]?.size != 0) {
