@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievement
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -32,7 +32,7 @@ class AcheivementsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(detailedAchievement: DetailedAchievement, locale: String, achievements: List<Achievement>) {
-        Picasso.get().load(detailedAchievement.icon).into(icon)
+        Glide.with(itemView).load(detailedAchievement.icon).into(icon!!)
         if (detailedAchievement.is_account_wide) {
             name?.setTextColor(Color.parseColor("#0081ff"))
         }

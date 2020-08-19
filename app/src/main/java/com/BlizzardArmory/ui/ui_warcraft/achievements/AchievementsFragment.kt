@@ -24,10 +24,10 @@ import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.*
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wow_achievements_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -137,7 +137,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
 
     private fun downloadAchievementInformation() {
         download_request.visibility = View.GONE
-        Picasso.get().load(R.drawable.loading_placeholder).placeholder(R.drawable.loading_placeholder).resize(100, 100).into(loading)
+        Glide.with(this).load(R.drawable.loading_placeholder).placeholder(R.drawable.loading_placeholder).override(100, 100).into(loading)
         if (!prefs?.contains("detailed_achievements")!! || needToUpdate) {
             val call1: Call<DetailedAchievements> = RetroClient.getClient.getAllAchievements("https://www.wow-query.dev/%E2%9A%A1/7bcf03198334e45e.json")
             call1.enqueue(object : Callback<DetailedAchievements> {
@@ -353,7 +353,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 bgName = "warrior_bg"
             }
         }
-        Picasso.get().load(URLConstants.getWoWAsset(bgName)).into(background_achieves)
+        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(background_achieves)
     }
 
     override fun onBackPressed(): Boolean {

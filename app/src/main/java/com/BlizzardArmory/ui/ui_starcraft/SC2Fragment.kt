@@ -1,9 +1,7 @@
 package com.BlizzardArmory.ui.ui_starcraft
 
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -30,8 +28,9 @@ import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import kotlinx.android.synthetic.main.sc2_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -93,23 +92,17 @@ class SC2Fragment : Fragment() {
         loadingCircle.visibility = View.VISIBLE
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-        assert(battlenetOAuth2Params != null)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
         downloadAccountInformation()
     }
 
     private fun getRaceImage(imageView: ImageView, name: String) {
-        Picasso.get().load(URLConstants.getSC2Asset(name)).into(object : Target {
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+        Glide.with(this).load(URLConstants.getSC2Asset(name)).into(object : CustomTarget<Drawable>() {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                imageView.background = resource
             }
 
-            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                Log.i("Image Failed", "Couldn't download image", e)
-            }
-
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                imageView.background = BitmapDrawable(activity?.resources, bitmap)
-            }
+            override fun onLoadCleared(placeholder: Drawable?) {}
         })
     }
 
@@ -422,13 +415,12 @@ class SC2Fragment : Fragment() {
     }
 
     private fun downloadAvatar() {
-        Picasso.get().load(accountInformation[0].avatarUrl).into(object : com.squareup.picasso.Target {
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                avatar.background = BitmapDrawable(resources, bitmap)
+        Glide.with(this).load(accountInformation[0].avatarUrl).into(object : CustomTarget<Drawable>() {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                avatar.background = resource
             }
 
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-            override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {}
+            override fun onLoadCleared(placeholder: Drawable?) {}
         })
     }
 

@@ -38,11 +38,11 @@ import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.BlizzardArmory.util.events.RetryEvent
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wow_character_fragment.*
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
@@ -336,7 +336,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadBackground() {
         if (media != null) {
-            Picasso.get().load(media?.renderUrl).into(background)
+            Glide.with(this).load(media?.renderUrl).placeholder(R.drawable.loading_placeholder).into(background)
         } else {
             val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
                     characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
@@ -344,7 +344,7 @@ class WoWCharacterFragment : Fragment() {
                 override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                     if (response.isSuccessful) {
                         media = response.body()!!
-                        Picasso.get().load(media?.renderUrl).into(background)
+                        Glide.with(this@WoWCharacterFragment).load(media?.renderUrl).placeholder(R.drawable.loading_placeholder).into(background)
                     }
                 }
 
@@ -428,7 +428,7 @@ class WoWCharacterFragment : Fragment() {
                     else -> {
                         val mediaItem = response.body()!!
                         imageURLs[itemSlot] = mediaItem.assets[0].value
-                        Picasso.get().load(imageURLs[itemSlot]).placeholder(R.drawable.loading_placeholder).into(gearImageView[itemSlot])
+                        Glide.with(this@WoWCharacterFragment).load(imageURLs[itemSlot]).placeholder(R.drawable.loading_placeholder).into(gearImageView[itemSlot]!!)
                         setIcons(itemSlot, equipment, null)
                         if (index == equipment?.equippedItems!!.size - 1) {
                             loading_circle?.visibility = View.GONE

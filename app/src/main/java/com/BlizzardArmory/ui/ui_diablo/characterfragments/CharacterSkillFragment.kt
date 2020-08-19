@@ -29,8 +29,9 @@ import com.BlizzardArmory.model.diablo.character.skills.Active
 import com.BlizzardArmory.model.diablo.character.skills.Skill
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.CharacterEvent
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import kotlinx.android.synthetic.main.d3_skill_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -120,13 +121,14 @@ class CharacterSkillFragment : Fragment() {
                     drawable
                 }, null)
             }
-            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
-                    .placeholder(R.drawable.loading_placeholder).into(skillList[skillIcons[key]!!.first], object : Callback {
-                        override fun onSuccess() {
+            Glide.with(this).load(URLConstants.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
+                    .placeholder(R.drawable.loading_placeholder).into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            skillList[skillIcons[key]!!.first].setImageDrawable(resource)
                             setOnTouchSkillTooltip(key, runeText, skillList[skillIcons[key]!!.first].drawable)
                         }
 
-                        override fun onError(e: Exception) {}
+                        override fun onLoadCleared(placeholder: Drawable?) {}
                     })
         }
     }
@@ -199,13 +201,14 @@ class CharacterSkillFragment : Fragment() {
             passiveIcons[characterInformation?.skills?.passive?.get(i)?.skill?.name!!] = tempPair
         }
         for (key in passiveIcons.keys) {
-            Picasso.get().load(URLConstants.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))
-                    .placeholder(R.drawable.loading_placeholder).into(passiveList[passiveIcons[key]!!.first], object : Callback {
-                        override fun onSuccess() {
+            Glide.with(this).load(URLConstants.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))
+                    .placeholder(R.drawable.loading_placeholder).into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            passiveList[passiveIcons[key]!!.first].setImageDrawable(resource)
                             setOnTouchPassiveTooltip(key, passiveList[passiveIcons[key]!!.first].drawable)
                         }
 
-                        override fun onError(e: Exception) {}
+                        override fun onLoadCleared(placeholder: Drawable?) {}
                     })
         }
     }

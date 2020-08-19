@@ -15,7 +15,7 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.model.warcraft.encounters.Expansion
 import com.BlizzardArmory.model.warcraft.encounters.Instances
 import com.BlizzardArmory.model.warcraft.encounters.Modes
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 
 class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context, private val expansion: Expansion) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_list, parent, false)) {
@@ -59,7 +59,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     fun bind(instances: Instances, level: String) {
-        Picasso.get().load(URLConstants.getWoWAsset(findBanner(instances))).resize(0, 600).into(banner)
+        Glide.with(itemView).load(URLConstants.getWoWAsset(findBanner(instances))).override(1000, 600).into(banner!!)
         raidName?.text = instances.instance.name
         raidLevel?.text = level
         setVisibilityBar()

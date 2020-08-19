@@ -25,7 +25,7 @@ import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.RetryEvent
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.d3_gear_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -222,7 +222,7 @@ class CharacterGearFragment : Fragment() {
         get() {
             for (key in itemIconURL.keys) {
                 if (itemIconURL[key] != null) {
-                    Picasso.get().load(itemIconURL[key]).placeholder(R.drawable.loading_placeholder).into(imageViewItem[key])
+                    Glide.with(this).load(itemIconURL[key]).placeholder(R.drawable.loading_placeholder).into(imageViewItem[key]!!)
                 }
             }
         }

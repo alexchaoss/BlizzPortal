@@ -28,7 +28,7 @@ import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.RetryEvent
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.wow_pvp_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -339,7 +339,7 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 bgName = "warrior_bg"
             }
         }
-        Picasso.get().load(URLConstants.getWoWAsset(bgName)).into(background_pvp)
+        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(background_pvp)
         EventBus.getDefault().unregister(this)
     }
 

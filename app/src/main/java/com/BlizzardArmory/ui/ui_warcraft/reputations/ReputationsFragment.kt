@@ -29,7 +29,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.wow_rep_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -284,7 +284,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
                 bgName = "warrior_bg"
             }
         }
-        Picasso.get().load(URLConstants.getWoWAsset(bgName)).into(background_rep)
+        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(background_rep)
         EventBus.getDefault().unregister(this)
     }
 

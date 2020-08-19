@@ -36,9 +36,9 @@ import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfiles;
 import com.BlizzardArmory.model.overwatch.heroes.Hero;
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero;
 import com.BlizzardArmory.ui.GamesActivity;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -128,7 +128,6 @@ public class OWFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Picasso.get().setLoggingEnabled(true);
         loadingCircle = view.findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
         assert GamesActivity.Companion.getUserInformation() != null;
@@ -577,7 +576,7 @@ public class OWFragment extends Fragment {
     }
 
     private void setTopCharacterImage(String topCharacterName) {
-        Picasso.get().load(URLConstants.getOWPortraitImage(topCharacterName.toLowerCase())).into(topCharacter);
+        Glide.with(this).load(URLConstants.getOWPortraitImage(topCharacterName.toLowerCase())).into(topCharacter);
     }
 
     private void sortList(ArrayList<TopHero> topHeroes, String howToSort) {
@@ -732,7 +731,7 @@ public class OWFragment extends Fragment {
     }
 
     private void downloadAvatar() {
-        Picasso.get().load(accountInformation.getIcon()).into(avatar);
+        Glide.with(this).load(accountInformation.getIcon()).into(avatar);
     }
 
     /*private void downloadEndorsementIcon() {
@@ -751,12 +750,12 @@ public class OWFragment extends Fragment {
     }*/
 
     private void downloadRatingIcon(String url, ImageView imageView) {
-        Picasso.get().load(url).into(imageView);
+        Glide.with(this).load(url).into(imageView);
     }
 
     private void downloadLevelIcon() {
-        Picasso.get().load(accountInformation.getLevelIcon()).into(levelIcon);
-        Picasso.get().load(accountInformation.getPrestigeIcon()).into(prestigeIcon);
+        Glide.with(this).load(accountInformation.getLevelIcon()).into(levelIcon);
+        Glide.with(this).load(accountInformation.getPrestigeIcon()).into(prestigeIcon);
     }
 
     /**
