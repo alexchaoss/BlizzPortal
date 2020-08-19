@@ -60,4 +60,5 @@
     <string name="wow_favorites">WoW Favoris</string>
     <string name="ow_favorites">OW Favoris</string>
     <string name="download_achievements_n_wi_fi_recommended">Téléchargement des haut faits\n(Wi-Fi recommendé)</string>
+    <string name="categories">Catégories</string>
 </resources>

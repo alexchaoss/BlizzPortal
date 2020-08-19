@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.categories.Category
 
-class CategoriesAdapter(private val list: List<Category>, private val locale: String, private val faction: String, private val mappedAchievements: Map<Long, List<DetailedAchievement>>)
+class CategoriesAdapter(private val list: List<Category>, private val locale: String, private val faction: String, private val mappedAchievements: Map<Long, List<DetailedAchievement>?>)
     : RecyclerView.Adapter<CategoriesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {

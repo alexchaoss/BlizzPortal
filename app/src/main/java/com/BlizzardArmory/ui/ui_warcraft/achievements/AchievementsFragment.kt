@@ -26,6 +26,7 @@ import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wow_achievements_fragment.*
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +60,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     private var categories: Categories? = null
     private var characterAchievements: Achievements? = null
     private var allAchievements: DetailedAchievements? = null
-    private var mappedAchievements = mutableMapOf<Long, List<DetailedAchievement>>()
+    private var mappedAchievements = mutableMapOf<Long, List<DetailedAchievement>?>()
     private var currentCategory = 0L
     private var subCurrentCategory = -1L
     private var needToUpdate: Boolean = false
@@ -97,20 +98,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
         back_arrow.setOnClickListener {
-            if (subCurrentCategory != -1L) {
-                achievement_tab.visibility = View.VISIBLE
-                sub_category_tab.visibility = View.VISIBLE
-                if (subCurrentCategory == 92L) {
-                    sub_category_layout.visibility = View.GONE
-                }
-                subCurrentCategory = -1L
-            } else {
-                sub_category_layout.visibility = View.GONE
-                setRecyclerViewToParentCategories()
-            }
-
-            categories_recycler.visibility = View.VISIBLE
-            achievements_recycler.visibility = View.GONE
+            backArrow()
         }
 
         sub_category_tab.setOnClickListener {
@@ -129,6 +117,24 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         }
     }
 
+    private fun backArrow() {
+        if (subCurrentCategory != -1L) {
+            achievement_tab.visibility = View.VISIBLE
+            sub_category_tab.visibility = View.VISIBLE
+            separator.visibility = View.VISIBLE
+            if (subCurrentCategory == 92L) {
+                sub_category_layout.visibility = View.GONE
+            }
+            subCurrentCategory = -1L
+        } else {
+            sub_category_layout.visibility = View.GONE
+            setRecyclerViewToParentCategories()
+        }
+
+        categories_recycler.visibility = View.VISIBLE
+        achievements_recycler.visibility = View.GONE
+    }
+
     private fun downloadAchievementInformation() {
         download_request.visibility = View.GONE
         Picasso.get().load(R.drawable.loading_placeholder).placeholder(R.drawable.loading_placeholder).resize(100, 100).into(loading)
@@ -138,8 +144,8 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 override fun onResponse(call: Call<DetailedAchievements>, response: Response<DetailedAchievements>) {
                     if (response.isSuccessful) {
                         allAchievements = response.body()
-                        allAchievements?.timestamp = System.currentTimeMillis()
-                        prefs!!.edit().putString("detailed_achievements", gson?.toJson(allAchievements)).apply()
+                        val savedAchievs = Pair(System.currentTimeMillis(), allAchievements)
+                        prefs!!.edit().putString("detailed_achievements", gson?.toJson(savedAchievs)).apply()
                         needToUpdate = false
                         downloadCharacterAchievements()
                     }
@@ -150,10 +156,17 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 }
             })
         } else {
-            allAchievements = gson!!.fromJson(prefs!!.getString("detailed_achievements", "DEFAULT"), DetailedAchievements::class.java)
-            if (allAchievements?.timestamp == null || (System.currentTimeMillis() - allAchievements?.timestamp!!) > 435000000L) {
+            val saveAchievs =
+                    gson!!.fromJson<Pair<Long, DetailedAchievements>>(
+                            prefs!!.getString("detailed_achievements", "DEFAULT"),
+                            object : TypeToken<Pair<Long, DetailedAchievements>>() {}.type)
+
+            if ((System.currentTimeMillis() - saveAchievs.first) > 435000000L) {
                 needToUpdate = true
                 downloadAchievementInformation()
+            } else {
+                allAchievements = saveAchievs.second
+                downloadCharacterAchievements()
             }
         }
     }
@@ -179,23 +192,10 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
                     if (response.isSuccessful) {
                         categories = response.body()
-                        categories?.timestamp = System.currentTimeMillis()
-                        prefs!!.edit().putString("achievement_categories", gson!!.toJson(categories)).apply()
+                        val savedCategories = Pair(System.currentTimeMillis(), categories)
+                        prefs!!.edit().putString("achievement_categories", gson!!.toJson(savedCategories)).apply()
                         needToUpdate = false
-                        GlobalScope.launch(Dispatchers.Main) {
-                            GlobalScope.launch(Dispatchers.Default) {
-                                mappedAchievements = categories!!.groupBy { it.id }
-                                        .mapValues {
-                                            allAchievements!!
-                                                    .filter { a ->
-                                                        characterAchievements!!.achievements
-                                                                .any { a.id == it.id } && a.category_id == it.key
-                                                    }
-                                        }
-                                        .toMutableMap()
-                            }.join()
-                            setRecyclerViewToParentCategories()
-                        }
+                        createAchievementsMap()
                     }
                 }
 
@@ -204,11 +204,31 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 }
             })
         } else {
-            categories = gson!!.fromJson(prefs!!.getString("achievement_categories", "DEFAULT"), Categories::class.java)
-            if (categories?.timestamp == null || (System.currentTimeMillis() - categories?.timestamp!!) > 435000000) {
+            val savedCategories =
+                    gson!!.fromJson<Pair<Long, Categories>>(
+                            prefs!!.getString("achievement_categories", "DEFAULT"),
+                            object : TypeToken<Pair<Long, Categories>>() {}.type)
+            if ((System.currentTimeMillis() - savedCategories.first) > 435000000L) {
                 needToUpdate = true
                 downloadCategories()
+            } else {
+                categories = savedCategories.second
+                createAchievementsMap()
             }
+        }
+    }
+
+    private fun createAchievementsMap() {
+        GlobalScope.launch(Dispatchers.Main) {
+            GlobalScope.launch(Dispatchers.Default) {
+                mappedAchievements = categories?.groupBy { it.id }
+                        ?.mapValues { map ->
+                            allAchievements?.filter { a ->
+                                a.category_id == map.key && characterAchievements?.achievements?.any { b -> a.id == b.id }!!
+                            }
+                        }?.toMutableMap()!!
+            }.join()
+            setRecyclerViewToParentCategories()
         }
     }
 
@@ -267,6 +287,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         }
         achievement_tab.visibility = View.GONE
         sub_category_tab.visibility = View.GONE
+        separator.visibility = View.GONE
         setAchievementRecycler(subCurrentCategory)
     }
 

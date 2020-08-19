@@ -262,7 +262,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun hasCharacter(favoriteCharacter: FavoriteCharacter, characterSummary: CharacterSummary): Boolean {
-        return (characterSummary.name?.toLowerCase(Locale.ROOT) == favoriteCharacter.characterSummary?.name?.toLowerCase(Locale.ROOT)
+        return (characterSummary.name.toLowerCase(Locale.ROOT) == favoriteCharacter.characterSummary?.name?.toLowerCase(Locale.ROOT)
                 && characterSummary.realm.slug == favoriteCharacter.characterSummary?.realm?.slug
                 && region?.toLowerCase(Locale.ROOT) == favoriteCharacter.region?.toLowerCase(Locale.ROOT))
     }
@@ -459,7 +459,7 @@ class WoWCharacterFragment : Fragment() {
         var backgroundStroke: Drawable? = null
         for (i in equipment?.equippedItems?.indices!!) {
             if (equipment.equippedItems[i].slot.type == itemSlot) {
-                backgroundStroke = equipment.equippedItems?.get(i)?.let { itemColor(it, GradientDrawable()) }
+                backgroundStroke = itemColor(equipment.equippedItems[i], GradientDrawable())
                 if (equipment.equippedItems[i].azeriteDetails != null && equipment.equippedItems[i].item.id != 158075L) {
                     when (itemSlot) {
                         "HEAD" -> {
@@ -706,9 +706,7 @@ class WoWCharacterFragment : Fragment() {
         }
         try {
             for (enchantment in equippedItem.enchantments) {
-                if (enchantment.displayString != null) {
-                    enchant.append("<font color=#00ff00>").append(enchantment.displayString).append("</font><br>")
-                }
+                enchant.append("<font color=#00ff00>").append(enchantment.displayString).append("</font><br>")
             }
         } catch (e: Exception) {
         }

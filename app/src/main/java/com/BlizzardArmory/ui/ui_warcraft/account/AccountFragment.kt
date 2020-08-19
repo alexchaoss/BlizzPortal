@@ -82,30 +82,30 @@ class AccountFragment : Fragment() {
 
     private fun populateRecyclerView() {
         if (charaters?.wowAccounts != null) {
-            for (wowAccount in charaters!!.wowAccounts!!) {
-                characterList.addAll(wowAccount.characters!!)
+            for (wowAccount in charaters!!.wowAccounts) {
+                characterList.addAll(wowAccount.characters)
             }
         }
-        Log.i("TEST", characterList[0].realm?.name!!)
-        for (characters in characterList.groupBy { it.realm?.name }) {
-            charactersByRealm.add(characters.value.sortedBy { if (it.level != null) it.level!!.toInt() else 0 }.reversed())
+        Log.i("TEST", characterList[0].realm.name)
+        for (characters in characterList.groupBy { it.realm.name }) {
+            charactersByRealm.add(characters.value.sortedBy { it.level.toInt() }.reversed())
         }
-        charactersByRealm.sortBy { it[0].realm?.name }
+        charactersByRealm.sortBy { it[0].realm.name }
 
         for (realm in charactersByRealm) run {
             val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             val button = TextView(requireActivity())
             button.setBackgroundResource(R.drawable.progress_collapse_header)
             button.setTextColor(Color.WHITE)
-            val realmNamePlus = "+ " + realm[0].realm?.name
-            val realmNameMinus = "- " + realm[0].realm?.name
+            val realmNamePlus = "+ " + realm[0].realm.name
+            val realmNameMinus = "- " + realm[0].realm.name
             button.text = realmNamePlus
             button.textSize = 18F
             button.layoutParams = paramsButton
             linear_wow_characters.addView(button)
 
             var expand = false
-            var recyclerViewSize = if (realm.size * 65 < 300) {
+            val recyclerViewSize = if (realm.size * 65 < 300) {
                 realm.size * 64
             } else {
                 300
