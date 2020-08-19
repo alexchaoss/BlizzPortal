@@ -31,7 +31,7 @@ class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         layout = itemView.findViewById(R.id.layout)
     }
 
-    fun bind(category: Category, locale: String, faction: String, mappedAchievements: Map<Long, List<DetailedAchievement>>) {
+    fun bind(category: Category, locale: String, faction: String, mappedAchievements: Map<Long, List<DetailedAchievement>?>) {
         var currentPoints = 0
 
         if (category.parentCategoryId == null && category.id != 92L) {
@@ -45,7 +45,7 @@ class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
 
         if (category.parentCategoryId == null && category.id != 92L) {
-            currentPoints = mappedAchievements.values.sumBy { v -> v.filter { it.parent_category_id == category.id }.map { it.points }.sumBy { it } }
+            currentPoints = mappedAchievements.values.sumBy { v -> v?.filter { it.parent_category_id == category.id }?.map { it.points }?.sumBy { it }!! }
         } else {
             currentPoints = mappedAchievements[category.id]?.sumBy { it.points }!!
         }
