@@ -15,7 +15,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfile
 import com.BlizzardArmory.ui.ui_overwatch.OWFragment
 import com.BlizzardArmory.util.events.NetworkEvent
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -70,7 +70,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     private fun downloadAvatar() {
-        Picasso.get().load(profile?.profile?.icon).into(avatar)
+        Glide.with(itemView).load(profile?.profile?.icon).into(avatar!!)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

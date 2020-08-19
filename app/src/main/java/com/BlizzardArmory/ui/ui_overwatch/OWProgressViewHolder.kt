@@ -2,11 +2,8 @@ package com.BlizzardArmory.ui.ui_overwatch
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Target
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
@@ -71,22 +68,14 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
     }
 
     private fun downloadIcon(hero: TopHero) {
-        val target = object : Target {
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
 
-            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                Log.e("Icon", "Failed", e)
-                downloadIcon(hero)
+        Glide.with(itemView).load(URLConstants.getOWIconImage(hero.javaClass.simpleName.toLowerCase(Locale.ROOT))).into(object : CustomTarget<Drawable>() {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                icon?.background = resource
             }
 
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: LoadedFrom?) {
-                icon?.background = BitmapDrawable(context.resources, bitmap)
-            }
-
-        }
-
-        Picasso.get().load(URLConstants.getOWIconImage(hero.javaClass.simpleName.toLowerCase(Locale.ROOT))).into(target)
-
+            override fun onLoadCleared(placeholder: Drawable?) {}
+        })
     }
 
     private fun chooseCategory(sortedBy: String, hero: TopHero, topHero: TopHero) {

@@ -21,7 +21,7 @@ import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.item.SingleItem
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.events.CharacterEvent
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.d3_cube_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -92,15 +92,15 @@ class CharacterCubeFragment : Fragment() {
                 when (key) {
                     "sword" -> {
                         cube_sword_item!!.visibility = View.VISIBLE
-                        Picasso.get().load(cubeURL[key]).into(cube_sword_item)
+                        Glide.with(this).load(cubeURL[key]).into(cube_sword_item)
                     }
                     "armor" -> {
                         cube_armor_item!!.visibility = View.VISIBLE
-                        Picasso.get().load(cubeURL[key]).into(cube_armor_item)
+                        Glide.with(this).load(cubeURL[key]).into(cube_armor_item)
                     }
                     "ring" -> {
                         cube_ring_item!!.visibility = View.VISIBLE
-                        Picasso.get().load(cubeURL[key]).into(cube_ring_item)
+                        Glide.with(this).load(cubeURL[key]).into(cube_ring_item)
                     }
                 }
             }

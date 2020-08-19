@@ -21,9 +21,9 @@ import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -108,8 +108,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             media.avatarUrl
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
-
-        Picasso.get().load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar)
+        Glide.with(itemView).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
     }
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {

@@ -28,7 +28,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.wow_progress_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -281,7 +281,7 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
                 bgName = "warrior_bg"
             }
         }
-        Picasso.get().load(URLConstants.getWoWAsset(bgName)).into(background_progress)
+        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(background_progress)
         EventBus.getDefault().unregister(this)
     }
 

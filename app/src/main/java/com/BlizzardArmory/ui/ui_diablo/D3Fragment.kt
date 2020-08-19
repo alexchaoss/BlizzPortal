@@ -27,9 +27,9 @@ import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.navigation.D3CharacterNav
 import com.BlizzardArmory.util.MetricConversion
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.d3_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -200,7 +200,7 @@ class D3Fragment : Fragment() {
                 val frameParams = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(113, requireActivity()), MetricConversion.getDPMetric(154, requireActivity()))
                 val frame = ImageView(requireContext())
                 frame.id = (i + 10) * 2
-                Picasso.get().load(URLConstants.getD3Asset(getFallenHeroFrame(i))).into(frame)
+                Glide.with(this).load(URLConstants.getD3Asset(getFallenHeroFrame(i))).into(frame)
                 val levelFrame = ImageView(requireContext())
                 levelFrame.id = (i + 100) * 2
                 levelFrame.setImageResource(R.drawable.fallen_hero_level)
@@ -320,7 +320,7 @@ class D3Fragment : Fragment() {
             val portraitParams = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(129, requireActivity()), MetricConversion.getDPMetric(100, requireActivity()))
             val portrait = ImageView(requireContext())
             portrait.id = i + 1000
-            Picasso.get().load(URLConstants.getD3Asset(getGender(i))).into(portrait)
+            Glide.with(this).load(URLConstants.getD3Asset(getGender(i))).into(portrait)
             portrait.layoutParams = portraitParams
             val name = TextView(requireContext())
             name.text = accountInformation!!.heroes[i].name
@@ -401,29 +401,29 @@ class D3Fragment : Fragment() {
 
     private fun setProgression() {
         if (accountInformation!!.progression.act1) {
-            Picasso.get().load(URLConstants.getD3Asset("act1_done")).into(prog_act1)
+            Glide.with(this).load(URLConstants.getD3Asset("act1_done")).into(prog_act1)
         } else {
-            Picasso.get().load(URLConstants.getD3Asset("act1_not_done")).into(prog_act1)
+            Glide.with(this).load(URLConstants.getD3Asset("act1_not_done")).into(prog_act1)
         }
         if (accountInformation!!.progression.act2) {
-            Picasso.get().load(URLConstants.getD3Asset("act2_done")).into(prog_act2)
+            Glide.with(this).load(URLConstants.getD3Asset("act2_done")).into(prog_act2)
         } else {
-            Picasso.get().load(URLConstants.getD3Asset("act2_not_done")).into(prog_act2)
+            Glide.with(this).load(URLConstants.getD3Asset("act2_not_done")).into(prog_act2)
         }
         if (accountInformation!!.progression.act3) {
-            Picasso.get().load(URLConstants.getD3Asset("act3_done")).into(prog_act3)
+            Glide.with(this).load(URLConstants.getD3Asset("act3_done")).into(prog_act3)
         } else {
-            Picasso.get().load(URLConstants.getD3Asset("act3_not_done")).into(prog_act3)
+            Glide.with(this).load(URLConstants.getD3Asset("act3_not_done")).into(prog_act3)
         }
         if (accountInformation!!.progression.act4) {
-            Picasso.get().load(URLConstants.getD3Asset("act4_done")).into(prog_act4)
+            Glide.with(this).load(URLConstants.getD3Asset("act4_done")).into(prog_act4)
         } else {
-            Picasso.get().load(URLConstants.getD3Asset("act4_not_done")).into(prog_act4)
+            Glide.with(this).load(URLConstants.getD3Asset("act4_not_done")).into(prog_act4)
         }
         if (accountInformation!!.progression.act5) {
-            Picasso.get().load(URLConstants.getD3Asset("act5_done")).into(prog_act5)
+            Glide.with(this).load(URLConstants.getD3Asset("act5_done")).into(prog_act5)
         } else {
-            Picasso.get().load(URLConstants.getD3Asset("act5_not_done")).into(prog_act5)
+            Glide.with(this).load(URLConstants.getD3Asset("act5_not_done")).into(prog_act5)
         }
     }
 
