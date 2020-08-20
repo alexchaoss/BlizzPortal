@@ -16,6 +16,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
@@ -63,7 +64,7 @@ class CharacterSkillFragment : Fragment() {
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
         closeButton = ImageButton(view.context)
-        closeButton!!.background = requireContext().getDrawable(R.drawable.close_button_d3)
+        closeButton!!.background = ContextCompat.getDrawable(requireContext(), R.drawable.close_button_d3)
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0F)
         params.setMargins(0, 0, 0, 20)
         closeButton!!.layoutParams = params
@@ -113,13 +114,23 @@ class CharacterSkillFragment : Fragment() {
             }
             val runeText = smallRune
             if (smallRune != "") {
-                skillRuneList[skillIcons[key]!!.first].text = Html.fromHtml("<img src=\"" + smallRune + "\">" +
-                        skillIcons[key]!!.second.rune.name, Html.FROM_HTML_MODE_LEGACY, Html.ImageGetter { source: String? ->
-                    val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable = resources.getDrawable(resourceId, requireContext().theme)
-                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                    drawable
-                }, null)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    skillRuneList[skillIcons[key]!!.first].text = Html.fromHtml("<img src=\"" + smallRune + "\">" +
+                            skillIcons[key]!!.second.rune.name, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
+                        val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                        val drawable = resources.getDrawable(resourceId, requireContext().theme)
+                        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                        drawable
+                    }, null)
+                } else {
+                    skillRuneList[skillIcons[key]!!.first].text = Html.fromHtml("<img src=\"" + smallRune + "\">" +
+                            skillIcons[key]!!.second.rune.name, { source: String? ->
+                        val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                        val drawable = resources.getDrawable(resourceId, requireContext().theme)
+                        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                        drawable
+                    }, null)
+                }
             }
             Glide.with(this).load(URLConstants.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
                     .placeholder(R.drawable.loading_placeholder).into(object : CustomTarget<Drawable>() {
@@ -148,20 +159,37 @@ class CharacterSkillFragment : Fragment() {
                 tooltip_skill_icon!!.setImageDrawable(icon)
                 tooltip_skill_icon!!.setBackgroundResource(0)
                 tooltip_skill_icon!!.setPadding(0, 0, 0, 0)
-                skill_tooltip_text!!.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
-                        .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                        .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                        .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                        .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
-                if (runeText != "") {
-                    rune_separator!!.visibility = View.VISIBLE
-                    tooltip_rune_icon!!.setImageResource(getRuneIcon(skillIcons[tempKey]!!.second.rune.type))
-                    rune_tooltip_text!!.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
-                            + skillIcons[tempKey]!!.second.rune.descriptionHtml)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    skill_tooltip_text!!.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
                             .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                             .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                             .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                             .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
+                } else {
+                    skill_tooltip_text!!.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
+                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                            .replace("</span>".toRegex(), "</font>"))
+                }
+                if (runeText != "") {
+                    rune_separator!!.visibility = View.VISIBLE
+                    tooltip_rune_icon!!.setImageResource(getRuneIcon(skillIcons[tempKey]!!.second.rune.type))
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        rune_tooltip_text!!.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
+                                + skillIcons[tempKey]!!.second.rune.descriptionHtml)
+                                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                                .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
+                    } else {
+                        rune_tooltip_text!!.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
+                                + skillIcons[tempKey]!!.second.rune.descriptionHtml)
+                                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                                .replace("</span>".toRegex(), "</font>"))
+                    }
                 } else {
                     rune_tooltip_text!!.text = ""
                     tooltip_rune_icon!!.setImageResource(0)
@@ -230,14 +258,26 @@ class CharacterSkillFragment : Fragment() {
                 tooltip_skill_icon!!.setImageDrawable(icon)
                 tooltip_skill_icon!!.setBackgroundResource(R.drawable.d3_passive_unselected)
                 tooltip_skill_icon!!.setPadding(15, 15, 15, 15)
-                skill_tooltip_text!!.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
-                        .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                        .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                        .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                        .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    skill_tooltip_text!!.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
+                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                            .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
+                } else {
+                    skill_tooltip_text!!.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
+                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                            .replace("</span>".toRegex(), "</font>"))
+                }
                 skill_tooltip_scroll!!.visibility = View.VISIBLE
                 try {
-                    rune_tooltip_text!!.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        rune_tooltip_text!!.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
+                    } else {
+                        rune_tooltip_text!!.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>")
+                    }
                 } catch (e: Exception) {
                     rune_separator!!.visibility = View.GONE
                 }

@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Html
-import android.text.Html.ImageGetter
 import android.util.Log
 import android.view.*
 import android.widget.Button
@@ -406,12 +405,21 @@ class SC2Fragment : Fragment() {
         } else {
             clan!!.visibility = View.GONE
         }
-        achievement_points!!.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, ImageGetter { source: String? ->
-            val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-            val drawable = resources.getDrawable(resourceId, requireActivity().theme)
-            drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-            drawable
-        }, null)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            achievement_points!!.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
+                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                val drawable = resources.getDrawable(resourceId, requireActivity().theme)
+                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                drawable
+            }, null)
+        } else {
+            achievement_points!!.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, { source: String? ->
+                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                val drawable = resources.getDrawable(resourceId, requireActivity().theme)
+                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                drawable
+            }, null)
+        }
     }
 
     private fun downloadAvatar() {

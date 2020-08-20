@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -582,7 +584,7 @@ public class OWFragment extends Fragment {
     private void sortList(ArrayList<TopHero> topHeroes, String howToSort) {
         switch (howToSort) {
             case TIME_PLAYED:
-                topHeroes.sort((hero1, hero2) -> {
+                Collections.sort(topHeroes, (hero1, hero2) -> {
                     int secondsHero1 = getSeconds(hero1);
                     int secondsHero2 = getSeconds(hero2);
                     if (secondsHero1 > secondsHero2) {
@@ -594,7 +596,7 @@ public class OWFragment extends Fragment {
                 });
                 break;
             case GAMES_WON:
-                topHeroes.sort((hero1, hero2) -> {
+                Collections.sort(topHeroes, (hero1, hero2) -> {
                     if (hero1.getGamesWon() > hero2.getGamesWon()) {
                         return -1;
                     } else if (hero1.getGamesWon() < hero2.getGamesWon()) {
@@ -604,7 +606,7 @@ public class OWFragment extends Fragment {
                 });
                 break;
             case WEAPON_ACCURACY:
-                topHeroes.sort((hero1, hero2) -> {
+                Collections.sort(topHeroes, (hero1, hero2) -> {
                     if (hero1.getWeaponAccuracy() > hero2.getWeaponAccuracy()) {
                         return -1;
                     } else if (hero1.getWeaponAccuracy() < hero2.getWeaponAccuracy()) {
@@ -614,7 +616,7 @@ public class OWFragment extends Fragment {
                 });
                 break;
             case ELIMINATIONS_PER_LIFE:
-                topHeroes.sort((hero1, hero2) -> {
+                Collections.sort(topHeroes, (hero1, hero2) -> {
                     if (hero1.getEliminationsPerLife() > hero2.getEliminationsPerLife()) {
                         return -1;
                     } else if (hero1.getEliminationsPerLife() < hero2.getEliminationsPerLife()) {
@@ -624,7 +626,7 @@ public class OWFragment extends Fragment {
                 });
                 break;
             case MULTIKILL_BEST:
-                topHeroes.sort((hero1, hero2) -> {
+                Collections.sort(topHeroes, (hero1, hero2) -> {
                     if (hero1.getMultiKillBest() > hero2.getMultiKillBest()) {
                         return -1;
                     } else if (hero1.getMultiKillBest() < hero2.getMultiKillBest()) {
@@ -634,7 +636,7 @@ public class OWFragment extends Fragment {
                 });
                 break;
             case OBJECTIVE_KILLS:
-                topHeroes.sort((hero1, hero2) -> {
+                Collections.sort(topHeroes, (hero1, hero2) -> {
                     if (hero1.getObjectiveKills() > hero2.getObjectiveKills()) {
                         return -1;
                     } else if (hero1.getObjectiveKills() < hero2.getObjectiveKills()) {
@@ -796,7 +798,7 @@ public class OWFragment extends Fragment {
         button.setWidth(200);
         button.setHeight(100);
         button.setLayoutParams(buttonParams);
-        button.setBackground(requireActivity().getDrawable(R.drawable.buttonstyle));
+        button.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.buttonstyle));
 
         Button button2 = new Button(requireActivity());
 
@@ -806,7 +808,7 @@ public class OWFragment extends Fragment {
         button2.setWidth(200);
         button2.setHeight(100);
         button2.setLayoutParams(buttonParams);
-        button2.setBackground(requireActivity().getDrawable(R.drawable.buttonstyle));
+        button2.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.buttonstyle));
 
         LinearLayout buttonLayout = new LinearLayout(requireActivity());
         buttonLayout.setOrientation(LinearLayout.HORIZONTAL);

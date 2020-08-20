@@ -7,11 +7,11 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Html
-import android.text.Html.ImageGetter
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
@@ -519,12 +519,21 @@ class WoWCharacterFragment : Fragment() {
                 nameView?.text = nameList[equipment.equippedItems[index].slot.type]
                 nameView?.setTextColor(getItemColor(equipment.equippedItems[index]))
                 nameView?.textSize = 20f
-                statsView?.text = Html.fromHtml(stats[equipment.equippedItems[index].slot.type], Html.FROM_HTML_MODE_LEGACY, ImageGetter { source: String? ->
-                    val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable = resources.getDrawable(resourceId, requireContext().theme)
-                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                    drawable
-                }, null)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    statsView?.text = Html.fromHtml(stats[equipment.equippedItems[index].slot.type], Html.FROM_HTML_MODE_LEGACY, { source: String? ->
+                        val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                        val drawable = ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                        drawable
+                    }, null)
+                } else {
+                    statsView?.text = Html.fromHtml(stats[equipment.equippedItems[index].slot.type], { source: String? ->
+                        val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                        val drawable = ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                        drawable
+                    }, null)
+                }
                 statsView?.setTextColor(Color.WHITE)
                 statsView?.textSize = 13f
                 item_scroll_view?.setPadding(10, 10, 10, 10)
@@ -537,10 +546,8 @@ class WoWCharacterFragment : Fragment() {
             }
             return@setOnTouchListener true
         }
-        scrollView3?.setOnScrollChangeListener { _: View?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
-            if (oldScrollY != scrollY) {
-                item_scroll_view?.visibility = View.GONE
-            }
+        scrollView3?.viewTreeObserver?.addOnScrollChangedListener {
+            item_scroll_view.visibility = View.GONE
         }
     }
 

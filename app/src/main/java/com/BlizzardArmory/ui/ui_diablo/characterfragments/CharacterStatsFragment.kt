@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
@@ -84,9 +85,15 @@ class CharacterStatsFragment : Fragment() {
                         dexterity_text?.text = primaryStats.format(characterInformation?.stats?.dexterity?.roundToInt()).toString()
                         intelligence_text?.text = primaryStats.format(characterInformation?.stats?.intelligence?.roundToInt()).toString()
                         vitality_text?.text = primaryStats.format(characterInformation?.stats?.vitality?.roundToInt()).toString()
-                        damage?.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.damage) + "</font>", Html.FROM_HTML_MODE_LEGACY)
-                        toughness?.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.toughness) + "</font>", Html.FROM_HTML_MODE_LEGACY)
-                        recovery!!.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.healing) + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            damage?.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.damage) + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                            toughness?.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.toughness) + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                            recovery!!.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.healing) + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                        } else {
+                            damage?.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.damage) + "</font>")
+                            toughness?.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.toughness) + "</font>")
+                            recovery!!.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.healing) + "</font>")
+                        }
                         loading_circle!!.visibility = View.GONE
                         URLConstants.loading = false
                     }
@@ -163,7 +170,11 @@ class CharacterStatsFragment : Fragment() {
     private fun setName() {
         val levelClass = ("<font color=#d4a94e>" + characterInformation!!.level + "</font>" + "<font color=#555da5> (" + characterInformation!!.paragonLevel
                 + ")</font> <font color=#d4a94e>" + characterInformation!!.class_)
-        level_class!!.text = Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            level_class!!.text = Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            level_class!!.text = Html.fromHtml(levelClass)
+        }
         if (characterInformation!!.name.length in 8..9) {
             character_name!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
         } else if (characterInformation!!.name.length > 9) {
@@ -197,14 +208,14 @@ class CharacterStatsFragment : Fragment() {
             button.gravity = Gravity.CENTER
             button.width = 200
             button.layoutParams = layoutParams
-            button.background = requireContext().getDrawable(R.drawable.buttonstyle)
+            button.background = ContextCompat.getDrawable(requireContext(), R.drawable.buttonstyle)
             val button2 = Button(context)
             button2.textSize = 18f
             button2.setTextColor(Color.WHITE)
             button2.gravity = Gravity.CENTER
             button2.width = 200
             button2.layoutParams = layoutParams
-            button2.background = requireContext().getDrawable(R.drawable.buttonstyle)
+            button2.background = ContextCompat.getDrawable(requireContext(), R.drawable.buttonstyle)
             val buttonLayout = LinearLayout(context)
             buttonLayout.orientation = LinearLayout.HORIZONTAL
             buttonLayout.gravity = Gravity.CENTER
