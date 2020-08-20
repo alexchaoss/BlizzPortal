@@ -79,8 +79,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.wow_rep_fragment, container, false)
-        return view
+        return inflater.inflate(R.layout.wow_rep_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

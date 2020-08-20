@@ -232,10 +232,8 @@ class PvPFragment : Fragment(), IOnBackPressed {
                 MotionEvent.ACTION_UP -> bracketinfo?.visibility = View.GONE
             }
 
-            layout_pvp.setOnScrollChangeListener { _: View, scrollX: Int, _: Int, _: Int, oldScrollY: Int ->
-                if (scrollX != oldScrollY) {
-                    bracketinfo?.visibility = View.GONE
-                }
+            layout_pvp.viewTreeObserver.addOnScrollChangedListener {
+                bracketinfo?.visibility = View.GONE
             }
             return@setOnTouchListener true
         }

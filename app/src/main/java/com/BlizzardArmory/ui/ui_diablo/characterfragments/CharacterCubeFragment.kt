@@ -71,11 +71,11 @@ class CharacterCubeFragment : Fragment() {
             try {
                 for (i in characterInformation!!.legendaryPowers.indices) {
                     when {
-                        Arrays.stream(armorArray).parallel().anyMatch { s: String? -> characterInformation!!.legendaryPowers[i].icon.contains(s!!) } -> {
+                        armorArray.any { s: String? -> characterInformation!!.legendaryPowers[i].icon.contains(s!!) } -> {
                             cubeURL["armor"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation!!.legendaryPowers[i].icon + ".png")
                             cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = cube_armor_item
                         }
-                        Arrays.stream(ringArray).parallel().anyMatch { s: String? -> characterInformation!!.legendaryPowers[i].icon.contains(s!!) } -> {
+                        ringArray.any { s: String? -> characterInformation!!.legendaryPowers[i].icon.contains(s!!) } -> {
                             cubeURL["ring"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation!!.legendaryPowers[i].icon + ".png")
                             cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = cube_ring_item
                         }
@@ -150,7 +150,11 @@ class CharacterCubeFragment : Fragment() {
                     }
                 }
                 cube_text!!.visibility = View.VISIBLE
-                cube_text!!.text = Html.fromHtml(cubeText, Html.FROM_HTML_MODE_LEGACY)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    cube_text!!.text = Html.fromHtml(cubeText, Html.FROM_HTML_MODE_LEGACY)
+                } else {
+                    cube_text!!.text = Html.fromHtml(cubeText)
+                }
                 false
             }
         }

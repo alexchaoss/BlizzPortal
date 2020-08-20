@@ -13,7 +13,7 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.BlizzardArmory"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 78
         versionName "3.3"
