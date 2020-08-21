@@ -29,7 +29,7 @@ import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.character.skills.Active
 import com.BlizzardArmory.model.diablo.character.skills.Skill
 import com.BlizzardArmory.util.events.BackPressEvent
-import com.BlizzardArmory.util.events.CharacterEvent
+import com.BlizzardArmory.util.events.WoWCharacterEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -300,8 +300,8 @@ class CharacterSkillFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun characterEventReceived(characterEvent: CharacterEvent) {
-        characterInformation = characterEvent.data
+    public fun characterEventReceived(woWCharacterEvent: WoWCharacterEvent) {
+        characterInformation = woWCharacterEvent.data
         downloadSkillIcons()
         downloadPssiveIcons()
     }

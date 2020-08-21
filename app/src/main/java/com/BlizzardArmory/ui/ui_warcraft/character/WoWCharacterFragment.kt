@@ -547,7 +547,9 @@ class WoWCharacterFragment : Fragment() {
             return@setOnTouchListener true
         }
         scrollView3?.viewTreeObserver?.addOnScrollChangedListener {
-            item_scroll_view.visibility = View.GONE
+            if (item_scroll_view != null) {
+                item_scroll_view.visibility = View.GONE
+            }
         }
     }
 

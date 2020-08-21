@@ -405,9 +405,11 @@
 
                 <View
                     android:id="@+id/view3"
-                    android:layout_width="325dp"
+                    android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@color/owBackgroundColor" />
 
                 <TableLayout
@@ -547,9 +549,11 @@
 
                 <View
                     android:id="@+id/view4"
-                    android:layout_width="325dp"
+                    android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@color/owBackgroundColor" />
 
                 <com.google.android.material.tabs.TabLayout

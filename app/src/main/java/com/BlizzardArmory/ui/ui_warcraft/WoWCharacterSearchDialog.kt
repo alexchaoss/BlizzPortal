@@ -47,7 +47,7 @@ object WoWCharacterSearchDialog {
         val fragmentManager = (activity as FragmentActivity).supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-        fragmentTransaction.replace(R.id.fragment, woWNavFragment)
+        fragmentTransaction.replace(R.id.nav_fragment, woWNavFragment)
         fragmentTransaction.addToBackStack(null).commit()
         activity.supportFragmentManager.executePendingTransactions()
     }

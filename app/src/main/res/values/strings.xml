@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blizzard Games Profiles</string>
+    <string name="app_name">Profiles for Blizzard Games</string>
     <string name="battle_tag" translatable="false">Battle tag</string>
     <string name="select_region">Select Region</string>
     <string name="login">Login</string>
@@ -18,7 +18,6 @@
     <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="action_settings" translatable="false">Settings</string>
-
     <string name="menu_home" translatable="false">Home</string>
     <string name="menu_gallery" translatable="false">Gallery</string>
     <string name="menu_slideshow" translatable="false">Slideshow</string>
@@ -169,4 +168,6 @@
     <string name="achievements">Achievements</string>
     <string name="download_achievements_n_wi_fi_recommended">Download Achievements\n(Wi-Fi recommended)</string>
     <string name="categories">Categories</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
