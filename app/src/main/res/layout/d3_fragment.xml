@@ -251,18 +251,13 @@
                 android:textColor="#FFFFFF"
                 android:textSize="25sp" />
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/character_frame_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp">
-
-                <LinearLayout
-                    android:id="@+id/character_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
+                android:layout_gravity="center"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -275,19 +270,13 @@
                 android:textColor="#FFFFFF"
                 android:textSize="25sp" />
 
-            <HorizontalScrollView
-                android:id="@+id/fallen_heroes_scroll"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/character_dead_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp">
-
-                <LinearLayout
-                    android:id="@+id/fallen_character_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
+                android:layout_gravity="center"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="3" />
         </LinearLayout>
 
     </ScrollView>

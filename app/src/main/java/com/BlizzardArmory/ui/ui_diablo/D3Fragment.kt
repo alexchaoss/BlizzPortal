@@ -3,15 +3,12 @@ package com.BlizzardArmory.ui.ui_diablo
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
@@ -26,14 +23,16 @@ import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.navigation.D3CharacterNav
-import com.BlizzardArmory.util.MetricConversion
+import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.d3_activity.*
+import kotlinx.android.synthetic.main.d3_fragment.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
-import java.text.SimpleDateFormat
 import java.util.*
 
 class D3Fragment : Fragment() {
@@ -42,11 +41,20 @@ class D3Fragment : Fragment() {
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var battleTag: String? = ""
     private var selectedRegion: String? = ""
-    private var characterID: Long = 0
     private var favorite: ImageView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.d3_activity, container, false)
+        return inflater.inflate(R.layout.d3_fragment, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,13 +86,21 @@ class D3Fragment : Fragment() {
                             "<font color=#b00000>" +
                             accountInformation?.paragonLevelHardcore +
                             "</font>"
-                    paragonLevel!!.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        paragonLevel!!.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
+                    } else {
+                        paragonLevel!!.text = Html.fromHtml(paragon)
+                    }
                     elite_kills!!.text = accountInformation?.kills?.elites.toString()
                     lifetime_kills!!.text = accountInformation?.kills?.monsters.toString()
                     setProgression()
                     setTimePlayed()
-                    setCharacterFrames()
-                    setFallenCharacterFrames()
+                    character_frame_recycler.apply {
+                        adapter = D3CharacterFrameAdapter(accountInformation?.heroes!!)
+                    }
+                    character_dead_recycler.apply {
+                        adapter = D3DeadCharacterAdapter(accountInformation?.fallenHeroes!!)
+                    }
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     URLConstants.loading = false
                     loadingCircle.visibility = View.GONE
@@ -188,215 +204,9 @@ class D3Fragment : Fragment() {
         wizard_progress.progress = (accountInformation?.timePlayed?.wizard?.times(100))?.toInt()!!
     }
 
-    private fun setFallenCharacterFrames() {
-        try {
-            for (i in accountInformation!!.fallenHeroes.indices) {
-                val frameLayout = ConstraintLayout(requireContext())
-                frameLayout.id = (i + 1) * 2
-                val frameLayoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
-                frameLayoutParams.marginEnd = 20
-                frameLayout.layoutParams = frameLayoutParams
-
-                val frameParams = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(113, requireActivity()), MetricConversion.getDPMetric(154, requireActivity()))
-                val frame = ImageView(requireContext())
-                frame.id = (i + 10) * 2
-                Glide.with(this).load(URLConstants.getD3Asset(getFallenHeroFrame(i))).into(frame)
-                val levelFrame = ImageView(requireContext())
-                levelFrame.id = (i + 100) * 2
-                levelFrame.setImageResource(R.drawable.fallen_hero_level)
-                val name = TextView(requireContext())
-                name.setTextColor(Color.parseColor("#a99877"))
-                name.text = accountInformation!!.fallenHeroes[i].name
-                name.id = (i + 1000) * 2
-                val format = SimpleDateFormat("MM/dd/yy", Locale.getDefault())
-                val dateFormatted = Date(accountInformation!!.fallenHeroes[i].death.time.toLong() * 1000L)
-                val dateString = format.format(dateFormatted)
-                val date = TextView(requireContext())
-                date.setTextColor(Color.parseColor("#937a51"))
-                date.text = dateString
-                date.textSize = 12f
-                date.id = (i + 10000) * 2
-                val level = TextView(requireContext())
-                level.setTextColor(Color.parseColor("#b00000"))
-                level.textSize = 15f
-                level.text = accountInformation!!.fallenHeroes[i].level.toString()
-                level.setTypeface(null, Typeface.BOLD)
-                level.id = (i + 100000) * 2
-                frameLayout.addView(frame, frameParams)
-                frameLayout.addView(name)
-                frameLayout.addView(date)
-                frameLayout.addView(levelFrame)
-                frameLayout.addView(level)
-                val setFrame = ConstraintSet()
-                setFrame.clone(frameLayout)
-                setFrame.connect(frame.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
-                setFrame.connect(frame.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
-                setFrame.connect(frame.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
-                setFrame.connect(frame.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
-                setFrame.connect(name.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 100)
-                setFrame.connect(name.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
-                setFrame.connect(name.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
-                setFrame.connect(name.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
-                setFrame.connect(date.id, ConstraintSet.TOP, name.id, ConstraintSet.BOTTOM, 0)
-                setFrame.connect(date.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
-                setFrame.connect(date.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
-                setFrame.connect(date.id, ConstraintSet.BOTTOM, levelFrame.id, ConstraintSet.TOP, 0)
-                setFrame.connect(level.id, ConstraintSet.TOP, levelFrame.id, ConstraintSet.TOP, 0)
-                setFrame.connect(level.id, ConstraintSet.LEFT, levelFrame.id, ConstraintSet.LEFT, 0)
-                setFrame.connect(level.id, ConstraintSet.RIGHT, levelFrame.id, ConstraintSet.RIGHT, 0)
-                setFrame.connect(level.id, ConstraintSet.BOTTOM, levelFrame.id, ConstraintSet.BOTTOM, 0)
-                setFrame.connect(levelFrame.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
-                setFrame.connect(levelFrame.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
-                setFrame.connect(levelFrame.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -25)
-                setFrame.applyTo(frameLayout)
-                fallen_character_layout!!.addView(frameLayout)
-            }
-        } catch (e: Exception) {
-            fallen_heroes_scroll.visibility = View.GONE
-            textView4.visibility = View.GONE
-        }
-    }
-
-    private fun getFallenHeroFrame(i: Int): String {
-        var imageName = ""
-        when (accountInformation!!.fallenHeroes[i].class_) {
-            "barbarian" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                imageName = "male_barb_dead"
-            } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                imageName = "female_barb_dead"
-            }
-            "wizard" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                imageName = "male_wizard_dead"
-            } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                imageName = "female_wizard_dead"
-            }
-            "demon-hunter" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                imageName = "male_dh_dead"
-            } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                imageName = "female_dh_dead"
-            }
-            "witch-doctor" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                imageName = "male_wd_dead"
-            } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                imageName = "female_wd_dead"
-            }
-            "necromancer" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                imageName = "male_necromancer_dead"
-            } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                imageName = "female_necromancer_dead"
-            }
-            "monk" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                imageName = "male_monk_dead"
-            } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                imageName = "female_monk_dead"
-            }
-            "crusader" -> if (accountInformation!!.fallenHeroes[i].gender == 0) {
-                imageName = "male_crusader_dead"
-            } else if (accountInformation!!.fallenHeroes[i].gender == 1) {
-                imageName = "female_crusader_dead"
-            }
-        }
-        return imageName
-    }
 
     private fun sortHeroes() {
         accountInformation?.heroes = accountInformation!!.heroes.sortedBy { it.lastUpdated }.reversed()
-    }
-
-    private fun setCharacterFrames() {
-
-        for (i in accountInformation!!.heroes.indices) {
-            val constraintLayoutCharacter = ConstraintLayout(requireContext())
-            constraintLayoutCharacter.id = i
-            val frameParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, 500)
-            val frame = ImageView(requireContext())
-            frame.id = 100 + i
-            frame.layoutParams = frameParams
-            if (accountInformation!!.heroes[i].hardcore) {
-                frame.setImageResource(R.drawable.d3_character_frame_hardcore)
-            } else {
-                frame.setImageResource(R.drawable.d3_character_frame)
-            }
-            val portraitParams = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(129, requireActivity()), MetricConversion.getDPMetric(100, requireActivity()))
-            val portrait = ImageView(requireContext())
-            portrait.id = i + 1000
-            Glide.with(this).load(URLConstants.getD3Asset(getGender(i))).into(portrait)
-            portrait.layoutParams = portraitParams
-            val name = TextView(requireContext())
-            name.text = accountInformation!!.heroes[i].name
-            name.setTextColor(Color.parseColor("#937a51"))
-            name.textSize = 17f
-            name.gravity = Gravity.CENTER
-            val eliteKills = TextView(requireContext())
-            eliteKills.id = 10000 + i
-            val eliteKillsText = accountInformation!!.heroes[i].kills.elites.toString() + " Elite Kills"
-            eliteKills.text = eliteKillsText
-            eliteKills.setTextColor(Color.parseColor("#a99877"))
-            eliteKills.textSize = 13f
-            eliteKills.gravity = Gravity.CENTER
-            val level = TextView(requireContext())
-            level.id = 100000 + i
-            level.text = accountInformation!!.heroes[i].level.toString()
-            level.textSize = 15f
-            level.gravity = Gravity.CENTER
-            level.setTypeface(null, Typeface.BOLD)
-            if (accountInformation!!.heroes[i].hardcore) {
-                level.setTextColor(Color.parseColor("#b00000"))
-            } else {
-                level.setTextColor(Color.parseColor("#a99877"))
-            }
-            val linearLayoutSeasonal = LinearLayout(requireContext())
-            linearLayoutSeasonal.id = 1000000 + i
-            linearLayoutSeasonal.orientation = LinearLayout.HORIZONTAL
-            linearLayoutSeasonal.gravity = Gravity.CENTER
-            linearLayoutSeasonal.addView(name)
-            if (accountInformation!!.heroes[i].seasonal) {
-                val leaf = ImageView(requireContext())
-                leaf.setImageDrawable(resources.getDrawable(R.drawable.leaf_seasonal, activity?.theme))
-                linearLayoutSeasonal.addView(leaf)
-            }
-            constraintLayoutCharacter.addView(frame)
-            constraintLayoutCharacter.addView(portrait)
-            constraintLayoutCharacter.addView(linearLayoutSeasonal)
-            constraintLayoutCharacter.addView(eliteKills)
-            constraintLayoutCharacter.addView(level)
-            val setFrame = ConstraintSet()
-            setFrame.clone(constraintLayoutCharacter)
-            setFrame.connect(frame.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
-            setFrame.connect(frame.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
-            setFrame.connect(frame.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
-            setFrame.connect(frame.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
-            setFrame.connect(portrait.id, ConstraintSet.TOP, frame.id, ConstraintSet.TOP, 25)
-            setFrame.connect(portrait.id, ConstraintSet.LEFT, frame.id, ConstraintSet.LEFT, 0)
-            setFrame.connect(portrait.id, ConstraintSet.RIGHT, frame.id, ConstraintSet.RIGHT, 0)
-            setFrame.connect(linearLayoutSeasonal.id, ConstraintSet.TOP, portrait.id, ConstraintSet.BOTTOM, 0)
-            setFrame.connect(linearLayoutSeasonal.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
-            setFrame.connect(linearLayoutSeasonal.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
-            setFrame.connect(linearLayoutSeasonal.id, ConstraintSet.BOTTOM, eliteKills.id, ConstraintSet.TOP, 5)
-            setFrame.connect(eliteKills.id, ConstraintSet.TOP, linearLayoutSeasonal.id, ConstraintSet.BOTTOM, 0)
-            setFrame.connect(eliteKills.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 10)
-            setFrame.connect(eliteKills.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 50)
-            setFrame.connect(eliteKills.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 20)
-            setFrame.connect(level.id, ConstraintSet.TOP, linearLayoutSeasonal.id, ConstraintSet.BOTTOM, 0)
-            setFrame.connect(level.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 360)
-            setFrame.connect(level.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
-            setFrame.connect(level.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 25)
-            setFrame.applyTo(constraintLayoutCharacter)
-            character_layout!!.addView(constraintLayoutCharacter)
-            setOnClickCharacterFrame(constraintLayoutCharacter)
-        }
-    }
-
-    private fun setOnClickCharacterFrame(constraintLayoutCharacter: ConstraintLayout) {
-        constraintLayoutCharacter.setOnClickListener {
-            for (j in accountInformation!!.heroes.indices) {
-                if (j == constraintLayoutCharacter.id) {
-                    Log.i("ID test", "" + accountInformation!!.heroes[j].id)
-                    characterID = accountInformation!!.heroes[j].id
-                }
-            }
-            displayFragment()
-        }
     }
 
     private fun setProgression() {
@@ -470,10 +280,15 @@ class D3Fragment : Fragment() {
         return imageName
     }
 
-    private fun displayFragment() {
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun D3CharacterEventReceived(d3CharacterEvent: D3CharacterEvent) {
+        displayFragment(d3CharacterEvent.hero.id)
+    }
+
+    private fun displayFragment(characterId: Long) {
         val bundle = Bundle()
         bundle.putString("battletag", battleTag)
-        bundle.putLong("id", characterID)
+        bundle.putLong("id", characterId)
         bundle.putString("region", selectedRegion)
         val d3CharacterNav = D3CharacterNav()
         d3CharacterNav.arguments = bundle

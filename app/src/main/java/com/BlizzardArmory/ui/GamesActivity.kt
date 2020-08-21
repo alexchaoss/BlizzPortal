@@ -310,7 +310,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 drawer_layout.closeDrawers()
             }
             "Diablo 3" -> {
-                favorite.visibility = View.VISIBLE
+                favorite.visibility = View.GONE
                 favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                 DiabloProfileSearchDialog.diabloPrompt(this, battlenetOAuth2Params!!, supportFragmentManager)
                 drawer_layout.closeDrawers()
@@ -329,4 +329,15 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         }
         return true
     }
+
+    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        return (NavigationUI.navigateUp(navController, mAppBarConfiguration!!)
+                || super.onSupportNavigateUp())
+    }*/
 }

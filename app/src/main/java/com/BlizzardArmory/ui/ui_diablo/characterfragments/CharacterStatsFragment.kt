@@ -24,9 +24,9 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.events.CharacterEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.BlizzardArmory.util.events.RetryEvent
+import com.BlizzardArmory.util.events.WoWCharacterEvent
 import kotlinx.android.synthetic.main.d3_character_fragment.*
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
@@ -77,7 +77,7 @@ class CharacterStatsFragment : Fragment() {
                 when {
                     response.isSuccessful -> {
                         characterInformation = response.body()
-                        EventBus.getDefault().post(CharacterEvent(characterInformation!!))
+                        EventBus.getDefault().post(WoWCharacterEvent(characterInformation!!))
                         setGlobes()
                         setName()
                         val primaryStats = DecimalFormat("#0")

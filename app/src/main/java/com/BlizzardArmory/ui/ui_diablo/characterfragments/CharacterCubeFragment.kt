@@ -20,7 +20,7 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.item.SingleItem
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.events.CharacterEvent
+import com.BlizzardArmory.util.events.WoWCharacterEvent
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.d3_cube_fragment.*
 import org.greenrobot.eventbus.EventBus
@@ -161,8 +161,8 @@ class CharacterCubeFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(characterEvent: CharacterEvent) {
-        characterInformation = characterEvent.data
+    public fun retryEventReceived(woWCharacterEvent: WoWCharacterEvent) {
+        characterInformation = woWCharacterEvent.data
         cubeIcons
         downloadCubeItems()
     }
