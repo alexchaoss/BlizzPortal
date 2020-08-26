@@ -109,7 +109,7 @@ dependencies {
     testImplementation("junit:junit:4.13")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.0")
 
-    implementation('com.google.apis:google-api-services-oauth2:v2-rev157-1.25.0') {
+    implementation('com.google.apis:google-api-services-oauth2:v2-rev20200213-1.30.10') {
         exclude module: 'httpclient' //by artifact name
         exclude group: 'org.apache.httpcomponents' //by group
         exclude group: 'org.apache.httpcomponents', module: 'httpclient' //by both name and group
