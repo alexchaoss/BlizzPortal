@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
@@ -19,6 +20,7 @@ class BlizzardArmory : Application() {
             instance = this
         }
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Log.e("Crash Prevented", throwable.message!!)
             handleUncaughtException(thread, throwable)
         }
     }

@@ -41,6 +41,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.d3_gear_fragment.*
@@ -73,6 +74,11 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         drawer_layout.setScrimColor(Color.TRANSPARENT)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         battlenetOAuth2Params = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Log.e("Crash Prevented", throwable.message!!)
+            handleUncaughtException(thread, throwable)
+        }
 
         if (!prefs?.contains("news_pulled")!!) {
             val dialog = DialogPrompt(this)
@@ -123,6 +129,10 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         }
 
         downloadUserInfo()
+    }
+
+    private fun handleUncaughtException(thread: Thread?, e: Throwable) {
+        FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 
     private fun setUserNews() {
@@ -195,12 +205,6 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                     if (response.body() != null) {
                         userInformation = response.body()
 
-                        /*try {
-                            Crashlytics.log(Log.INFO, "Battle tag", response.body()!!.battleTag)
-                        } catch (e: Exception) {
-                            Crashlytics.log(Log.ERROR, "NULL BODY", "Body was null and crashed the app.")
-                        }
-                         */
                         bar_title.text = userInformation?.battleTag
                         battletag.text = userInformation?.battleTag
                     } else {
