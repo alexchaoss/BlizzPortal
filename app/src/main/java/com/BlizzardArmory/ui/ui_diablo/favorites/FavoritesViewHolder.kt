@@ -13,7 +13,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
-import com.BlizzardArmory.ui.ui_diablo.D3Fragment
+import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 
 
 class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :

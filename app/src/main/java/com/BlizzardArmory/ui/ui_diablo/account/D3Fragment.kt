@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo
+package com.BlizzardArmory.ui.ui_diablo.account
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -98,8 +98,10 @@ class D3Fragment : Fragment() {
                     character_frame_recycler.apply {
                         adapter = D3CharacterFrameAdapter(accountInformation?.heroes!!)
                     }
-                    character_dead_recycler.apply {
-                        adapter = D3DeadCharacterAdapter(accountInformation?.fallenHeroes!!)
+                    if (accountInformation?.fallenHeroes != null) {
+                        character_dead_recycler.apply {
+                            adapter = D3DeadCharacterAdapter(accountInformation?.fallenHeroes!!)
+                        }
                     }
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     URLConstants.loading = false

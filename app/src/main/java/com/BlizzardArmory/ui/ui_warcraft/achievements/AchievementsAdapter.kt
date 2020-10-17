@@ -1,17 +1,19 @@
 package com.BlizzardArmory.ui.ui_warcraft.achievements
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievement
 
-class AchievementsAdapter(private val list: List<DetailedAchievement>, private val achievements: List<Achievement>, private val locale: String)
+class AchievementsAdapter(private val list: List<DetailedAchievement>, private val achievements: List<Achievement>)
     : RecyclerView.Adapter<AcheivementsViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AcheivementsViewHolder {
+        Log.i("Achiev size", list.size.toString())
         val inflater = LayoutInflater.from(parent.context)
         return AcheivementsViewHolder(inflater, parent)
     }
@@ -23,7 +25,7 @@ class AchievementsAdapter(private val list: List<DetailedAchievement>, private v
             holder.itemView.setBackgroundColor(Color.parseColor("#00000000"))
         }
         val detailedAchievement: DetailedAchievement = list[position]
-        holder.bind(detailedAchievement, locale, achievements)
+        holder.bind(detailedAchievement, achievements)
     }
 
     override fun getItemCount(): Int = list.size

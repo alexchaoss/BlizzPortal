@@ -31,7 +31,7 @@ class AcheivementsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         date = itemView.findViewById(R.id.completed_date)
     }
 
-    fun bind(detailedAchievement: DetailedAchievement, locale: String, achievements: List<Achievement>) {
+    fun bind(detailedAchievement: DetailedAchievement, achievements: List<Achievement>) {
         Glide.with(itemView).load(detailedAchievement.icon).into(icon!!)
         if (detailedAchievement.is_account_wide) {
             name?.setTextColor(Color.parseColor("#0081ff"))
@@ -49,22 +49,4 @@ class AcheivementsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
             itemView.alpha = 1F
         }
     }
-
-    /*private fun getLocale(locale: String, category: Category){
-        when(locale){
-            "de_DE"-> categoryName?.text = category.name.name.deDE
-            "en_GB"->categoryName?.text = category.name.name.enGB
-            "en_US"-> categoryName?.text = category.name.name.enUS
-            "es_ES"-> categoryName?.text = category.name.name.esES
-            "es_MX"-> categoryName?.text = category.name.name.esMX
-            "fr_FR"-> categoryName?.text = category.name.name.frFR
-            "it_IT"-> categoryName?.text = category.name.name.itIT
-            "ko_KR"-> categoryName?.text = category.name.name.koKR
-            "pt_BR"-> categoryName?.text = category.name.name.ptBR
-            "ru_RU"-> categoryName?.text = category.name.name.ruRU
-            "zh_CN"-> categoryName?.text = category.name.name.zhCN
-            "zh_TW"-> categoryName?.text = category.name.name.zhTW
-        }
-    }*/
-
 }

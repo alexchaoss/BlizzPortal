@@ -105,7 +105,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
         val mediaUrl: String? = if (media == null) {
             "https://render-us.worldofwarcraft.com/character/auchindoun/0/0-main.jpg"
         } else {
-            media.avatarUrl
+            media.assets?.first { it.key == "avatar" }?.value
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 

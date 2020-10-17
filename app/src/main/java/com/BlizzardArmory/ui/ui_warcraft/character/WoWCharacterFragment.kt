@@ -336,7 +336,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadBackground() {
         if (media != null) {
-            Glide.with(this).load(media?.renderUrl).placeholder(R.drawable.loading_placeholder).into(background)
+            Glide.with(this).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(background)
         } else {
             val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
                     characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
@@ -344,7 +344,7 @@ class WoWCharacterFragment : Fragment() {
                 override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                     if (response.isSuccessful) {
                         media = response.body()!!
-                        Glide.with(this@WoWCharacterFragment).load(media?.renderUrl).placeholder(R.drawable.loading_placeholder).into(background)
+                        Glide.with(this@WoWCharacterFragment).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(background)
                     }
                 }
 
@@ -546,9 +546,13 @@ class WoWCharacterFragment : Fragment() {
             }
             return@setOnTouchListener true
         }
+        val currentY = scrollView3.scrollY
         scrollView3?.viewTreeObserver?.addOnScrollChangedListener {
-            if (item_scroll_view != null) {
-                item_scroll_view.visibility = View.GONE
+
+            if (scrollView3 != null) {
+                if (currentY != scrollView3.scrollY) {
+                    item_scroll_view.visibility = View.GONE
+                }
             }
         }
     }

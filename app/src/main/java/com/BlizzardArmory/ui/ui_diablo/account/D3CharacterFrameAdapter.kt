@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo
+package com.BlizzardArmory.ui.ui_diablo.account
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

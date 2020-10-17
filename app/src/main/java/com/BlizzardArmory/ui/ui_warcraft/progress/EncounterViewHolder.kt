@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
@@ -188,16 +189,17 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val percent = (maxCount * 100) / mode.progress.total_count
         Log.i("PROGRESS", "percent: " + percent + " count: " + maxCount + " total: " + mode.progress.total_count)
         if (percent < 40) {
-            progressBar?.progressDrawable = context.getDrawable(R.drawable.progress_bar_raid_1)
+            progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.progress_bar_raid_1)
         } else if (percent < 100) {
-            progressBar?.progressDrawable = context.getDrawable(R.drawable.progress_bar_raid_half)
+            progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.progress_bar_raid_half)
         } else if (percent == 100) {
-            progressBar?.progressDrawable = context.getDrawable(R.drawable.progress_bar_raid_full)
+            progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.progress_bar_raid_full)
         }
     }
 
     private fun findBanner(instances: Instances): String {
         when (instances.instance.id) {
+            1190L -> return "castle_nathria_small"
             1031L -> return "uldir_small"
             1176L -> return "battle_of_dazaralor_small"
             1177L -> return "crucible_of_storms_small"

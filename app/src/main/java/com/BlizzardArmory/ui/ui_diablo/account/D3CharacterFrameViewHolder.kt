@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo
+package com.BlizzardArmory.ui.ui_diablo.account
 
 import android.graphics.Color
 import android.view.LayoutInflater

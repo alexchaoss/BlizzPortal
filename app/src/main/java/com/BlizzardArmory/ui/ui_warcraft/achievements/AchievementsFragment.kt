@@ -20,6 +20,7 @@ import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
+import com.BlizzardArmory.ui.DialogPrompt
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.IOnBackPressed
@@ -27,7 +28,6 @@ import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.wow_achievements_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -97,9 +97,13 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
+
         back_arrow.setOnClickListener {
             backArrow()
         }
+
+        val dialog = DialogPrompt(requireContext())
+
 
         sub_category_tab.setOnClickListener {
             categories_recycler.visibility = View.VISIBLE
@@ -113,7 +117,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         }
 
         download_request.setOnClickListener {
-            downloadAchievementInformation()
+            setAchievementInformation()
         }
     }
 
@@ -135,27 +139,10 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         achievements_recycler.visibility = View.GONE
     }
 
-    private fun downloadAchievementInformation() {
-        download_request.visibility = View.GONE
-        Glide.with(this).load(R.drawable.loading_placeholder).placeholder(R.drawable.loading_placeholder).override(100, 100).into(loading)
-        if (!prefs?.contains("detailed_achievements_${MainActivity.locale}")!! || needToUpdate) {
-            val call1: Call<DetailedAchievements> = RetroClient.getClient.getAllAchievements(URLConstants.selectAchievementsURLFromLocale(MainActivity.locale))
-            call1.enqueue(object : Callback<DetailedAchievements> {
-                override fun onResponse(call: Call<DetailedAchievements>, response: Response<DetailedAchievements>) {
-                    if (response.isSuccessful) {
-                        allAchievements = response.body()
-                        val savedAchievs = Pair(System.currentTimeMillis(), allAchievements)
-                        prefs!!.edit().putString("detailed_achievements_${MainActivity.locale}", gson?.toJson(savedAchievs)).apply()
-                        needToUpdate = false
-                        downloadCharacterAchievements()
-                    }
-                }
-
-                override fun onFailure(call: Call<DetailedAchievements>, t: Throwable) {
-                    Log.e("Error", "trace", t)
-                }
-            })
-        } else {
+    private fun setAchievementInformation() {
+        /*if (!prefs?.contains("detailed_achievements_${MainActivity.locale}")!! || needToUpdate) {*/
+        downloadAchievementInformation()
+        /*} else {
             val saveAchievs =
                     gson!!.fromJson<Pair<Long, DetailedAchievements>>(
                             prefs!!.getString("detailed_achievements_${MainActivity.locale}", "DEFAULT"),
@@ -168,7 +155,26 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 allAchievements = saveAchievs.second
                 downloadCharacterAchievements()
             }
-        }
+        }*/
+    }
+
+    private fun downloadAchievementInformation() {
+        val call1: Call<DetailedAchievements> = RetroClient.getClient.getAllAchievements(URLConstants.selectAchievementsURLFromLocale(MainActivity.locale))
+        call1.enqueue(object : Callback<DetailedAchievements> {
+            override fun onResponse(call: Call<DetailedAchievements>, response: Response<DetailedAchievements>) {
+                if (response.isSuccessful) {
+                    allAchievements = response.body()
+                    val savedAchievs = Pair(System.currentTimeMillis(), allAchievements)
+                    prefs!!.edit().putString("detailed_achievements_${MainActivity.locale}", gson?.toJson(savedAchievs)).apply()
+                    needToUpdate = false
+                    downloadCharacterAchievements()
+                }
+            }
+
+            override fun onFailure(call: Call<DetailedAchievements>, t: Throwable) {
+                Log.e("Error", "trace", t)
+            }
+        })
     }
 
     private fun downloadCharacterAchievements() {
@@ -176,7 +182,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         call.enqueue(object : Callback<Achievements> {
             override fun onResponse(call: Call<Achievements>, response: Response<Achievements>) {
                 characterAchievements = response.body()
-                downloadCategories()
+                setCategories()
             }
 
             override fun onFailure(call: Call<Achievements>, t: Throwable) {
@@ -185,25 +191,10 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         })
     }
 
-    private fun downloadCategories() {
-        if (!prefs?.contains("achievement_categories_${MainActivity.locale}")!! || needToUpdate) {
-            val call: Call<Categories> = RetroClient.getClient.getAchievementCategories(URLConstants.selectAchievementCategoriesURLFromLocale(MainActivity.locale))
-            call.enqueue(object : Callback<Categories> {
-                override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
-                    if (response.isSuccessful) {
-                        categories = response.body()
-                        val savedCategories = Pair(System.currentTimeMillis(), categories)
-                        prefs!!.edit().putString("achievement_categories_${MainActivity.locale}", gson!!.toJson(savedCategories)).apply()
-                        needToUpdate = false
-                        createAchievementsMap()
-                    }
-                }
-
-                override fun onFailure(call: Call<Categories>, t: Throwable) {
-                    Log.e("Error", "trace", t)
-                }
-            })
-        } else {
+    private fun setCategories() {
+        /*if (!prefs?.contains("achievement_categories_${MainActivity.locale}")!! || needToUpdate) {*/
+        downloadCategories()
+        /*} else {
             val savedCategories =
                     gson!!.fromJson<Pair<Long, Categories>>(prefs!!.getString("achievement_categories_${MainActivity.locale}", "DEFAULT"), object : TypeToken<Pair<Long, Categories>>() {}.type)
             if ((System.currentTimeMillis() - savedCategories.first) > 435000000L) {
@@ -213,7 +204,26 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
                 categories = savedCategories.second
                 createAchievementsMap()
             }
-        }
+        }*/
+    }
+
+    private fun downloadCategories() {
+        val call: Call<Categories> = RetroClient.getClient.getAchievementCategories(URLConstants.selectAchievementCategoriesURLFromLocale(MainActivity.locale))
+        call.enqueue(object : Callback<Categories> {
+            override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
+                if (response.isSuccessful) {
+                    categories = response.body()
+                    val savedCategories = Pair(System.currentTimeMillis(), categories)
+                    prefs!!.edit().putString("achievement_categories_${MainActivity.locale}", gson!!.toJson(savedCategories)).apply()
+                    needToUpdate = false
+                    createAchievementsMap()
+                }
+            }
+
+            override fun onFailure(call: Call<Categories>, t: Throwable) {
+                Log.e("Error", "trace", t)
+            }
+        })
     }
 
     private fun createAchievementsMap() {
@@ -239,10 +249,11 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     }
 
     private fun setAchievementRecycler(id: Long) {
+        Log.i("achiev size", id.toString())
         achievements_recycler.apply {
             adapter = AchievementsAdapter(
                     mappedAchievements[id]!!.sortedWith(compareByDescending<DetailedAchievement> { characterAchievements?.achievements?.find { ac -> ac.id == it.id }?.completed_timestamp }.thenBy { it.display_order }),
-                    characterAchievements?.achievements!!, MainActivity.locale)
+                    characterAchievements?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
     }
@@ -254,7 +265,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         }
         if (mappedAchievements[currentCategory]?.size != 0) {
             achievements_recycler.apply {
-                adapter = AchievementsAdapter(mappedAchievements[currentCategory]!!, characterAchievements?.achievements!!, MainActivity.locale)
+                adapter = AchievementsAdapter(mappedAchievements[currentCategory]!!, characterAchievements?.achievements!!)
                 adapter!!.notifyDataSetChanged()
             }
         }
@@ -263,11 +274,12 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun factionEventReceived(factionEvent: FactionEvent) {
         faction = factionEvent.data
-        if (prefs?.contains("achievement_categories_${MainActivity.locale}")!! && prefs?.contains("detailed_achievements_${MainActivity.locale}")!!) {
-            downloadAchievementInformation()
-        } else {
+        /*if (prefs?.contains("achievement_categories_${MainActivity.locale}")!! && prefs?.contains("detailed_achievements_${MainActivity.locale}")!!) {*/
+        Glide.with(this).load("").placeholder(R.drawable.loading_placeholder).override(100, 100).into(loading)
+        setAchievementInformation()
+        /*} else {
             download_request.visibility = View.VISIBLE
-        }
+        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -294,7 +306,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
-            downloadAchievementInformation()
+            setAchievementInformation()
         }
     }
 
