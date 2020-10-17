@@ -16,14 +16,14 @@
 
         <ImageView
             android:id="@+id/paperdoll_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/paperdoll"
             android:src="@drawable/paperdoll"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/shoulder"
@@ -34,8 +34,8 @@
             android:contentDescription="@string/shoulders"
             app:layout_constraintBottom_toTopOf="@id/gloves"
             app:layout_constraintEnd_toStartOf="@id/head"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
+            app:layout_constraintTop_toTopOf="@id/paperdoll_bg" />
 
         <ImageView
             android:id="@+id/gloves"
@@ -45,7 +45,7 @@
             android:contentDescription="@string/gloves"
             app:layout_constraintBottom_toTopOf="@id/ring1"
             app:layout_constraintEnd_toStartOf="@id/chest"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
             app:layout_constraintTop_toBottomOf="@id/shoulder" />
 
         <ImageView
@@ -57,7 +57,7 @@
             android:contentDescription="@string/ring1"
             app:layout_constraintBottom_toTopOf="@id/main_hand"
             app:layout_constraintEnd_toStartOf="@id/legs"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
             app:layout_constraintTop_toBottomOf="@id/gloves" />
 
         <ImageView
@@ -69,7 +69,7 @@
             android:contentDescription="@string/main_hand"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/boots"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
             app:layout_constraintTop_toBottomOf="@id/ring1" />
 
 
@@ -82,9 +82,9 @@
             android:layout_marginBottom="3dp"
             android:contentDescription="@string/head"
             app:layout_constraintBottom_toTopOf="@id/chest"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/paperdoll_bg"
+            app:layout_constraintStart_toEndOf="@id/paperdoll_bg"
+            app:layout_constraintTop_toTopOf="@id/paperdoll_bg" />
 
         <ImageView
             android:id="@+id/chest"
@@ -94,8 +94,8 @@
             android:layout_marginBottom="3dp"
             android:contentDescription="@string/chest"
             app:layout_constraintBottom_toTopOf="@id/belt"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/paperdoll_bg"
+            app:layout_constraintStart_toEndOf="@id/paperdoll_bg"
             app:layout_constraintTop_toBottomOf="@id/head"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -107,8 +107,8 @@
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/belt"
             app:layout_constraintBottom_toTopOf="@id/legs"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/paperdoll_bg"
+            app:layout_constraintStart_toEndOf="@id/paperdoll_bg"
             app:layout_constraintTop_toBottomOf="@id/chest" />
 
         <ImageView
@@ -119,8 +119,8 @@
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/legs"
             app:layout_constraintBottom_toTopOf="@id/boots"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
+            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
             app:layout_constraintTop_toBottomOf="@id/belt" />
 
         <ImageView
@@ -131,8 +131,8 @@
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/boots"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
+            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
             app:layout_constraintTop_toBottomOf="@id/legs" />
 
         <ImageView
@@ -143,9 +143,9 @@
             android:layout_marginEnd="40dp"
             android:contentDescription="@string/amulet"
             app:layout_constraintBottom_toTopOf="@id/bracers"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
             app:layout_constraintStart_toEndOf="@+id/chest"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/paperdoll_bg" />
 
         <ImageView
             android:id="@+id/bracers"
@@ -155,7 +155,7 @@
             android:layout_marginTop="12dp"
             android:contentDescription="@string/bracers"
             app:layout_constraintBottom_toTopOf="@id/ring2"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
             app:layout_constraintStart_toEndOf="@id/chest"
             app:layout_constraintTop_toBottomOf="@id/amulet" />
 
@@ -166,7 +166,7 @@
             android:layout_marginStart="23dp"
             android:contentDescription="@string/ring2"
             app:layout_constraintBottom_toTopOf="@id/off_hand"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
             app:layout_constraintStart_toEndOf="@id/legs"
             app:layout_constraintTop_toBottomOf="@id/bracers" />
 
@@ -177,8 +177,8 @@
             android:layout_marginStart="25dp"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/off_hand"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/paperdoll_bg"
+            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
             app:layout_constraintStart_toEndOf="@id/boots"
             app:layout_constraintTop_toBottomOf="@id/ring2" />
 

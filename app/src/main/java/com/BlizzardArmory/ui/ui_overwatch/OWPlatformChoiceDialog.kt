@@ -42,7 +42,7 @@ object OWPlatformChoiceDialog {
         bundle.putString("username", username)
         bundle.putString("platform", platform)
         fragment.arguments = bundle
-        fragmentManager.beginTransaction().replace(R.id.nav_fragment, fragment, "overwatchfragment").commit()
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment").commit()
         fragmentManager.executePendingTransactions()
     }
 

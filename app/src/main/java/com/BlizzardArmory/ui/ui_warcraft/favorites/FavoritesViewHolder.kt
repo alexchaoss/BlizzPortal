@@ -105,7 +105,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val mediaUrl: String? = if (media == null) {
             "https://render-us.worldofwarcraft.com/character/auchindoun/0/0-main.jpg"
         } else {
-            media.avatarUrl
+            media.assets?.first { it.key == "avatar" }?.value
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
         Glide.with(itemView).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)

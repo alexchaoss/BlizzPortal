@@ -18,6 +18,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 import com.BlizzardArmory.util.MetricConversion
 
 /**

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
@@ -59,11 +60,11 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
 
     private fun setBarColor(reputations: Reputations) {
         when (reputations.standing.tier) {
-            7 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_teal)
-            4, 5, 6 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_green)
-            3 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_yellow)
-            1, 2 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_orange)
-            0 -> progressBar?.progressDrawable = context.getDrawable(R.drawable.rep_progress_red)
+            7 -> progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.rep_progress_teal)
+            4, 5, 6 -> progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.rep_progress_green)
+            3 -> progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.rep_progress_yellow)
+            1, 2 -> progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.rep_progress_orange)
+            0 -> progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.rep_progress_red)
         }
     }
 }

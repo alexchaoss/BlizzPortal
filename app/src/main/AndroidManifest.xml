@@ -59,7 +59,7 @@
             android:screenOrientation="unspecified"
             android:launchMode="singleTop" />
         <activity
-            android:name="com.BlizzardArmory.ui.ui_diablo.D3Fragment"
+            android:name="com.BlizzardArmory.ui.ui_diablo.account.D3Fragment"
             android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"

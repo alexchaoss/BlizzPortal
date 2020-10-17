@@ -12,16 +12,8 @@ class Media {
     @Expose
     var character: Character? = null
 
-    @SerializedName("avatar_url")
+    @SerializedName("assets")
     @Expose
-    var avatarUrl: String? = null
-
-    @SerializedName("bust_url")
-    @Expose
-    var bustUrl: String? = null
-
-    @SerializedName("render_url")
-    @Expose
-    var renderUrl: String? = null
+    var assets: List<Asset>? = null
 
 }

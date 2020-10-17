@@ -1,6 +1,12 @@
 package com.BlizzardArmory.model.warcraft.reputations.characterreputations
 
 enum class RepByExpansion(expansion: String, name: String, faction: String, id: Int) {
+    VE_NARI("Shadowlands", "Ve'nari", "", 0),
+    THE_WILD_HUNT("Shadowlands", "The Wild Hunt", "", 2422),
+    THE_UNDYING_ARMY("Shadowlands", "The Undying Army", "", 2410),
+    THE_ASCENDED("Shadowlands", "The Ascended", "", 2407),
+    THE_AVOWED("Shadowlands", "The Avowed", "", 2439),
+    COURT_OF_HARVESTERS("Shadowlands", "Court of Harvesters", "", 2413),
     RAJANI("Battle for Azeroth", "Rajani", "", 2415),
     HONEYBACK_HIVE("Battle for Azeroth", "Honeyback Hive", "", 2395),
     ULDUM_ACCORD("Battle for Azeroth", "Uldum Accord", "", 2417),
@@ -10,7 +16,7 @@ enum class RepByExpansion(expansion: String, name: String, faction: String, id: 
     ORDER_OF_EMBERS("Battle for Azeroth", "Order of Embers", "", 2161),
     PROUDMOORE_ADMIRALTY("Battle for Azeroth", "Proudmoore Admiralty", "", 2160),
     THE_UNSHACKLED("Battle for Azeroth", "The Unshackled", "", 2373),
-    THE_HONORBOUND("Battle for Azeroth", "The honorbound", "", 2157),
+    THE_HONORBOUND("Battle for Azeroth", "The Honorbound", "", 2157),
     ZANDALARI_EMPIRE("Battle for Azeroth", "Zandalari Empire", "", 2103),
     TALANJIS_EXPEDITION("Battle for Azeroth", "Talanji's Expedition", "", 2156),
     VOLDUNAI("Battle for Azeroth", "Voldunai", "", 2158),
