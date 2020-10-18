@@ -21,6 +21,7 @@ import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
+import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -173,6 +174,9 @@ interface NetworkServices {
                  @Query("locale") locale: String?,
                  @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Talents>
+
+    @GET
+    fun getTalentsWithIcon(@Url url: String?): Call<List<TalentsIcons>>
 
     /**
      * Gets character.
