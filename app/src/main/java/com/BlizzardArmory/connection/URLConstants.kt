@@ -149,4 +149,8 @@ object URLConstants {
     fun selectAchievementCategoriesURLFromLocale(locale: String): String {
         return "https://blizzard-armory-server.herokuapp.com/categories/$locale"
     }
+
+    fun getTalentsIcons(playableClassId: Int, locale: String): String {
+        return "https://blizzard-armory-server.herokuapp.com/talents/$playableClassId/$locale"
+    }
 }

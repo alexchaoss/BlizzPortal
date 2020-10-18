@@ -31,8 +31,8 @@ import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
 import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacters
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
-import com.BlizzardArmory.model.warcraft.talents.Talent
 import com.BlizzardArmory.model.warcraft.talents.Talents
+import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
@@ -47,6 +47,7 @@ import kotlinx.android.synthetic.main.wow_character_fragment.*
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 class WoWCharacterFragment : Fragment() {
@@ -61,16 +62,12 @@ class WoWCharacterFragment : Fragment() {
     private var media: Media? = null
     private lateinit var statistic: Statistic
     private lateinit var talentsInfo: Talents
+    private var talentsIcons = listOf<TalentsIcons>()
     private lateinit var equipment: Equipment
     private var nameView: TextView? = null
     private var statsView: TextView? = null
     private val imageURLs = HashMap<String, String>()
 
-    //Talents
-    private var talentsTierContainer: List<TextView?>? = null
-    private var talentsContainer: List<TextView?>? = null
-    private var talentsTier: List<String>? = null
-    private val talents: MutableList<Talent?> = ArrayList()
     private val gearImageView = HashMap<String, ImageView>()
     private val stats = HashMap<String, String>()
     private val nameList = HashMap<String, String>()
@@ -99,7 +96,6 @@ class WoWCharacterFragment : Fragment() {
         nameView = TextView(view.context)
         linearLayoutItemStats.addView(nameView)
         linearLayoutItemStats.addView(statsView)
-        no_talent?.visibility = View.INVISIBLE
 
         favorite = activity?.findViewById(R.id.favorite)
         favorite?.visibility = View.VISIBLE
@@ -147,7 +143,6 @@ class WoWCharacterFragment : Fragment() {
         downloadBackground()
         downloadAndSetCharacterInformation()
         downloadStats()
-        downloadTalents()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -168,15 +163,32 @@ class WoWCharacterFragment : Fragment() {
             override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
                 if (response.isSuccessful) {
                     talentsInfo = response.body()!!
-                    setTalentInformation()
+
+                    downloadTalentIconsInfo()
                 }
             }
 
             override fun onFailure(call: Call<Talents>, t: Throwable) {
                 Log.e("Error", "trace", t)
-                no_talent?.visibility = View.VISIBLE
+                //no_talent?.visibility = View.VISIBLE
                 val noTalent = "Talent information outdated"
-                no_talent?.text = noTalent
+                //no_talent?.text = noTalent
+            }
+        })
+    }
+
+    private fun downloadTalentIconsInfo() {
+        val call2: Call<List<TalentsIcons>> = RetroClient.getClient.getTalentsWithIcon(URLConstants.getTalentsIcons(characterSummary.characterClass.id, MainActivity.locale))
+        call2.enqueue(object : Callback<List<TalentsIcons>> {
+            override fun onResponse(call: Call<List<TalentsIcons>>, response: Response<List<TalentsIcons>>) {
+                if (response.isSuccessful) {
+                    talentsIcons = response.body()!!
+                    setTalentInformation()
+                }
+            }
+
+            override fun onFailure(call: Call<List<TalentsIcons>>, t: Throwable) {
+
             }
         })
     }
@@ -215,6 +227,7 @@ class WoWCharacterFragment : Fragment() {
                     }
                     else -> {
                         characterSummary = response.body()!!
+                        downloadTalents()
                         setBackgroundColor()
                         character_name.text = characterSummary.name
                         manageFavorite(characterSummary)
@@ -224,6 +237,7 @@ class WoWCharacterFragment : Fragment() {
                         val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
                         level_race_class.text = levelRaceClassString
                         downloadEquipment()
+
                     }
                 }
             }
@@ -558,117 +572,54 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun setTalentInformation() {
-        for (i in talentsInfo.specializations.indices) {
-            if (talentsInfo.activeSpecialization.name == talentsInfo.specializations[i].specialization.name) {
-                try {
-                    talents.addAll(talentsInfo.specializations[i].talents)
-                } catch (e: Exception) {
-                    talents.add(null)
-                }
-                specialization?.text = String.format("Specialization: %s", talentsInfo.activeSpecialization.name)
-            }
-        }
         if (talentsInfo.specializations.size == 4) {
             tabLayout?.addTab(tabLayout!!.newTab())
             tabLayout?.getTabAt(3)?.text = talentsInfo.specializations[3].specialization.name
         }
-        for (i in talentsInfo.specializations.indices) {
-            val tab = tabLayout?.getTabAt(i)
-            tab?.text = talentsInfo.specializations[i].specialization.name
-        }
+
         if (talentsInfo.specializations.size == 2) {
             tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
         } else if (talentsInfo.specializations.size == 1) {
             tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
             tabLayout?.getTabAt(1)?.let { tabLayout?.removeTab(it) }
         }
-        talentsTierContainer = ArrayList(listOf(fifteen, thirty, forty_five, sixty, seventy_five, ninety, hundred))
-        talentsContainer = ArrayList(listOf(fifteenTalent, thirtyTalent, forty_fiveTalent, sixtyTalent, seventy_fiveTalent, ninetyTalent, hundredTalent))
-        talentsTier = ArrayList(listOf("15", "30", "45", "60", "75", "90", "100"))
+
+        for (i in talentsInfo.specializations.indices) {
+            val tab = tabLayout?.getTabAt(i)
+            tab?.text = talentsInfo.specializations[i].specialization.name
+        }
+
         try {
-            if (talents.size > 0) {
-                for (i in talents.indices) {
-                    no_talent?.visibility = View.GONE
-                    if ((talentsTierContainer as ArrayList<TextView?>).size > i) {
-                        (talentsTierContainer as ArrayList<TextView?>)[i]?.gravity = Gravity.CENTER
-                        (talentsTierContainer as ArrayList<TextView?>)[i]?.text = (talentsTier as ArrayList<String>)[i]
-                        if (talents[i]?.talent != null) {
-                            no_talent?.visibility = View.GONE
-                            (talentsContainer as ArrayList<TextView?>)[i]?.text = talents[i]?.talent?.name
-                        } else {
-                            removeTalents()
-                            no_talent?.visibility = View.VISIBLE
-                        }
-                    }
-                }
-            } else {
-                removeTalents()
-                no_talent?.visibility = View.VISIBLE
+            talent_recycler.apply {
+                adapter = TalentAdapter(talentsInfo.specializations.find { it.specialization.id == talentsInfo.activeSpecialization.id }?.talents!!, talentsIcons, context)
+                adapter!!.notifyDataSetChanged()
             }
-        } catch (e: NullPointerException) {
-            Log.e("Talent-Error", e.toString())
+        } catch (e: Exception) {
             no_talent?.visibility = View.VISIBLE
         }
+
+
         tabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                when (tab.position) {
-                    0 -> if (tab.text != "Unavailable") {
-                        no_talent?.visibility = View.GONE
-                        getTalentsForSpecificSpec(0)
-                    } else {
-                        removeTalents()
-                        no_talent?.visibility = View.VISIBLE
+                try {
+                    talent_recycler.apply {
+                        adapter = TalentAdapter(talentsInfo.specializations[tab.position].talents, talentsIcons, context)
+                        adapter!!.notifyDataSetChanged()
                     }
-                    1 -> if (tab.text != "Unavailable") {
-                        no_talent?.visibility = View.GONE
-                        getTalentsForSpecificSpec(1)
-                    } else {
-                        removeTalents()
-                        no_talent?.visibility = View.VISIBLE
+                    no_talent?.visibility = View.GONE
+                } catch (e: Exception) {
+                    talent_recycler.apply {
+                        adapter = null
                     }
-                    2 -> if (tab.text != "Unavailable") {
-                        no_talent?.visibility = View.GONE
-                        getTalentsForSpecificSpec(2)
-                    } else {
-                        removeTalents()
-                        no_talent?.visibility = View.VISIBLE
-                    }
-                    3 -> if (tab.text != "Unavailable") {
-                        no_talent?.visibility = View.GONE
-                        getTalentsForSpecificSpec(3)
-                    } else {
-                        removeTalents()
-                        no_talent?.visibility = View.VISIBLE
-                    }
+                    no_talent?.visibility = View.VISIBLE
                 }
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
-    }
 
-    private fun getTalentsForSpecificSpec(position: Int) {
-        if (talentsInfo.specializations[position].talents == null) {
-            removeTalents()
-            no_talent?.visibility = View.VISIBLE
-        } else {
-            talents.clear()
-            talents.addAll(talentsInfo.specializations[position].talents)
-            no_talent?.visibility = View.GONE
-            for (i in talents.indices) {
-                talentsTierContainer!![i]?.gravity = Gravity.CENTER
-                talentsTierContainer!![i]?.text = talentsTier?.get(i)
-                talentsContainer!![i]?.text = talents[i]?.talent?.name
-            }
-        }
-    }
-
-    private fun removeTalents() {
-        for (i in talentsContainer!!.indices) {
-            talentsTierContainer!![i]?.text = ""
-            talentsContainer!![i]?.text = ""
-        }
     }
 
     private fun setCharacterItemsInformation(index: Int) {
