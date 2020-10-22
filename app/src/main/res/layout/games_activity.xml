@@ -17,13 +17,13 @@
         android:contentDescription="@string/bnetlogo"
         app:srcCompat="@drawable/bnet_logo" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/news_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingTop="55dp" />
+        android:paddingTop="55dp"></androidx.fragment.app.FragmentContainerView>
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
