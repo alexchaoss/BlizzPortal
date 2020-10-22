@@ -89,6 +89,7 @@ class NewsListFragment : Fragment() {
     }
 
     private fun setupRecycler() {
+        newsList = newsList.distinct() as ArrayList<NewsMetaData>
         news_recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = NewsAdapter(newsList, context)

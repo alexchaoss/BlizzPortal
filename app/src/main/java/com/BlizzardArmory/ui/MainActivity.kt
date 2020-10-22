@@ -5,8 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -18,13 +16,14 @@ import android.webkit.WebViewClient
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.util.BaseActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
@@ -32,7 +31,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
@@ -134,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openLoginToBattleNet() {
-        if (isNetworkAvailable()) {
+        if (BlizzardArmory.hasNetwork()) {
             battlenetOAuth2Params = BattlenetOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
                     URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BattlenetConstants.SCOPE_WOW, BattlenetConstants.SCOPE_SC2)
             startOauthFlow(battlenetOAuth2Params!!)
@@ -161,17 +160,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         webview.loadUrl(URLConstants.LOGOUT_URL)
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val nw = connectivityManager.activeNetwork ?: return false
-        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
-        return when {
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            else -> false
-        }
     }
 
     private fun checkForAppUpdates() {

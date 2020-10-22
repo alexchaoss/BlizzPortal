@@ -19,13 +19,13 @@ class BlizzardArmory : Application() {
         if (instance == null) {
             instance = this
         }
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("Crash Prevented", throwable.message!!)
-            handleUncaughtException(thread, throwable)
+            handleUncaughtException(throwable)
         }
     }
 
-    private fun handleUncaughtException(thread: Thread?, e: Throwable) {
+    private fun handleUncaughtException(e: Throwable) {
         FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 

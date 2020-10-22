@@ -517,15 +517,4 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         var userInformation: UserInformation? = null
         var userNews: UserNews? = null
     }
-
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        return true
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-        return (NavigationUI.navigateUp(navController, mAppBarConfiguration!!)
-                || super.onSupportNavigateUp())
-    }*/
 }
