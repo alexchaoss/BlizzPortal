@@ -123,7 +123,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         settings.setOnClickListener {
             val fragment = SettingsFragment()
             favorite.visibility = View.GONE
-            supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").commit()
+            supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings").commit()
             supportFragmentManager.executePendingTransactions()
             drawer_layout.closeDrawers()
         }
@@ -252,7 +252,11 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 favorite.visibility = View.GONE
                 favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                 favorite.tag = R.drawable.ic_star_border_black_24dp
-                supportFragmentManager.beginTransaction().remove(fragment).commit()
+                if (fragment.tag == "settingsfragment") {
+                    supportFragmentManager.popBackStack()
+                } else {
+                    supportFragmentManager.beginTransaction().remove(fragment).commit()
+                }
             }
         } else if (!URLConstants.loading) {
             try {

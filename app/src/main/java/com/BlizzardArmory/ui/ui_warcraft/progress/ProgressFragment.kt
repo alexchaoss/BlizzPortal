@@ -195,19 +195,6 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
 
     private fun getRaidLevel(expansion: Expansions): String {
         return when (expansion.expansion.id) {
-            68L -> "Level 60"
-            70L -> "Level 70"
-            72L -> "Level 80"
-            73L -> "Level 85"
-            74L -> "Level 90"
-            124L -> "Level 100"
-            395L -> "Level 110"
-            396L -> "Level 120"
-            397L -> "Level 60"
-            else -> ""
-        }
-        /* shadowlands
-        return when (expansion.expansion.id) {
             68L -> "Level 25"
             70L -> "Level 27"
             72L -> "Level 30"
@@ -218,7 +205,7 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
             396L -> "Level 50"
             397L -> "Level 60"
             else -> ""
-        }*/
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

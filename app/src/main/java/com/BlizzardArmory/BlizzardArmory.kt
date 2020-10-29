@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 
@@ -29,22 +28,48 @@ class BlizzardArmory : Application() {
         FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 
-    private val isNetworkConnected: Boolean
-        @RequiresApi(Build.VERSION_CODES.M)
-        get() {
-            val result: Boolean
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val networkCapabilities = connectivityManager.activeNetwork ?: return false
-            val actNw =
-                    connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-            result = when {
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                else -> false
+    private fun getConnectionType(context: Context): Int {
+        var result = 0
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            cm?.run {
+                cm.getNetworkCapabilities(cm.activeNetwork)?.run {
+                    when {
+                        hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                            result = 2
+                        }
+                        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                            result = 1
+                        }
+                        hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> {
+                            result = 3
+                        }
+                    }
+                }
             }
+        } else {
+            cm?.run {
+                cm.activeNetworkInfo?.run {
+                    when (type) {
+                        ConnectivityManager.TYPE_WIFI -> {
+                            result = 2
+                        }
+                        ConnectivityManager.TYPE_MOBILE -> {
+                            result = 1
+                        }
+                        ConnectivityManager.TYPE_VPN -> {
+                            result = 3
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    }
 
-            return result
+    private val isNetworkConnected: Boolean
+        get() {
+            return getConnectionType(this) != 0
         }
 
     companion object {

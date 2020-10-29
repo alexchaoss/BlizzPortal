@@ -290,14 +290,15 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:orientation="horizontal"
+                android:weightSum="5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tiers">
 
                 <TextView
-                    android:layout_width="125dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2.2"
                     android:text="Battleground"
                     android:textColor="#f8b700"
                     android:textSize="15sp" />
@@ -305,9 +306,10 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.9"
                     android:text="Games"
-                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textAlignment="viewStart"
                     android:textColor="#f8b700"
                     android:textSize="15sp" />
 
@@ -316,6 +318,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Wins"
+                    android:gravity="center"
                     android:textAlignment="center"
                     android:textColor="#f8b700"
                     android:textSize="15sp" />
@@ -323,8 +326,9 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.9"
                     android:text="Win %"
+                    android:gravity="center"
                     android:textAlignment="center"
                     android:textColor="#f8b700"
                     android:textSize="15sp" />

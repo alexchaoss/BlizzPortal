@@ -34,10 +34,7 @@ import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.events.ClassEvent
-import com.BlizzardArmory.util.events.FactionEvent
-import com.BlizzardArmory.util.events.NetworkEvent
-import com.BlizzardArmory.util.events.RetryEvent
+import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -45,6 +42,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.wow_character_fragment.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -137,6 +136,35 @@ class WoWCharacterFragment : Fragment() {
         downloadInfo()
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun talentClickedReceived(talentClickedEvent: TalentClickedEvent) {
+        if (talentClickedEvent.touch) {
+            talent_tooltip.visibility = View.VISIBLE
+            if (talentClickedEvent.powerCost == null || talentClickedEvent.powerCost == "") {
+                spell_cost.visibility = View.GONE
+            } else {
+                spell_cost.visibility = View.VISIBLE
+            }
+            spell_name.text = talentClickedEvent.name
+            spell_cost.text = talentClickedEvent.powerCost
+            spell_cast.text = talentClickedEvent.castTime
+            spell_cd.text = talentClickedEvent.cooldown
+            spell_description.text = talentClickedEvent.description
+        } else {
+            talent_tooltip.visibility = View.GONE
+        }
+    }
+
     private fun downloadInfo() {
         dialog = null
         loading_circle?.visibility = View.VISIBLE
@@ -163,16 +191,12 @@ class WoWCharacterFragment : Fragment() {
             override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
                 if (response.isSuccessful) {
                     talentsInfo = response.body()!!
-
                     downloadTalentIconsInfo()
                 }
             }
 
             override fun onFailure(call: Call<Talents>, t: Throwable) {
                 Log.e("Error", "trace", t)
-                //no_talent?.visibility = View.VISIBLE
-                val noTalent = "Talent information outdated"
-                //no_talent?.text = noTalent
             }
         })
     }
@@ -188,7 +212,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<TalentsIcons>>, t: Throwable) {
-
+                downloadTalentIconsInfo()
             }
         })
     }
@@ -566,22 +590,26 @@ class WoWCharacterFragment : Fragment() {
             if (scrollView3 != null) {
                 if (currentY != scrollView3.scrollY) {
                     item_scroll_view.visibility = View.GONE
+                    talent_tooltip.visibility = View.GONE
                 }
             }
         }
     }
 
     private fun setTalentInformation() {
-        if (talentsInfo.specializations.size == 4) {
-            tabLayout?.addTab(tabLayout!!.newTab())
-            tabLayout?.getTabAt(3)?.text = talentsInfo.specializations[3].specialization.name
-        }
 
-        if (talentsInfo.specializations.size == 2) {
-            tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
-        } else if (talentsInfo.specializations.size == 1) {
-            tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
-            tabLayout?.getTabAt(1)?.let { tabLayout?.removeTab(it) }
+        when (talentsInfo.specializations.size) {
+            4 -> {
+                tabLayout?.addTab(tabLayout!!.newTab())
+                tabLayout?.getTabAt(3)?.text = talentsInfo.specializations[3].specialization.name
+            }
+            2 -> {
+                tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
+            }
+            1 -> {
+                tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
+                tabLayout?.getTabAt(1)?.let { tabLayout?.removeTab(it) }
+            }
         }
 
         for (i in talentsInfo.specializations.indices) {
@@ -591,7 +619,7 @@ class WoWCharacterFragment : Fragment() {
 
         try {
             talent_recycler.apply {
-                adapter = TalentAdapter(talentsInfo.specializations.find { it.specialization.id == talentsInfo.activeSpecialization.id }?.talents!!, talentsIcons, context)
+                adapter = TalentAdapter(talentsInfo.specializations[0].talents, talentsIcons, context)
                 adapter!!.notifyDataSetChanged()
             }
         } catch (e: Exception) {
