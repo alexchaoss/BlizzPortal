@@ -81,6 +81,8 @@ class AccountFragment : Fragment() {
     }
 
     private fun populateRecyclerView() {
+        characterList.clear()
+        charactersByRealm.clear()
         if (charaters?.wowAccounts != null) {
             for (wowAccount in charaters!!.wowAccounts) {
                 characterList.addAll(wowAccount.characters)

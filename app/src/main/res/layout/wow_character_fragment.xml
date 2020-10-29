@@ -20,9 +20,9 @@
                 android:id="@+id/background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="@string/background_character"
                 android:scaleType="centerCrop"
-                android:layout_marginBottom="10dp"
                 app:layout_constraintEnd_toStartOf="parent"
                 app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -31,10 +31,10 @@
                 android:id="@+id/character_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
-                android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/level_race_class"
                 app:layout_constraintEnd_toStartOf="@id/item_col4"
                 app:layout_constraintStart_toEndOf="@id/item_col1"
@@ -79,11 +79,11 @@
                 android:id="@+id/item_col1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="start"
                 android:orientation="vertical"
-                android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toTopOf="@id/stats_layout"
                 app:layout_constraintEnd_toStartOf="@id/item_col2"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,12 +98,12 @@
                         android:id="@+id/head"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:background="@drawable/empty_slot_border"
-                        android:padding="1dp"
                         android:layout_centerInParent="true"
                         android:layout_marginBottom="5dp"
-                        android:src="@drawable/empty_head"
+                        android:background="@drawable/empty_slot_border"
                         android:contentDescription="@string/itemsCharacter"
+                        android:padding="1dp"
+                        android:src="@drawable/empty_head"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -120,11 +120,11 @@
                     android:id="@+id/neck"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/empty_neck"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_neck"
                     app:srcCompat="@android:color/transparent" />
 
                 <RelativeLayout
@@ -136,12 +136,12 @@
                         android:id="@+id/shoulder"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:background="@drawable/empty_slot_border"
-                        android:padding="1dp"
                         android:layout_centerInParent="true"
                         android:layout_marginBottom="5dp"
-                        android:src="@drawable/empty_shoulders"
+                        android:background="@drawable/empty_slot_border"
                         android:contentDescription="@string/itemsCharacter"
+                        android:padding="1dp"
+                        android:src="@drawable/empty_shoulders"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -157,11 +157,11 @@
                     android:id="@+id/back"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/empty_chest"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_chest"
                     app:srcCompat="@android:color/transparent" />
 
                 <RelativeLayout
@@ -173,12 +173,12 @@
                         android:id="@+id/chest"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:background="@drawable/empty_slot_border"
-                        android:padding="1dp"
                         android:layout_centerInParent="true"
                         android:layout_marginBottom="5dp"
-                        android:src="@drawable/empty_chest"
+                        android:background="@drawable/empty_slot_border"
                         android:contentDescription="@string/itemsCharacter"
+                        android:padding="1dp"
+                        android:src="@drawable/empty_chest"
                         app:srcCompat="@android:color/transparent" />
 
                     <ImageView
@@ -194,35 +194,35 @@
                     android:id="@+id/shirt"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_shirt"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_shirt"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/tabard"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_tabard"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_tabard"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/wrist"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/empty_wrist"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_wrist"
                     app:srcCompat="@android:color/transparent" />
 
             </LinearLayout>
@@ -243,9 +243,9 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/empty_slot_border"
+                    android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"
                     android:src="@drawable/empty_main_hand"
-                    android:contentDescription="@string/itemsCharacter"
                     app:srcCompat="@android:color/transparent" />
 
             </LinearLayout>
@@ -266,9 +266,9 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/empty_slot_border"
+                    android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"
                     android:src="@drawable/empty_shield"
-                    android:contentDescription="@string/itemsCharacter"
                     app:srcCompat="@android:color/transparent" />
 
             </LinearLayout>
@@ -278,9 +278,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="60dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
                 android:gravity="end"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@id/stats_layout"
@@ -292,77 +292,77 @@
                     android:id="@+id/hands"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_hands"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_hands"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/waist"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_waist"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_waist"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/legs"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_legs"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_legs"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/feet"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_feet"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_feet"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/finger1"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_ring"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_ring"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/finger2"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_ring"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_ring"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/trinket1"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/empty_slot_border"
-                    android:padding="1dp"
                     android:layout_marginBottom="5dp"
-                    android:src="@drawable/empty_trinket"
+                    android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_trinket"
                     app:srcCompat="@android:color/transparent" />
 
                 <ImageView
@@ -370,9 +370,9 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/empty_slot_border"
+                    android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"
                     android:src="@drawable/empty_trinket"
-                    android:contentDescription="@string/itemsCharacter"
                     app:srcCompat="@android:color/transparent" />
 
             </LinearLayout>
@@ -642,6 +642,69 @@
             </RelativeLayout>
         </ScrollView>
     </FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/talent_tooltip"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/talent_tooltip_bg"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/spell_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/spell_cost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/spell_cast"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFF"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/spell_cd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#FFF"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/spell_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#edc201"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/loading_circle"

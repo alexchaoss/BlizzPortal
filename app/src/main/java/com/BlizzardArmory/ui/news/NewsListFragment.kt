@@ -14,6 +14,7 @@ import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.FilterNewsEvent
+import com.BlizzardArmory.util.events.RefreshNewsEvent
 import kotlinx.android.synthetic.main.news_list_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,8 +38,12 @@ class NewsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSwipeGestureToRefreshData()
         setupNews()
+        setBackToTopButton()
+    }
 
+    private fun setBackToTopButton() {
         news_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -62,6 +67,18 @@ class NewsListFragment : Fragment() {
         }
     }
 
+    private fun setSwipeGestureToRefreshData() {
+        swipe.setOnRefreshListener {
+            downloaded = false
+            GlobalScope.launch(Dispatchers.Main) {
+                launch(Dispatchers.IO) {
+                    setupNews()
+                }.join()
+                swipe.isRefreshing = false
+            }
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -74,6 +91,7 @@ class NewsListFragment : Fragment() {
 
     private fun setupNews() {
         if (!downloaded) {
+            WebNewsScrapper.newsList.clear()
             GlobalScope.launch(Dispatchers.Main) {
                 launch(Dispatchers.IO) {
                     WebNewsScrapper.parseNewsList("https://news.blizzard.com/${MainActivity.locale}")
@@ -84,6 +102,7 @@ class NewsListFragment : Fragment() {
                 downloaded = true
             }
         } else {
+            downloaded = false
             setupRecycler()
         }
     }
@@ -130,4 +149,10 @@ class NewsListFragment : Fragment() {
         news_recycler.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun refreshNewsReceived(refreshNewsEvent: RefreshNewsEvent) {
+        Log.i("REFRESH", "The news have been refreshed")
+        downloaded = false
+        setupNews()
+    }
 }
