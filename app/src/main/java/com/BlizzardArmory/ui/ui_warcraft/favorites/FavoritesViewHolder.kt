@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
@@ -20,6 +19,7 @@ import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
+import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -59,8 +59,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         EventBus.getDefault().register(this)
         GlobalScope.launch {
             do {
-                EventBus.getDefault().post(NetworkEvent(BlizzardArmory.hasNetwork()))
-            } while (!BlizzardArmory.hasNetwork())
+                EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+            } while (!ConnectionStatus.hasNetwork())
         }
     }
 

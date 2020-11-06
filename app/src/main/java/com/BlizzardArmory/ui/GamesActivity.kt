@@ -38,6 +38,7 @@ import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
 import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.ui_warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
+import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.google.android.material.navigation.NavigationView
