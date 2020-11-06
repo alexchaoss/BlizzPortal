@@ -1,13 +1,19 @@
 package com.BlizzardArmory
 
 import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlin.properties.Delegates
 
+object Variables {
+    var isWiFiNetworkConnected: Boolean by Delegates.observable(false) { property, oldValue, newValue ->
+        Log.i("Wi-Fi connectivity", "$newValue")
+    }
+
+    var isDataNetworkConnected: Boolean by Delegates.observable(false) { property, oldValue, newValue ->
+        Log.i("Data connectivity", "$newValue")
+    }
+}
 
 /**
  * The type Blizzard armory.
@@ -28,50 +34,6 @@ class BlizzardArmory : Application() {
         FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 
-    private fun getConnectionType(context: Context): Int {
-        var result = 0
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            cm?.run {
-                cm.getNetworkCapabilities(cm.activeNetwork)?.run {
-                    when {
-                        hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                            result = 2
-                        }
-                        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                            result = 1
-                        }
-                        hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> {
-                            result = 3
-                        }
-                    }
-                }
-            }
-        } else {
-            cm?.run {
-                cm.activeNetworkInfo?.run {
-                    when (type) {
-                        ConnectivityManager.TYPE_WIFI -> {
-                            result = 2
-                        }
-                        ConnectivityManager.TYPE_MOBILE -> {
-                            result = 1
-                        }
-                        ConnectivityManager.TYPE_VPN -> {
-                            result = 3
-                        }
-                    }
-                }
-            }
-        }
-        return result
-    }
-
-    private val isNetworkConnected: Boolean
-        get() {
-            return getConnectionType(this) != 0
-        }
-
     companion object {
         /**
          * Gets instance.
@@ -80,14 +42,5 @@ class BlizzardArmory : Application() {
          */
         var instance: BlizzardArmory? = null
             private set
-
-        /**
-         * Has network boolean.
-         *
-         * @return the boolean
-         */
-        fun hasNetwork(): Boolean {
-            return instance!!.isNetworkConnected
-        }
     }
 }

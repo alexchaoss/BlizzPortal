@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui
+package com.BlizzardArmory.util
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -12,7 +12,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.BlizzardArmory.R
-import com.BlizzardArmory.util.MetricConversion
 
 class DialogPrompt(val context: Context) {
 

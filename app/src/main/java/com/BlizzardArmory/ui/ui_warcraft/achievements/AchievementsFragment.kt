@@ -20,9 +20,9 @@ import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
-import com.BlizzardArmory.ui.DialogPrompt
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
+import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
