@@ -73,11 +73,32 @@ class DialogPrompt(val context: Context) {
         val editText = EditText(context)
         editText.setTextColor(Color.WHITE)
         editText.textSize = 16f
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            editText.textCursorDrawable = null
+        }
         val colorStateList = ColorStateList.valueOf(Color.WHITE)
         editText.backgroundTintList = colorStateList
         container.addView(editText)
         if (tag != "") {
             tagMap[tag] = editText
+        }
+        return this
+    }
+
+    fun addAutoCompleteEditText(tag: String = "", autoCompleteList: List<String>): DialogPrompt {
+        val autoCompleteTextView = AutoCompleteTextView(context)
+        autoCompleteTextView.setTextColor(Color.WHITE)
+        autoCompleteTextView.textSize = 16f
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            autoCompleteTextView.textCursorDrawable = null
+        }
+        val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, autoCompleteList)
+        autoCompleteTextView.setAdapter(adapter)
+        val colorStateList = ColorStateList.valueOf(Color.WHITE)
+        autoCompleteTextView.backgroundTintList = colorStateList
+        container.addView(autoCompleteTextView)
+        if (tag != "") {
+            tagMap[tag] = autoCompleteTextView
         }
         return this
     }
@@ -137,10 +158,12 @@ class DialogPrompt(val context: Context) {
     }
 
     fun addSpinner(spinnerList: Array<String>, tag: String = ""): DialogPrompt {
-        val layoutParamsSpinner = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(40, context))
+        val layoutParamsSpinner = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(40, context))
         val spinner = Spinner(context)
-        spinner.setBackgroundResource(R.drawable.wow_spinner)
+        spinner.background = ContextCompat.getDrawable(context, R.drawable.wow_spinner)
         spinner.gravity = Gravity.CENTER
+        spinner.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        spinner.setPadding(0, 0, 0, 0)
         spinner.layoutParams = layoutParamsSpinner
         container.addView(spinner)
         if (tag != "") {
@@ -159,9 +182,9 @@ class DialogPrompt(val context: Context) {
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
-                tv.setBackgroundColor(Color.BLACK)
                 tv.textSize = 18f
                 tv.gravity = Gravity.CENTER
+                tv.setBackgroundColor(Color.parseColor("#272931"))
                 if (position == 0) {
                     tv.setTextColor(Color.GRAY)
                 } else {

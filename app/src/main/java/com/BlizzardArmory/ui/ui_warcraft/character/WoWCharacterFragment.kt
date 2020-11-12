@@ -186,9 +186,9 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadTalents() {
         val call: Call<Talents> = RetroClient.getClient.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Talents> {
-            override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
+            override fun onResponse(call: Call<Talents>, response: Response<Talents>) {
                 if (response.isSuccessful) {
                     talentsInfo = response.body()!!
                     downloadTalentIconsInfo()
@@ -219,7 +219,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadStats() {
         val call: Call<Statistic> = RetroClient.getClient.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Statistic> {
             override fun onResponse(call: Call<Statistic>, response: retrofit2.Response<Statistic>) {
                 when {
@@ -242,7 +242,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadAndSetCharacterInformation() {
         val call: Call<CharacterSummary> = RetroClient.getClient.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<CharacterSummary> {
             override fun onResponse(call: Call<CharacterSummary>, response: retrofit2.Response<CharacterSummary>) {
                 when {
@@ -348,7 +348,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadEquipment() {
         val call2: Call<Equipment> = RetroClient.getClient.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call2.enqueue(object : Callback<Equipment> {
             override fun onResponse(call: Call<Equipment>, response: retrofit2.Response<Equipment>) {
                 when {
@@ -377,7 +377,7 @@ class WoWCharacterFragment : Fragment() {
             Glide.with(this).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(background)
         } else {
             val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
-                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
             call.enqueue(object : Callback<Media> {
                 override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                     if (response.isSuccessful) {
@@ -441,7 +441,7 @@ class WoWCharacterFragment : Fragment() {
             url = url.replace(("static-[0-9].[0-9].[0-9]_[0-9]*-" + region?.toLowerCase(Locale.ROOT)?.toRegex()).toRegex(), "static-" + region?.toLowerCase(Locale.ROOT))
         }
         url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-        val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+        val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<com.BlizzardArmory.model.warcraft.equipment.media.Media> {
             override fun onResponse(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>) {
                 when {

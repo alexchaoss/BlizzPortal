@@ -20,7 +20,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.ui.MainActivity.Companion.locale
-import com.BlizzardArmory.util.events.RefreshNewsEvent
+import com.BlizzardArmory.util.events.localeSelectedEvent
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import kotlinx.android.synthetic.main.settings.*
 import org.greenrobot.eventbus.EventBus
@@ -76,7 +76,7 @@ class SettingsFragment : Fragment() {
                 selectedLanguage = parent.getItemAtPosition(position) as String
                 Log.i("lang", selectedLanguage)
                 setLocale()
-                EventBus.getDefault().postSticky(RefreshNewsEvent())
+                EventBus.getDefault().postSticky(localeSelectedEvent())
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 20f

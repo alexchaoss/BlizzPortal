@@ -104,7 +104,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
 
     private fun downloadReputations() {
         val call: Call<Reputation> = RetroClient.getClient.getReputations(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Reputation> {
             override fun onResponse(call: Call<Reputation>, response: Response<Reputation>) {
                 val reputation = response.body()
