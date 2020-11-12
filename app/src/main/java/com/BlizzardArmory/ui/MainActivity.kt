@@ -48,7 +48,6 @@ class MainActivity : BaseActivity() {
         FirebaseCrashlytics.getInstance().sendUnsentReports()
         startWiFiNetworkCallback()
         startDataNetworkCallback()
-
         checkForAppUpdates()
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -64,8 +63,6 @@ class MainActivity : BaseActivity() {
         setLoginButtonToBattlenet()
         logout.setOnClickListener { clearCredentials() }
     }
-
-
 
     override fun onResume() {
         super.onResume()

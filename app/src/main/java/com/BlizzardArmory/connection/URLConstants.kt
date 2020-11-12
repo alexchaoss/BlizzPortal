@@ -153,4 +153,8 @@ object URLConstants {
     fun getTalentsIcons(playableClassId: Int, locale: String): String {
         return "https://blizzard-armory-server.herokuapp.com/talents/$playableClassId/$locale"
     }
+
+    fun initServer(): String {
+        return "https://blizzard-armory-server.herokuapp.com/init"
+    }
 }

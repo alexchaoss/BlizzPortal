@@ -18,10 +18,12 @@ import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
+import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -50,6 +52,12 @@ interface NetworkServices {
     fun getUserInfo(@Query("token") accessToken: String?,
                     @Query("region") region: String?): Call<UserInformation>
 
+    @GET("/data/wow/realm/index")
+    fun getRealmIndex(@Query("region") region: String,
+                      @Query("namespace") namespace: String,
+                      @Query("locale") locale: String,
+                      @Query("token") accessToken: String?): Call<Realms>
+
     //WoW Endpoints
     /**
      * Gets media.
@@ -61,8 +69,8 @@ interface NetworkServices {
      * @return the media
      */
     @GET("/profile/wow/character/{realm}/{character}/character-media")
-    fun getMedia(@Path("character") character: String?,
-                 @Path("realm") realm: String?,
+    fun getMedia(@Path("character", encoded = true) character: String?,
+                 @Path("realm", encoded = true) realm: String?,
                  @Query("locale") locale: String?,
                  @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Media>
@@ -96,6 +104,13 @@ interface NetworkServices {
     fun getAllAchievements(@Url url: String?): Call<DetailedAchievements>
 
     /**
+     * Init server.
+     *
+     */
+    @GET
+    fun initServer(@Url url: String?): Call<ResponseBody>
+
+    /**
      * Gets character achievements.
      *
      * @param character   the character
@@ -105,8 +120,8 @@ interface NetworkServices {
      * @return the character achievements
      */
     @GET("/profile/wow/character/{realm}/{character}/achievements")
-    fun getCharacterAchievements(@Path("character") character: String?,
-                                 @Path("realm") realm: String?,
+    fun getCharacterAchievements(@Path("character", encoded = true) character: String?,
+                                 @Path("realm", encoded = true) realm: String?,
                                  @Query("locale") locale: String?,
                                  @Query("region") region: String?,
                                  @Query("token") accessToken: String?): Call<Achievements>
@@ -121,8 +136,8 @@ interface NetworkServices {
      * @return the encounters
      */
     @GET("profile/wow/character/{realm}/{character}/encounters/raids")
-    fun getEncounters(@Path("character") character: String?,
-                      @Path("realm") realm: String?,
+    fun getEncounters(@Path("character", encoded = true) character: String?,
+                      @Path("realm", encoded = true) realm: String?,
                       @Query("locale") locale: String?,
                       @Query("region") region: String?,
                       @Query("token") accessToken: String?): Call<EncountersInformation>
@@ -137,8 +152,8 @@ interface NetworkServices {
      * @return the equipped items
      */
     @GET("profile/wow/character/{realm}/{character}/equipment")
-    fun getEquippedItems(@Path("character") character: String?,
-                         @Path("realm") realm: String?,
+    fun getEquippedItems(@Path("character", encoded = true) character: String?,
+                         @Path("realm", encoded = true) realm: String?,
                          @Query("locale") locale: String?,
                          @Query("region") region: String?,
                          @Query("token") accessToken: String?): Call<Equipment>
@@ -153,8 +168,8 @@ interface NetworkServices {
      * @return the stats
      */
     @GET("profile/wow/character/{realm}/{character}/statistics")
-    fun getStats(@Path("character") character: String?,
-                 @Path("realm") realm: String?,
+    fun getStats(@Path("character", encoded = true) character: String?,
+                 @Path("realm", encoded = true) realm: String?,
                  @Query("locale") locale: String?,
                  @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Statistic>
@@ -169,8 +184,8 @@ interface NetworkServices {
      * @return the specs
      */
     @GET("profile/wow/character/{realm}/{character}/specializations")
-    fun getSpecs(@Path("character") character: String?,
-                 @Path("realm") realm: String?,
+    fun getSpecs(@Path("character", encoded = true) character: String?,
+                 @Path("realm", encoded = true) realm: String?,
                  @Query("locale") locale: String?,
                  @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Talents>
@@ -188,8 +203,8 @@ interface NetworkServices {
      * @return the character
      */
     @GET("profile/wow/character/{realm}/{character}")
-    fun getCharacter(@Path("character") character: String?,
-                     @Path("realm") realm: String?,
+    fun getCharacter(@Path("character", encoded = true) character: String?,
+                     @Path("realm", encoded = true) realm: String?,
                      @Query("locale") locale: String?,
                      @Query("region") region: String?,
                      @Query("token") accessToken: String?): Call<CharacterSummary>
@@ -216,8 +231,8 @@ interface NetworkServices {
      * @return the pv p summary
      */
     @GET("profile/wow/character/{realm}/{character}/pvp-summary")
-    fun getPvPSummary(@Path("character") character: String?,
-                      @Path("realm") realm: String?,
+    fun getPvPSummary(@Path("character", encoded = true) character: String?,
+                      @Path("realm", encoded = true) realm: String?,
                       @Query("locale") locale: String?,
                       @Query("region") region: String?,
                       @Query("token") accessToken: String?): Call<PvPSummary>
@@ -233,8 +248,8 @@ interface NetworkServices {
      * @return the pv p brackets
      */
     @GET("profile/wow/character/{realm}/{character}/pvp-bracket/{BRACKET}")
-    fun getPvPBrackets(@Path("character") character: String?,
-                       @Path("realm") realm: String?,
+    fun getPvPBrackets(@Path("character", encoded = true) character: String?,
+                       @Path("realm", encoded = true) realm: String?,
                        @Path("BRACKET") bracket: String?,
                        @Query("locale") locale: String?,
                        @Query("region") region: String?,
@@ -262,8 +277,8 @@ interface NetworkServices {
      * @return the reputations
      */
     @GET("profile/wow/character/{realm}/{character}/reputations")
-    fun getReputations(@Path("character") character: String?,
-                       @Path("realm") realm: String?,
+    fun getReputations(@Path("character", encoded = true) character: String?,
+                       @Path("realm", encoded = true) realm: String?,
                        @Query("locale") locale: String?,
                        @Query("region") region: String?,
                        @Query("token") accessToken: String?): Call<Reputation>
@@ -323,7 +338,7 @@ interface NetworkServices {
      * @return the item
      */
     @GET("d3/data/item/{slug}")
-    fun getItem(@Path("slug") slug: String?,
+    fun getItem(@Path("slug", encoded = true) slug: String?,
                 @Query("region") region: String?,
                 @Query("locale") locale: String?): Call<SingleItem>
 
@@ -343,7 +358,7 @@ interface NetworkServices {
                      @Query("token") accessToken: String?): Call<List<Player>>
 
     /**
-     * Gets sc 2 profile.
+     * Gets sc2 profile.
      *
      * @param regionId    the region id
      * @param realmId     the realm id

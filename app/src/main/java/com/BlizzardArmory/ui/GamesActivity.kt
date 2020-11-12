@@ -29,6 +29,7 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
 import com.BlizzardArmory.model.warcraft.media.Media
+import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
@@ -41,6 +42,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.FilterNewsEvent
+import com.BlizzardArmory.util.events.localeSelectedEvent
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
@@ -50,7 +52,10 @@ import kotlinx.android.synthetic.main.d3_skill_fragment.*
 import kotlinx.android.synthetic.main.games_activity.*
 import kotlinx.android.synthetic.main.games_activity_bar.*
 import kotlinx.android.synthetic.main.games_activity_nav_header.*
+import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,19 +72,20 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     var wowMediaCharacter: Media? = null
     var prefs: SharedPreferences? = null
     val gson = GsonBuilder().create()
-
+    var wowRealms = mutableMapOf<String, Realms>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.games_activity)
-        drawer_layout.setScrimColor(Color.TRANSPARENT)
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        battlenetOAuth2Params = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             Log.e("Crash Prevented", throwable.message!!)
             handleUncaughtException(thread, throwable)
         }
+
+        drawer_layout.setScrimColor(Color.TRANSPARENT)
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        battlenetOAuth2Params = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         if (!prefs?.contains("news_pulled")!!) {
             val dialog = DialogPrompt(this)
@@ -109,6 +115,9 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
+        getRealms()
+        initWoWServer()
+
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.itemIconTintList = null
         setSupportActionBar(toolbar_main)
@@ -132,8 +141,107 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         downloadUserInfo()
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun localeSelectedReceived(localeSelectedEvent: localeSelectedEvent) {
+        getRealms()
+    }
+
     private fun handleUncaughtException(thread: Thread?, e: Throwable) {
         FirebaseCrashlytics.getInstance().log(e.message!!)
+    }
+
+    private fun initWoWServer() {
+        val call: Call<ResponseBody> = RetroClient.getClient.initServer(URLConstants.initServer())
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Log.i("Server init", response.body().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("Server init Error", "trace", t)
+            }
+        })
+    }
+
+    private fun getRealms() {
+        val call: Call<Realms> = RetroClient.getClient.getRealmIndex("us", "dynamic-us", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        call.enqueue(object : Callback<Realms> {
+            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
+                if (response.isSuccessful) {
+                    wowRealms["US"] = response.body()!!
+                }
+            }
+
+            override fun onFailure(call: Call<Realms>, t: Throwable) {
+                Log.e("realms", "trace start")
+                Log.e("Error", "trace", t)
+            }
+        })
+        val call2: Call<Realms> = RetroClient.getClient.getRealmIndex("eu", "dynamic-eu", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        call2.enqueue(object : Callback<Realms> {
+            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
+                if (response.isSuccessful) {
+                    wowRealms["EU"] = response.body()!!
+                }
+            }
+
+            override fun onFailure(call: Call<Realms>, t: Throwable) {
+                Log.e("realms", "trace start")
+                Log.e("Error", "trace", t)
+            }
+        })
+        val call3: Call<Realms> = RetroClient.getClient.getRealmIndex("kr", "dynamic-kr", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        call3.enqueue(object : Callback<Realms> {
+            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
+                if (response.isSuccessful) {
+                    wowRealms["KR"] = response.body()!!
+                }
+            }
+
+            override fun onFailure(call: Call<Realms>, t: Throwable) {
+                Log.e("realms", "trace start")
+                Log.e("Error", "trace", t)
+            }
+        })
+        val call4: Call<Realms> = RetroClient.getClient.getRealmIndex("tw", "dynamic-tw", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        call4.enqueue(object : Callback<Realms> {
+            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
+                if (response.isSuccessful) {
+                    wowRealms["TW"] = response.body()!!
+                }
+            }
+
+            override fun onFailure(call: Call<Realms>, t: Throwable) {
+                Log.e("realms", "trace start")
+                Log.e("Error", "trace", t)
+            }
+        })
+
+        /*val call5: Call<Realms> = RetroClient.getClient.getRealmIndex( "cn","dynamic-cn", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        call5.enqueue(object : Callback<Realms> {
+            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
+                if (response.isSuccessful) {
+                    wowRealms["CN"] = response.body()!!
+                }
+            }
+
+            override fun onFailure(call: Call<Realms>, t: Throwable) {
+                Log.e("realms", "trace start")
+                Log.e("Error", "trace", t)
+            }
+        })*/
     }
 
     private fun setUserNews() {
@@ -383,7 +491,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                         .addEditText("character_field")
                         .addMessage("Realm", 18F, "realm_label")
-                        .addEditText("realm_field")
+                        .addAutoCompleteEditText("realm_field", wowRealms.values.flatMap { it.realms }.map { it.name }.distinct())
                         .addSpinner(arrayOf("Select Region", "CN", "US", "EU", "KR", "TW"), "region_spinner")
                         .addButton("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button").show()
                 drawer_layout.closeDrawers()
@@ -470,7 +578,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             (dialog.tagMap["character_field"] as EditText).text.toString() == "" -> {
                 Toast.makeText(this, "Please enter the character name", Toast.LENGTH_SHORT).show()
             }
-            (dialog.tagMap["realm_field"] as EditText).text.toString() == "" -> {
+            (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() == "" -> {
                 Toast.makeText(this, "Please enter the realm", Toast.LENGTH_SHORT).show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString().equals("Select Region", ignoreCase = true) -> {
@@ -478,7 +586,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             }
             else -> {
                 characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString().toLowerCase(Locale.ROOT)
-                characterRealm = (dialog.tagMap["realm_field"] as EditText).text.toString().toLowerCase(Locale.ROOT).replace(" ", "-")
+                characterRealm = wowRealms[(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]?.realms?.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
                 downloadMedia(dialog, characterClicked, characterRealm, (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString())
             }
         }

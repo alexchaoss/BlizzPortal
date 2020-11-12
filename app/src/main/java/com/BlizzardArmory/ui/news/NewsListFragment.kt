@@ -14,7 +14,7 @@ import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.FilterNewsEvent
-import com.BlizzardArmory.util.events.RefreshNewsEvent
+import com.BlizzardArmory.util.events.localeSelectedEvent
 import kotlinx.android.synthetic.main.news_list_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -150,7 +150,7 @@ class NewsListFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun refreshNewsReceived(refreshNewsEvent: RefreshNewsEvent) {
+    public fun refreshNewsReceived(localeSelectedEvent: localeSelectedEvent) {
         Log.i("REFRESH", "The news have been refreshed")
         downloaded = false
         setupNews()

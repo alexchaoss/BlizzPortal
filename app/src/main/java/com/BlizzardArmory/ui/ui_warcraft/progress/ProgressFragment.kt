@@ -96,7 +96,7 @@ class ProgressFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListe
 
     private fun downloadEncounterInformation() {
         val call: Call<EncountersInformation> = RetroClient.getClient.getEncounters(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<EncountersInformation> {
             override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
                 val encounters = response.body()
