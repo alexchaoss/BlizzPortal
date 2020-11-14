@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.util.IOnBackPressed
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.google.android.material.tabs.TabLayout
 import org.greenrobot.eventbus.EventBus
@@ -32,6 +35,8 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
 
+    private var favorite: ImageView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -40,6 +45,18 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
             media = it.getString(MEDIA)
             region = it.getString(REGION)
         }
+        favorite = activity?.findViewById(R.id.favorite)
+
+        activity?.onBackPressedDispatcher?.addCallback {
+            onBackPress()
+        }
+    }
+
+    fun onBackPress() {
+        favorite?.visibility = View.GONE
+        favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
+        favorite?.tag = R.drawable.ic_star_border_black_24dp
+        activity?.supportFragmentManager?.popBackStack()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,6 +92,13 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity?.onBackPressedDispatcher?.addCallback {
+            onBackPress()
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -88,8 +112,13 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
-            parentFragmentManager.beginTransaction().remove(this).commit()
+            onBackPress()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 
     companion object {

@@ -1,22 +1,21 @@
 package com.BlizzardArmory.ui
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
-import android.widget.*
+import android.widget.AutoCompleteTextView
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
@@ -40,15 +39,12 @@ import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.ui_warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.events.BackPressEvent
 import com.BlizzardArmory.util.events.FilterNewsEvent
-import com.BlizzardArmory.util.events.localeSelectedEvent
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.d3_gear_fragment.*
-import kotlinx.android.synthetic.main.d3_skill_fragment.*
 import kotlinx.android.synthetic.main.games_activity.*
 import kotlinx.android.synthetic.main.games_activity_bar.*
 import kotlinx.android.synthetic.main.games_activity_nav_header.*
@@ -152,7 +148,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(localeSelectedEvent: localeSelectedEvent) {
+    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         getRealms()
     }
 
@@ -228,20 +224,6 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 Log.e("Error", "trace", t)
             }
         })
-
-        /*val call5: Call<Realms> = RetroClient.getClient.getRealmIndex( "cn","dynamic-cn", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
-        call5.enqueue(object : Callback<Realms> {
-            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
-                if (response.isSuccessful) {
-                    wowRealms["CN"] = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<Realms>, t: Throwable) {
-                Log.e("realms", "trace start")
-                Log.e("Error", "trace", t)
-            }
-        })*/
     }
 
     private fun setUserNews() {
@@ -334,137 +316,52 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         })
     }
 
-    override fun onBackPressed() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment)
-        val navFragment = supportFragmentManager.findFragmentById(R.id.nav_fragment)
-        val newsFragment = supportFragmentManager.findFragmentById(R.id.news_fragment)
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawers()
-        } else if (newsFragment?.tag == "news_page_fragment") {
-            supportFragmentManager.popBackStack()
-        } else if (!URLConstants.loading && fragment != null) {
-            if (navFragment != null && navFragment.isVisible) {
-                if (navFragment.tag == "d3nav") {
-                    if (URLConstants.loading || skill_tooltip_scroll!!.visibility == View.VISIBLE || item_scroll_view!!.visibility == View.VISIBLE) {
-                        EventBus.getDefault().post(BackPressEvent(true))
-                    } else {
-                        supportFragmentManager.beginTransaction().remove(navFragment).commit()
-                    }
-                } else if (!URLConstants.loading) {
-                    favorite.visibility = View.GONE
-                    favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
-                    favorite.tag = R.drawable.ic_star_border_black_24dp
-                    supportFragmentManager.beginTransaction().remove(navFragment).commit()
-                }
-            } else if (!URLConstants.loading) {
-                Log.i("FRAG1", "closed")
-                favorite.visibility = View.GONE
-                favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
-                favorite.tag = R.drawable.ic_star_border_black_24dp
-                if (fragment.tag == "settingsfragment") {
-                    supportFragmentManager.popBackStack()
-                } else {
-                    supportFragmentManager.beginTransaction().remove(fragment).commit()
-                }
+    private fun getErrorMessage(responseCode: Int): String {
+        return when (responseCode) {
+            in 201..499 -> {
+                ErrorMessages.UNEXPECTED
             }
-        } else if (!URLConstants.loading) {
-            try {
-                super.onBackPressed()
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(intent)
-            } catch (e: java.lang.Exception) {
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(intent)
+            500 -> {
+                ErrorMessages.BLIZZ_SERVERS_DOWN
             }
-        } else {
-            Log.e("FAIL", "BACKPRESS not working")
+            else -> {
+                ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+            }
         }
+    }
 
+    private fun getErrorTitle(responseCode: Int): String {
+        return when (responseCode) {
+            in 201..499 -> {
+                ErrorMessages.UNAVAILABLE
+            }
+            500 -> {
+                ErrorMessages.SERVERS_ERROR
+            }
+            else -> {
+                ErrorMessages.NO_INTERNET
+            }
+        }
     }
 
     private fun callErrorAlertDialog(responseCode: Int) {
-        val builder = AlertDialog.Builder(this@GamesActivity, R.style.DialogTransparent)
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val titleText = TextView(this@GamesActivity)
-        val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        buttonParams.setMargins(10, 20, 10, 20)
-        titleText.textSize = 20f
-        titleText.gravity = Gravity.CENTER_HORIZONTAL
-        titleText.setPadding(0, 20, 0, 20)
-        titleText.layoutParams = layoutParams
-        titleText.setTextColor(Color.WHITE)
-        val messageText = TextView(this@GamesActivity)
-        messageText.gravity = Gravity.CENTER_HORIZONTAL
-        messageText.layoutParams = layoutParams
-        messageText.setTextColor(Color.WHITE)
-        val button = Button(this@GamesActivity)
-        titleText.text = ErrorMessages.NO_INTERNET
-        messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-        button.text = ErrorMessages.RETRY
-        button.textSize = 18f
-        button.setTextColor(Color.WHITE)
-        button.gravity = Gravity.CENTER
-        button.width = 200
-        button.layoutParams = buttonParams
-        button.background = getDrawable(R.drawable.buttonstyle)
-        val button2 = Button(this@GamesActivity)
-        button2.textSize = 20f
-        button2.setTextColor(Color.WHITE)
-        button2.gravity = Gravity.CENTER
-        button2.width = 200
-        button2.layoutParams = buttonParams
-        button2.background = getDrawable(R.drawable.buttonstyle)
-        button2.text = ErrorMessages.BACK
-        val buttonLayout = LinearLayout(this@GamesActivity)
-        buttonLayout.orientation = LinearLayout.HORIZONTAL
-        buttonLayout.gravity = Gravity.CENTER
-        when (responseCode) {
-            in 201..499 -> {
-                titleText.text = ErrorMessages.UNAVAILABLE
-                messageText.text = ErrorMessages.UNEXPECTED
-                button.text = ErrorMessages.RETRY
-                button2.text = ErrorMessages.BACK
-                buttonLayout.addView(button)
-                buttonLayout.addView(button2)
-            }
-            500 -> {
-                titleText.text = ErrorMessages.SERVERS_ERROR
-                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                button.text = ErrorMessages.BACK
-                buttonLayout.addView(button)
-            }
-            else -> {
-                titleText.text = ErrorMessages.NO_INTERNET
-                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                button.text = ErrorMessages.RETRY
-                button2.text = ErrorMessages.BACK
-                buttonLayout.addView(button)
-                buttonLayout.addView(button2)
-            }
-        }
-        val dialog = builder.show()
-        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val linearLayout = LinearLayout(this)
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.gravity = Gravity.CENTER
-        linearLayout.setPadding(20, 20, 20, 20)
-        linearLayout.addView(titleText)
-        linearLayout.addView(messageText)
-        linearLayout.addView(buttonLayout)
-        dialog.addContentView(linearLayout, layoutParams)
+        val dialog = DialogPrompt(this)
+
         if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
             dialog.setOnCancelListener { finish() }
         } else {
             dialog.setOnCancelListener { downloadUserInfo() }
         }
-        button.setOnClickListener { dialog.cancel() }
-        button2.setOnClickListener {
-            dialog.dismiss()
-            onBackPressed()
-        }
+
+        dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+                .addMessage(getErrorMessage(responseCode), 18f, "message")
+                .addSideBySideButtons(ErrorMessages.RETRY, 18f, ErrorMessages.BACK, 18f,
+                        { dialog.cancel() },
+                        {
+                            dialog.cancel()
+                            onBackPressed()
+                        },
+                        "retry", "back").show()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -472,6 +369,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val searchDialog = DialogPrompt(this)
         when (item.title) {
             "Home" -> {
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
                     supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
                 } else if (supportFragmentManager.findFragmentById(R.id.nav_fragment) != null) {
@@ -483,7 +381,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             "World of Warcraft" -> {
                 fragment = AccountFragment()
                 favorite.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").addToBackStack("wow_account").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
@@ -499,21 +397,21 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             wowFavoritesText -> {
                 fragment = WoWFavoritesFragment()
                 favorite.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
             d3FavoritesText -> {
                 fragment = D3FavoriteFragment()
                 favorite.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3favorites").commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3favorites").addToBackStack("d3_fav").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
             owFavoritesText -> {
                 fragment = OWFavoritesFragment()
                 favorite.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "owfavorites").commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "owfavorites").addToBackStack("ow_fav").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
@@ -533,7 +431,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             "Starcraft 2" -> {
                 favorite.visibility = View.GONE
                 fragment = SC2Fragment()
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "sc2fragment").commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "sc2fragment").addToBackStack("sc2").commit()
                 supportFragmentManager.executePendingTransactions()
                 drawer_layout.closeDrawers()
             }
@@ -567,7 +465,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
                 .replace(R.id.fragment, fragment, "d3fragment")
-                .addToBackStack(null).commit()
+                .addToBackStack("d3_account").commit()
         supportFragmentManager.executePendingTransactions()
     }
 
@@ -622,7 +520,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
                 .replace(R.id.fragment, woWNavFragment)
-                .addToBackStack(null).commit()
+                .addToBackStack("wow_nav").commit()
         supportFragmentManager.executePendingTransactions()
     }
 

@@ -28,7 +28,8 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.character.skills.Active
 import com.BlizzardArmory.model.diablo.character.skills.Skill
-import com.BlizzardArmory.util.events.BackPressEvent
+import com.BlizzardArmory.util.events.D3ClosePanelEvent
+import com.BlizzardArmory.util.events.D3SpellShownEvent
 import com.BlizzardArmory.util.events.WoWCharacterEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -96,6 +97,7 @@ class CharacterSkillFragment : Fragment() {
 
     private fun closeViewsWithoutButton() {
         skill_tooltip_scroll!!.visibility = View.GONE
+        EventBus.getDefault().post(D3SpellShownEvent(false))
         skill_tooltip_scroll!!.scrollTo(0, 0)
     }
 
@@ -196,6 +198,7 @@ class CharacterSkillFragment : Fragment() {
                     rune_separator!!.visibility = View.GONE
                 }
                 skill_tooltip_scroll!!.visibility = View.VISIBLE
+                EventBus.getDefault().post(D3SpellShownEvent(true))
             }
             true
         }
@@ -272,6 +275,7 @@ class CharacterSkillFragment : Fragment() {
                             .replace("</span>".toRegex(), "</font>"))
                 }
                 skill_tooltip_scroll!!.visibility = View.VISIBLE
+                EventBus.getDefault().post(D3SpellShownEvent(true))
                 try {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         rune_tooltip_text!!.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
@@ -293,6 +297,7 @@ class CharacterSkillFragment : Fragment() {
                 v.performClick()
                 Log.i("CLOSE", "CLICKED")
                 skill_tooltip_scroll!!.visibility = View.GONE
+                EventBus.getDefault().post(D3SpellShownEvent(false))
                 skill_tooltip_scroll!!.scrollTo(0, 0)
             }
             false
@@ -307,9 +312,7 @@ class CharacterSkillFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun backPressEventReceived(backPressEvent: BackPressEvent) {
-        if (backPressEvent.data) {
-            closeViewsWithoutButton()
-        }
+    public fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
+        closeViewsWithoutButton()
     }
 }

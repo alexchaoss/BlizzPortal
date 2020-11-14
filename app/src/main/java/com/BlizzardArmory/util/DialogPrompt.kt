@@ -225,4 +225,9 @@ class DialogPrompt(val context: Context) {
     fun cancel() {
         dialog!!.cancel()
     }
+
+    fun setOnCancelListener(cancelListerner: () -> Unit): DialogPrompt {
+        dialog?.setOnCancelListener { cancelListerner() }
+        return this
+    }
 }
