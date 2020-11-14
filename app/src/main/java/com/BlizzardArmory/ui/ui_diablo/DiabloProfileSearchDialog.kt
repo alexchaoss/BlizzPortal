@@ -34,7 +34,7 @@ object DiabloProfileSearchDialog {
         bundle.putString("region", selectedRegion)
         bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
         fragment.arguments = bundle
-        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3fragment").commit()
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3fragment").addToBackStack("d3_account").commit()
         fragmentManager.executePendingTransactions()
     }
 

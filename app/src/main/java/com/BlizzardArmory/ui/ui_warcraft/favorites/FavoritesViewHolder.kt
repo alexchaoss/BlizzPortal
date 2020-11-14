@@ -108,7 +108,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             media.assets?.first { it.key == "avatar" }?.value
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
-        Glide.with(itemView).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
+        Glide.with(context).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
     }
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {
@@ -117,7 +117,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
             fragmentTransaction.replace(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
-            fragmentTransaction.addToBackStack("NAV_FRAGMENT").commit()
+            fragmentTransaction.addToBackStack("wow_nav").commit()
             fragmentManager.executePendingTransactions()
         }
     }

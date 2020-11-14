@@ -3,4 +3,4 @@ package com.BlizzardArmory.util.events
 /**
  * The type Class event.
  */
-class localeSelectedEvent()
+class D3ClosePanelEvent()

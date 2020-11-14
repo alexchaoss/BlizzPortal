@@ -117,8 +117,8 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
             val woWNavFragment = WoWNavFragment.newInstance(character.name.toLowerCase(Locale.ROOT), character.realm.slug, media, MainActivity.selectedRegion)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            fragmentTransaction.replace(R.id.nav_fragment, woWNavFragment, "NAV_FRAGMENT")
-            fragmentTransaction.addToBackStack("NAV_FRAGMENT").commit()
+            fragmentTransaction.replace(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+            fragmentTransaction.addToBackStack("wow_nav").commit()
             fragmentManager.executePendingTransactions()
         }
     }

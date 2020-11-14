@@ -7,9 +7,11 @@ import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +26,11 @@ import com.BlizzardArmory.model.warcraft.account.Account
 import com.BlizzardArmory.model.warcraft.account.Character
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.MetricConversion
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.android.synthetic.main.wow_account_fragment.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,11 +50,23 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        activity?.onBackPressedDispatcher?.addCallback {
+            activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
         downloadWoWCharacters()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     private fun downloadWoWCharacters() {
@@ -216,5 +234,10 @@ class AccountFragment : Fragment() {
             dialog.dismiss()
             parentFragmentManager.beginTransaction().remove(this).commit()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 }

@@ -7,13 +7,15 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
-import android.view.*
-import android.widget.Button
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
@@ -27,10 +29,15 @@ import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import kotlinx.android.synthetic.main.sc2_activity.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import java.util.*
@@ -43,6 +50,9 @@ class SC2Fragment : Fragment() {
     private var sc2Profile: Profile? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        activity?.onBackPressedDispatcher?.addCallback {
+            activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
         return inflater.inflate(R.layout.sc2_activity, container, false)
     }
 
@@ -93,6 +103,16 @@ class SC2Fragment : Fragment() {
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
         downloadAccountInformation()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     private fun getRaceImage(imageView: ImageView, name: String) {
@@ -432,88 +452,65 @@ class SC2Fragment : Fragment() {
         })
     }
 
+    private fun getErrorMessage(responseCode: Int): String {
+        return when (responseCode) {
+            404 -> {
+                ErrorMessages.SC2_ACCOUNT_NOT_FOUND
+            }
+            503, 403 -> {
+                ErrorMessages.SC2_SERVERS_DOWN
+            }
+            500 -> {
+                ErrorMessages.BLIZZ_SERVERS_DOWN
+            }
+            else -> {
+                ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+            }
+        }
+
+    }
+
+    private fun getErrorTitle(responseCode: Int): String {
+        return when (responseCode) {
+            404 -> {
+                ErrorMessages.ACCOUNT_NOT_FOUND
+            }
+            503, 403 -> {
+                ErrorMessages.UNAVAILABLE
+            }
+            500 -> {
+                ErrorMessages.SERVERS_ERROR
+            }
+            else -> {
+                ErrorMessages.NO_INTERNET
+            }
+        }
+    }
+
     private fun showNoConnectionMessage(responseCode: Int) {
         loadingCircle!!.visibility = View.GONE
         URLConstants.loading = false
-        val builder = AlertDialog.Builder(requireActivity(), R.style.DialogTransparent)
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        buttonParams.setMargins(10, 20, 10, 20)
-        val titleText = TextView(requireActivity())
-        titleText.textSize = 20f
-        titleText.gravity = Gravity.CENTER_HORIZONTAL
-        titleText.setPadding(0, 20, 0, 20)
-        titleText.layoutParams = layoutParams
-        titleText.setTextColor(Color.WHITE)
-        val messageText = TextView(requireActivity())
-        messageText.gravity = Gravity.CENTER_HORIZONTAL
-        messageText.setPadding(0, 0, 0, 20)
-        messageText.layoutParams = layoutParams
-        messageText.setTextColor(Color.WHITE)
-        val button = Button(requireActivity())
-        button.textSize = 20f
-        button.setTextColor(Color.WHITE)
-        button.gravity = Gravity.CENTER
-        button.width = 200
-        button.height = 100
-        button.layoutParams = buttonParams
-        button.background = requireActivity().getDrawable(R.drawable.buttonstyle)
-        val button2 = Button(requireActivity())
-        button2.textSize = 20f
-        button2.setTextColor(Color.WHITE)
-        button2.gravity = Gravity.CENTER
-        button2.width = 200
-        button2.height = 100
-        button2.layoutParams = buttonParams
-        button2.background = requireActivity().getDrawable(R.drawable.buttonstyle)
-        val buttonLayout = LinearLayout(requireActivity())
-        buttonLayout.orientation = LinearLayout.HORIZONTAL
-        buttonLayout.gravity = Gravity.CENTER
-        buttonLayout.addView(button)
-        when (responseCode) {
-            404 -> {
-                titleText.text = ErrorMessages.ACCOUNT_NOT_FOUND
-                messageText.text = ErrorMessages.SC2_ACCOUNT_NOT_FOUND
-                button.text = ErrorMessages.OK
-            }
-            403 -> {
-                titleText.text = ErrorMessages.UNAVAILABLE
-                messageText.text = ErrorMessages.SC2_SERVERS_DOWN
-                button.text = ErrorMessages.BACK
-            }
-            500 -> {
-                titleText.text = ErrorMessages.SERVERS_ERROR
-                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                button.text = ErrorMessages.BACK
-            }
-            else -> {
-                titleText.text = ErrorMessages.NO_INTERNET
-                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                button.text = ErrorMessages.RETRY
-                button2.text = ErrorMessages.BACK
-                buttonLayout.addView(button2)
-            }
-        }
-        val dialog = builder.show()
-        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val linearLayout = LinearLayout(requireActivity())
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.gravity = Gravity.CENTER
-        linearLayout.setPadding(20, 20, 20, 20)
-        linearLayout.addView(titleText)
-        linearLayout.addView(messageText)
-        linearLayout.addView(buttonLayout)
-        dialog.addContentView(linearLayout, layoutParams)
-        if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
-            dialog.setOnCancelListener { parentFragmentManager.beginTransaction().remove(this).commit() }
-        } else {
-            dialog.setOnCancelListener { downloadAccountInformation() }
-        }
-        button.setOnClickListener { dialog.cancel() }
-        button2.setOnClickListener {
-            dialog.dismiss()
-            parentFragmentManager.beginTransaction().remove(this).commit()
-        }
+
+        val dialog = DialogPrompt(requireActivity())
+
+        dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+                .addMessage(getErrorMessage(responseCode), 18f, "message")
+                .addSideBySideButtons(ErrorMessages.RETRY, 18f, ErrorMessages.BACK, 18f,
+                        {
+                            dialog.cancel()
+                            downloadAccountInformation()
+                            loadingCircle!!.visibility = View.VISIBLE
+                            URLConstants.loading = true
+                        },
+                        {
+                            dialog.cancel()
+                            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        },
+                        "retry", "back").show()
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 }

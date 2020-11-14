@@ -8,8 +8,10 @@ import android.text.Html
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
@@ -24,6 +26,7 @@ import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_diablo.navigation.D3CharacterNav
 import com.BlizzardArmory.util.events.D3CharacterEvent
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -44,6 +47,7 @@ class D3Fragment : Fragment() {
     private var favorite: ImageView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        onBackPress()
         return inflater.inflate(R.layout.d3_fragment, container, false)
     }
 
@@ -69,6 +73,16 @@ class D3Fragment : Fragment() {
         favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
         favorite?.tag = R.drawable.ic_star_border_black_24dp
         downloadAccountInformation()
+    }
+
+    private fun onBackPress() {
+        activity?.onBackPressedDispatcher?.addCallback {
+            favorite?.visibility = View.GONE
+            favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
+            favorite?.tag = R.drawable.ic_star_border_black_24dp
+            Log.i("FRAG STACK", activity?.supportFragmentManager?.backStackEntryCount.toString())
+            activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
     }
 
     private fun downloadAccountInformation() {
@@ -297,8 +311,8 @@ class D3Fragment : Fragment() {
         val fragmentManager = parentFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-        fragmentTransaction.replace(R.id.nav_fragment, d3CharacterNav, "d3nav")
-        fragmentTransaction.addToBackStack(null).commit()
+        fragmentTransaction.replace(R.id.fragment, d3CharacterNav, "d3nav")
+        fragmentTransaction.addToBackStack("d3_nav").commit()
         parentFragmentManager.executePendingTransactions()
     }
 
@@ -376,6 +390,11 @@ class D3Fragment : Fragment() {
             dialog.dismiss()
             parentFragmentManager.beginTransaction().remove(this).commit()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 
     companion object {

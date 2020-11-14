@@ -9,8 +9,10 @@ import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.view.*
-import android.widget.*
-import androidx.appcompat.app.AlertDialog
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -34,6 +36,7 @@ import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
@@ -53,8 +56,8 @@ class WoWCharacterFragment : Fragment() {
     private var characterRealm: String? = null
     private var characterClicked: String? = null
     private var region: String? = null
-    private var dialog: AlertDialog? = null
     private var favorite: ImageView? = null
+    private var dialog: DialogPrompt? = null
 
     //Character information
     private lateinit var characterSummary: CharacterSummary
@@ -945,87 +948,58 @@ class WoWCharacterFragment : Fragment() {
         versatility?.text = String.format(Locale.ENGLISH, "Versatility: %.2f%%", statistic.versatilityDamageDoneBonus.toDouble())
     }
 
-    private fun callErrorAlertDialog(responseCode: Int) {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        loading_circle?.visibility = View.GONE
-        URLConstants.loading = false
-        if (dialog == null) {
-            val builder = AlertDialog.Builder(requireContext(), R.style.DialogTransparent)
-            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(0, 20, 0, 0)
-            val titleText = TextView(context)
-            titleText.textSize = 20f
-            titleText.gravity = Gravity.CENTER_HORIZONTAL
-            titleText.setPadding(0, 20, 0, 20)
-            titleText.layoutParams = layoutParams
-            titleText.setTextColor(Color.WHITE)
-            val messageText = TextView(context)
-            messageText.gravity = Gravity.CENTER_HORIZONTAL
-            messageText.layoutParams = layoutParams
-            messageText.setTextColor(Color.WHITE)
-            val button = Button(context)
-            button.textSize = 18f
-            button.setTextColor(Color.WHITE)
-            button.gravity = Gravity.CENTER
-            button.width = 200
-            button.layoutParams = layoutParams
-            button.background = requireContext().getDrawable(R.drawable.buttonstyle)
-            val button2 = Button(context)
-            button2.textSize = 18f
-            button2.setTextColor(Color.WHITE)
-            button2.gravity = Gravity.CENTER
-            button2.width = 200
-            button2.layoutParams = layoutParams
-            button2.background = requireContext().getDrawable(R.drawable.buttonstyle)
-            val buttonLayout = LinearLayout(context)
-            buttonLayout.orientation = LinearLayout.HORIZONTAL
-            buttonLayout.gravity = Gravity.CENTER
-            when (responseCode) {
-                in 400..499 -> {
-                    titleText.text = ErrorMessages.INFORMATION_OUTDATED
-                    messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
-                500 -> {
-                    titleText.text = ErrorMessages.SERVERS_ERROR
-                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
-                else -> {
-                    titleText.text = ErrorMessages.NO_INTERNET
-                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                    button.text = ErrorMessages.RETRY
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button)
-                    buttonLayout.addView(button2)
-                }
+    private fun getErrorMessage(responseCode: Int): String {
+        return when (responseCode) {
+            in 400..499 -> {
+                ErrorMessages.LOGIN_TO_UPDATE
             }
-            dialog = builder.show()
-            dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            dialog?.window?.setLayout(800, 500)
-            val linearLayout = LinearLayout(context)
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.gravity = Gravity.CENTER
-            linearLayout.addView(titleText)
-            linearLayout.addView(messageText)
-            linearLayout.addView(buttonLayout)
-            val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(20, 20, 20, 20)
-            dialog?.addContentView(linearLayout, layoutParamsWindow)
-            dialog?.setOnCancelListener {
-                EventBus.getDefault().post(NetworkEvent(true))
+            500 -> {
+                ErrorMessages.BLIZZ_SERVERS_DOWN
             }
-            button.setOnClickListener {
-                dialog?.hide()
-                downloadInfo()
-                EventBus.getDefault().post(RetryEvent(true))
-            }
-            button2.setOnClickListener {
-                dialog?.cancel()
+            else -> {
+                ErrorMessages.TURN_ON_CONNECTION_MESSAGE
             }
         }
+
+    }
+
+    private fun getErrorTitle(responseCode: Int): String {
+        return when (responseCode) {
+            in 400..499 -> {
+                ErrorMessages.INFORMATION_OUTDATED
+            }
+            500 -> {
+                ErrorMessages.SERVERS_ERROR
+            }
+            else -> {
+                ErrorMessages.NO_INTERNET
+            }
+        }
+    }
+
+    private fun callErrorAlertDialog(responseCode: Int) {
+        if (URLConstants.loading) {
+            loading_circle!!.visibility = View.GONE
+            URLConstants.loading = false
+
+            dialog = DialogPrompt(requireActivity())
+            dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
+                    .addMessage(getErrorMessage(responseCode), 18f, "message")
+                    .addSideBySideButtons(ErrorMessages.RETRY, 18f, ErrorMessages.BACK, 18f,
+                            {
+                                dialog!!.cancel()
+                                downloadInfo()
+                                EventBus.getDefault().post(RetryEvent(true))
+                                loading_circle!!.visibility = View.VISIBLE
+                                URLConstants.loading = true
+                            },
+                            {
+                                dialog!!.cancel()
+                                EventBus.getDefault().post(NetworkEvent(true))
+                            },
+                            "retry", "back").show()
+        }
+
     }
 
     companion object {

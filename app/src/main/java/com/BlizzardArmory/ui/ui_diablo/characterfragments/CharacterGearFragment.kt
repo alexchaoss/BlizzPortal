@@ -24,7 +24,8 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.diablo.items.Item
 import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.events.BackPressEvent
+import com.BlizzardArmory.util.events.D3ClosePanelEvent
+import com.BlizzardArmory.util.events.D3ItemShownEvent
 import com.BlizzardArmory.util.events.RetryEvent
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.d3_gear_fragment.*
@@ -43,6 +44,8 @@ private const val SELECTED_REGION = "region"
 private const val ID = "id"
 
 class CharacterGearFragment : Fragment() {
+
+    var itemPanelOpen = false
 
     private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
@@ -137,6 +140,7 @@ class CharacterGearFragment : Fragment() {
     private fun setCloseButton() {
         closeButton!!.setOnTouchListener { v: View, event: MotionEvent ->
             if (event.action == MotionEvent.ACTION_DOWN) {
+                EventBus.getDefault().post(D3ItemShownEvent(false))
                 v.performClick()
                 Log.i("CLOSE", "CLICKED")
                 item_scroll_view!!.visibility = View.GONE
@@ -171,6 +175,7 @@ class CharacterGearFragment : Fragment() {
         item_stats!!.removeView(set)
         weapon_effect!!.setImageDrawable(null)
         item_scroll_view!!.scrollTo(0, 0)
+        EventBus.getDefault().post(D3ItemShownEvent(false))
     }
 
     @Throws(IOException::class)
@@ -296,6 +301,7 @@ class CharacterGearFragment : Fragment() {
     private fun setOnPressItemInformation(imageView: ImageView?, index: Int) {
         imageView?.setOnTouchListener { _: View?, event: MotionEvent ->
             if (event.action == MotionEvent.ACTION_DOWN) {
+                itemPanelOpen = true
                 val backgroundStroke = GradientDrawable()
                 backgroundStroke.setColor(Color.parseColor("#000000"))
                 backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(index)))
@@ -547,6 +553,7 @@ class CharacterGearFragment : Fragment() {
                 }
                 item_stats.addView(closeButton)
                 item_scroll_view.visibility = View.VISIBLE
+                EventBus.getDefault().post(D3ItemShownEvent(true))
             }
             true
         }
@@ -658,17 +665,15 @@ class CharacterGearFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun backPressReceived(backPressEvent: BackPressEvent) {
-        if (backPressEvent.data) {
-            closeViewsWithoutButton()
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
             addImageViewItemsToList()
             setItemInformation()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
+        closeViewsWithoutButton()
     }
 }

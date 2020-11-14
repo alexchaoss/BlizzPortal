@@ -15,12 +15,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.ui.MainActivity.Companion.locale
-import com.BlizzardArmory.util.events.localeSelectedEvent
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import kotlinx.android.synthetic.main.settings.*
 import org.greenrobot.eventbus.EventBus
@@ -32,6 +33,9 @@ class SettingsFragment : Fragment() {
     private var sharedPreferences: SharedPreferences? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        activity?.onBackPressedDispatcher?.addCallback {
+            activity?.supportFragmentManager?.popBackStack()
+        }
         return inflater.inflate(R.layout.settings, container, false)
     }
 
@@ -76,7 +80,7 @@ class SettingsFragment : Fragment() {
                 selectedLanguage = parent.getItemAtPosition(position) as String
                 Log.i("lang", selectedLanguage)
                 setLocale()
-                EventBus.getDefault().postSticky(localeSelectedEvent())
+                EventBus.getDefault().postSticky(LocaleSelectedEvent())
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 20f
