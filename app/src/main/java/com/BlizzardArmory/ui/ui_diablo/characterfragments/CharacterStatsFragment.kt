@@ -42,6 +42,7 @@ class CharacterStatsFragment : Fragment() {
     private var battletag = ""
     private var selectedRegion = ""
     private var id = 0L
+    lateinit var errorMessages: ErrorMessages
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,7 +51,7 @@ class CharacterStatsFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        errorMessages = ErrorMessages(this.resources)
         val bundle = requireArguments()
         id = bundle.getLong("id")
         battletag = bundle.getString("battletag")!!
@@ -221,22 +222,22 @@ class CharacterStatsFragment : Fragment() {
             buttonLayout.gravity = Gravity.CENTER
             when (responseCode) {
                 in 400..499 -> {
-                    titleText.text = ErrorMessages.INFORMATION_OUTDATED
-                    messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                    button2.text = ErrorMessages.BACK
+                    titleText.text = errorMessages.INFORMATION_OUTDATED
+                    messageText.text = errorMessages.LOGIN_TO_UPDATE
+                    button2.text = errorMessages.BACK
                     buttonLayout.addView(button2)
                 }
                 500 -> {
-                    titleText.text = ErrorMessages.SERVERS_ERROR
-                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                    button2.text = ErrorMessages.BACK
+                    titleText.text = errorMessages.SERVERS_ERROR
+                    messageText.text = errorMessages.BLIZZ_SERVERS_DOWN
+                    button2.text = errorMessages.BACK
                     buttonLayout.addView(button2)
                 }
                 else -> {
-                    titleText.text = ErrorMessages.NO_INTERNET
-                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                    button.text = ErrorMessages.RETRY
-                    button2.text = ErrorMessages.BACK
+                    titleText.text = errorMessages.NO_INTERNET
+                    messageText.text = errorMessages.TURN_ON_CONNECTION_MESSAGE
+                    button.text = errorMessages.RETRY
+                    button2.text = errorMessages.BACK
                     buttonLayout.addView(button)
                     buttonLayout.addView(button2)
                 }

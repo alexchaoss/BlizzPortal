@@ -13,7 +13,6 @@
         android:id="@+id/battletag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TEST"
         android:textColor="#FFF"
         android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@id/elite"
@@ -25,15 +24,14 @@
         android:id="@+id/lifetime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/lifetime_kills"
         android:gravity="center"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:text="150000"
         android:textColor="#FFF"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:drawableStartCompat="@drawable/lifetime_kills"
         app:layout_constraintTop_toBottomOf="@id/battletag" />
 
 
@@ -41,31 +39,29 @@
         android:id="@+id/elite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/elite_kills_image"
         android:gravity="center"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:text="1000000"
         android:textColor="#FFF"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/paragon"
         app:layout_constraintStart_toEndOf="@id/lifetime"
+        app:drawableStartCompat="@drawable/elite_kills_image"
         app:layout_constraintTop_toBottomOf="@id/battletag" />
 
     <TextView
         android:id="@+id/paragon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/paragon_image"
         android:gravity="center"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:text="5000"
         android:textColor="#FFF"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:drawableStartCompat="@drawable/paragon_image"
         app:layout_constraintTop_toBottomOf="@id/battletag" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

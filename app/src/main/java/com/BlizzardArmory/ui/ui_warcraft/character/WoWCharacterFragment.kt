@@ -58,6 +58,7 @@ class WoWCharacterFragment : Fragment() {
     private var region: String? = null
     private var favorite: ImageView? = null
     private var dialog: DialogPrompt? = null
+    lateinit var errorMessages: ErrorMessages
 
     //Character information
     private lateinit var characterSummary: CharacterSummary
@@ -81,6 +82,7 @@ class WoWCharacterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         URLConstants.loading = true
+        errorMessages = ErrorMessages(this.resources)
         val bundle = requireArguments()
         characterRealm = bundle.getString("realm")
         characterClicked = bundle.getString("character")
@@ -951,13 +953,13 @@ class WoWCharacterFragment : Fragment() {
     private fun getErrorMessage(responseCode: Int): String {
         return when (responseCode) {
             in 400..499 -> {
-                ErrorMessages.LOGIN_TO_UPDATE
+                errorMessages.LOGIN_TO_UPDATE
             }
             500 -> {
-                ErrorMessages.BLIZZ_SERVERS_DOWN
+                errorMessages.BLIZZ_SERVERS_DOWN
             }
             else -> {
-                ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                errorMessages.TURN_ON_CONNECTION_MESSAGE
             }
         }
 
@@ -966,13 +968,13 @@ class WoWCharacterFragment : Fragment() {
     private fun getErrorTitle(responseCode: Int): String {
         return when (responseCode) {
             in 400..499 -> {
-                ErrorMessages.INFORMATION_OUTDATED
+                errorMessages.INFORMATION_OUTDATED
             }
             500 -> {
-                ErrorMessages.SERVERS_ERROR
+                errorMessages.SERVERS_ERROR
             }
             else -> {
-                ErrorMessages.NO_INTERNET
+                errorMessages.NO_INTERNET
             }
         }
     }
@@ -985,7 +987,7 @@ class WoWCharacterFragment : Fragment() {
             dialog = DialogPrompt(requireActivity())
             dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
                     .addMessage(getErrorMessage(responseCode), 18f, "message")
-                    .addSideBySideButtons(ErrorMessages.RETRY, 18f, ErrorMessages.BACK, 18f,
+                    .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                             {
                                 dialog!!.cancel()
                                 downloadInfo()

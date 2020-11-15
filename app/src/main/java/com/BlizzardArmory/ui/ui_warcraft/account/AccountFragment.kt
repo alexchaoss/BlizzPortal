@@ -4,17 +4,13 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
@@ -23,11 +19,10 @@ import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.account.Account
-import com.BlizzardArmory.model.warcraft.account.Character
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.MetricConversion
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.android.synthetic.main.wow_account_fragment.*
+import okhttp3.internal.toImmutableList
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -39,10 +34,9 @@ import java.util.*
 class AccountFragment : Fragment() {
 
     private var charaters: Account? = null
-    private val characterList = ArrayList<Character>()
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
-    private val charactersByRealm = arrayListOf<List<Character>>()
+    lateinit var errorMessages: ErrorMessages
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.wow_account_fragment, container, false)
@@ -50,6 +44,7 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        errorMessages = ErrorMessages(this.resources)
         activity?.onBackPressedDispatcher?.addCallback {
             activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
@@ -79,7 +74,7 @@ class AccountFragment : Fragment() {
                     response.isSuccessful -> {
                         Log.i("TEST", response.raw().request.url.toString())
                         charaters = response.body()
-                        populateRecyclerView()
+                        setAdapter(charaters?.wowAccounts!!.flatMap { it.characters }.map { it.realm.name }.distinct().sorted().toMutableList(), realmSpinner)
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         URLConstants.loading = false
                         loadingCircle.visibility = View.GONE
@@ -99,61 +94,55 @@ class AccountFragment : Fragment() {
     }
 
     private fun populateRecyclerView() {
-        characterList.clear()
-        charactersByRealm.clear()
-        if (charaters?.wowAccounts != null) {
-            for (wowAccount in charaters!!.wowAccounts) {
-                characterList.addAll(wowAccount.characters)
-            }
+        character_recycler.apply {
+            adapter = AccountAdapter(charaters?.wowAccounts!!
+                    .flatMap { it.characters }
+                    .filter { it.realm.name == realmSpinner.selectedItem.toString() }.sortedByDescending { it.level.toInt() },
+                    parentFragmentManager, requireActivity(), battlenetOAuth2Params!!)
+            adapter!!.notifyDataSetChanged()
         }
-        Log.i("TEST", characterList[0].realm.name)
-        for (characters in characterList.groupBy { it.realm.name }) {
-            charactersByRealm.add(characters.value.sortedBy { it.level.toInt() }.reversed())
-        }
-        charactersByRealm.sortBy { it[0].realm.name }
+    }
 
-        for (realm in charactersByRealm) run {
-            val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            val button = TextView(requireActivity())
-            button.setBackgroundResource(R.drawable.progress_collapse_header)
-            button.setTextColor(Color.WHITE)
-            val realmNamePlus = "+ " + realm[0].realm.name
-            val realmNameMinus = "- " + realm[0].realm.name
-            button.text = realmNamePlus
-            button.textSize = 18F
-            button.layoutParams = paramsButton
-            linear_wow_characters.addView(button)
-
-            var expand = false
-            val recyclerViewSize = if (realm.size * 65 < 300) {
-                realm.size * 64
-            } else {
-                300
+    private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {
+        spinnerList.add(0, "Select Realm")
+        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
             }
-            val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(recyclerViewSize, requireActivity()))
-            val recyclerView = RecyclerView(requireActivity())
-            recyclerView.layoutParams = paramsRecyclerView
-            linear_wow_characters.addView(recyclerView)
 
-            recyclerView.apply {
-                layoutManager = LinearLayoutManager(requireActivity())
-                adapter = battlenetOAuth2Params?.let { AccountAdapter(realm, parentFragmentManager, requireActivity(), it) }
-                loadingCircle.visibility = View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
-            recyclerView.visibility = View.GONE
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
 
-            button.setOnClickListener {
-                Log.i("CLICKED", "realm")
-                if (!expand) {
-                    expand = true
-                    recyclerView.visibility = View.VISIBLE
-                    button.text = realmNameMinus
+                tv.textSize = 18f
+                tv.gravity = Gravity.CENTER
+                tv.setBackgroundColor(Color.parseColor("#272931"))
+
+                if (position == 0) {
+                    tv.setTextColor(Color.GRAY)
                 } else {
-                    expand = false
-                    recyclerView.visibility = View.GONE
-                    button.text = realmNamePlus
+                    tv.setTextColor(Color.WHITE)
                 }
+                return view
+            }
+        }
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        spinner.adapter = arrayAdapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                try {
+                    (view as TextView).setTextColor(Color.WHITE)
+                    view.textSize = 18f
+                    view.gravity = Gravity.CENTER
+                    populateRecyclerView()
+                } catch (e: Exception) {
+                    Log.e("Error", e.toString())
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                (parent.getChildAt(0) as TextView).gravity = Gravity.CENTER
+                (parent.getChildAt(0) as TextView).setTextColor(0)
             }
         }
     }
@@ -197,22 +186,22 @@ class AccountFragment : Fragment() {
         buttonLayout.gravity = Gravity.CENTER
         when (responseCode) {
             in 400..499 -> {
-                titleText.text = ErrorMessages.INFORMATION_OUTDATED
-                messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                button2.text = ErrorMessages.BACK
+                titleText.text = errorMessages.INFORMATION_OUTDATED
+                messageText.text = errorMessages.LOGIN_TO_UPDATE
+                button2.text = errorMessages.BACK
                 buttonLayout.addView(button2)
             }
             500 -> {
-                titleText.text = ErrorMessages.SERVERS_ERROR
-                messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                button2.text = ErrorMessages.BACK
+                titleText.text = errorMessages.SERVERS_ERROR
+                messageText.text = errorMessages.BLIZZ_SERVERS_DOWN
+                button2.text = errorMessages.BACK
                 buttonLayout.addView(button2)
             }
             else -> {
-                titleText.text = ErrorMessages.NO_INTERNET
-                messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                button.text = ErrorMessages.RETRY
-                button2.text = ErrorMessages.BACK
+                titleText.text = errorMessages.NO_INTERNET
+                messageText.text = errorMessages.TURN_ON_CONNECTION_MESSAGE
+                button.text = errorMessages.RETRY
+                button2.text = errorMessages.BACK
                 buttonLayout.addView(button)
                 buttonLayout.addView(button2)
             }

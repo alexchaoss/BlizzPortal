@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +42,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private var name: TextView? = null
     private var characterClass: TextView? = null
     private var level: TextView? = null
-    private var characterLayout: ConstraintLayout? = null
+    private var characterLayout: CardView? = null
     private var gson: Gson? = null
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var fragmentManager: FragmentManager? = null
@@ -108,7 +108,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             media.assets?.first { it.key == "avatar" }?.value
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
-        Glide.with(context).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
+        Glide.with(context.applicationContext).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
     }
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {

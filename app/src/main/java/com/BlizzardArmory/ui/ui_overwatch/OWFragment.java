@@ -63,6 +63,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class OWFragment extends Fragment {
 
     private NetworkServices networkServices;
+    private ErrorMessages errorMessages;
 
     private String username;
     private String platform;
@@ -141,6 +142,7 @@ public class OWFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        errorMessages = new ErrorMessages(this.getResources());
         loadingCircle = view.findViewById(R.id.loadingCircle);
         loadingCircle.setVisibility(View.VISIBLE);
         assert GamesActivity.Companion.getUserInformation() != null;
@@ -827,15 +829,15 @@ public class OWFragment extends Fragment {
         buttonLayout.addView(button);
 
         if (responseCode == 404) {
-            titleText.setText(ErrorMessages.ACCOUNT_NOT_FOUND);
-            messageText.setText(ErrorMessages.OW_ACCOUNT_NOT_FOUND);
-            button.setText(ErrorMessages.OK);
-            button2.setText(ErrorMessages.BACK);
+            titleText.setText(errorMessages.getACCOUNT_NOT_FOUND());
+            messageText.setText(errorMessages.getOW_ACCOUNT_NOT_FOUND());
+            button.setText(errorMessages.getOK());
+            button2.setText(errorMessages.getBACK());
         } else {
-            titleText.setText(ErrorMessages.NO_INTERNET);
-            messageText.setText(ErrorMessages.TURN_ON_CONNECTION_MESSAGE);
-            button.setText(ErrorMessages.RETRY);
-            button2.setText(ErrorMessages.BACK);
+            titleText.setText(errorMessages.getNO_INTERNET());
+            messageText.setText(errorMessages.getTURN_ON_CONNECTION_MESSAGE());
+            button.setText(errorMessages.getRETRY());
+            button2.setText(errorMessages.getBACK());
             buttonLayout.addView(button2);
         }
 

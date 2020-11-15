@@ -1,24 +1,24 @@
 package com.BlizzardArmory
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
+import com.akexorcist.localizationactivity.core.LocalizationApplicationDelegate
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlin.properties.Delegates
-
-object Variables {
-    var isWiFiNetworkConnected: Boolean by Delegates.observable(false) { property, oldValue, newValue ->
-        Log.i("Wi-Fi connectivity", "$newValue")
-    }
-
-    var isDataNetworkConnected: Boolean by Delegates.observable(false) { property, oldValue, newValue ->
-        Log.i("Data connectivity", "$newValue")
-    }
-}
+import java.util.*
 
 /**
  * The type Blizzard armory.
  */
 class BlizzardArmory : Application() {
+
+    private val localizationDelegate = LocalizationApplicationDelegate()
+
+    override fun attachBaseContext(base: Context) {
+        localizationDelegate.setDefaultLanguage(base, Locale.ENGLISH)
+        super.attachBaseContext(localizationDelegate.attachBaseContext(base))
+    }
+
     override fun onCreate() {
         super.onCreate()
         if (instance == null) {

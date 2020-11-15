@@ -52,18 +52,6 @@
                 app:layout_constraintStart_toEndOf="@id/item_col1"
                 app:layout_constraintTop_toBottomOf="@id/character_name" />
 
-            <!--<TextView
-                android:id="@+id/character_class"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@id/item_lvl"
-                app:layout_constraintEnd_toStartOf="@id/item_col4"
-                app:layout_constraintStart_toEndOf="@id/item_col1"
-                app:layout_constraintTop_toBottomOf="@id/level_race" />-->
-
             <TextView
                 android:id="@+id/item_lvl"
                 android:layout_width="match_parent"
