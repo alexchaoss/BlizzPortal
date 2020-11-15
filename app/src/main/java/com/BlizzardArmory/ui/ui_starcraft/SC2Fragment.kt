@@ -48,6 +48,7 @@ class SC2Fragment : Fragment() {
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var accountInformation = listOf<Player>()
     private var sc2Profile: Profile? = null
+    lateinit var errorMessages: ErrorMessages
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         activity?.onBackPressedDispatcher?.addCallback {
@@ -58,7 +59,7 @@ class SC2Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        errorMessages = ErrorMessages(this.resources)
         val summaryBG = GradientDrawable()
         summaryBG.setStroke(6, Color.parseColor("#122a42"))
         summaryBG.setColor(Color.parseColor("#75091c2e"))
@@ -455,16 +456,16 @@ class SC2Fragment : Fragment() {
     private fun getErrorMessage(responseCode: Int): String {
         return when (responseCode) {
             404 -> {
-                ErrorMessages.SC2_ACCOUNT_NOT_FOUND
+                errorMessages.SC2_ACCOUNT_NOT_FOUND
             }
             503, 403 -> {
-                ErrorMessages.SC2_SERVERS_DOWN
+                errorMessages.SC2_SERVERS_DOWN
             }
             500 -> {
-                ErrorMessages.BLIZZ_SERVERS_DOWN
+                errorMessages.BLIZZ_SERVERS_DOWN
             }
             else -> {
-                ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                errorMessages.TURN_ON_CONNECTION_MESSAGE
             }
         }
 
@@ -473,16 +474,16 @@ class SC2Fragment : Fragment() {
     private fun getErrorTitle(responseCode: Int): String {
         return when (responseCode) {
             404 -> {
-                ErrorMessages.ACCOUNT_NOT_FOUND
+                errorMessages.ACCOUNT_NOT_FOUND
             }
             503, 403 -> {
-                ErrorMessages.UNAVAILABLE
+                errorMessages.UNAVAILABLE
             }
             500 -> {
-                ErrorMessages.SERVERS_ERROR
+                errorMessages.SERVERS_ERROR
             }
             else -> {
-                ErrorMessages.NO_INTERNET
+                errorMessages.NO_INTERNET
             }
         }
     }
@@ -495,7 +496,7 @@ class SC2Fragment : Fragment() {
 
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
-                .addSideBySideButtons(ErrorMessages.RETRY, 18f, ErrorMessages.BACK, 18f,
+                .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                         {
                             dialog.cancel()
                             downloadAccountInformation()

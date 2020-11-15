@@ -23,18 +23,17 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.util.BaseActivity
 import com.BlizzardArmory.util.ConnectionStatus
+import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
-class MainActivity : BaseActivity() {
+class MainActivity : LocalizationActivity() {
 
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
@@ -136,12 +135,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun checkConnectionBeforeLogin() {
-        Log.i("device", android.os.Build.MODEL)
-        if (!ConnectionStatus.hasNetwork()) {
-            val bundle = Bundle()
-            bundle.putString("error", "Not connected, device: ${android.os.Build.DEVICE}")
-            FirebaseAnalytics.getInstance(this).logEvent("bad_connection", bundle)
-        }
         openLoginToBattleNet()
         /*} else {
             val dialog = DialogPrompt(this)
@@ -228,6 +221,18 @@ class MainActivity : BaseActivity() {
             "en_US"
         } else {
             sharedPreferences?.getString("locale", "en_US")!!
+        }
+        when (locale) {
+            "en_US" -> setLanguage("en")
+            "es_ES" -> setLanguage("es")
+            "fr_FR" -> setLanguage("fr")
+            "ru_RU" -> setLanguage("ru")
+            "de_DE" -> setLanguage("de")
+            "pt_BR" -> setLanguage("pt")
+            "it_IT" -> setLanguage("it")
+            "ko_KR" -> setLanguage("ko")
+            "zh_CN" -> setLanguage("zh", "CN")
+            "zh_TW" -> setLanguage("zh", "TW")
         }
     }
 

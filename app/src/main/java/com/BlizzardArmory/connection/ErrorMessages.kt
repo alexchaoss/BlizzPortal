@@ -1,77 +1,80 @@
 package com.BlizzardArmory.connection
 
+import android.content.res.Resources
+import com.BlizzardArmory.R
+
 /**
  * The type Error messages.
  */
-object ErrorMessages {
+class ErrorMessages(resources: Resources) {
     /**
      * The constant NO_INTERNET.
      */
-    const val NO_INTERNET = "No Internet Connection"
+    val NO_INTERNET = resources.getString(R.string.no_internet)
 
     /**
      * The constant TURN_ON_CONNECTION_MESSAGE.
      */
-    const val TURN_ON_CONNECTION_MESSAGE = "Make sure that Wi-Fi or mobile data is turned on, then try again."
+    val TURN_ON_CONNECTION_MESSAGE = resources.getString(R.string.turn_on_connection)
 
     /**
      * The constant RETRY.
      */
-    const val RETRY = "Retry"
+    val RETRY = resources.getString(R.string.retry)
 
     /**
      * The constant BACK.
      */
-    const val BACK = "Back"
+    val BACK = resources.getString(R.string.back)
 
     /**
      * The constant OK.
      */
-    const val OK = "OK"
+    val OK = resources.getString(R.string.ok)
 
     /**
      * The constant UNAVAILABLE.
      */
-    const val UNAVAILABLE = "Unavailable"
-    const val UNEXPECTED = "There was an unexpected error, please try again."
+    val UNAVAILABLE = resources.getString(R.string.unavailable)
+    val UNEXPECTED = resources.getString(R.string.unexpected)
 
     /**
      * The constant ACCOUNT_NOT_FOUND.
      */
-    const val ACCOUNT_NOT_FOUND = "The account could not be found"
+    val ACCOUNT_NOT_FOUND = resources.getString(R.string.account_not_found)
 
     /**
      * The constant OW_ACCOUNT_NOT_FOUND.
      */
-    const val OW_ACCOUNT_NOT_FOUND = "There is no Overwatch profile associated with this account."
+    val OW_ACCOUNT_NOT_FOUND = resources.getString(R.string.ow_account_not_found)
 
     /**
      * The constant SC2_ACCOUNT_NOT_FOUND.
      */
-    const val SC2_ACCOUNT_NOT_FOUND = "There is no Starcraft 2 profile associated with this account."
+    val SC2_ACCOUNT_NOT_FOUND = resources.getString(R.string.sc2_account_not_found)
 
     /**
      * The constant SC2_SERVERS_DOWN.
      */
-    const val SC2_SERVERS_DOWN = "The Starcraft 2 community servers are down temporarily."
+    val SC2_SERVERS_DOWN = resources.getString(R.string.sc2_servers_down)
 
     /**
      * The constant SERVERS_ERROR.
      */
-    const val SERVERS_ERROR = "Server Error"
+    val SERVERS_ERROR = resources.getString(R.string.server_error)
 
     /**
      * The constant BLIZZ_SERVERS_DOWN.
      */
-    const val BLIZZ_SERVERS_DOWN = "There seems to be some problems with Blizzard's servers, please try again later"
+    val BLIZZ_SERVERS_DOWN = resources.getString(R.string.blizz_server_down)
 
     /**
      * The constant INFORMATION_OUTDATED.
      */
-    const val INFORMATION_OUTDATED = "Information Outdated"
+    val INFORMATION_OUTDATED = resources.getString(R.string.outdated_info)
 
     /**
      * The constant LOGIN_TO_UPDATE.
      */
-    const val LOGIN_TO_UPDATE = "Please login in game to update your account's information."
+    val LOGIN_TO_UPDATE = resources.getString(R.string.login_again)
 }

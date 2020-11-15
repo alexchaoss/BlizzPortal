@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
-        android:text="Search Character"
+        android:text="@string/search_character"
         android:textColor="#FFF"
         android:textSize="16sp" />
 

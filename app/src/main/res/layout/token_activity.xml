@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:textSize="50sp"
         android:textColor="#fff"
-        android:text="Loading..."
+        android:text="@string/loadingdot"
         android:layout_centerHorizontal="true"
         android:layout_alignTop="@+id/loading_image" />
 

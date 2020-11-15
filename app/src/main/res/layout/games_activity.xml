@@ -21,7 +21,7 @@
         android:id="@+id/news_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingTop="55dp"></androidx.fragment.app.FragmentContainerView>
+        android:paddingTop="55dp" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment"
@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center_horizontal"
-            android:text="Select Your News"
+            android:text="@string/select_your_news"
             android:textColor="#FFF"
             android:textSize="30sp" />
 
@@ -117,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Blizzard News"
+                    android:text="@string/blizzard_news"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 
@@ -139,7 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Warcraft News"
+                    android:text="@string/warcraft_news"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 
@@ -161,7 +161,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Diablo News"
+                    android:text="@string/diablo_news"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 
@@ -183,7 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Starcraft News"
+                    android:text="@string/starcraft_news"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 
@@ -205,7 +205,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Overwatch News"
+                    android:text="@string/overwatch_news"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 
@@ -227,7 +227,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Hearthstone News"
+                    android:text="@string/hearthstone_news"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 
@@ -249,7 +249,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Heroes of The Storm News"
+                    android:text="@string/heroes_of_the_storm_news"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 

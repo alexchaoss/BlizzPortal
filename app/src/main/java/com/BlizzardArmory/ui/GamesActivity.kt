@@ -13,7 +13,6 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
@@ -21,7 +20,6 @@ import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.RetroClient
-import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
@@ -41,6 +39,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
+import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
@@ -48,7 +47,6 @@ import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.games_activity.*
 import kotlinx.android.synthetic.main.games_activity_bar.*
 import kotlinx.android.synthetic.main.games_activity_nav_header.*
-import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -57,7 +55,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private lateinit var toggle: ActionBarDrawerToggle
@@ -69,16 +67,17 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     var prefs: SharedPreferences? = null
     val gson = GsonBuilder().create()
     var wowRealms = mutableMapOf<String, Realms>()
+    lateinit var errorMessage: ErrorMessages
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.games_activity)
 
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Log.e("Crash Prevented", throwable.message!!)
+            Log.e("Crash Prevented", throwable.message!!, throwable)
             handleUncaughtException(thread, throwable)
         }
-
+        errorMessage = ErrorMessages(this.resources)
         drawer_layout.setScrimColor(Color.TRANSPARENT)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         battlenetOAuth2Params = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
@@ -112,7 +111,6 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
         getRealms()
-        initWoWServer()
 
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.itemIconTintList = null
@@ -148,27 +146,24 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+    public fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
         getRealms()
+        when (localeSelectedEvent.locale) {
+            "en_US" -> setLanguage("en")
+            "es_ES" -> setLanguage("es")
+            "fr_FR" -> setLanguage("fr")
+            "ru_RU" -> setLanguage("ru")
+            "de_DE" -> setLanguage("de")
+            "pt_BR" -> setLanguage("pt")
+            "it_IT" -> setLanguage("it")
+            "ko_KR" -> setLanguage("ko")
+            "zh_CN" -> setLanguage("zh", "CN")
+            "zh_TW" -> setLanguage("zh", "TW")
+        }
     }
 
     private fun handleUncaughtException(thread: Thread?, e: Throwable) {
         FirebaseCrashlytics.getInstance().log(e.message!!)
-    }
-
-    private fun initWoWServer() {
-        val call: Call<ResponseBody> = RetroClient.getClient.initServer(URLConstants.initServer())
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    Log.i("Server init", response.body().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("Server init Error", "trace", t)
-            }
-        })
     }
 
     private fun getRealms() {
@@ -319,13 +314,13 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private fun getErrorMessage(responseCode: Int): String {
         return when (responseCode) {
             in 201..499 -> {
-                ErrorMessages.UNEXPECTED
+                errorMessage.UNEXPECTED
             }
             500 -> {
-                ErrorMessages.BLIZZ_SERVERS_DOWN
+                errorMessage.BLIZZ_SERVERS_DOWN
             }
             else -> {
-                ErrorMessages.TURN_ON_CONNECTION_MESSAGE
+                errorMessage.TURN_ON_CONNECTION_MESSAGE
             }
         }
     }
@@ -333,13 +328,13 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private fun getErrorTitle(responseCode: Int): String {
         return when (responseCode) {
             in 201..499 -> {
-                ErrorMessages.UNAVAILABLE
+                errorMessage.UNAVAILABLE
             }
             500 -> {
-                ErrorMessages.SERVERS_ERROR
+                errorMessage.SERVERS_ERROR
             }
             else -> {
-                ErrorMessages.NO_INTERNET
+                errorMessage.NO_INTERNET
             }
         }
     }
@@ -355,7 +350,7 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
-                .addSideBySideButtons(ErrorMessages.RETRY, 18f, ErrorMessages.BACK, 18f,
+                .addSideBySideButtons(errorMessage.RETRY, 18f, errorMessage.BACK, 18f,
                         { dialog.cancel() },
                         {
                             dialog.cancel()
@@ -368,7 +363,10 @@ class GamesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val fragment: Fragment
         val searchDialog = DialogPrompt(this)
         when (item.title) {
-            "Home" -> {
+            this.resources.getString(R.string.home) -> {
+                favorite.visibility = View.GONE
+                favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favorite?.tag = R.drawable.ic_star_border_black_24dp
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
                     supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()

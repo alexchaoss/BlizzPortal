@@ -115,7 +115,9 @@ class NewsListFragment : Fragment() {
     }
 
     private fun setupRecycler() {
-        newsList = newsList.distinct() as ArrayList<NewsMetaData>
+        if (newsList.isNotEmpty()) {
+            newsList = newsList.distinct() as ArrayList<NewsMetaData>
+        }
         news_recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = NewsAdapter(newsList, context)
@@ -124,13 +126,13 @@ class NewsListFragment : Fragment() {
     }
 
     private fun filterList() {
-        val blizzlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.blizzNews!! && it.game.toLowerCase(Locale.ROOT).contains("blizzard") }
-        val wowlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.wowNews!! && it.game.toLowerCase(Locale.ROOT).contains("warcraft") }
-        val d3list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.d3News!! && it.game.toLowerCase(Locale.ROOT).contains("diablo") }
-        val sc2list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.sc2News!! && it.game.toLowerCase(Locale.ROOT).contains("starcraft") }
-        val owlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.owNews!! && it.game.toLowerCase(Locale.ROOT).contains("overwatch") }
-        val hslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hsNews!! && it.game.toLowerCase(Locale.ROOT).contains("hearthstone") }
-        val hotslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hotsNews!! && it.game.toLowerCase(Locale.ROOT).contains("heroes") }
+        val blizzlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.blizzNews!! && it.game.toLowerCase(Locale.ROOT).contains("blizzard|深入暴雪|블리자드 인사이드".toRegex()) }
+        val wowlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.wowNews!! && it.game.toLowerCase(Locale.ROOT).contains("warcraft|魔獸|워크 래프트".toRegex()) }
+        val d3list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.d3News!! && it.game.toLowerCase(Locale.ROOT).contains("diablo|暗黑破壞神|디아블로".toRegex()) }
+        val sc2list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.sc2News!! && it.game.toLowerCase(Locale.ROOT).contains("starcraft|星海爭霸|스타크래프트".toRegex()) }
+        val owlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.owNews!! && it.game.toLowerCase(Locale.ROOT).contains("overwatch|鬥陣特攻|오버워치".toRegex()) }
+        val hslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hsNews!! && it.game.toLowerCase(Locale.ROOT).contains("hearthstone|爐石戰記|하스스톤".toRegex()) }
+        val hotslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hotsNews!! && it.game.toLowerCase(Locale.ROOT).contains("heroes|暴雪英霸|히어로즈 오브 더 스톰".toRegex()) }
 
         tempList.clear()
         tempList.addAll(blizzlist)
@@ -143,7 +145,7 @@ class NewsListFragment : Fragment() {
 
         newsList = tempList
         newsList.sortBy {
-            SimpleDateFormat("EEE MMM d yyyy HH:mm:ss z").parse(it.timestamp)
+            SimpleDateFormat("EEE MMM d yyyy HH:mm:ss z", Locale.ENGLISH).parse(it.timestamp)
         }
         newsList.reverse()
     }

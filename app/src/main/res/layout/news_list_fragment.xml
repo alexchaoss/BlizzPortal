@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="7dp"
-            android:text="News"
+            android:text="@string/news"
             android:textColor="#FFF"
             android:textSize="20sp" />
 

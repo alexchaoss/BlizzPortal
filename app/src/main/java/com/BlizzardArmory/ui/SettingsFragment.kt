@@ -80,7 +80,9 @@ class SettingsFragment : Fragment() {
                 selectedLanguage = parent.getItemAtPosition(position) as String
                 Log.i("lang", selectedLanguage)
                 setLocale()
-                EventBus.getDefault().postSticky(LocaleSelectedEvent())
+                if (position != 0) {
+                    EventBus.getDefault().postSticky(LocaleSelectedEvent(locale))
+                }
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 20f

@@ -70,7 +70,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     private fun downloadAvatar() {
-        Glide.with(itemView).load(profile?.profile?.icon).into(avatar!!)
+        Glide.with(context.applicationContext).load(profile?.profile?.icon).into(avatar!!)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

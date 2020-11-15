@@ -49,7 +49,7 @@
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/bignoodletoo"
                 android:gravity="center_vertical"
-                android:text="Hero"
+                android:text="@string/hero"
                 android:textAllCaps="true"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp" />
