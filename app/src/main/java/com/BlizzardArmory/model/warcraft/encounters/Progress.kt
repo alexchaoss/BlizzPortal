@@ -2,6 +2,7 @@ package com.BlizzardArmory.model.warcraft.encounters
 
 import com.google.gson.annotations.SerializedName
 
+
 data class Progress(
 
         @SerializedName("completed_count") val completed_count: Int,

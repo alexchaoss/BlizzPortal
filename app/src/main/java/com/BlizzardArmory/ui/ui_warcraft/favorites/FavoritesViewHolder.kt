@@ -83,7 +83,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
-        val call: Call<Media> = RetroClient.getClient.getMedia(character?.characterSummary?.name, character?.characterSummary?.realm?.slug, MainActivity.locale, character?.region?.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient(context).getMedia(character?.characterSummary?.name, character?.characterSummary?.realm?.slug, MainActivity.locale, character?.region?.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                 val media: Media? = response.body()

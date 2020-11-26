@@ -39,7 +39,7 @@
     <string name="information">Информация</string>
     <string name="want_to_donate">Хотите помочь?</string>
     <string name="character">символ</string>
-    <string name="progress">Прогресс</string>
+    <string name="progress2">Прогресс</string>
     <string name="achievs">Достижения</string>
     <string name="level">уровень</string>
     <string name="honor">Честь</string>
@@ -94,4 +94,11 @@
     <string name="blizz_server_down">Там, кажется, некоторые проблемы с серверами Blizzard, пожалуйста, повторите попытку позже</string>
     <string name="outdated_info">Устаревшая информация</string>
     <string name="login_again">Пожалуйста, войдьте в игру, чтобы обновить информацию о вашей учетной записи.</string>
+    <string name="season">время</string>
+    <string name="era">эра</string>
+    <string name="softcore">Softcore</string>
+    <string name="hardcore">Hardcore</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="search">поиск</string>
+    <string name="covenant">ковенантами</string>
 </resources>

@@ -2,6 +2,7 @@ package com.BlizzardArmory.model
 
 import com.google.gson.annotations.SerializedName
 
+
 /**
  * The type User information.
  */

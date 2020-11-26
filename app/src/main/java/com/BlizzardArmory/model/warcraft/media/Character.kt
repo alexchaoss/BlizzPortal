@@ -1,23 +1,19 @@
 package com.BlizzardArmory.model.warcraft.media
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
 
 class Character {
     @SerializedName("key")
-    @Expose
-    var key: Key? = null
+        var key: Key? = null
 
     @SerializedName("name")
-    @Expose
-    var name: String? = null
+        var name: String? = null
 
     @SerializedName("id")
-    @Expose
-    var id: Long = 0
+        var id: Long = 0
 
     @SerializedName("realm")
-    @Expose
-    var realm: Realm? = null
+        var realm: Realm? = null
 
 }

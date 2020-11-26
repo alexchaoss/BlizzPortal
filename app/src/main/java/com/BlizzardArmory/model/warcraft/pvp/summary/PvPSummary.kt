@@ -2,6 +2,7 @@ package com.BlizzardArmory.model.warcraft.pvp.summary
 
 import com.google.gson.annotations.SerializedName
 
+
 data class PvPSummary(
 
         @SerializedName("_links") val _links: _links,

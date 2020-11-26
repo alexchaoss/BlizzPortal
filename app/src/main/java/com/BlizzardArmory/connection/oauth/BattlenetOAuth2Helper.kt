@@ -1,5 +1,6 @@
 package com.BlizzardArmory.connection.oauth
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.BlizzardArmory.connection.RetroClient
@@ -23,9 +24,9 @@ class BattlenetOAuth2Helper(sharedPreferences: SharedPreferences?, oauth2Params:
         get() = flow.newAuthorizationUrl().setRedirectUri(oauth2Params.rederictUri).setScopes(convertScopesToString(oauth2Params.scope)).build()
 
     @Throws(IOException::class)
-    fun retrieveAndStoreAccessToken(authorizationCode: String) {
+    fun retrieveAndStoreAccessToken(authorizationCode: String, context: Context) {
         Log.i(BattlenetConstants.TAG, "retrieveAndStoreAccessToken for code $authorizationCode")
-        val tokenResponse = RetroClient.getClient.getAccessToken(authorizationCode, oauth2Params.zone.toLowerCase(Locale.ROOT), oauth2Params.rederictUri).execute().body()
+        val tokenResponse = RetroClient.getClient(context).getAccessToken(authorizationCode, oauth2Params.zone.toLowerCase(Locale.ROOT), oauth2Params.rederictUri).execute().body()
         Log.i("TOKEN", tokenResponse.toString())
         val token = TokenResponse()
         token.expiresInSeconds = tokenResponse?.expiresIn

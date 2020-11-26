@@ -10,14 +10,13 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.R
+import com.BlizzardArmory.databinding.NewsListFragmentBinding
 import com.BlizzardArmory.model.news.NewsMetaData
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.android.synthetic.main.news_list_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -30,17 +29,16 @@ import java.util.*
 
 class NewsListFragment : Fragment() {
 
-    var downloaded = false
-    var newsList = arrayListOf<NewsMetaData>()
-    var tempList = arrayListOf<NewsMetaData>()
+    private var downloaded = false
+    private var newsList = arrayListOf<NewsMetaData>()
+    private var tempList = arrayListOf<NewsMetaData>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        activity?.onBackPressedDispatcher?.addCallback {
-            val intent = Intent(activity, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
-        }
-        return inflater.inflate(R.layout.news_list_fragment, container, false)
+    private lateinit var binding: NewsListFragmentBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        addOnBackPressCallback(activity as GamesActivity)
+        binding = NewsListFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,37 +49,37 @@ class NewsListFragment : Fragment() {
     }
 
     private fun setBackToTopButton() {
-        news_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.newsRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 100) {
-                    back_to_top.visibility = View.VISIBLE
+                    binding.backToTop.visibility = View.VISIBLE
                 } else if (dy == 0) {
-                    back_to_top.visibility = View.GONE
+                    binding.backToTop.visibility = View.GONE
                 }
             }
         })
 
-        back_to_top.setOnClickListener {
+        binding.backToTop.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 GlobalScope.launch(Dispatchers.Main) {
-                    news_recycler.layoutManager?.smoothScrollToPosition(news_recycler, RecyclerView.State(), 0)
-                    delay((news_recycler.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() * 100L)
+                    binding.newsRecycler.layoutManager?.smoothScrollToPosition(binding.newsRecycler, RecyclerView.State(), 0)
+                    delay((binding.newsRecycler.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() * 100L)
                 }.join()
-                news_recycler.scrollToPosition(0)
+                binding.newsRecycler.scrollToPosition(0)
             }
-            back_to_top.visibility = View.GONE
+            binding.backToTop.visibility = View.GONE
         }
     }
 
     private fun setSwipeGestureToRefreshData() {
-        swipe.setOnRefreshListener {
+        binding.swipe.setOnRefreshListener {
             downloaded = false
             GlobalScope.launch(Dispatchers.Main) {
                 launch(Dispatchers.IO) {
                     setupNews()
                 }.join()
-                swipe.isRefreshing = false
+                binding.swipe.isRefreshing = false
             }
         }
     }
@@ -118,7 +116,7 @@ class NewsListFragment : Fragment() {
         if (newsList.isNotEmpty()) {
             newsList = newsList.distinct() as ArrayList<NewsMetaData>
         }
-        news_recycler.apply {
+        binding.newsRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = NewsAdapter(newsList, context)
             adapter!!.notifyDataSetChanged()
@@ -152,10 +150,10 @@ class NewsListFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(filterNewsEvent: FilterNewsEvent) {
-        val recyclerViewState = news_recycler.layoutManager?.onSaveInstanceState()
+        val recyclerViewState = binding.newsRecycler.layoutManager?.onSaveInstanceState()
         filterList()
         setupRecycler()
-        news_recycler.layoutManager?.onRestoreInstanceState(recyclerViewState)
+        binding.newsRecycler.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -163,5 +161,15 @@ class NewsListFragment : Fragment() {
         Log.i("REFRESH", "The news have been refreshed")
         downloaded = false
         setupNews()
+    }
+
+    companion object{
+        fun addOnBackPressCallback(activity: GamesActivity){
+            activity.onBackPressedDispatcher.addCallback {
+                val intent = Intent(activity, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                activity.startActivity(intent)
+            }
+        }
     }
 }

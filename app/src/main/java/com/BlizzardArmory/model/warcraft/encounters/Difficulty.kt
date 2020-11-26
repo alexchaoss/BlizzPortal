@@ -2,6 +2,7 @@ package com.BlizzardArmory.model.warcraft.encounters
 
 import com.google.gson.annotations.SerializedName
 
+
 data class Difficulty(
 
         @SerializedName("type") val type: String,

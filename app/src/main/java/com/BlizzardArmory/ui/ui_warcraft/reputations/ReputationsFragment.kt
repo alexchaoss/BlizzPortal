@@ -16,21 +16,20 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.WowRepFragmentBinding
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
+import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
-import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.wow_rep_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -47,7 +46,7 @@ private const val MEDIA = "media"
 private const val REGION = "region"
 
 
-class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextListener {
+class ReputationsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var character: String? = null
     private var realm: String? = null
@@ -57,6 +56,9 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private val repsByExpac = arrayListOf<ArrayList<Reputations>>()
     private val adapterList = ArrayList<ReputationsAdapter>()
+
+    private var _binding: WowRepFragmentBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,13 +75,19 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
         EventBus.getDefault().register(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.wow_rep_fragment, container, false)
+        _binding = WowRepFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -89,11 +97,11 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
-        search_view.queryHint = "Search reputations.."
-        val textView: TextView = search_view.findViewById(androidx.appcompat.R.id.search_src_text)
+        binding.searchView.queryHint = "Search reputations.."
+        val textView: TextView = binding.searchView.findViewById(androidx.appcompat.R.id.search_src_text)
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
-        search_view.setOnQueryTextListener(this)
+        binding.searchView.setOnQueryTextListener(this)
 
         for (i in 0..8) {
             repsByExpac.add(arrayListOf())
@@ -103,7 +111,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
     }
 
     private fun downloadReputations() {
-        val call: Call<Reputation> = RetroClient.getClient.getReputations(character!!.toLowerCase(Locale.ROOT),
+        val call: Call<Reputation> = GamesActivity.client!!.getReputations(character!!.toLowerCase(Locale.ROOT),
                 realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Reputation> {
             override fun onResponse(call: Call<Reputation>, response: Response<Reputation>) {
@@ -154,13 +162,12 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
                 button.text = "+ " + getExpansion(repsByExpac.indexOf(reputations))
                 button.textSize = 18F
                 button.layoutParams = paramsButton
-                rep_container.addView(button)
-
-                var expand = false
+                binding.repContainer.addView(button)
+        var expand = false
                 val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 val recyclerView = context?.let { RecyclerView(it) }
                 recyclerView?.layoutParams = paramsRecyclerView
-                rep_container.addView(recyclerView)
+                binding.repContainer.addView(recyclerView)
 
                 recyclerView?.apply {
                     layoutManager = LinearLayoutManager(activity)
@@ -192,7 +199,7 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
         outdatedInfo.gravity = Gravity.CENTER
         outdatedInfo.textSize = 20F
         outdatedInfo.setPadding(0, 50, 0, 0)
-        rep_container.addView(outdatedInfo)
+        binding.repContainer.addView(outdatedInfo)
     }
 
     private fun getExpansion(index: Int): String {
@@ -235,60 +242,56 @@ class ReputationsFragment : Fragment(), IOnBackPressed, SearchView.OnQueryTextLi
         var bgName = ""
         when (classEvent.data) {
             6 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#080812"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#080812"))
                 bgName = "dk_bg"
             }
             12 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#000900"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#000900"))
                 bgName = "dh_bg"
             }
             11 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#04100a"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#04100a"))
                 bgName = "druid_bg"
             }
             3 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#0f091b"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#0f091b"))
                 bgName = "hunter_bg"
             }
             8 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#110617"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#110617"))
                 bgName = "mage_bg"
             }
             10 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#040b17"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#040b17"))
                 bgName = "monk_bg"
             }
             2 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#13040a"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#13040a"))
                 bgName = "paladin_bg"
             }
             5 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#15060e"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#15060e"))
                 bgName = "priest_bg"
             }
             4 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#160720"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#160720"))
                 bgName = "rogue_bg"
             }
             7 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#050414"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#050414"))
                 bgName = "shaman_bg"
             }
             9 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#080516"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#080516"))
                 bgName = "warlock_bg"
             }
             1 -> {
-                reputation_layout.setBackgroundColor(Color.parseColor("#1a0407"))
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#1a0407"))
                 bgName = "warrior_bg"
             }
         }
-        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(background_rep)
+        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(binding.backgroundRep)
         EventBus.getDefault().unregister(this)
-    }
-
-    override fun onBackPressed(): Boolean {
-        return URLConstants.loading
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

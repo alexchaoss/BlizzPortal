@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.BlizzardArmory.ui.ui_warcraft.achievements.CategoriesFragment
 import com.BlizzardArmory.ui.ui_warcraft.character.WoWCharacterFragment
+import com.BlizzardArmory.ui.ui_warcraft.covenant.CovenantFragment
 import com.BlizzardArmory.ui.ui_warcraft.progress.ProgressFragment
 import com.BlizzardArmory.ui.ui_warcraft.pvp.PvPFragment
 import com.BlizzardArmory.ui.ui_warcraft.reputations.ReputationsFragment
@@ -21,21 +22,26 @@ class NavAdapter(fm: FragmentManager, private var totalTabs: Int, internal var b
                 return wowCharacterFragment
             }
             1 -> {
-                val reputationsFragment = ReputationsFragment()
+                val reputationsFragment = CovenantFragment()
                 reputationsFragment.arguments = bundle
                 return reputationsFragment
             }
             2 -> {
+                val reputationsFragment = ReputationsFragment()
+                reputationsFragment.arguments = bundle
+                return reputationsFragment
+            }
+            3 -> {
                 val progressFragment = ProgressFragment()
                 progressFragment.arguments = bundle
                 return progressFragment
             }
-            3 -> {
+            4 -> {
                 val pvpFragment = PvPFragment()
                 pvpFragment.arguments = bundle
                 return pvpFragment
             }
-            4 -> {
+            5 -> {
                 val categoriesFragment = CategoriesFragment()
                 categoriesFragment.arguments = bundle
                 return categoriesFragment

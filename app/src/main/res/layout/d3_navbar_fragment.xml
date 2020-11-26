@@ -18,26 +18,22 @@
         app:tabTextColor="#555555">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/stats_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/stats" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/item_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="30dp"
             android:text="@string/gear" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/skill_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/skills" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/cube_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cube" />

@@ -9,20 +9,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.D3FavoritesBinding
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
+import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.wow_favorites.*
 
 class D3FavoriteFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        activity?.onBackPressedDispatcher?.addCallback {
-            activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
-        return inflater.inflate(R.layout.wow_favorites, container, false)
+    private var _binding: D3FavoritesBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        addOnBackPressCallback(activity as GamesActivity)
+        _binding = D3FavoritesBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,9 +37,23 @@ class D3FavoriteFragment : Fragment() {
         val favoriteProfileString = prefs.getString("d3-favorites", "DEFAULT")
         if (favoriteProfileString != null && favoriteProfileString != "DEFAULT") {
             val favoriteCharacters = gson.fromJson(favoriteProfileString, D3FavoriteProfiles::class.java)
-            characters_recycler.apply {
+            binding.charactersRecycler.apply {
                 layoutManager = LinearLayoutManager(requireActivity())
                 adapter = FavoritesAdapter(favoriteCharacters.profiles, parentFragmentManager, battlenetOAuth2Params!!, requireActivity())
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    companion object{
+        fun addOnBackPressCallback(activity: GamesActivity){
+            activity.onBackPressedDispatcher.addCallback {
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
     }

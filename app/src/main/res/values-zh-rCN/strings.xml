@@ -39,7 +39,7 @@
     <string name="information">信息</string>
     <string name="want_to_donate">想捐款吗？</string>
     <string name="character">字符</string>
-    <string name="progress">进展</string>
+    <string name="progress2">进展</string>
     <string name="achievs">成就</string>
     <string name="level">水平</string>
     <string name="honor">荣誉</string>
@@ -94,4 +94,11 @@
     <string name="blizz_server_down">暴雪的服务器似乎有些问题， 请稍后再试</string>
     <string name="outdated_info">信息已过时</string>
     <string name="login_again">请登录游戏更新您的帐户信息。</string>
+    <string name="season">季节</string>
+    <string name="era">时代</string>
+    <string name="softcore">Softcore</string>
+    <string name="hardcore">Hardcore</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="search">搜索</string>
+    <string name="covenant">境的誓盟</string>
 </resources>

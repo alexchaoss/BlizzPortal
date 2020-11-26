@@ -8,27 +8,27 @@ import android.text.Html
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.D3CharacterFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
+import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.events.NetworkEvent
-import com.BlizzardArmory.util.events.RetryEvent
-import com.BlizzardArmory.util.events.WoWCharacterEvent
-import kotlinx.android.synthetic.main.d3_character_fragment.*
+import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
+import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.events.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import java.text.DecimalFormat
 import java.util.*
@@ -42,11 +42,30 @@ class CharacterStatsFragment : Fragment() {
     private var battletag = ""
     private var selectedRegion = ""
     private var id = 0L
-    lateinit var errorMessages: ErrorMessages
+    private lateinit var errorMessages: ErrorMessages
+    
+    private var _binding: D3CharacterFragmentBinding? = null
+    private val binding get() = _binding!!
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        addOnBackPressCallback(activity as GamesActivity)
+        _binding = D3CharacterFragmentBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.d3_character_fragment, container, false)
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -70,9 +89,9 @@ class CharacterStatsFragment : Fragment() {
 
     private fun setCharacterInformation() {
         URLConstants.loading = true
-        loading_circle.visibility = View.VISIBLE
+        binding.loadingCircle.visibility = View.VISIBLE
         dialog = null
-        val call: Call<CharacterInformation> = RetroClient.getClient.getD3Hero(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<CharacterInformation> = GamesActivity.client!!.getD3Hero(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<CharacterInformation> {
             override fun onResponse(call: Call<CharacterInformation>, response: retrofit2.Response<CharacterInformation>) {
                 when {
@@ -82,31 +101,31 @@ class CharacterStatsFragment : Fragment() {
                         setGlobes()
                         setName()
                         val primaryStats = DecimalFormat("#0")
-                        strength_text?.text = primaryStats.format(characterInformation?.stats?.strength?.roundToInt()).toString()
-                        dexterity_text?.text = primaryStats.format(characterInformation?.stats?.dexterity?.roundToInt()).toString()
-                        intelligence_text?.text = primaryStats.format(characterInformation?.stats?.intelligence?.roundToInt()).toString()
-                        vitality_text?.text = primaryStats.format(characterInformation?.stats?.vitality?.roundToInt()).toString()
+                        binding.strengthText.text = primaryStats.format(characterInformation?.stats?.strength?.roundToInt()).toString()
+                        binding.dexterityText.text = primaryStats.format(characterInformation?.stats?.dexterity?.roundToInt()).toString()
+                        binding.intelligenceText.text = primaryStats.format(characterInformation?.stats?.intelligence?.roundToInt()).toString()
+                        binding.vitalityText.text = primaryStats.format(characterInformation?.stats?.vitality?.roundToInt()).toString()
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            damage?.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.damage) + "</font>", Html.FROM_HTML_MODE_LEGACY)
-                            toughness?.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.toughness) + "</font>", Html.FROM_HTML_MODE_LEGACY)
-                            recovery!!.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.healing) + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                            binding.damage.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.damage) + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                            binding.toughness.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.toughness) + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                            binding.recovery.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.healing) + "</font>", Html.FROM_HTML_MODE_LEGACY)
                         } else {
-                            damage?.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.damage) + "</font>")
-                            toughness?.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.toughness) + "</font>")
-                            recovery!!.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.healing) + "</font>")
+                            binding.damage.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.damage) + "</font>")
+                            binding.toughness.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.toughness) + "</font>")
+                            binding.recovery.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(characterInformation?.stats?.healing) + "</font>")
                         }
-                        loading_circle!!.visibility = View.GONE
+                        binding.loadingCircle.visibility = View.GONE
                         URLConstants.loading = false
                     }
                     response.code() >= 400 -> {
-                        callErrorAlertDialog(response.code())
+                        showNoConnectionMessage(response.code())
                     }
                 }
             }
 
             override fun onFailure(call: Call<CharacterInformation>, t: Throwable) {
                 Log.e("Error", t.localizedMessage!!)
-                callErrorAlertDialog(0)
+                showNoConnectionMessage(0)
             }
         })
     }
@@ -144,26 +163,26 @@ class CharacterStatsFragment : Fragment() {
         } else {
             characterInformation!!.stats.life.toString()
         }
-        total_life!!.text = life
+        binding.totalLife.text = life
         val ressourceText: String = if (characterInformation!!.class_ == "demon-hunter") {
             characterInformation!!.stats.primaryResource.toString() + "\n" + characterInformation!!.stats.secondaryResource.toString()
         } else {
             characterInformation!!.stats.primaryResource.toString()
         }
-        ressource!!.text = ressourceText
+        binding.ressource.text = ressourceText
         when (characterInformation!!.class_) {
-            "barbarian" -> ressource_globe!!.setImageResource(R.drawable.d3_fury)
-            "wizard" -> ressource_globe!!.setImageResource(R.drawable.d3_arcane_power)
-            "demon-hunter" -> ressource_globe!!.setImageResource(R.drawable.d3_hatred_disc)
-            "witch-doctor" -> ressource_globe!!.setImageResource(R.drawable.d3_mana)
-            "necromancer" -> ressource_globe!!.setImageResource(R.drawable.d3_essence)
+            "barbarian" -> binding.ressourceGlobe.setImageResource(R.drawable.d3_fury)
+            "wizard" -> binding.ressourceGlobe.setImageResource(R.drawable.d3_arcane_power)
+            "demon-hunter" -> binding.ressourceGlobe.setImageResource(R.drawable.d3_hatred_disc)
+            "witch-doctor" -> binding.ressourceGlobe.setImageResource(R.drawable.d3_mana)
+            "necromancer" -> binding.ressourceGlobe.setImageResource(R.drawable.d3_essence)
             "monk" -> {
-                ressource_globe!!.setImageResource(R.drawable.d3_spirit)
-                ressource!!.setTextColor(Color.BLACK)
+                binding.ressourceGlobe.setImageResource(R.drawable.d3_spirit)
+                binding.ressource.setTextColor(Color.BLACK)
             }
             "crusader" -> {
-                ressource_globe!!.setImageResource(R.drawable.d3_wrath)
-                ressource!!.setTextColor(Color.BLACK)
+                binding.ressourceGlobe.setImageResource(R.drawable.d3_wrath)
+                binding.ressource.setTextColor(Color.BLACK)
             }
         }
     }
@@ -172,99 +191,101 @@ class CharacterStatsFragment : Fragment() {
         val levelClass = ("<font color=#d4a94e>" + characterInformation!!.level + "</font>" + "<font color=#555da5> (" + characterInformation!!.paragonLevel
                 + ")</font> <font color=#d4a94e>" + characterInformation!!.class_)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            level_class!!.text = Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY)
+            binding.levelClass.text = Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY)
         } else {
-            level_class!!.text = Html.fromHtml(levelClass)
+            binding.levelClass.text = Html.fromHtml(levelClass)
         }
         if (characterInformation!!.name.length in 8..9) {
-            character_name!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
+            binding.characterName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
         } else if (characterInformation!!.name.length > 9) {
-            character_name!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30f)
-            character_name!!.setPadding(0, 10, 0, 0)
+            binding.characterName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30f)
+            binding.characterName.setPadding(0, 10, 0, 0)
         }
-        character_name!!.text = characterInformation!!.name
+        binding.characterName.text = characterInformation!!.name
     }
 
-    fun callErrorAlertDialog(responseCode: Int) {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        loading_circle!!.visibility = View.GONE
+    private fun getErrorMessage(responseCode: Int): String {
+        return when (responseCode) {
+            404 -> {
+                errorMessages.LOGIN_TO_UPDATE
+            }
+            503, 403 -> {
+                errorMessages.UNEXPECTED
+            }
+            500 -> {
+                errorMessages.BLIZZ_SERVERS_DOWN
+            }
+            else -> {
+                errorMessages.TURN_ON_CONNECTION_MESSAGE
+            }
+        }
+
+    }
+
+    private fun getErrorTitle(responseCode: Int): String {
+        return when (responseCode) {
+            404 -> {
+                errorMessages.INFORMATION_OUTDATED
+            }
+            503, 403 -> {
+                errorMessages.UNAVAILABLE
+            }
+            500 -> {
+                errorMessages.SERVERS_ERROR
+            }
+            else -> {
+                errorMessages.NO_INTERNET
+            }
+        }
+    }
+
+    private fun showNoConnectionMessage(responseCode: Int) {
+        binding.loadingCircle.visibility = View.GONE
         URLConstants.loading = false
-        if (dialog == null) {
-            val builder = AlertDialog.Builder(requireContext(), R.style.DialogTransparent)
-            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(0, 20, 0, 0)
-            val titleText = TextView(context)
-            titleText.textSize = 20f
-            titleText.gravity = Gravity.CENTER_HORIZONTAL
-            titleText.setPadding(0, 20, 0, 20)
-            titleText.layoutParams = layoutParams
-            titleText.setTextColor(Color.WHITE)
-            val messageText = TextView(context)
-            messageText.gravity = Gravity.CENTER_HORIZONTAL
-            messageText.layoutParams = layoutParams
-            messageText.setTextColor(Color.WHITE)
-            val button = Button(context)
-            button.textSize = 18f
-            button.setTextColor(Color.WHITE)
-            button.gravity = Gravity.CENTER
-            button.width = 200
-            button.layoutParams = layoutParams
-            button.background = ContextCompat.getDrawable(requireContext(), R.drawable.buttonstyle)
-            val button2 = Button(context)
-            button2.textSize = 18f
-            button2.setTextColor(Color.WHITE)
-            button2.gravity = Gravity.CENTER
-            button2.width = 200
-            button2.layoutParams = layoutParams
-            button2.background = ContextCompat.getDrawable(requireContext(), R.drawable.buttonstyle)
-            val buttonLayout = LinearLayout(context)
-            buttonLayout.orientation = LinearLayout.HORIZONTAL
-            buttonLayout.gravity = Gravity.CENTER
-            when (responseCode) {
-                in 400..499 -> {
-                    titleText.text = errorMessages.INFORMATION_OUTDATED
-                    messageText.text = errorMessages.LOGIN_TO_UPDATE
-                    button2.text = errorMessages.BACK
-                    buttonLayout.addView(button2)
+
+        val dialog = DialogPrompt(requireActivity())
+
+        dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+                .addMessage(getErrorMessage(responseCode), 18f, "message")
+                .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
+                        {
+                            dialog.cancel()
+                            setCharacterInformation()
+                            EventBus.getDefault().post(RetryEvent(true))
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            URLConstants.loading = true
+                        },
+                        {
+                            dialog.cancel()
+                            EventBus.getDefault().post(NetworkEvent(true))
+                            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        },
+                        "retry", "back").show()
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun itemShownReceived(itemShownEvent: D3ItemShownEvent) {
+        itemPanelShown = itemShownEvent.data
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun spellShownReceived(spellShownEvent: D3SpellShownEvent) {
+        spellPanelShown = spellShownEvent.data
+    }
+
+    companion object{
+        private var itemPanelShown = false
+        private var spellPanelShown = false
+        fun addOnBackPressCallback(activity : GamesActivity){
+            activity.onBackPressedDispatcher.addCallback {
+                if(!URLConstants.loading) {
+                    if (!itemPanelShown && !spellPanelShown) {
+                        D3Fragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    } else {
+                        EventBus.getDefault().post(D3ClosePanelEvent())
+                    }
                 }
-                500 -> {
-                    titleText.text = errorMessages.SERVERS_ERROR
-                    messageText.text = errorMessages.BLIZZ_SERVERS_DOWN
-                    button2.text = errorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
-                else -> {
-                    titleText.text = errorMessages.NO_INTERNET
-                    messageText.text = errorMessages.TURN_ON_CONNECTION_MESSAGE
-                    button.text = errorMessages.RETRY
-                    button2.text = errorMessages.BACK
-                    buttonLayout.addView(button)
-                    buttonLayout.addView(button2)
-                }
-            }
-            dialog = builder.show()
-            dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            dialog?.window?.setLayout(800, 500)
-            val linearLayout = LinearLayout(context)
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.gravity = Gravity.CENTER
-            linearLayout.addView(titleText)
-            linearLayout.addView(messageText)
-            linearLayout.addView(buttonLayout)
-            val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(20, 20, 20, 20)
-            dialog?.addContentView(linearLayout, layoutParamsWindow)
-            dialog?.setOnCancelListener {
-                EventBus.getDefault().post(NetworkEvent(true))
-            }
-            button.setOnClickListener {
-                Log.i("RETRY", "CLICKED")
-                dialog?.hide()
-                setCharacterInformation()
-                EventBus.getDefault().post(RetryEvent(true))
-            }
-            button2.setOnClickListener {
-                dialog?.cancel()
             }
         }
     }

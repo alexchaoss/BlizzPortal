@@ -39,7 +39,7 @@
     <string name="information">Information</string>
     <string name="want_to_donate">Wollen Sie spenden?</string>
     <string name="character">Charakter</string>
-    <string name="progress">Fortschritt</string>
+    <string name="progress2">Fortschritt</string>
     <string name="achievs">Leistungen</string>
     <string name="level">Niveau</string>
     <string name="honor">Ehre</string>
@@ -94,4 +94,11 @@
     <string name="blizz_server_down">Es scheint einige Probleme mit Blizzard-Servern zu geben, versuchen Sie es später erneut</string>
     <string name="outdated_info">Informationen veraltet</string>
     <string name="login_again">Bitte loggen Sie sich ins Spiel ein, um die Kontoinformationen zu aktualisieren.</string>
+    <string name="season">Season</string>
+    <string name="era">Era</string>
+    <string name="softcore">Softcore</string>
+    <string name="hardcore">Hardcore</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="search">Search</string>
+    <string name="covenant">Pakte</string>
 </resources>
