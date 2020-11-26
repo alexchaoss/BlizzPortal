@@ -2,6 +2,7 @@ package com.BlizzardArmory.model.warcraft.reputations.index.faction
 
 import com.google.gson.annotations.SerializedName
 
+
 data class Faction(
 
         @SerializedName("_links") val _links: _links,

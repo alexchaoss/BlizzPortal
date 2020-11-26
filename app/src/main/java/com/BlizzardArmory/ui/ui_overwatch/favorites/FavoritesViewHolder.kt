@@ -64,7 +64,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             bundle.putString("username", profile.username)
             bundle.putString("platform", profile.platform)
             fragment.arguments = bundle
-            fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment").commit()
+            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "overwatchfragment").addToBackStack("ow_account").commit()
             fragmentManager.executePendingTransactions()
         }
     }

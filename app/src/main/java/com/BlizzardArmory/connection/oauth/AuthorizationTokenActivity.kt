@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
+import com.BlizzardArmory.databinding.TokenActivityBinding
 import com.BlizzardArmory.ui.MainActivity
-import kotlinx.android.synthetic.main.token_activity.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -32,9 +32,12 @@ class AuthorizationTokenActivity : AppCompatActivity() {
 
     private var startActivity = false
 
+    private lateinit var binding: TokenActivityBinding
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.token_activity)
+        binding = TokenActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         Log.i(BattlenetConstants.TAG, "Starting task to retrieve request token")
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val bundle = this.intent.extras!!
@@ -57,10 +60,10 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                 Log.d(BattlenetConstants.TAG, "onPageFinished : $url handled = $handled")
                 if (url.startsWith(battlenetOAuth2Params!!.rederictUri)) {
                     webview.visibility = View.INVISIBLE
-                    setContentView(R.layout.token_activity)
-                    val rotation = AnimationUtils.loadAnimation(authorizationTokenActivity, R.anim.rotate)
+                    setContentView(binding.root)
+                    val rotation = AnimationUtils.loadAnimation(this@AuthorizationTokenActivity, R.anim.rotate)
                     rotation.fillAfter = true
-                    loading_image.startAnimation(rotation)
+                    binding.loadingImage.startAnimation(rotation)
 
                     if (!handled) {
                         lifecycleScope.launch {
@@ -96,7 +99,7 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                 if (url.contains("code=")) {
                     val authorizationCode = extractCodeFromUrl(url)
                     Log.i(BattlenetConstants.TAG, "Found code = $authorizationCode")
-                    oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode)
+                    oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode, this)
 
                     startActivity = true
                     hasLoggedIn = true

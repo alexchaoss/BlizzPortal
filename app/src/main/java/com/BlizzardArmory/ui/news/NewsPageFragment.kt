@@ -1,19 +1,18 @@
 package com.BlizzardArmory.ui.news
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import com.BlizzardArmory.R
+import com.BlizzardArmory.databinding.NewsFragmentBinding
 import com.BlizzardArmory.model.news.NewsPage
+import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.util.HTMLtoViewsConverter
 import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.news_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,12 +24,12 @@ import org.greenrobot.eventbus.ThreadMode
 class NewsPageFragment : Fragment() {
 
     private var newsPage: NewsPage? = null
+    private lateinit var binding: NewsFragmentBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        activity?.onBackPressedDispatcher?.addCallback {
-            activity?.supportFragmentManager?.popBackStack()
-        }
-        return inflater.inflate(R.layout.news_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        addOnBackPressCallback(activity as GamesActivity)
+        binding = NewsFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,16 +39,15 @@ class NewsPageFragment : Fragment() {
         GlobalScope.launch(Dispatchers.Main) {
             launch(Dispatchers.IO) {
                 newsPage = WebNewsScrapper.parseNewsPage(url!!)
-                Log.i("NEWS PAGE", newsPage.toString())
             }.join()
-            Glide.with(requireContext()).load(newsPage?.imageURL).into(image)
-            game.text = newsPage?.game
-            title.text = newsPage?.title
-            author.text = newsPage?.author
-            date.text = newsPage?.date
+            Glide.with(requireContext()).load(newsPage?.imageURL).into(binding.image)
+            binding.game.text = newsPage?.game
+            binding.title.text = newsPage?.title
+            binding.author.text = newsPage?.author
+            binding.date.text = newsPage?.date
             val htmlConverter = HTMLtoViewsConverter(requireContext())
             htmlConverter.parseHtml(newsPage?.body!!)
-            container.addView(htmlConverter.linearLayout)
+            binding.container.addView(htmlConverter.linearLayout)
         }
     }
 
@@ -66,5 +64,14 @@ class NewsPageFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
+    }
+
+    companion object{
+        fun addOnBackPressCallback(activity: GamesActivity){
+            activity.onBackPressedDispatcher.addCallback {
+                NewsListFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack()
+            }
+        }
     }
 }

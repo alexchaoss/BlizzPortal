@@ -1,6 +1,6 @@
 package com.BlizzardArmory.connection
 
-import com.BlizzardArmory.BlizzardArmory
+import android.content.Context
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -13,32 +13,30 @@ import java.util.concurrent.TimeUnit
 
 object RetroClient {
     var BASE_URL: String = URLConstants.HEROKU_AUTHENTICATE
-    val getClient: NetworkServices
-        get() {
+    fun getClient(context: Context): NetworkServices {
+        val gson = GsonBuilder().create()
 
-            val gson = GsonBuilder().create()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client = OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .cache(Cache(
+                        directory = File(context.cacheDir, "http_cache"),
+                        maxSize = 60 * 1024 * 1024
+                ))
+                .addInterceptor(RewriteRequestInterceptor())
+                .addNetworkInterceptor(RewriteResponseCacheControlInterceptor())
+                .addInterceptor(interceptor)
+                .build()
 
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client = OkHttpClient.Builder()
-                    .connectTimeout(20, TimeUnit.SECONDS)
-                    .writeTimeout(20, TimeUnit.SECONDS)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .cache(Cache(
-                            directory = File(BlizzardArmory.instance?.cacheDir!!, "http_cache"),
-                            maxSize = 60 * 1024 * 1024
-                    ))
-                    .addInterceptor(RewriteRequestInterceptor())
-                    .addNetworkInterceptor(RewriteResponseCacheControlInterceptor())
-                    .addInterceptor(interceptor)
-                    .build()
+        val retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build()
 
-            val retrofit = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build()
-
-            return retrofit.create(NetworkServices::class.java)
-        }
+        return retrofit.create(NetworkServices::class.java)
+    }
 }

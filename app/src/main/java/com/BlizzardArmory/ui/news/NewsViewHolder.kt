@@ -11,16 +11,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.news.NewsMetaData
+import com.BlizzardArmory.ui.ui_warcraft.covenant.CovenantFragment
 import com.bumptech.glide.Glide
 
 class NewsViewHolder(inflater: LayoutInflater, parent: ViewGroup, val context: Context) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.news_list_item, parent, false)) {
 
-    var image: ImageView? = null
-    var title: TextView? = null
-    var description: TextView? = null
-    var time: TextView? = null
-    var game: TextView? = null
+    private var image: ImageView? = null
+    private var title: TextView? = null
+    private var description: TextView? = null
+    private var time: TextView? = null
+    private var game: TextView? = null
 
     init {
         image = itemView.findViewById(R.id.image)
@@ -45,7 +46,7 @@ class NewsViewHolder(inflater: LayoutInflater, parent: ViewGroup, val context: C
             val fragmentManager = (context as AppCompatActivity).supportFragmentManager
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                    .replace(R.id.news_fragment, fragment, "news_page_fragment")
+                    .add(R.id.news_fragment, fragment, "news_page_fragment")
                     .addToBackStack("news_page").commit()
             fragmentManager.executePendingTransactions()
         }

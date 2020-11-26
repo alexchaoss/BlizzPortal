@@ -16,19 +16,19 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.D3GearFragmentBinding
 import com.BlizzardArmory.model.diablo.items.Item
 import com.BlizzardArmory.model.diablo.items.Items
+import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.events.D3ClosePanelEvent
 import com.BlizzardArmory.util.events.D3ItemShownEvent
 import com.BlizzardArmory.util.events.RetryEvent
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.d3_gear_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -73,6 +73,9 @@ class CharacterGearFragment : Fragment() {
     private val secondaryStatsMap = HashMap<Int, String>()
     private val gemsMap = HashMap<Int, String>()
 
+    private var _binding: D3GearFragmentBinding? = null
+    private val binding get() = _binding!!
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -82,8 +85,9 @@ class CharacterGearFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.d3_gear_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = D3GearFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,7 +105,7 @@ class CharacterGearFragment : Fragment() {
         closeButton!!.layoutParams = params
         setCloseButton()
 
-        item_name.setTextColor(Color.WHITE)
+        binding.itemName.setTextColor(Color.WHITE)
         dps = TextView(view.context)
         dps!!.setTextColor(Color.WHITE)
         armor = TextView(view.context)
@@ -131,6 +135,11 @@ class CharacterGearFragment : Fragment() {
         EventBus.getDefault().register(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
@@ -143,44 +152,44 @@ class CharacterGearFragment : Fragment() {
                 EventBus.getDefault().post(D3ItemShownEvent(false))
                 v.performClick()
                 Log.i("CLOSE", "CLICKED")
-                item_scroll_view!!.visibility = View.GONE
-                item_stats!!.removeView(primarystats)
-                item_stats!!.removeView(secondarystats)
-                item_stats!!.removeView(gems)
-                item_stats!!.removeView(transmog)
-                item_stats!!.removeView(flavortext)
-                item_stats!!.removeView(misctext)
-                armor_damage!!.removeView(dps)
-                armor_damage!!.removeView(armor)
-                item_stats!!.removeView(closeButton)
-                item_stats!!.removeView(set)
-                weapon_effect!!.setImageDrawable(null)
-                item_scroll_view!!.scrollTo(0, 0)
+                binding.itemScrollView.visibility = View.GONE
+                binding.itemStats.removeView(primarystats)
+                binding.itemStats.removeView(secondarystats)
+                binding.itemStats.removeView(gems)
+                binding.itemStats.removeView(transmog)
+                binding.itemStats.removeView(flavortext)
+                binding.itemStats.removeView(misctext)
+                binding.armorDamage.removeView(dps)
+                binding.armorDamage.removeView(armor)
+                binding.itemStats.removeView(closeButton)
+                binding.itemStats.removeView(set)
+                binding.weaponEffect.setImageDrawable(null)
+                binding.itemScrollView.scrollTo(0, 0)
             }
             false
         }
     }
 
     private fun closeViewsWithoutButton() {
-        item_scroll_view!!.visibility = View.GONE
-        item_stats!!.removeView(primarystats)
-        item_stats!!.removeView(secondarystats)
-        item_stats!!.removeView(gems)
-        item_stats!!.removeView(transmog)
-        item_stats!!.removeView(flavortext)
-        item_stats!!.removeView(misctext)
-        armor_damage!!.removeView(dps)
-        armor_damage!!.removeView(armor)
-        item_stats!!.removeView(closeButton)
-        item_stats!!.removeView(set)
-        weapon_effect!!.setImageDrawable(null)
-        item_scroll_view!!.scrollTo(0, 0)
+        binding.itemScrollView.visibility = View.GONE
+        binding.itemStats.removeView(primarystats)
+        binding.itemStats.removeView(secondarystats)
+        binding.itemStats.removeView(gems)
+        binding.itemStats.removeView(transmog)
+        binding.itemStats.removeView(flavortext)
+        binding.itemStats.removeView(misctext)
+        binding.armorDamage.removeView(dps)
+        binding.armorDamage.removeView(armor)
+        binding.itemStats.removeView(closeButton)
+        binding.itemStats.removeView(set)
+        binding.weaponEffect.setImageDrawable(null)
+        binding.itemScrollView.scrollTo(0, 0)
         EventBus.getDefault().post(D3ItemShownEvent(false))
     }
 
     @Throws(IOException::class)
     private fun setItemInformation() {
-        val call: Call<Items> = RetroClient.getClient.getHeroItems(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<Items> = GamesActivity.client!!.getHeroItems(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<Items> {
             override fun onResponse(call: Call<Items>, response: retrofit2.Response<Items>) {
                 when {
@@ -305,8 +314,8 @@ class CharacterGearFragment : Fragment() {
                 val backgroundStroke = GradientDrawable()
                 backgroundStroke.setColor(Color.parseColor("#000000"))
                 backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(index)))
-                item_scroll_view.background = backgroundStroke
-                item_name.background = getHeaderBackground(index)
+                binding.itemScrollView.background = backgroundStroke
+                binding.itemName.background = getHeaderBackground(index)
                 val background = selectBackgroundColor(items[index].displayColor!!)
                 val backgroundStrokeTooltipIcon = GradientDrawable()
                 backgroundStrokeTooltipIcon.setStroke(3, Color.parseColor(selectColor(items[index].displayColor!!)))
@@ -315,8 +324,8 @@ class CharacterGearFragment : Fragment() {
                 layers[0] = background
                 layers[1] = backgroundStrokeTooltipIcon
                 val layerList = LayerDrawable(layers)
-                item_icon.background = layerList
-                item_icon.setImageDrawable(imageView.drawable)
+                binding.itemIcon.background = layerList
+                binding.itemIcon.setImageDrawable(imageView.drawable)
 
                 val jewelleryParams = RelativeLayout.LayoutParams((67 * Resources.getSystem().displayMetrics.density).toInt(), (67 * Resources.getSystem().displayMetrics.density).toInt())
                 jewelleryParams.addRule(RelativeLayout.CENTER_IN_PARENT)
@@ -324,19 +333,19 @@ class CharacterGearFragment : Fragment() {
                 normalIconParams.addRule(RelativeLayout.CENTER_IN_PARENT)
 
                 if (items[index].slots == "neck" || items[index].slots == "leftFinger" || items[index].slots == "rightFinger" || items[index].slots == "waist") {
-                    item_icon.layoutParams = jewelleryParams
+                    binding.itemIcon.layoutParams = jewelleryParams
                 } else {
-                    item_icon.layoutParams = normalIconParams
+                    binding.itemIcon.layoutParams = normalIconParams
                 }
                 try {
                     val color = selectColor(items[index].displayColor!!)
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        item_name.text = Html.fromHtml("<font color=\"" + color + "\">" + items[index].name + "</font>", Html.FROM_HTML_MODE_LEGACY)
+                        binding.itemName.text = Html.fromHtml("<font color=\"" + color + "\">" + items[index].name + "</font>", Html.FROM_HTML_MODE_LEGACY)
                     } else {
-                        item_name.text = Html.fromHtml("<font color=\"" + color + "\">" + items[index].name + "</font>")
+                        binding.itemName.text = Html.fromHtml("<font color=\"" + color + "\">" + items[index].name + "</font>")
                     }
                     if (items[index].name?.length!! > 23) {
-                        item_name.textSize = 18f
+                        binding.itemName.textSize = 18f
                     }
                 } catch (e: Exception) {
                     Log.e("Error", "Name", e)
@@ -349,12 +358,12 @@ class CharacterGearFragment : Fragment() {
                     typeNameString = typeNameString.substring(0, lastSpace2) + "<br>" + typeNameString.substring(lastSpace2)
                 }
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    typeName.text = Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY)
+                    binding.typeName.text = Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    typeName.text = Html.fromHtml(typeNameString)
+                    binding.typeName.text = Html.fromHtml(typeNameString)
                 }
-                typeName.setTextColor(Color.parseColor(selectColor(items[index].displayColor!!)))
-                slot.text = items[index].slots
+                binding.typeName.setTextColor(Color.parseColor(selectColor(items[index].displayColor!!)))
+                binding.slot.text = items[index].slots
                 try {
                     if (items[index].armor!! > 0) {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -362,7 +371,7 @@ class CharacterGearFragment : Fragment() {
                         } else {
                             armor!!.text = Html.fromHtml("<big><big><big><big><big>" + (items[index].armor!!).roundToInt() + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>")
                         }
-                        armor_damage!!.addView(armor, layoutParamsStats)
+                        binding.armorDamage.addView(armor, layoutParamsStats)
                     }
                 } catch (e: Exception) {
                     Log.e("Error", "Armor", e)
@@ -370,18 +379,18 @@ class CharacterGearFragment : Fragment() {
                 try {
                     if (!items[index].type?.twoHanded!! && items[index].minDamage!! > 0) {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            slot.text = Html.fromHtml("1-Hand", Html.FROM_HTML_MODE_LEGACY)
+                            binding.slot.text = Html.fromHtml("1-Hand", Html.FROM_HTML_MODE_LEGACY)
                         } else {
-                            slot.text = Html.fromHtml("1-Hand")
+                            binding.slot.text = Html.fromHtml("1-Hand")
                         }
                     } else if (items[index].type?.twoHanded!! && items[index].minDamage!! > 0) {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            slot.text = Html.fromHtml("2-Hand", Html.FROM_HTML_MODE_LEGACY)
+                            binding.slot.text = Html.fromHtml("2-Hand", Html.FROM_HTML_MODE_LEGACY)
                         } else {
-                            slot.text = Html.fromHtml("2-Hand")
+                            binding.slot.text = Html.fromHtml("2-Hand")
                         }
                     } else {
-                        slot.text = items[index].slots
+                        binding.slot.text = items[index].slots
                     }
                 } catch (e: Exception) {
                     Log.e("Error", "No TYPE", e)
@@ -401,21 +410,21 @@ class CharacterGearFragment : Fragment() {
                                     + formatter.format(items[index].maxDamage) + "<font color=\"#696969\"> Damage</font><br>"
                                     + formatter.format(items[index].attacksPerSecond) + "<font color=\"#696969\"> Attacks per Second</font><br>")
                         }
-                        armor_damage!!.addView(dps, layoutParamsStats)
+                        binding.armorDamage.addView(dps, layoutParamsStats)
                         when (items[index].elementalType) {
-                            "fire" -> image_stats?.setBackgroundResource(R.drawable.fire)
-                            "cold" -> image_stats?.setBackgroundResource(R.drawable.cold)
-                            "holy" -> image_stats?.setBackgroundResource(R.drawable.holy)
-                            "poison" -> image_stats?.setBackgroundResource(R.drawable.poison)
-                            "lightning" -> image_stats?.setBackgroundResource(R.drawable.lightning)
-                            "arcane" -> image_stats?.setBackgroundResource(R.drawable.arcane)
-                            else -> image_stats?.setBackgroundResource(0)
+                            "fire" -> binding.imageStats.setBackgroundResource(R.drawable.fire)
+                            "cold" -> binding.imageStats.setBackgroundResource(R.drawable.cold)
+                            "holy" -> binding.imageStats.setBackgroundResource(R.drawable.holy)
+                            "poison" -> binding.imageStats.setBackgroundResource(R.drawable.poison)
+                            "lightning" -> binding.imageStats.setBackgroundResource(R.drawable.lightning)
+                            "arcane" -> binding.imageStats.setBackgroundResource(R.drawable.arcane)
+                            else -> binding.imageStats.setBackgroundResource(0)
                         }
                     } else {
-                        image_stats?.setBackgroundResource(0)
+                        binding.imageStats.setBackgroundResource(0)
                     }
                 } catch (e: Exception) {
-                    image_stats?.setBackgroundResource(0)
+                    binding.imageStats.setBackgroundResource(0)
                     dps?.text = ""
                 }
                 try {
@@ -434,7 +443,7 @@ class CharacterGearFragment : Fragment() {
                             drawable
                         }, null)
                     }
-                    item_stats!!.addView(primarystats, layoutParamsStats)
+                    binding.itemStats.addView(primarystats, layoutParamsStats)
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         secondarystats!!.text = Html.fromHtml("Secondary<br>" + secondaryStatsMap[index], Html.FROM_HTML_MODE_LEGACY, { source: String? ->
                             val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
@@ -450,7 +459,7 @@ class CharacterGearFragment : Fragment() {
                             drawable
                         }, null)
                     }
-                    item_stats!!.addView(secondarystats, layoutParamsStats)
+                    binding.itemStats.addView(secondarystats, layoutParamsStats)
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         gems!!.text = Html.fromHtml(gemsMap[index], Html.FROM_HTML_MODE_LEGACY, Html.ImageGetter { source: String? ->
                             val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
@@ -469,7 +478,7 @@ class CharacterGearFragment : Fragment() {
                     val gemParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     gemParams.setMargins(20, 0, 20, 0)
                     gems!!.gravity = Gravity.CENTER_VERTICAL
-                    item_stats!!.addView(gems, gemParams)
+                    binding.itemStats.addView(gems, gemParams)
                 } catch (e: Exception) {
                     Log.e("Error", "Gems", e)
                 }
@@ -498,7 +507,7 @@ class CharacterGearFragment : Fragment() {
                             drawable
                         }, null)
                     }
-                    item_stats!!.addView(set, layoutParamsStats)
+                    binding.itemStats.addView(set, layoutParamsStats)
                 } catch (e: Exception) {
                     Log.e("Error", "Set", e)
                 }
@@ -510,7 +519,7 @@ class CharacterGearFragment : Fragment() {
                         transmog!!.text = Html.fromHtml("<font color=\"#7979d4\">Transmogrification:</font><br>" + "<font color=\""
                                 + selectColor(items[index].transmog?.displayColor!!) + "\">" + items[index].transmog?.name + "</font><br>")
                     }
-                    item_stats!!.addView(transmog, layoutParamsStats)
+                    binding.itemStats.addView(transmog, layoutParamsStats)
                 } catch (e: Exception) {
                     Log.e("Error", "Transmog", e)
                 }
@@ -521,7 +530,7 @@ class CharacterGearFragment : Fragment() {
                         } else {
                             flavortext!!.text = Html.fromHtml("<font color=\"#9d7853\">\"<i>" + items[index].flavorText + "</i>\"</font><br>")
                         }
-                        item_stats!!.addView(flavortext, layoutParamsStats)
+                        binding.itemStats.addView(flavortext, layoutParamsStats)
                     }
                 } catch (e: Exception) {
                     Log.e("Error", "FlavorText", e)
@@ -542,7 +551,7 @@ class CharacterGearFragment : Fragment() {
                         }
                         misctext!!.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
                     }
-                    item_stats!!.addView(misctext, layoutParamsStats)
+                    binding.itemStats.addView(misctext, layoutParamsStats)
                 } catch (e: Exception) {
                     Log.e("Error", "Misc", e)
                 }
@@ -551,8 +560,8 @@ class CharacterGearFragment : Fragment() {
                 } catch (e: Exception) {
                     Log.e("Parent", "None")
                 }
-                item_stats.addView(closeButton)
-                item_scroll_view.visibility = View.VISIBLE
+                binding.itemStats.addView(closeButton)
+                binding.itemScrollView.visibility = View.VISIBLE
                 EventBus.getDefault().post(D3ItemShownEvent(true))
             }
             true
@@ -560,19 +569,19 @@ class CharacterGearFragment : Fragment() {
     }
 
     private fun addImageViewItemsToList() {
-        imageViewItem["shoulders"] = shoulder
-        imageViewItem["hands"] = gloves
-        imageViewItem["leftFinger"] = ring1
-        imageViewItem["mainHand"] = main_hand
-        imageViewItem["head"] = head
-        imageViewItem["torso"] = chest
-        imageViewItem["waist"] = belt
-        imageViewItem["legs"] = legs
-        imageViewItem["feet"] = boots
-        imageViewItem["neck"] = amulet
-        imageViewItem["bracers"] = bracers
-        imageViewItem["rightFinger"] = ring2
-        imageViewItem["offHand"] = off_hand
+        imageViewItem["shoulders"] = binding.shoulder
+        imageViewItem["hands"] = binding.gloves
+        imageViewItem["leftFinger"] = binding.ring1
+        imageViewItem["mainHand"] = binding.mainHand
+        imageViewItem["head"] = binding.head
+        imageViewItem["torso"] = binding.chest
+        imageViewItem["waist"] = binding.belt
+        imageViewItem["legs"] = binding.legs
+        imageViewItem["feet"] = binding.boots
+        imageViewItem["neck"] = binding.amulet
+        imageViewItem["bracers"] = binding.bracers
+        imageViewItem["rightFinger"] = binding.ring2
+        imageViewItem["offHand"] = binding.offHand
     }
 
     private fun setItemBackgroundColor() {
@@ -645,10 +654,10 @@ class CharacterGearFragment : Fragment() {
 
     private fun getItemBorderColor(index: Int): String {
         val type = items[index].typeName
-        if (type?.contains("Ancient")!!) {
-            return "#b47402"
-        } else if (type.contains("Primal")) {
+        if (type?.contains("Primal")!!) {
             return "#E52817"
+        } else if (type.contains("Ancient")) {
+            return "#b47402"
         }
         return "#312a26"
     }

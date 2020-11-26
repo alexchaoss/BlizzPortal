@@ -552,19 +552,16 @@
                     app:tabTextColor="@color/owBackgroundColor">
 
                     <com.google.android.material.tabs.TabItem
-                        android:id="@+id/spec1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/spec1" />
 
                     <com.google.android.material.tabs.TabItem
-                        android:id="@+id/spec2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/spec2" />
 
                     <com.google.android.material.tabs.TabItem
-                        android:id="@+id/spec3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/spec3" />
@@ -606,6 +603,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:padding="10dp"
             android:focusable="true"
             android:visibility="gone">
 

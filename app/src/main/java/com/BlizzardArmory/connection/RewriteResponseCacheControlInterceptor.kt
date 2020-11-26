@@ -1,5 +1,8 @@
 package com.BlizzardArmory.connection
 
+import com.BlizzardArmory.util.ConnectionStatus
+import okhttp3.CacheControl
+import okhttp3.Connection
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException

@@ -2,6 +2,7 @@ package com.BlizzardArmory.model.warcraft.realm
 
 import com.google.gson.annotations.SerializedName
 
+
 data class Realm(
 
         @SerializedName("key") val key: Key,

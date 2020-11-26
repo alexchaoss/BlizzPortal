@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
+import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -32,10 +32,8 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
     private var media: String? = null
     private var region: String? = null
 
-    private var tabLayout: TabLayout? = null
-    private var viewPager: ViewPager? = null
-
-    private var favorite: ImageView? = null
+    private var _binding: WowNavbarFragmentBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,26 +43,16 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
             media = it.getString(MEDIA)
             region = it.getString(REGION)
         }
-        favorite = activity?.findViewById(R.id.favorite)
-
-        activity?.onBackPressedDispatcher?.addCallback {
-            onBackPress()
-        }
     }
 
-    fun onBackPress() {
-        favorite?.visibility = View.GONE
-        favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
-        favorite?.tag = R.drawable.ic_star_border_black_24dp
-        activity?.supportFragmentManager?.popBackStack()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = WowNavbarFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.wow_navbar_fragment, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        tabLayout = view.findViewById(R.id.nav_bar)
-        viewPager = view.findViewById(R.id.wow_pager)
-        viewPager?.offscreenPageLimit = 4
 
         val bundle = Bundle()
         bundle.putString("character", character)
@@ -72,13 +60,14 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
         bundle.putString("media", media)
         bundle.putString("region", region)
 
-        val adapter = NavAdapter(childFragmentManager, tabLayout!!.tabCount, bundle)
-        viewPager!!.adapter = adapter
-        viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        binding.wowPager.offscreenPageLimit = 5
+        val adapter = NavAdapter(childFragmentManager, binding.navBar.tabCount, bundle)
+        binding.wowPager.adapter = adapter
+        binding.wowPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.navBar))
 
-        tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.navBar.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager!!.currentItem = tab.position
+                binding.wowPager.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -89,19 +78,16 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
 
             }
         })
-        return view
-    }
-
-    override fun onResume() {
-        super.onResume()
-        activity?.onBackPressedDispatcher?.addCallback {
-            onBackPress()
-        }
     }
 
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onStop() {
@@ -112,7 +98,9 @@ class WoWNavFragment : Fragment(), IOnBackPressed {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
-            onBackPress()
+            AccountFragment.addOnBackPressCallback(activity as GamesActivity)
+            GamesActivity.hideFavoriteButton()
+            activity?.supportFragmentManager?.popBackStack()
         }
     }
 

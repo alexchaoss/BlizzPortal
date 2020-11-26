@@ -39,7 +39,7 @@
     <string name="information">정보</string>
     <string name="want_to_donate">기부를 원하십니까?</string>
     <string name="character">캐릭터</string>
-    <string name="progress">진행</string>
+    <string name="progress2">진행</string>
     <string name="achievs">업적</string>
     <string name="level">수평</string>
     <string name="honor">명예</string>
@@ -94,4 +94,11 @@
     <string name="blizz_server_down">블리자드 의 서버에 몇 가지 문제가있을 것 같다, 나중에 다시 시도하시기 바랍니다</string>
     <string name="outdated_info">오래된 정보</string>
     <string name="login_again">계정에 대한 정보를 업데이트하려면 게임에 로그인하십시오.</string>
+    <string name="season">시즌</string>
+    <string name="era">연대</string>
+    <string name="softcore">Softcore</string>
+    <string name="hardcore">Hardcore</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="search">검색</string>
+    <string name="covenant">성약의</string>
 </resources>

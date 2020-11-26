@@ -1,7 +1,7 @@
 package com.BlizzardArmory.model.warcraft.talents
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
 
 /**
  * The type Key.
@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName
 data class Key(
 
         @SerializedName("href")
-        @Expose
         var href: String
 
 )

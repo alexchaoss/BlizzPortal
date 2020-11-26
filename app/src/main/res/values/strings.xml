@@ -41,7 +41,6 @@
     <string name="spec1" translatable="false">spec1</string>
     <string name="spec2" translatable="false">spec2</string>
     <string name="spec3" translatable="false">spec3</string>
-
     <string name="talent_information_not_available">Talent information unavailable</string>
     <string name="career">Career</string>
     <string name="paragon" translatable="false">Paragon</string>
@@ -133,7 +132,6 @@
     <string name="want_to_donate">Want to donate?</string>
     <string name="paypal" translatable="false">Paypal</string>
     <string name="character">Character</string>
-    <string name="progress">Progress</string>
     <string name="pvp" translatable="false">PvP</string>
     <string name="achievs">Achievs</string>
     <string name="banner" translatable="false">banner</string>
@@ -200,4 +198,21 @@
     <string name="blizz_server_down">There seems to be some problems with Blizzard\'s servers, please try again later</string>
     <string name="outdated_info">Information Outdated</string>
     <string name="login_again">Please login in game to update your account\'s information.</string>
+    <string name="leaderboard" translatable="false">Leaderboards</string>
+    <string name="season">Season</string>
+    <string name="era">Era</string>
+    <string name="softcore">Softcore</string>
+    <string name="hardcore">Hardcore</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="search">Search</string>
+    <string name="covenant">Covenant</string>
+    <string name="progress2">Progress</string>
+
+    <string-array name="regions">
+        <item>Select Region</item>
+        <item>US</item>
+        <item>EU</item>
+        <item>KR</item>
+        <item>TW</item>
+    </string-array>
 </resources>

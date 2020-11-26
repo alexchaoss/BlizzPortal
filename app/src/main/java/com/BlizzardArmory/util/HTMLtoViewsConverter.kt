@@ -11,6 +11,7 @@ import androidx.core.text.HtmlCompat
 import com.bumptech.glide.Glide
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -25,6 +26,7 @@ class HTMLtoViewsConverter(val context: Context) {
         params.setMargins(0, MetricConversion.getDPMetric(10, context), 0, MetricConversion.getDPMetric(5, context))
         linearLayout.layoutParams = params
         linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.tag = "content_layout"
     }
 
     fun parseHtml(source: String) {
@@ -59,7 +61,7 @@ class HTMLtoViewsConverter(val context: Context) {
                 index++
             }
         }
-        for (component in componentList) {
+        for ((i, component) in componentList.withIndex()) {
             when (component.type) {
                 1 -> {
                     val textView = TextView(context)
@@ -90,6 +92,8 @@ class HTMLtoViewsConverter(val context: Context) {
                 }
                 4 -> {
                     val youtubePlayerView = YouTubePlayerView(context)
+                    youtubePlayerView.tag = "youtube_view${i}"
+                    youtubePlayerView.getPlayerUiController().showFullscreenButton(true)
                     youtubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                         override fun onReady(youTubePlayer: YouTubePlayer) {
                             var videoId = ""
@@ -98,7 +102,7 @@ class HTMLtoViewsConverter(val context: Context) {
                             if (m.find()) {
                                 videoId = m.group(1)!!
                             }
-                            youTubePlayer.loadVideo(videoId, 0f)
+                            youTubePlayer.cueVideo(videoId, 0f)
                         }
                     })
                     linearLayout.addView(youtubePlayerView)

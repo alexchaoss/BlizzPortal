@@ -16,6 +16,7 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.model.warcraft.encounters.Expansion
 import com.BlizzardArmory.model.warcraft.encounters.Instances
 import com.BlizzardArmory.model.warcraft.encounters.Modes
+import com.BlizzardArmory.util.MetricConversion
 import com.bumptech.glide.Glide
 
 class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context, private val expansion: Expansion) :
@@ -60,7 +61,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     fun bind(instances: Instances, level: String) {
-        Glide.with(itemView).load(URLConstants.getWoWAsset(findBanner(instances))).override(1000, 600).into(banner!!)
+        Glide.with(itemView.context).load(URLConstants.getWoWAsset(findBanner(instances))).into(banner!!)
         raidName?.text = instances.instance.name
         raidLevel?.text = level
         setVisibilityBar()

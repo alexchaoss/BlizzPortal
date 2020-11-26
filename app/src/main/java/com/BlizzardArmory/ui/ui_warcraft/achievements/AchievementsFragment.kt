@@ -11,15 +11,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
+import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
@@ -28,7 +29,6 @@ import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.wow_achievements_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -46,7 +46,7 @@ private const val MEDIA = "media"
 private const val REGION = "region"
 
 
-class CategoriesFragment : Fragment(), IOnBackPressed {
+class CategoriesFragment : Fragment() {
 
     private var character: String? = null
     private var realm: String? = null
@@ -65,6 +65,8 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     private var subCurrentCategory = -1L
     private var needToUpdate: Boolean = false
 
+    private var _binding: WowAchievementsFragmentBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,13 +83,19 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         EventBus.getDefault().register(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.wow_achievements_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = WowAchievementsFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,45 +106,42 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
 
-        back_arrow.setOnClickListener {
+        binding.backArrow.setOnClickListener {
             backArrow()
         }
 
-        val dialog = DialogPrompt(requireContext())
-
-
-        sub_category_tab.setOnClickListener {
-            categories_recycler.visibility = View.VISIBLE
-            achievements_recycler.visibility = View.GONE
+        binding.subCategoryTab.setOnClickListener {
+            binding.categoriesRecycler.visibility = View.VISIBLE
+            binding.achievementsRecycler.visibility = View.GONE
         }
 
-        achievement_tab.setOnClickListener {
+        binding.achievementTab.setOnClickListener {
             setAchievementRecycler(currentCategory)
-            categories_recycler.visibility = View.GONE
-            achievements_recycler.visibility = View.VISIBLE
+            binding.categoriesRecycler.visibility = View.GONE
+            binding.achievementsRecycler.visibility = View.VISIBLE
         }
 
-        download_request.setOnClickListener {
+        binding.downloadRequest.setOnClickListener {
             setAchievementInformation()
         }
     }
 
     private fun backArrow() {
         if (subCurrentCategory != -1L) {
-            achievement_tab.visibility = View.VISIBLE
-            sub_category_tab.visibility = View.VISIBLE
-            separator.visibility = View.VISIBLE
+            binding.achievementTab.visibility = View.VISIBLE
+            binding.subCategoryTab.visibility = View.VISIBLE
+            binding.separator.visibility = View.VISIBLE
             if (subCurrentCategory == 92L) {
-                sub_category_layout.visibility = View.GONE
+                binding.subCategoryLayout.visibility = View.GONE
             }
             subCurrentCategory = -1L
         } else {
-            sub_category_layout.visibility = View.GONE
+            binding.subCategoryLayout.visibility = View.GONE
             setRecyclerViewToParentCategories()
         }
 
-        categories_recycler.visibility = View.VISIBLE
-        achievements_recycler.visibility = View.GONE
+        binding.categoriesRecycler.visibility = View.VISIBLE
+        binding.achievementsRecycler.visibility = View.GONE
     }
 
     private fun setAchievementInformation() {
@@ -159,7 +164,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadAchievementInformation() {
-        val call1: Call<DetailedAchievements> = RetroClient.getClient.getAllAchievements(URLConstants.selectAchievementsURLFromLocale(MainActivity.locale))
+        val call1: Call<DetailedAchievements> = GamesActivity.client!!.getAllAchievements(URLConstants.selectAchievementsURLFromLocale(MainActivity.locale))
         call1.enqueue(object : Callback<DetailedAchievements> {
             override fun onResponse(call: Call<DetailedAchievements>, response: Response<DetailedAchievements>) {
                 if (response.isSuccessful) {
@@ -178,7 +183,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadCharacterAchievements() {
-        val call: Call<Achievements> = RetroClient.getClient.getCharacterAchievements(character, realm, MainActivity.locale, region, battlenetOAuth2Helper?.accessToken)
+        val call: Call<Achievements> = GamesActivity.client!!.getCharacterAchievements(character, realm, MainActivity.locale, region, battlenetOAuth2Helper?.accessToken)
         call.enqueue(object : Callback<Achievements> {
             override fun onResponse(call: Call<Achievements>, response: Response<Achievements>) {
                 characterAchievements = response.body()
@@ -208,7 +213,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     }
 
     private fun downloadCategories() {
-        val call: Call<Categories> = RetroClient.getClient.getAchievementCategories(URLConstants.selectAchievementCategoriesURLFromLocale(MainActivity.locale))
+        val call: Call<Categories> = GamesActivity.client!!.getAchievementCategories(URLConstants.selectAchievementCategoriesURLFromLocale(MainActivity.locale))
         call.enqueue(object : Callback<Categories> {
             override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
                 if (response.isSuccessful) {
@@ -241,30 +246,42 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     }
 
     private fun setRecyclerViewToParentCategories() {
-        categories_recycler.apply {
-            adapter = CategoriesAdapter(categories!!.filter { it.parentCategoryId == null }.sortedBy { it.displayOrder }, MainActivity.locale, faction!!, mappedAchievements, characterAchievements?.achievements!!)
+        binding.categoriesRecycler.apply {
+            adapter = CategoriesAdapter(categories!!.filter {
+                it.parentCategoryId == null
+            }.sortedBy {
+                it.displayOrder
+            }, MainActivity.locale, faction!!, mappedAchievements, characterAchievements?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
-        loading.visibility = View.GONE
+        binding.loading.visibility = View.GONE
     }
 
     private fun setAchievementRecycler(id: Long) {
         Log.i("achiev size", id.toString())
-        achievements_recycler.apply {
+        binding.achievementsRecycler.apply {
             adapter = AchievementsAdapter(
-                    mappedAchievements[id]!!.sortedWith(compareByDescending<DetailedAchievement> { characterAchievements?.achievements?.find { ac -> ac.id == it.id }?.completed_timestamp }.thenBy { it.display_order }),
-                    characterAchievements?.achievements!!)
+                    mappedAchievements[id]!!.sortedWith(compareByDescending<DetailedAchievement> {
+                        characterAchievements?.achievements?.find {
+                            ac -> ac.id == it.id }?.completed_timestamp
+                    }.thenBy {
+                        it.display_order
+                    }), characterAchievements?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
     }
 
     private fun setRecyclerViewToSubCategory(id: Long) {
-        categories_recycler.apply {
-            adapter = CategoriesAdapter(categories!!.filter { it.parentCategoryId == id }.sortedBy { it.displayOrder }, MainActivity.locale, faction!!, mappedAchievements, characterAchievements?.achievements!!)
+        binding.categoriesRecycler.apply {
+            adapter = CategoriesAdapter(categories!!.filter {
+                it.parentCategoryId == id
+            }.sortedBy {
+                it.displayOrder
+            }, MainActivity.locale, faction!!, mappedAchievements, characterAchievements?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
         if (mappedAchievements[currentCategory]?.size != 0) {
-            achievements_recycler.apply {
+            binding.achievementsRecycler.apply {
                 adapter = AchievementsAdapter(mappedAchievements[currentCategory]!!, characterAchievements?.achievements!!)
                 adapter!!.notifyDataSetChanged()
             }
@@ -275,7 +292,7 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     public fun factionEventReceived(factionEvent: FactionEvent) {
         faction = factionEvent.data
         /*if (prefs?.contains("achievement_categories_${MainActivity.locale}")!! && prefs?.contains("detailed_achievements_${MainActivity.locale}")!!) {*/
-        Glide.with(this).load("").placeholder(R.drawable.loading_placeholder).override(100, 100).into(loading)
+        Glide.with(this).load("").placeholder(R.drawable.loading_placeholder).override(100, 100).into(binding.loading)
         setAchievementInformation()
         /*} else {
             download_request.visibility = View.VISIBLE
@@ -286,20 +303,20 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
     public fun parentCategoryEventReceived(parentCategoryEvent: ParentCategoryEvent) {
         currentCategory = parentCategoryEvent.data
         setRecyclerViewToSubCategory(currentCategory)
-        sub_category_layout.visibility = View.VISIBLE
+        binding.subCategoryLayout.visibility = View.VISIBLE
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun subCategoryEventReceived(subCategoryEvent: SubCategoryEvent) {
         subCurrentCategory = subCategoryEvent.data
-        categories_recycler.visibility = View.GONE
-        achievements_recycler.visibility = View.VISIBLE
+        binding.categoriesRecycler.visibility = View.GONE
+        binding.achievementsRecycler.visibility = View.VISIBLE
         if (subCategoryEvent.data == 92L) {
-            sub_category_layout.visibility = View.VISIBLE
+            binding.subCategoryLayout.visibility = View.VISIBLE
         }
-        achievement_tab.visibility = View.GONE
-        sub_category_tab.visibility = View.GONE
-        separator.visibility = View.GONE
+        binding.achievementTab.visibility = View.GONE
+        binding.subCategoryTab.visibility = View.GONE
+        binding.separator.visibility = View.GONE
         setAchievementRecycler(subCurrentCategory)
     }
 
@@ -315,61 +332,56 @@ class CategoriesFragment : Fragment(), IOnBackPressed {
         var bgName = ""
         when (classEvent.data) {
             6 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#080812"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#080812"))
                 bgName = "dk_bg"
             }
             12 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#000900"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#000900"))
                 bgName = "dh_bg"
             }
             11 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#04100a"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#04100a"))
                 bgName = "druid_bg"
             }
             3 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#0f091b"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#0f091b"))
                 bgName = "hunter_bg"
             }
             8 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#110617"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#110617"))
                 bgName = "mage_bg"
             }
             10 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#040b17"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#040b17"))
                 bgName = "monk_bg"
             }
             2 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#13040a"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#13040a"))
                 bgName = "paladin_bg"
             }
             5 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#15060e"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#15060e"))
                 bgName = "priest_bg"
             }
             4 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#160720"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#160720"))
                 bgName = "rogue_bg"
             }
             7 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#050414"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#050414"))
                 bgName = "shaman_bg"
             }
             9 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#080516"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#080516"))
                 bgName = "warlock_bg"
             }
             1 -> {
-                achiev_layout.setBackgroundColor(Color.parseColor("#1a0407"))
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#1a0407"))
                 bgName = "warrior_bg"
             }
         }
-        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(background_achieves)
+        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(binding.backgroundAchieves)
     }
-
-    override fun onBackPressed(): Boolean {
-        return URLConstants.loading
-    }
-
 
     companion object {
         @JvmStatic

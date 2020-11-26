@@ -23,13 +23,14 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.ActivityMainBinding
 import com.BlizzardArmory.util.ConnectionStatus
+import com.BlizzardArmory.util.DialogPrompt
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
@@ -37,13 +38,15 @@ class MainActivity : LocalizationActivity() {
 
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
-    private val regionList = arrayOf("Select Region", "CN", "US", "EU", "KR", "TW")
     private var sharedPreferences: SharedPreferences? = null
     private val REQUEST_CODE_IN_APP_UPDATE = 7500
 
+    private lateinit var binding : ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         FirebaseCrashlytics.getInstance().sendUnsentReports()
         startWiFiNetworkCallback()
         startDataNetworkCallback()
@@ -53,14 +56,14 @@ class MainActivity : LocalizationActivity() {
 
         initLocale()
 
-        val regionAdapter = setAdapater(regionList)
+        val regionAdapter = setAdapater(resources.getStringArray(R.array.regions))
         regionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-        spinner.adapter = regionAdapter
+        binding.spinner.adapter = regionAdapter
 
-        spinnerSelector(spinner)
+        spinnerSelector(binding.spinner)
 
         setLoginButtonToBattlenet()
-        logout.setOnClickListener { clearCredentials() }
+        binding.logout.setOnClickListener { clearCredentials() }
     }
 
     override fun onResume() {
@@ -125,7 +128,7 @@ class MainActivity : LocalizationActivity() {
     }
 
     private fun setLoginButtonToBattlenet() {
-        buttonLogin.setOnClickListener {
+        binding.buttonLogin.setOnClickListener {
             if (selectedRegion == "Select Region") {
                 Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT).show()
             } else {
@@ -135,18 +138,19 @@ class MainActivity : LocalizationActivity() {
     }
 
     private fun checkConnectionBeforeLogin() {
-        openLoginToBattleNet()
-        /*} else {
+        if(ConnectionStatus.hasNetwork()){
+            openLoginToBattleNet()
+        } else {
             val dialog = DialogPrompt(this)
             dialog.addTitle("Internet connection unstable", 20F, "title")
                     .addMessage("Are you currently connected to a network?", 16F, "message")
                     .addSideBySideButtons("Yes", 16F, "No", 16F, { openLoginToBattleNet()}, {
                         dialog.cancel()
                         val confirmDialog = DialogPrompt(this)
-                        confirmDialog.addMessage("This application requires an active internet connection to continue.", 20F)
+                        confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
                                 .addButton("Ok", 16F, {confirmDialog.cancel()}, "close").show()
                     }, "positive", "negative").show()
-        }*/
+        }
     }
 
     private fun openLoginToBattleNet() {

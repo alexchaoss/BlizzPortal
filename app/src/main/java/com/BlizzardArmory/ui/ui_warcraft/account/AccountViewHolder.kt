@@ -83,7 +83,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
-        val call: Call<Media> = RetroClient.getClient.getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient(context).getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                 val media: Media? = response.body()
@@ -117,7 +117,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
             val woWNavFragment = WoWNavFragment.newInstance(character.name.toLowerCase(Locale.ROOT), character.realm.slug, media, MainActivity.selectedRegion)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            fragmentTransaction.replace(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+            fragmentTransaction.add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
             fragmentTransaction.addToBackStack("wow_nav").commit()
             fragmentManager.executePendingTransactions()
         }

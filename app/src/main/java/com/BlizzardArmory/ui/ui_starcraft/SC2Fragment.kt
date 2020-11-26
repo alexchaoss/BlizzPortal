@@ -20,21 +20,21 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.Sc2FragmentBinding
 import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import kotlinx.android.synthetic.main.sc2_activity.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -49,12 +49,14 @@ class SC2Fragment : Fragment() {
     private var accountInformation = listOf<Player>()
     private var sc2Profile: Profile? = null
     lateinit var errorMessages: ErrorMessages
+    
+    private var _binding: Sc2FragmentBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        activity?.onBackPressedDispatcher?.addCallback {
-            activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
-        return inflater.inflate(R.layout.sc2_activity, container, false)
+        addOnBackPressCallback(activity as GamesActivity)
+        _binding = Sc2FragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,14 +74,14 @@ class SC2Fragment : Fragment() {
         val campaignBG = GradientDrawable()
         campaignBG.setStroke(6, Color.parseColor("#122a42"))
         campaignBG.setColor(Color.parseColor("#75091c2e"))
-        summary.background = summaryBG
-        snapshot.background = snapshotBG
-        statistics.background = statsBG
-        campaign.background = campaignBG
+        binding.summary.background = summaryBG
+        binding.snapshot.background = snapshotBG
+        binding.statistics.background = statsBG
+        binding.campaign.background = campaignBG
 
-        getRaceImage(zerg_image, "summary_racelevel_zerg_image")
-        getRaceImage(protoss_image, "summary_racelevel_protoss_image")
-        getRaceImage(terran_image, "summary_racelevel_terran_image")
+        getRaceImage(binding.zergImage, "summary_racelevel_zerg_image")
+        getRaceImage(binding.protossImage, "summary_racelevel_protoss_image")
+        getRaceImage(binding.terranImage, "summary_racelevel_terran_image")
 
         val startColor = -0xff9934
         val endColor = 0x00000000
@@ -94,12 +96,12 @@ class SC2Fragment : Fragment() {
         raceImageBG.gradientType = GradientDrawable.RADIAL_GRADIENT
         raceImageBG.gradientRadius = 800.0f
 
-        terran_image.setImageDrawable(raceImageBG)
-        zerg_image.setImageDrawable(raceImageBG)
-        protoss_image.setImageDrawable(raceImageBG)
-        avatar.setImageDrawable(avatarShadow)
+        binding.terranImage.setImageDrawable(raceImageBG)
+        binding.zergImage.setImageDrawable(raceImageBG)
+        binding.protossImage.setImageDrawable(raceImageBG)
+        binding.avatar.setImageDrawable(avatarShadow)
 
-        loadingCircle.visibility = View.VISIBLE
+        binding.loadingCircle.visibility = View.VISIBLE
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
@@ -109,6 +111,11 @@ class SC2Fragment : Fragment() {
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onStop() {
@@ -128,14 +135,14 @@ class SC2Fragment : Fragment() {
 
     private fun downloadAccountInformation() {
         URLConstants.loading = true
-        val call: Call<List<Player>> = RetroClient.getClient.getSc2Player(GamesActivity.userInformation!!.userID, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<List<Player>> = GamesActivity.client!!.getSc2Player(GamesActivity.userInformation!!.userID, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<List<Player>> {
             override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
                 when {
                     response.isSuccessful -> {
                         accountInformation = response.body()!!
                         if (accountInformation.isNotEmpty()) {
-                            val call2: Call<Profile> = RetroClient.getClient.getSc2Profile(parseRegionId(accountInformation[0].regionId), accountInformation[0].realmId,
+                            val call2: Call<Profile> = GamesActivity.client!!.getSc2Profile(parseRegionId(accountInformation[0].regionId), accountInformation[0].realmId,
                                     accountInformation[0].profileId, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
                             call2.enqueue(object : Callback<Profile> {
                                 override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
@@ -148,7 +155,7 @@ class SC2Fragment : Fragment() {
                                             setRaceLevelInformation()
                                             setCampaignInformation()
                                             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                            loadingCircle!!.visibility = View.GONE
+                                            binding.loadingCircle.visibility = View.GONE
                                             URLConstants.loading = false
                                             downloadAvatar()
                                         }
@@ -186,60 +193,60 @@ class SC2Fragment : Fragment() {
         if (sc2Profile!!.campaign.difficultyCompleted.wingsOfLiberty != null) {
             when (sc2Profile!!.campaign.difficultyCompleted.wingsOfLiberty) {
                 "CASUAL" -> {
-                    wol_icon!!.setImageResource(R.drawable.campaign_badge_wol_casual)
-                    campaign_wol!!.text = "Casual Campaign Ace"
+                    binding.wolIcon.setImageResource(R.drawable.campaign_badge_wol_casual)
+                    binding.campaignWol.text = "Casual Campaign Ace"
                 }
                 "NORMAL" -> {
-                    wol_icon!!.setImageResource(R.drawable.campaign_badge_lotv_casual)
-                    campaign_wol!!.text = "Normal Campaign Ace"
+                    binding.wolIcon.setImageResource(R.drawable.campaign_badge_lotv_casual)
+                    binding.campaignWol.text = "Normal Campaign Ace"
                 }
                 "HARD" -> {
-                    wol_icon!!.setImageResource(R.drawable.campaign_badge_wol_hard)
-                    campaign_wol!!.text = "Hard Campaign Ace"
+                    binding.wolIcon.setImageResource(R.drawable.campaign_badge_wol_hard)
+                    binding.campaignWol.text = "Hard Campaign Ace"
                 }
                 "BRUTAL" -> {
-                    wol_icon!!.setImageResource(R.drawable.campaign_badge_wol_brutal)
-                    campaign_wol!!.text = "Brutal Campaign Ace"
+                    binding.wolIcon.setImageResource(R.drawable.campaign_badge_wol_brutal)
+                    binding.campaignWol.text = "Brutal Campaign Ace"
                 }
             }
         }
         if (sc2Profile!!.campaign.difficultyCompleted.heartOfTheSwarm != null) {
             when (sc2Profile!!.campaign.difficultyCompleted.heartOfTheSwarm) {
                 "CASUAL" -> {
-                    hots_icon!!.setImageResource(R.drawable.campaign_badge_hots_casual)
-                    campaign_hots!!.text = "Casual Campaign Ace"
+                    binding.hotsIcon.setImageResource(R.drawable.campaign_badge_hots_casual)
+                    binding.campaignHots.text = "Casual Campaign Ace"
                 }
                 "NORMAL" -> {
-                    hots_icon!!.setImageResource(R.drawable.campaign_badge_hots_normal)
-                    campaign_hots!!.text = "Normal Campaign Ace"
+                    binding.hotsIcon.setImageResource(R.drawable.campaign_badge_hots_normal)
+                    binding.campaignHots.text = "Normal Campaign Ace"
                 }
                 "HARD" -> {
-                    hots_icon!!.setImageResource(R.drawable.campaign_badge_hots_hard)
-                    campaign_hots!!.text = "Hard Campaign Ace"
+                    binding.hotsIcon.setImageResource(R.drawable.campaign_badge_hots_hard)
+                    binding.campaignHots.text = "Hard Campaign Ace"
                 }
                 "BRUTAL" -> {
-                    hots_icon!!.setImageResource(R.drawable.campaign_badge_hots_brutal)
-                    campaign_hots!!.text = "Brutal Campaign Ace"
+                    binding.hotsIcon.setImageResource(R.drawable.campaign_badge_hots_brutal)
+                    binding.campaignHots.text = "Brutal Campaign Ace"
                 }
             }
         }
         if (sc2Profile!!.campaign.difficultyCompleted.legacyOfTheVoid != null) {
             when (sc2Profile!!.campaign.difficultyCompleted.legacyOfTheVoid) {
                 "CASUAL" -> {
-                    lotv_icon!!.setImageResource(R.drawable.campaign_badge_lotv_casual)
-                    campaign_lotv!!.text = "Casual Campaign Ace"
+                    binding.lotvIcon.setImageResource(R.drawable.campaign_badge_lotv_casual)
+                    binding.campaignLotv.text = "Casual Campaign Ace"
                 }
                 "NORMAL" -> {
-                    lotv_icon!!.setImageResource(R.drawable.campaign_badge_lotv_normal)
-                    campaign_lotv!!.text = "Normal Campaign Ace"
+                    binding.lotvIcon.setImageResource(R.drawable.campaign_badge_lotv_normal)
+                    binding.campaignLotv.text = "Normal Campaign Ace"
                 }
                 "HARD" -> {
-                    lotv_icon!!.setImageResource(R.drawable.campaign_badge_lotv_hard)
-                    campaign_lotv!!.text = "Hard Campaign Ace"
+                    binding.lotvIcon.setImageResource(R.drawable.campaign_badge_lotv_hard)
+                    binding.campaignLotv.text = "Hard Campaign Ace"
                 }
                 "BRUTAL" -> {
-                    lotv_icon!!.setImageResource(R.drawable.campaign_badge_lotv_brutal)
-                    campaign_lotv!!.text = "Brutal Campaign Ace"
+                    binding.lotvIcon.setImageResource(R.drawable.campaign_badge_lotv_brutal)
+                    binding.campaignLotv.text = "Brutal Campaign Ace"
                 }
             }
         }
@@ -249,9 +256,9 @@ class SC2Fragment : Fragment() {
         val terranTemp = "Level " + sc2Profile!!.swarmLevels.terran.level
         val zergTemp = "Level " + sc2Profile!!.swarmLevels.zerg.level
         val protossTemp = "Level " + sc2Profile!!.swarmLevels.protoss.level
-        terran_level!!.text = terranTemp
-        zerg_level!!.text = zergTemp
-        protoss_level!!.text = protossTemp
+        binding.terranLevel.text = terranTemp
+        binding.zergLevel.text = zergTemp
+        binding.protossLevel.text = protossTemp
     }
 
     private fun parseRegionId(regionId: Int): String {
@@ -265,40 +272,40 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setStatisticsInformation() {
-        terran_wins!!.text = sc2Profile!!.career.terranWins.toString()
-        zerg_wins!!.text = sc2Profile!!.career.zergWins.toString()
-        protoss_wins!!.text = sc2Profile!!.career.protossWins.toString()
-        season_played!!.text = sc2Profile!!.career.totalGamesThisSeason.toString()
-        career_played!!.text = sc2Profile!!.career.totalCareerGames.toString()
+        binding.terranWins.text = sc2Profile!!.career.terranWins.toString()
+        binding.zergWins.text = sc2Profile!!.career.zergWins.toString()
+        binding.protossWins.text = sc2Profile!!.career.protossWins.toString()
+        binding.seasonPlayed.text = sc2Profile!!.career.totalGamesThisSeason.toString()
+        binding.careerPlayed.text = sc2Profile!!.career.totalCareerGames.toString()
         if (sc2Profile!!.career.best1v1Finish.leagueName != null) {
-            setSnapshotIcons(sc2Profile!!.career.best1v1Finish.leagueName, 500, best_one_icon)
+            setSnapshotIcons(sc2Profile!!.career.best1v1Finish.leagueName, 500, binding.bestOneIcon)
             var temp = sc2Profile!!.career.best1v1Finish.leagueName.substring(1).toLowerCase(Locale.ROOT)
             temp = sc2Profile!!.career.best1v1Finish.leagueName.substring(0, 1) + temp
-            best_one!!.text = temp
+            binding.bestOne.text = temp
         } else {
-            best_one!!.visibility = View.GONE
+            binding.bestOne.visibility = View.GONE
         }
         if (sc2Profile!!.career.bestTeamFinish.leagueName != null) {
-            setSnapshotIcons(sc2Profile!!.career.bestTeamFinish.leagueName, 500, best_team_icon)
+            setSnapshotIcons(sc2Profile!!.career.bestTeamFinish.leagueName, 500, binding.bestTeamIcon)
             var temp = sc2Profile!!.career.bestTeamFinish.leagueName.substring(1).toLowerCase(Locale.ROOT)
             temp = sc2Profile!!.career.bestTeamFinish.leagueName.substring(0, 1) + temp
-            best_team!!.text = temp
+            binding.bestTeam.text = temp
         } else {
-            best_team!!.visibility = View.GONE
+            binding.bestTeam.visibility = View.GONE
         }
     }
 
     private fun setSnapshotInformation() {
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.oneVone.leagueName, sc2Profile!!.snapshot.seasonSnapshot.oneVone.rank, one_one)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.archon.leagueName, sc2Profile!!.snapshot.seasonSnapshot.archon.rank, archon)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.leagueName, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.rank, two_two)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.leagueName, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.rank, three_three)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.leagueName, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.rank, four_four)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalGames, sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalWins, one_one_text)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.archon.totalGames, sc2Profile!!.snapshot.seasonSnapshot.archon.totalWins, archon_text)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalGames, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalWins, two_two_text)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalGames, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalWins, three_three_text)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalGames, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalWins, four_four_text)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.oneVone.leagueName, sc2Profile!!.snapshot.seasonSnapshot.oneVone.rank, binding.oneOne)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.archon.leagueName, sc2Profile!!.snapshot.seasonSnapshot.archon.rank, binding.archon)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.leagueName, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.rank, binding.twoTwo)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.leagueName, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.rank, binding.threeThree)
+        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.leagueName, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.rank, binding.fourFour)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalGames, sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalWins, binding.oneOneText)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.archon.totalGames, sc2Profile!!.snapshot.seasonSnapshot.archon.totalWins, binding.archonText)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalGames, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalWins, binding.twoTwoText)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalGames, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalWins, binding.threeThreeText)
+        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalGames, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalWins, binding.fourFourText)
     }
 
     private fun setSnapshotText(totalGames: Int, totalWins: Int, text: TextView?) {
@@ -415,26 +422,26 @@ class SC2Fragment : Fragment() {
 
     private fun setSummaryInformation() {
         if (sc2Profile?.swarmLevels != null && sc2Profile?.swarmLevels?.level != null) {
-            total_level_text!!.text = sc2Profile!!.swarmLevels.level.toString()
+            binding.totalLevelText.text = sc2Profile!!.swarmLevels.level.toString()
         } else {
-            total_level_text!!.text = "0"
+            binding.totalLevelText.text = "0"
         }
-        name!!.text = sc2Profile!!.summary.displayName
+        binding.name.text = sc2Profile!!.summary.displayName
         if (sc2Profile!!.summary.clanName != null) {
             val clanName = "[" + sc2Profile!!.summary.clanTag + "] " + sc2Profile!!.summary.clanName
-            clan!!.text = clanName
+            binding.clan.text = clanName
         } else {
-            clan!!.visibility = View.GONE
+            binding.clan.visibility = View.GONE
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            achievement_points!!.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
+            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
                 val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
                 val drawable = resources.getDrawable(resourceId, requireActivity().theme)
                 drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
                 drawable
             }, null)
         } else {
-            achievement_points!!.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, { source: String? ->
+            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, { source: String? ->
                 val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
                 val drawable = resources.getDrawable(resourceId, requireActivity().theme)
                 drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
@@ -446,7 +453,7 @@ class SC2Fragment : Fragment() {
     private fun downloadAvatar() {
         Glide.with(this).load(accountInformation[0].avatarUrl).into(object : CustomTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                avatar.background = resource
+                binding.avatar.background = resource
             }
 
             override fun onLoadCleared(placeholder: Drawable?) {}
@@ -489,7 +496,7 @@ class SC2Fragment : Fragment() {
     }
 
     private fun showNoConnectionMessage(responseCode: Int) {
-        loadingCircle!!.visibility = View.GONE
+        binding.loadingCircle.visibility = View.GONE
         URLConstants.loading = false
 
         val dialog = DialogPrompt(requireActivity())
@@ -500,12 +507,13 @@ class SC2Fragment : Fragment() {
                         {
                             dialog.cancel()
                             downloadAccountInformation()
-                            loadingCircle!!.visibility = View.VISIBLE
+                            binding.loadingCircle.visibility = View.VISIBLE
                             URLConstants.loading = true
                         },
                         {
                             dialog.cancel()
-                            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                            NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                            parentFragmentManager.popBackStack()
                         },
                         "retry", "back").show()
     }
@@ -513,5 +521,16 @@ class SC2Fragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
+    }
+
+    companion object{
+        fun addOnBackPressCallback(activity: GamesActivity){
+            if(!URLConstants.loading) {
+                activity.onBackPressedDispatcher.addCallback {
+                    NewsPageFragment.addOnBackPressCallback(activity)
+                    activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+            }
+        }
     }
 }

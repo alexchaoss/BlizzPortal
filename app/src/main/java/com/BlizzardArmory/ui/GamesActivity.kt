@@ -8,10 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.AutoCompleteTextView
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -19,10 +16,14 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
+import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.GamesActivityBarBinding
+import com.BlizzardArmory.databinding.GamesActivityBinding
+import com.BlizzardArmory.databinding.GamesActivityNavHeaderBinding
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
 import com.BlizzardArmory.model.warcraft.media.Media
@@ -30,6 +31,7 @@ import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
+import com.BlizzardArmory.ui.ui_diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.ui_overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
@@ -44,9 +46,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.games_activity.*
-import kotlinx.android.synthetic.main.games_activity_bar.*
-import kotlinx.android.synthetic.main.games_activity_nav_header.*
+import kotlinx.android.synthetic.main.games_activity_nav_header.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -59,26 +59,34 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
     private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private lateinit var toggle: ActionBarDrawerToggle
-    var searchText: SpannableString? = null
-    var wowFavoritesText: SpannableString? = null
-    var d3FavoritesText: SpannableString? = null
-    var owFavoritesText: SpannableString? = null
-    var wowMediaCharacter: Media? = null
-    var prefs: SharedPreferences? = null
-    val gson = GsonBuilder().create()
-    var wowRealms = mutableMapOf<String, Realms>()
-    lateinit var errorMessage: ErrorMessages
+    private var searchText: SpannableString? = null
+    private var wowFavoritesText: SpannableString? = null
+    private var d3FavoritesText: SpannableString? = null
+    private var owFavoritesText: SpannableString? = null
+    private var d3LeaderboardText: SpannableString? = null
+    private var wowMediaCharacter: Media? = null
+    private var prefs: SharedPreferences? = null
+    private val gson = GsonBuilder().create()
+    private var wowRealms = mutableMapOf<String, Realms>()
+    private lateinit var errorMessage: ErrorMessages
+    
+    private lateinit var binding: GamesActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.games_activity)
+        binding = GamesActivityBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             Log.e("Crash Prevented", throwable.message!!, throwable)
             handleUncaughtException(thread, throwable)
         }
+        client = RetroClient.getClient(this)
+
+        favorite = binding.topBar.favorite
         errorMessage = ErrorMessages(this.resources)
-        drawer_layout.setScrimColor(Color.TRANSPARENT)
+        binding.drawerLayout.setScrimColor(Color.TRANSPARENT)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         battlenetOAuth2Params = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
@@ -112,24 +120,24 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
         getRealms()
 
-        nav_view.setNavigationItemSelectedListener(this)
-        nav_view.itemIconTintList = null
-        setSupportActionBar(toolbar_main)
+        binding.navView.setNavigationItemSelectedListener(this)
+        binding.navView.itemIconTintList = null
+        setSupportActionBar(binding.topBar.toolbarMain)
 
-        toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar_main, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
+        toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.topBar.toolbarMain, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        binding.drawerLayout.addDrawerListener(toggle)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = ""
         makeTitlesTransparent()
 
-        settings.setOnClickListener {
+        binding.settings.setOnClickListener {
             val fragment = SettingsFragment()
-            favorite.visibility = View.GONE
+            favorite!!.visibility = View.GONE
             supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings").commit()
             supportFragmentManager.executePendingTransactions()
-            drawer_layout.closeDrawers()
+            binding.drawerLayout.closeDrawers()
         }
 
         downloadUserInfo()
@@ -167,7 +175,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun getRealms() {
-        val call: Call<Realms> = RetroClient.getClient.getRealmIndex("us", "dynamic-us", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        val call: Call<Realms> = client!!.getRealmIndex("us", "dynamic-us", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Realms> {
             override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
                 if (response.isSuccessful) {
@@ -180,7 +188,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 Log.e("Error", "trace", t)
             }
         })
-        val call2: Call<Realms> = RetroClient.getClient.getRealmIndex("eu", "dynamic-eu", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        val call2: Call<Realms> = client!!.getRealmIndex("eu", "dynamic-eu", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
         call2.enqueue(object : Callback<Realms> {
             override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
                 if (response.isSuccessful) {
@@ -193,7 +201,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 Log.e("Error", "trace", t)
             }
         })
-        val call3: Call<Realms> = RetroClient.getClient.getRealmIndex("kr", "dynamic-kr", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        val call3: Call<Realms> = client!!.getRealmIndex("kr", "dynamic-kr", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
         call3.enqueue(object : Callback<Realms> {
             override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
                 if (response.isSuccessful) {
@@ -206,7 +214,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 Log.e("Error", "trace", t)
             }
         })
-        val call4: Call<Realms> = RetroClient.getClient.getRealmIndex("tw", "dynamic-tw", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
+        val call4: Call<Realms> = client!!.getRealmIndex("tw", "dynamic-tw", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
         call4.enqueue(object : Callback<Realms> {
             override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
                 if (response.isSuccessful) {
@@ -222,39 +230,39 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun setUserNews() {
-        blizzard_swtich.isChecked = userNews?.blizzNews!!
-        wow_swtich.isChecked = userNews?.wowNews!!
-        d3_swtich.isChecked = userNews?.d3News!!
-        sc2_swtich.isChecked = userNews?.sc2News!!
-        ow_swtich.isChecked = userNews?.owNews!!
-        hs_swtich.isChecked = userNews?.hsNews!!
-        hots_swtich.isChecked = userNews?.hotsNews!!
+        binding.blizzardSwtich.isChecked = userNews?.blizzNews!!
+        binding.wowSwtich.isChecked = userNews?.wowNews!!
+        binding.d3Swtich.isChecked = userNews?.d3News!!
+        binding.sc2Swtich.isChecked = userNews?.sc2News!!
+        binding.owSwtich.isChecked = userNews?.owNews!!
+        binding.hsSwtich.isChecked = userNews?.hsNews!!
+        binding.hotsSwtich.isChecked = userNews?.hotsNews!!
 
-        blizzard_swtich.setOnClickListener {
+        binding.blizzardSwtich.setOnClickListener {
             userNews?.blizzNews = !userNews?.blizzNews!!
             updateUserNews()
         }
-        wow_swtich.setOnClickListener {
+        binding.wowSwtich.setOnClickListener {
             userNews?.wowNews = !userNews?.wowNews!!
             updateUserNews()
         }
-        d3_swtich.setOnClickListener {
+        binding.d3Swtich.setOnClickListener {
             userNews?.d3News = !userNews?.d3News!!
             updateUserNews()
         }
-        sc2_swtich.setOnClickListener {
+        binding.sc2Swtich.setOnClickListener {
             userNews?.sc2News = !userNews?.sc2News!!
             updateUserNews()
         }
-        ow_swtich.setOnClickListener {
+        binding.owSwtich.setOnClickListener {
             userNews?.owNews = !userNews?.owNews!!
             updateUserNews()
         }
-        hs_swtich.setOnClickListener {
+        binding.hsSwtich.setOnClickListener {
             userNews?.hsNews = !userNews?.hsNews!!
             updateUserNews()
         }
-        hots_swtich.setOnClickListener {
+        binding.hotsSwtich.setOnClickListener {
             userNews?.hotsNews = !userNews?.hotsNews!!
             updateUserNews()
         }
@@ -266,33 +274,37 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun makeTitlesTransparent() {
-        searchText = SpannableString(nav_view.menu.findItem(R.id.wow_search).title)
+        searchText = SpannableString(binding.navView.menu.findItem(R.id.wow_search).title)
         searchText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, searchText!!.length, 0)
-        nav_view.menu.findItem(R.id.wow_search).title = searchText
+        binding.navView.menu.findItem(R.id.wow_search).title = searchText
 
-        wowFavoritesText = SpannableString(nav_view.menu.findItem(R.id.wow_favorite).title)
+        wowFavoritesText = SpannableString(binding.navView.menu.findItem(R.id.wow_favorite).title)
         wowFavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, wowFavoritesText!!.length, 0)
-        nav_view.menu.findItem(R.id.wow_favorite).title = wowFavoritesText
+        binding.navView.menu.findItem(R.id.wow_favorite).title = wowFavoritesText
 
-        d3FavoritesText = SpannableString(nav_view.menu.findItem(R.id.d3_favorite).title)
+        d3FavoritesText = SpannableString(binding.navView.menu.findItem(R.id.d3_favorite).title)
         d3FavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, d3FavoritesText!!.length, 0)
-        nav_view.menu.findItem(R.id.d3_favorite).title = d3FavoritesText
+        binding.navView.menu.findItem(R.id.d3_favorite).title = d3FavoritesText
 
-        owFavoritesText = SpannableString(nav_view.menu.findItem(R.id.ow_favorite).title)
+        owFavoritesText = SpannableString(binding.navView.menu.findItem(R.id.ow_favorite).title)
         owFavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, owFavoritesText!!.length, 0)
-        nav_view.menu.findItem(R.id.ow_favorite).title = owFavoritesText
+        binding.navView.menu.findItem(R.id.ow_favorite).title = owFavoritesText
+
+        d3LeaderboardText = SpannableString(binding.navView.menu.findItem(R.id.d3_leaderboard).title)
+        d3LeaderboardText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, d3LeaderboardText!!.length, 0)
+        binding.navView.menu.findItem(R.id.d3_leaderboard).title = d3LeaderboardText
     }
 
     private fun downloadUserInfo() {
-        val call: Call<UserInformation> = RetroClient.getClient.getUserInfo(battlenetOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+        val call: Call<UserInformation> = client!!.getUserInfo(battlenetOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<UserInformation> {
-            override fun onResponse(call: Call<UserInformation>, response: retrofit2.Response<UserInformation>) {
+            override fun onResponse(call: Call<UserInformation>, response: Response<UserInformation>) {
                 if (response.isSuccessful) {
                     if (response.body() != null) {
                         userInformation = response.body()
 
-                        bar_title.text = userInformation?.battleTag
-                        battletag.text = userInformation?.battleTag
+                        binding.topBar.barTitle.text = userInformation?.battleTag
+                        binding.drawerLayout.battletag.text = userInformation?.battleTag
                     } else {
                         callErrorAlertDialog(500)
                     }
@@ -364,78 +376,81 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         val searchDialog = DialogPrompt(this)
         when (item.title) {
             this.resources.getString(R.string.home) -> {
-                favorite.visibility = View.GONE
-                favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
-                favorite?.tag = R.drawable.ic_star_border_black_24dp
-                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                hideFavoriteButton()
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
                     supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
-                } else if (supportFragmentManager.findFragmentById(R.id.nav_fragment) != null) {
-                    supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.nav_fragment)!!).commit()
                 }
                 supportFragmentManager.executePendingTransactions()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             "World of Warcraft" -> {
                 fragment = AccountFragment()
-                favorite.visibility = View.GONE
+                favorite!!.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").addToBackStack("wow_account").commit()
                 supportFragmentManager.executePendingTransactions()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             searchText -> {
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                         .addEditText("character_field")
                         .addMessage("Realm", 18F, "realm_label")
                         .addAutoCompleteEditText("realm_field", wowRealms.values.flatMap { it.realms }.map { it.name }.distinct())
-                        .addSpinner(arrayOf("Select Region", "CN", "US", "EU", "KR", "TW"), "region_spinner")
+                        .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                         .addButton("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button").show()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             wowFavoritesText -> {
                 fragment = WoWFavoritesFragment()
-                favorite.visibility = View.GONE
+                favorite!!.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav").commit()
                 supportFragmentManager.executePendingTransactions()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             d3FavoritesText -> {
                 fragment = D3FavoriteFragment()
-                favorite.visibility = View.GONE
+                favorite!!.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3favorites").addToBackStack("d3_fav").commit()
                 supportFragmentManager.executePendingTransactions()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             owFavoritesText -> {
                 fragment = OWFavoritesFragment()
-                favorite.visibility = View.GONE
+                favorite!!.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "owfavorites").addToBackStack("ow_fav").commit()
                 supportFragmentManager.executePendingTransactions()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             "Diablo 3" -> {
-                favorite.visibility = View.GONE
-                favorite.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favorite!!.visibility = View.GONE
+                favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
                 searchDialog.addTitle("Enter a BattleTag", 18F, "battletag")
                         .addEditText("btag_field")
-                        .addSpinner(arrayOf("Select Region", "CN", "US", "EU", "KR", "TW"), "region_spinner")
+                        .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                         .addSideBySideButtons("Search", 16F, "My Profile", 16F, { searchD3Profile(searchDialog) },
                                 {
                                     callD3Activity(userInformation?.battleTag!!, MainActivity.selectedRegion)
                                     searchDialog.cancel()
                                 }, "search_button", "myprofile_button").show()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
+            }
+            d3LeaderboardText -> {
+                favorite!!.visibility = View.GONE
+                fragment = D3LeaderboardFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3leaderboard").addToBackStack("d3_leaderboard").commit()
+                supportFragmentManager.executePendingTransactions()
+                binding.drawerLayout.closeDrawers()
             }
             "Starcraft 2" -> {
-                favorite.visibility = View.GONE
+                favorite!!.visibility = View.GONE
                 fragment = SC2Fragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "sc2fragment").addToBackStack("sc2").commit()
                 supportFragmentManager.executePendingTransactions()
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             "Overwatch" -> {
                 OWPlatformChoiceDialog.overwatchPrompt(this, supportFragmentManager)
-                drawer_layout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
         }
         return true
@@ -443,13 +458,17 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
     private fun searchD3Profile(dialog: DialogPrompt) {
         val btagRegex = Regex(".*#[0-9]*")
-        if ((dialog.tagMap["btag_field"] as EditText).text.toString().matches(btagRegex)) {
-            Toast.makeText(this, "Please enter a BattleTag", Toast.LENGTH_SHORT).show()
-        } else if ((dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString().equals("Select Region", ignoreCase = true)) {
-            Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
-        } else {
-            dialog.cancel()
-            callD3Activity((dialog.tagMap["btag_field"] as EditText).text.toString().toLowerCase(Locale.ROOT), (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString())
+        when {
+            (dialog.tagMap["btag_field"] as EditText).text.toString().matches(btagRegex) -> {
+                Toast.makeText(this, "Please enter a BattleTag", Toast.LENGTH_SHORT).show()
+            }
+            (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString().equals("Select Region", ignoreCase = true) -> {
+                Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                dialog.cancel()
+                callD3Activity((dialog.tagMap["btag_field"] as EditText).text.toString().toLowerCase(Locale.ROOT), (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString())
+            }
         }
     }
 
@@ -493,7 +512,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         val battlenetOAuth2Params: BattlenetOAuth2Params = Objects.requireNonNull(this).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)!!
         val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params)
 
-        val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT),
+        val call: Call<Media> = client!!.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT),
                 MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: Response<Media>) {
@@ -523,7 +542,15 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
     }
 
     companion object {
+        var client: NetworkServices? = null
         var userInformation: UserInformation? = null
         var userNews: UserNews? = null
+        var favorite: ImageView? = null
+
+        fun hideFavoriteButton() {
+            favorite!!.visibility = View.GONE
+            favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+            favorite!!.tag = R.drawable.ic_star_border_black_24dp
+        }
     }
 }
