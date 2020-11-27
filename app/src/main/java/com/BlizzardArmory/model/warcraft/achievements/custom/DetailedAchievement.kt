@@ -1,4 +1,4 @@
-package com.BlizzardArmory.model.warcraft.achievements
+package com.BlizzardArmory.model.warcraft.achievements.custom
 
 import com.google.gson.annotations.SerializedName
 

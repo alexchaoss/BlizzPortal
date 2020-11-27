@@ -20,31 +20,47 @@
         android:layout_height="match_parent"
         android:background="#40000000" />
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
+    <Spinner
+        android:id="@+id/progSpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        app:chainUseRtl="true"
-        app:searchIcon="@drawable/rep_search"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/wow_spinner"
+        android:gravity="center"
+        android:padding="0dp"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.core.widget.NestedScrollView
+    <TextView
+        android:id="@+id/outdated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Outdated information\nPlease login in game to refresh data"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progSpinner" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/raid_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_view">
+        app:layout_constraintTop_toBottomOf="@id/progSpinner"
+        app:layout_constraintVertical_bias="0" />
 
-        <LinearLayout
-            android:id="@+id/progress_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical" />
-    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

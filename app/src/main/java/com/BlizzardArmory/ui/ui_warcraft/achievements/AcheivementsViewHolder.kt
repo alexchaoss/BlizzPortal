@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievement
+import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.bumptech.glide.Glide
 import java.sql.Date
 import java.sql.Timestamp

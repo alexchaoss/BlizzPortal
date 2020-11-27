@@ -8,13 +8,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
@@ -29,6 +28,7 @@ import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
 import com.bumptech.glide.Glide
+import okhttp3.internal.toImmutableList
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -42,7 +42,7 @@ private const val REALM = "realm"
 private const val MEDIA = "media"
 private const val REGION = "region"
 
-class ProgressFragment : Fragment(), SearchView.OnQueryTextListener {
+class ProgressFragment : Fragment() {
 
     private var character: String? = null
     private var realm: String? = null
@@ -52,8 +52,11 @@ class ProgressFragment : Fragment(), SearchView.OnQueryTextListener {
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private val adapterList = ArrayList<EncounterAdapter>()
 
+    private var encounters: EncountersInformation? = null
+
     private var _binding: WowProgressFragmentBinding? = null
     private val binding get() = _binding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,12 +94,6 @@ class ProgressFragment : Fragment(), SearchView.OnQueryTextListener {
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
-        binding.searchView.queryHint = "Search raid.."
-        val textView: TextView = binding.searchView.findViewById(R.id.search_src_text)
-        textView.setTextColor(Color.parseColor("#ffffff"))
-        textView.setHintTextColor(Color.parseColor("#ffffff"))
-        binding.searchView.setOnQueryTextListener(this)
-
         downloadEncounterInformation()
     }
 
@@ -105,14 +102,9 @@ class ProgressFragment : Fragment(), SearchView.OnQueryTextListener {
                 realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<EncountersInformation> {
             override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
-                val encounters = response.body()
-                if (encounters != null) {
-                    if (view?.findViewWithTag<TextView>("OUTDATED") == null) {
-                        setRecyclerViewForEachExpansion(encounters)
-                    } else {
-                        binding.progressContainer.removeAllViews()
-                        setRecyclerViewForEachExpansion(encounters)
-                    }
+                encounters = response.body()
+                if (response.isSuccessful) {
+                    setAdapter(encounters?.expansions?.map { it.expansion.name }?.toMutableList()!!, binding.progSpinner)
                 } else {
                     showOutdatedTextView()
                 }
@@ -125,64 +117,60 @@ class ProgressFragment : Fragment(), SearchView.OnQueryTextListener {
         })
     }
 
-    private fun setRecyclerViewForEachExpansion(encounters: EncountersInformation) {
-        var expansions: List<Expansions>? = null
-        if (!encounters.expansions.isNullOrEmpty()) {
-            expansions = encounters.expansions.reversed()
-        }
-        if (expansions != null) {
-            for (expansion in expansions) run {
-                val paramsButton: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                val button = TextView(context)
-                button.setBackgroundResource(R.drawable.progress_collapse_header)
-                button.setTextColor(Color.WHITE)
-                button.text = "+ " + expansion.expansion.name
-                button.textSize = 18F
-                button.layoutParams = paramsButton
-                binding.progressContainer.addView(button)
-        var expand = false
-                val paramsRecyclerView: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                val recyclerView = context?.let { RecyclerView(it) }
-                recyclerView?.layoutParams = paramsRecyclerView
-                binding.progressContainer.addView(recyclerView)
+    private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {
+        spinnerList.add(0, "Select Expansion")
+        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
 
-                recyclerView?.apply {
-                    val raidLevel = getRaidLevel(expansion)
-                    layoutManager = LinearLayoutManager(activity)
-                    adapter = EncounterAdapter(expansion.instances, raidLevel, context, expansion.expansion)
-                    adapter?.let { adapterList.add(it as EncounterAdapter) }
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
+
+                tv.textSize = 18f
+                tv.gravity = Gravity.CENTER
+                tv.setBackgroundColor(Color.parseColor("#000000"))
+
+                if (position == 0) {
+                    tv.setTextColor(Color.GRAY)
+                } else {
+                    tv.setTextColor(Color.WHITE)
                 }
-                recyclerView?.visibility = View.GONE
-
-                button.setOnClickListener {
-                    if (!expand) {
-                        expand = true
-                        recyclerView?.visibility = View.VISIBLE
-                        button.text = "- " + expansion.expansion.name
-                    } else {
-                        expand = false
-                        recyclerView?.visibility = View.GONE
-                        button.text = "+ " + expansion.expansion.name
-                    }
+                return view
+            }
+        }
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        spinner.adapter = arrayAdapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                try {
+                    (view as TextView).setTextColor(Color.WHITE)
+                    view.textSize = 18f
+                    view.gravity = Gravity.CENTER
+                    populateRecyclerView()
+                } catch (e: Exception) {
+                    Log.e("Error", e.toString())
                 }
             }
-        } else {
-            showOutdatedTextView()
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                (parent.getChildAt(0) as TextView).gravity = Gravity.CENTER
+                (parent.getChildAt(0) as TextView).setTextColor(0)
+            }
+        }
+    }
+
+    private fun populateRecyclerView() {
+        binding.raidRecycler.apply {
+            val expansion = encounters?.expansions?.findLast { it.expansion.name == binding.progSpinner.selectedItem }
+            adapter = EncounterAdapter(expansion?.instances!!, getRaidLevel(expansion), context)
+            adapter!!.notifyDataSetChanged()
         }
     }
 
     private fun showOutdatedTextView() {
-        if (binding.progressContainer.childCount < 1) {
-            val outdatedInfo = TextView(activity)
-            val outdated = "Outdated information\nPlease login in game to refresh data"
-            outdatedInfo.text = outdated
-            outdatedInfo.setTextColor(Color.WHITE)
-            outdatedInfo.gravity = Gravity.CENTER
-            outdatedInfo.textSize = 20F
-            outdatedInfo.setPadding(0, 50, 0, 0)
-            outdatedInfo.tag = "OUTDATED"
-            binding.progressContainer.addView(outdatedInfo)
-        }
+        binding.outdated.visibility = View.VISIBLE
     }
 
     companion object {
@@ -275,16 +263,5 @@ class ProgressFragment : Fragment(), SearchView.OnQueryTextListener {
         }
         Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(binding.backgroundProgress)
         EventBus.getDefault().unregister(this)
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        for (adapter in adapterList) {
-            adapter.filter(newText!!)
-        }
-        return false
     }
 }

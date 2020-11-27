@@ -6,16 +6,16 @@ import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.data.common.Leaderboard
 import com.BlizzardArmory.model.diablo.data.eras.era.Era
 import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
-import com.BlizzardArmory.model.diablo.item.SingleItem
-import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
 import com.BlizzardArmory.model.diablo.data.seasons.season.Season
+import com.BlizzardArmory.model.diablo.item.SingleItem
+import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.model.warcraft.account.Account
-import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
+import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.SoulbindInformation
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
@@ -27,6 +27,7 @@ import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
+import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
@@ -73,6 +74,15 @@ interface NetworkServices {
     @GET
     fun getAllAchievements(@Url url: String?): Call<DetailedAchievements>
 
+    @GET
+    fun getTalentsWithIcon(@Url url: String?): Call<List<TalentsIcons>>
+
+    @GET
+    fun getCovenantSpells(@Url url: String): Call<List<CovenantSpells>>
+
+    @GET
+    fun getReputationPlusParentInfo(@Url url: String): Call<List<ReputationPlusParentInfo>>
+
     @GET("/profile/wow/character/{realm}/{character}/achievements")
     fun getCharacterAchievements(@Path("character", encoded = true) character: String?,
                                  @Path("realm", encoded = true) realm: String?,
@@ -108,8 +118,6 @@ interface NetworkServices {
                  @Query("region") region: String?,
                  @Query("token") accessToken: String?): Call<Talents>
 
-    @GET
-    fun getTalentsWithIcon(@Url url: String?): Call<List<TalentsIcons>>
 
     @GET("profile/wow/character/{realm}/{character}")
     fun getCharacter(@Path("character", encoded = true) character: String?,
@@ -156,9 +164,6 @@ interface NetworkServices {
                      @Query("locale") locale: String?,
                      @Query("region") region: String?,
                      @Query("token") accessToken: String?): Call<SoulbindInformation>
-
-    @GET
-    fun getCovenantSpells(@Url url: String): Call<List<CovenantSpells>>
 
     //D3 Endpoints
     @GET("d3/profile/{battletag}/")

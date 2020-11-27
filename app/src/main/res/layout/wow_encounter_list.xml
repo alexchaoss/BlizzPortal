@@ -63,7 +63,13 @@
             android:textColor="#7a6a5b"
             android:textSize="12sp" />
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/modes_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <!--<LinearLayout
             android:id="@+id/lfr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -204,7 +210,7 @@
                     android:textColor="#FFF"
                     android:textSize="12sp" />
             </RelativeLayout>
-        </LinearLayout>
+        </LinearLayout>-->
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
