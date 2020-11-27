@@ -2,6 +2,7 @@ package com.BlizzardArmory.model.warcraft.pvp.tiers
 
 import com.google.gson.annotations.SerializedName
 
+
 data class Tier(
 
         @SerializedName("_links") val _links: _links,

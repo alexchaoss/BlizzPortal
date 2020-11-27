@@ -20,15 +20,20 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="7dp"
-            android:text="News"
+            android:text="@string/news"
             android:textColor="#FFF"
             android:textSize="20sp" />
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/news_recycler"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/news_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <ImageView

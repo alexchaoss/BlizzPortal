@@ -1,7 +1,7 @@
 package com.BlizzardArmory.model.warcraft.statistic
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
 
 /**
  * The type Intellect.
@@ -9,11 +9,9 @@ import com.google.gson.annotations.SerializedName
 class Intellect(
 
         @SerializedName("base")
-        @Expose
         var base: Int,
 
         @SerializedName("effective")
-        @Expose
         var effective: Int
 
 )

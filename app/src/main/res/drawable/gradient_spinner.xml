@@ -9,9 +9,7 @@
                     <corners android:radius="3dp" />
                 </shape>
             </item>
-            <item>
-                <bitmap android:gravity="center|right" android:src="@drawable/spinner_arrow" />
-            </item>
+            <item android:drawable="@drawable/ic_baseline_keyboard_arrow_down_24" android:gravity="center|right" android:right="10dp" />
         </layer-list>
     </item>
 </selector>

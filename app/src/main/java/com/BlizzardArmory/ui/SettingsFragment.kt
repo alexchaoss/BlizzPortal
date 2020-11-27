@@ -15,13 +15,27 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
+import com.BlizzardArmory.databinding.SettingsBinding
 import com.BlizzardArmory.ui.MainActivity.Companion.locale
+import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
+import com.BlizzardArmory.ui.ui_diablo.characterfragments.CharacterStatsFragment
+import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
+import com.BlizzardArmory.ui.ui_diablo.leaderboard.D3LeaderboardFragment
+import com.BlizzardArmory.ui.ui_overwatch.OWFragment
+import com.BlizzardArmory.ui.ui_overwatch.favorites.OWFavoritesFragment
+import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
+import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
+import com.BlizzardArmory.ui.ui_warcraft.character.WoWCharacterFragment
+import com.BlizzardArmory.ui.ui_warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import kotlinx.android.synthetic.main.settings.*
+import org.greenrobot.eventbus.EventBus
 
 class SettingsFragment : Fragment() {
 
@@ -29,8 +43,32 @@ class SettingsFragment : Fragment() {
     private lateinit var selectedLanguage: String
     private var sharedPreferences: SharedPreferences? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.settings, container, false)
+    private var _binding: SettingsBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        activity?.onBackPressedDispatcher?.addCallback {
+            if(requireActivity().supportFragmentManager.backStackEntryCount > 1) {
+                when (requireActivity().supportFragmentManager.fragments[requireActivity().supportFragmentManager.backStackEntryCount - 2].tag) {
+                    "wowfavorites" -> WoWFavoritesFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "d3favorites" -> D3FavoriteFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "owfavorites" -> OWFavoritesFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "d3nav" -> CharacterStatsFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "d3fragment" -> D3Fragment.addOnBackPressCallback(activity as GamesActivity)
+                    "d3_leaderboard" -> D3LeaderboardFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "NAV_FRAGMENT" -> WoWCharacterFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "wowfragment" -> AccountFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "sc2fragment" -> SC2Fragment.addOnBackPressCallback(activity as GamesActivity)
+                    "overwatchfragment" -> OWFragment.addOnBackPressCallback(activity as GamesActivity)
+                    else -> NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                }
+            }else{
+                NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+            }
+            activity?.supportFragmentManager?.popBackStack()
+        }
+        _binding = SettingsBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,10 +78,15 @@ class SettingsFragment : Fragment() {
 
         val languageAdapter = setAdapater(languageList)
         languageAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-        spinner_language.adapter = languageAdapter
-        spinnerSelector(spinner_language)
+        binding.spinnerLanguage.adapter = languageAdapter
+        spinnerSelector(binding.spinnerLanguage)
 
         setSettingsButtons()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun setAdapater(list: Array<String>): ArrayAdapter<String> {
@@ -74,6 +117,9 @@ class SettingsFragment : Fragment() {
                 selectedLanguage = parent.getItemAtPosition(position) as String
                 Log.i("lang", selectedLanguage)
                 setLocale()
+                if (position != 0) {
+                    EventBus.getDefault().postSticky(LocaleSelectedEvent(locale))
+                }
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 20f
@@ -92,9 +138,9 @@ class SettingsFragment : Fragment() {
 
     private fun setSettingsButtons() {
         OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title))
-        licenses.setOnClickListener { startActivity(Intent(activity, OssLicensesMenuActivity::class.java)) }
-        rate.setOnClickListener { openAppStoreForReview() }
-        donation.setOnClickListener { webview?.loadUrl(URLConstants.PAYPAL_URL) }
+        binding.licenses.setOnClickListener { startActivity(Intent(activity, OssLicensesMenuActivity::class.java)) }
+        binding.rate.setOnClickListener { openAppStoreForReview() }
+        binding.donation.setOnClickListener { binding.webview.loadUrl(URLConstants.PAYPAL_URL) }
     }
 
     private fun openAppStoreForReview() {

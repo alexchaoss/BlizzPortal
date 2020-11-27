@@ -2,50 +2,37 @@ package com.BlizzardArmory
 
 import android.app.Application
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
+import com.akexorcist.localizationactivity.core.LocalizationApplicationDelegate
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-
+import java.util.*
 
 /**
  * The type Blizzard armory.
  */
 class BlizzardArmory : Application() {
+
+    private val localizationDelegate = LocalizationApplicationDelegate()
+
+    override fun attachBaseContext(base: Context) {
+        localizationDelegate.setDefaultLanguage(base, Locale.ENGLISH)
+        super.attachBaseContext(localizationDelegate.attachBaseContext(base))
+    }
+
     override fun onCreate() {
         super.onCreate()
         if (instance == null) {
             instance = this
         }
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("Crash Prevented", throwable.message!!)
-            handleUncaughtException(thread, throwable)
+            handleUncaughtException(throwable)
         }
     }
 
-    private fun handleUncaughtException(thread: Thread?, e: Throwable) {
+    private fun handleUncaughtException(e: Throwable) {
         FirebaseCrashlytics.getInstance().log(e.message!!)
     }
-
-    private val isNetworkConnected: Boolean
-        @RequiresApi(Build.VERSION_CODES.M)
-        get() {
-            val result: Boolean
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val networkCapabilities = connectivityManager.activeNetwork ?: return false
-            val actNw =
-                    connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-            result = when {
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                else -> false
-            }
-
-            return result
-        }
 
     companion object {
         /**
@@ -55,14 +42,5 @@ class BlizzardArmory : Application() {
          */
         var instance: BlizzardArmory? = null
             private set
-
-        /**
-         * Has network boolean.
-         *
-         * @return the boolean
-         */
-        fun hasNetwork(): Boolean {
-            return instance!!.isNetworkConnected
-        }
     }
 }

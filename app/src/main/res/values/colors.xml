@@ -2,17 +2,10 @@
 <resources>
     <color name="backgroundColor">#1b324d</color>
     <color name="transparent">#70000000</color>
-    <color name="wowBackgroundColor">#312019</color>
-    <color name="wowHeaderColor">#6a2214</color>
-    <color name="d3BackgroundColor">#240703</color>
-    <color name="d3HeaderColor">#000000</color>
     <color name="owBackgroundColor">#f2f1ed</color>
     <color name="owHeaderColor">#f79d19</color>
     <color name="sc2BackgroundColor">#000d1a</color>
-    <color name="sc2HeaderColor">#14253e</color>
-    <color name="colorHeader">#243a54</color>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="mtrl_textinput_default_box_stroke_color">#fff</color>f7b600
+    <color name="colorPrimary">#272931</color>
+    <color name="colorPrimaryDark">#21242f</color>
+    <color name="colorAccent">#21242f</color>
 </resources>

@@ -4,21 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.WowFavoritesBinding
 import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacters
+import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.ui_warcraft.account.FavoritesAdapter
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.wow_favorites.*
 
 class WoWFavoritesFragment : Fragment() {
 
+    private var _binding: WowFavoritesBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.wow_favorites, container, false)
+        addOnBackPressCallback(activity as GamesActivity)
+        _binding = WowFavoritesBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -26,13 +34,26 @@ class WoWFavoritesFragment : Fragment() {
         val gson = GsonBuilder().create()
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val battlenetOAuth2Params: BattlenetOAuth2Params? = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-
         var favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
             val favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
-            characters_recycler.apply {
+            binding.charactersRecycler.apply {
                 layoutManager = LinearLayoutManager(requireActivity())
                 adapter = FavoritesAdapter(favoriteCharacters.characters, parentFragmentManager, requireActivity(), battlenetOAuth2Params!!)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    companion object{
+        fun addOnBackPressCallback(activity: GamesActivity){
+            activity.onBackPressedDispatcher.addCallback {
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
     }

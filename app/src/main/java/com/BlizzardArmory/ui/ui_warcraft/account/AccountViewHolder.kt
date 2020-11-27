@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
@@ -20,6 +19,7 @@ import com.BlizzardArmory.model.warcraft.account.Character
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
+import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -42,7 +42,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
     private var name: TextView? = null
     private var characterClass: TextView? = null
     private var level: TextView? = null
-    private var characterLayout: ConstraintLayout? = null
+    private var characterLayout: CardView? = null
     private var gson: Gson? = null
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var fragmentManager: FragmentManager? = null
@@ -59,8 +59,8 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
         EventBus.getDefault().register(this)
         GlobalScope.launch {
             do {
-                EventBus.getDefault().post(NetworkEvent(BlizzardArmory.hasNetwork()))
-            } while (!BlizzardArmory.hasNetwork())
+                EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+            } while (!ConnectionStatus.hasNetwork())
         }
     }
 
@@ -83,7 +83,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
-        val call: Call<Media> = RetroClient.getClient.getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient(context).getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                 val media: Media? = response.body()
@@ -109,7 +109,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
-        Glide.with(itemView).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
+        Glide.with(context.applicationContext).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
     }
 
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {
@@ -117,8 +117,8 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
             val woWNavFragment = WoWNavFragment.newInstance(character.name.toLowerCase(Locale.ROOT), character.realm.slug, media, MainActivity.selectedRegion)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            fragmentTransaction.replace(R.id.nav_fragment, woWNavFragment, "NAV_FRAGMENT")
-            fragmentTransaction.addToBackStack("NAV_FRAGMENT").commit()
+            fragmentTransaction.add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+            fragmentTransaction.addToBackStack("wow_nav").commit()
             fragmentManager.executePendingTransactions()
         }
     }

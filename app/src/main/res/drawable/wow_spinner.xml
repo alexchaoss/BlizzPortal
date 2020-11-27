@@ -3,14 +3,14 @@
     <item>
         <layer-list>
             <item>
-                <shape>
-                    <solid android:color="#272931" />
+                <shape android:shape="rectangle">
+                    <stroke android:width="2px" android:color="#fff" />
+                    <solid android:color="#00000000" />
                     <corners android:radius="3dp" />
+
                 </shape>
             </item>
-            <item>
-                <bitmap android:gravity="center|right" android:src="@drawable/spinner_arrow" />
-            </item>
+            <item android:drawable="@drawable/ic_baseline_keyboard_arrow_down_24" android:gravity="center|right" android:right="10dp" />
         </layer-list>
     </item>
 </selector>

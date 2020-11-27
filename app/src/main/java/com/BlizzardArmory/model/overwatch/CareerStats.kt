@@ -1,183 +1,150 @@
 package com.BlizzardArmory.model.overwatch
 
 import com.BlizzardArmory.model.overwatch.heroes.*
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
 
 /**
  * The type Career stats.
  */
-data class CareerStats(
-        @SerializedName("allHeroes")
-        @Expose
-        private val allHeroes: AllHeroes,
+class CareerStats {
+    @SerializedName("allHeroes")
+    
+    val allHeroes: AllHeroes? = null
 
-        @SerializedName("ana")
-        @Expose
-        var ana: Ana,
+    @SerializedName("ana")
+        var ana: Ana? = null
 
-        @SerializedName("ashe")
-        @Expose
-        var ashe: Ashe,
+    @SerializedName("ashe")
+        var ashe: Ashe? = null
 
-        @SerializedName("baptiste")
-        @Expose
-        var baptiste: Baptiste,
+    @SerializedName("baptiste")
+        var baptiste: Baptiste? = null
 
-        @SerializedName("bastion")
-        @Expose
-        var bastion: Bastion,
+    @SerializedName("bastion")
+        var bastion: Bastion? = null
 
-        @SerializedName("brigitte")
-        @Expose
-        var brigitte: Brigitte,
+    @SerializedName("brigitte")
+        var brigitte: Brigitte? = null
 
-        @SerializedName("dVa")
-        @Expose
-        var dVa: DVa,
+    @SerializedName("dVa")
+        var dVa: DVa? = null
 
-        @SerializedName("echo")
-        @Expose
-        var echo: Echo,
+    @SerializedName("echo")
+        var echo: Echo? = null
 
-        @SerializedName("doomfist")
-        @Expose
-        var doomfist: Doomfist,
+    @SerializedName("doomfist")
+        var doomfist: Doomfist? = null
 
-        @SerializedName("genji")
-        @Expose
-        var genji: Genji,
+    @SerializedName("genji")
+        var genji: Genji? = null
 
-        @SerializedName("hanzo")
-        @Expose
-        var hanzo: Hanzo,
+    @SerializedName("hanzo")
+        var hanzo: Hanzo? = null
 
-        @SerializedName("junkrat")
-        @Expose
-        var junkrat: Junkrat,
+    @SerializedName("junkrat")
+        var junkrat: Junkrat? = null
 
-        @SerializedName("lucio")
-        @Expose
-        var lucio: Lúcio,
+    @SerializedName("lucio")
+        var lucio: Lúcio? = null
 
-        @SerializedName("mccree")
-        @Expose
-        var mccree: Mccree,
+    @SerializedName("mccree")
+        var mccree: Mccree? = null
 
-        @SerializedName("mei")
-        @Expose
-        var mei: Mei,
+    @SerializedName("mei")
+        var mei: Mei? = null
 
-        @SerializedName("mercy")
-        @Expose
-        var mercy: Mercy,
+    @SerializedName("mercy")
+        var mercy: Mercy? = null
 
-        @SerializedName("moira")
-        @Expose
-        var moira: Moira,
+    @SerializedName("moira")
+        var moira: Moira? = null
 
-        @SerializedName("orisa")
-        @Expose
-        var orisa: Orisa,
+    @SerializedName("orisa")
+        var orisa: Orisa? = null
 
-        @SerializedName("pharah")
-        @Expose
-        var pharah: Pharah,
+    @SerializedName("pharah")
+        var pharah: Pharah? = null
 
-        @SerializedName("reaper")
-        @Expose
-        var reaper: Reaper,
+    @SerializedName("reaper")
+        var reaper: Reaper? = null
 
-        @SerializedName("reinhardt")
-        @Expose
-        var reinhardt: Reinhardt,
+    @SerializedName("reinhardt")
+        var reinhardt: Reinhardt? = null
 
-        @SerializedName("roadhog")
-        @Expose
-        var roadhog: Roadhog,
+    @SerializedName("roadhog")
+        var roadhog: Roadhog? = null
 
-        @SerializedName("sigma")
-        @Expose
-        var sigma: Sigma,
+    @SerializedName("sigma")
+        var sigma: Sigma? = null
 
-        @SerializedName("soldier76")
-        @Expose
-        var soldier76: Soldier76,
+    @SerializedName("soldier76")
+        var soldier76: Soldier76? = null
 
-        @SerializedName("sombra")
-        @Expose
-        var sombra: Sombra,
+    @SerializedName("sombra")
+        var sombra: Sombra? = null
 
-        @SerializedName("symmetra")
-        @Expose
-        var symmetra: Symmetra,
+    @SerializedName("symmetra")
+        var symmetra: Symmetra? = null
 
-        @SerializedName("torbjorn")
-        @Expose
-        var torbjorn: Torbjörn,
+    @SerializedName("torbjorn")
+        var torbjorn: Torbjörn? = null
 
-        @SerializedName("tracer")
-        @Expose
-        var tracer: Tracer,
+    @SerializedName("tracer")
+        var tracer: Tracer? = null
 
-        @SerializedName("widowmaker")
-        @Expose
-        var widowmaker: Widowmaker,
+    @SerializedName("widowmaker")
+        var widowmaker: Widowmaker? = null
 
-        @SerializedName("winston")
-        @Expose
-        var winston: Winston,
+    @SerializedName("winston")
+        var winston: Winston? = null
 
-        @SerializedName("wreckingBall")
-        @Expose
-        var wreckingBall: WreckingBall,
+    @SerializedName("wreckingBall")
+        var wreckingBall: WreckingBall? = null
 
-        @SerializedName("zarya")
-        @Expose
-        var zarya: Zarya,
+    @SerializedName("zarya")
+        var zarya: Zarya? = null
 
-        @SerializedName("zenyatta")
-        @Expose
-        var zenyatta: Zenyatta
+    @SerializedName("zenyatta")
+        var zenyatta: Zenyatta? = null
+
+    val heroList: ArrayList<Hero> = ArrayList()
 
 
-) {
-    val heroList: ArrayList<Hero>
-        get() {
-            val tempHeroList = arrayListOf<Hero>()
-            tempHeroList.add(allHeroes)
-            tempHeroList.add(ana)
-            tempHeroList.add(ashe)
-            tempHeroList.add(baptiste)
-            tempHeroList.add(bastion)
-            tempHeroList.add(brigitte)
-            tempHeroList.add(dVa)
-            tempHeroList.add(echo)
-            tempHeroList.add(doomfist)
-            tempHeroList.add(genji)
-            tempHeroList.add(hanzo)
-            tempHeroList.add(junkrat)
-            tempHeroList.add(lucio)
-            tempHeroList.add(mccree)
-            tempHeroList.add(mei)
-            tempHeroList.add(mercy)
-            tempHeroList.add(moira)
-            tempHeroList.add(orisa)
-            tempHeroList.add(pharah)
-            tempHeroList.add(reaper)
-            tempHeroList.add(reinhardt)
-            tempHeroList.add(roadhog)
-            tempHeroList.add(sigma)
-            tempHeroList.add(soldier76)
-            tempHeroList.add(sombra)
-            tempHeroList.add(symmetra)
-            tempHeroList.add(torbjorn)
-            tempHeroList.add(tracer)
-            tempHeroList.add(widowmaker)
-            tempHeroList.add(winston)
-            tempHeroList.add(wreckingBall)
-            tempHeroList.add(zarya)
-            tempHeroList.add(zenyatta)
-            return tempHeroList
-        }
+    fun getFullHeroList(): ArrayList<Hero> {
+        allHeroes?.let { heroList.add(it) }
+        ana?.let { heroList.add(it) }
+        ashe?.let { heroList.add(it) }
+        baptiste?.let { heroList.add(it) }
+        bastion?.let { heroList.add(it) }
+        brigitte?.let { heroList.add(it) }
+        dVa?.let { heroList.add(it) }
+        echo?.let { heroList.add(it) }
+        doomfist?.let { heroList.add(it) }
+        genji?.let { heroList.add(it) }
+        hanzo?.let { heroList.add(it) }
+        junkrat?.let { heroList.add(it) }
+        lucio?.let { heroList.add(it) }
+        mccree?.let { heroList.add(it) }
+        mei?.let { heroList.add(it) }
+        mercy?.let { heroList.add(it) }
+        moira?.let { heroList.add(it) }
+        orisa?.let { heroList.add(it) }
+        pharah?.let { heroList.add(it) }
+        reaper?.let { heroList.add(it) }
+        reinhardt?.let { heroList.add(it) }
+        roadhog?.let { heroList.add(it) }
+        sigma?.let { heroList.add(it) }
+        soldier76?.let { heroList.add(it) }
+        sombra?.let { heroList.add(it) }
+        symmetra?.let { heroList.add(it) }
+        torbjorn?.let { heroList.add(it) }
+        tracer?.let { heroList.add(it) }
+        widowmaker?.let { heroList.add(it) }
+        winston?.let { heroList.add(it) }
+        wreckingBall?.let { heroList.add(it) }
+        zarya?.let { heroList.add(it) }
+        zenyatta?.let { heroList.add(it) }
+        return heroList
+    }
 }

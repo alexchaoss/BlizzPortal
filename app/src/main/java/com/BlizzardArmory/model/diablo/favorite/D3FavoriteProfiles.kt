@@ -2,6 +2,7 @@ package com.BlizzardArmory.model.diablo.favorite
 
 import com.google.gson.annotations.SerializedName
 
+
 class D3FavoriteProfiles {
 
     @SerializedName("profiles")

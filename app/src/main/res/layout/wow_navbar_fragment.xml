@@ -20,32 +20,32 @@
         app:tabTextColor="@color/owHeaderColor">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/character_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/character" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/rep_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/covenant" />
+
+        <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="30dp"
             android:text="@string/reputation" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/progress_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/progress" />
+            android:text="@string/progress2" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/pvp_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pvp" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/achiev_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/achievements" />

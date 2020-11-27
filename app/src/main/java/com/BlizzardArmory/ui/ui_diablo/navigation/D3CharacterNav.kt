@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.BlizzardArmory.R
-import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.databinding.D3NavbarFragmentBinding
+import com.BlizzardArmory.util.events.*
 import com.google.android.material.tabs.TabLayout
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -25,8 +25,8 @@ class D3CharacterNav : Fragment() {
     private var id: Long? = null
     private var region: String? = null
 
-    private var tabLayout: TabLayout? = null
-    private var viewPager: ViewPager? = null
+    private var _binding: D3NavbarFragmentBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,24 +37,30 @@ class D3CharacterNav : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.d3_navbar_fragment, container, false)
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
-        tabLayout = view.findViewById(R.id.nav_bar)
-        viewPager = view.findViewById(R.id.wow_pager)
-        viewPager?.offscreenPageLimit = 3
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = D3NavbarFragmentBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.wowPager.offscreenPageLimit = 3
         val bundle = Bundle()
         bundle.putString("battletag", btag)
         bundle.putLong("id", id!!)
         bundle.putString("region", region)
-        val adapter = MyAdapter(childFragmentManager, tabLayout!!.tabCount, bundle)
-        viewPager!!.adapter = adapter
-        viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        val adapter = MyAdapter(childFragmentManager, binding.navBar.tabCount, bundle)
+        binding.wowPager.adapter = adapter
+        binding.wowPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.navBar))
 
-        tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.navBar.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager!!.currentItem = tab.position
+                binding.wowPager.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -65,7 +71,6 @@ class D3CharacterNav : Fragment() {
 
             }
         })
-        return view
     }
 
     override fun onStart() {
@@ -93,7 +98,13 @@ class D3CharacterNav : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
-            parentFragmentManager.beginTransaction().remove(this).commit()
+            parentFragmentManager.popBackStack()
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
+    }
+
 }

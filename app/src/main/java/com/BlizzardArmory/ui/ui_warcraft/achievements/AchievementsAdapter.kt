@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievement
+import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 
 class AchievementsAdapter(private val list: List<DetailedAchievement>, private val achievements: List<Achievement>)
     : RecyclerView.Adapter<AcheivementsViewHolder>() {

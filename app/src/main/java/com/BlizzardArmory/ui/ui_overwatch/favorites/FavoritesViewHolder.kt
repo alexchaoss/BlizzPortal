@@ -10,10 +10,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfile
 import com.BlizzardArmory.ui.ui_overwatch.OWFragment
+import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.GlobalScope
@@ -44,8 +44,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         EventBus.getDefault().register(this)
         GlobalScope.launch {
             do {
-                EventBus.getDefault().post(NetworkEvent(BlizzardArmory.hasNetwork()))
-            } while (!BlizzardArmory.hasNetwork())
+                EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+            } while (!ConnectionStatus.hasNetwork())
         }
     }
 
@@ -64,13 +64,13 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             bundle.putString("username", profile.username)
             bundle.putString("platform", profile.platform)
             fragment.arguments = bundle
-            fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment").commit()
+            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "overwatchfragment").addToBackStack("ow_account").commit()
             fragmentManager.executePendingTransactions()
         }
     }
 
     private fun downloadAvatar() {
-        Glide.with(itemView).load(profile?.profile?.icon).into(avatar!!)
+        Glide.with(context.applicationContext).load(profile?.profile?.icon).into(avatar!!)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

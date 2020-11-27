@@ -3,7 +3,8 @@ package com.BlizzardArmory.model.overwatch.favorite
 import com.BlizzardArmory.model.overwatch.Profile
 import com.google.gson.annotations.SerializedName
 
-class FavoriteProfile(platform: String, username: String, profile: Profile) {
+
+class FavoriteProfile(platform: String?, username: String?, profile: Profile?) {
 
     @SerializedName("platform")
     var platform: String? = null

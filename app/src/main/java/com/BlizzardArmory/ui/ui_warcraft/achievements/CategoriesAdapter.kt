@@ -3,9 +3,9 @@ package com.BlizzardArmory.ui.ui_warcraft.achievements
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.categories.Category
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievement
+import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 
 class CategoriesAdapter(private val list: List<Category>, private val locale: String, private val faction: String, private val mappedAchievements: Map<Long, List<DetailedAchievement>?>, private val achievements: List<Achievement>)
     : RecyclerView.Adapter<CategoriesViewHolder>() {

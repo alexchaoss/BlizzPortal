@@ -1,7 +1,8 @@
 package com.BlizzardArmory.model.overwatch
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
+
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -9,63 +10,51 @@ import java.util.*
 /**
  * The type Combat.
  */
+
 data class Combat(
 
         @SerializedName("barrierDamageDone")
-        @Expose
         var barrierDamageDone: Double,
 
         @SerializedName("damageDone")
-        @Expose
         var damageDone: Double,
 
         @SerializedName("deaths")
-        @Expose
         var deaths: Double,
 
         @SerializedName("eliminations")
-        @Expose
         var eliminations: Double,
 
         @SerializedName("environmentalKills")
-        @Expose
         var environmentalKills: Double,
 
         @SerializedName("finalBlows")
-        @Expose
         var finalBlows: Double,
 
         @SerializedName("heroDamageDone")
-        @Expose
         var heroDamageDone: Double,
 
         @SerializedName("meleeFinalBlows")
-        @Expose
         var meleeFinalBlows: Double,
 
         @SerializedName("multikills")
-        @Expose
         var multikills: Double,
 
         @SerializedName("objectiveKills")
-        @Expose
         var objectiveKills: Double,
 
         @SerializedName("objectiveTime")
-        @Expose
         var objectiveTime: String,
 
         @SerializedName("soloKills")
-        @Expose
         var soloKills: Double,
 
         @SerializedName("timeSpentOnFire")
-        @Expose
         var timeSpentOnFire: String
 ) {
-    val combat: HashMap<String, String?>
+    val combat: HashMap<String, String>
         get() {
-            val combatList = HashMap<String, String?>()
+            val combatList = HashMap<String, String>()
             val formatter: NumberFormat = DecimalFormat("#0")
             combatList["BARRIER DAMAGE DONE"] = formatter.format(barrierDamageDone)
             combatList["DAMAGE DONE"] = formatter.format(damageDone)
