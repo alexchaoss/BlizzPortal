@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.categories.Category
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievement
+import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.util.events.ParentCategoryEvent
 import com.BlizzardArmory.util.events.SubCategoryEvent
 import org.greenrobot.eventbus.EventBus

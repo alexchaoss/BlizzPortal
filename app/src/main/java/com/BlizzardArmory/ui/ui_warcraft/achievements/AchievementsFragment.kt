@@ -16,15 +16,13 @@ import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
-import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievement
-import com.BlizzardArmory.model.warcraft.achievements.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
+import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
+import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
-import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
