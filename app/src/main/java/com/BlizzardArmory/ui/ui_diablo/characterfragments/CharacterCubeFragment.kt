@@ -139,7 +139,7 @@ class CharacterCubeFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<SingleItem>, t: Throwable) {
-                    Log.e("Error", "trace", t)
+                    Log.e("Error", t.message, t)
                 }
             })
         }

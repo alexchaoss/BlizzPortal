@@ -40,7 +40,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.collections.ArrayList
 
 /**
  * The type Ow activity.
@@ -181,7 +180,7 @@ class OWFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Profile?>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 showNoConnectionMessage(0)
             }
         })

@@ -93,7 +93,7 @@ class AccountViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
             }
 
             override fun onFailure(call: Call<Media>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 val media: Media? = null
                 downloadAvatar(media, character!!)
                 onClickCharacter(character!!, "", fragmentManager!!)

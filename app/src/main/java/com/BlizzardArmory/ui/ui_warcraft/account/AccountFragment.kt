@@ -94,7 +94,7 @@ class AccountFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Account>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 this@AccountFragment.showNoConnectionMessage(0)
             }
         })

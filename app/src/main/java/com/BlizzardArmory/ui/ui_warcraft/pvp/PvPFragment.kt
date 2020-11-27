@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -106,7 +107,7 @@ class PvPFragment : Fragment(){
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvpRBG = response.body()
                 val url = pvpRBG?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
+                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         if (response.isSuccessful && response.body() != null) {
@@ -119,14 +120,14 @@ class PvPFragment : Fragment(){
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", "trace", t)
+                        Log.e("Error", t.message, t)
                         binding.layoutrbg.alpha = 0.4f
                     }
                 })
             }
 
             override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 binding.layoutrbg.alpha = 0.4f
             }
         })
@@ -139,7 +140,7 @@ class PvPFragment : Fragment(){
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp3v3 = response.body()
                 val url = pvp3v3?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
+                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         if (response.isSuccessful && response.body() != null) {
@@ -152,14 +153,14 @@ class PvPFragment : Fragment(){
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", "trace", t)
+                        Log.e("Error", t.message, t)
                         binding.layout3v3.alpha = 0.4f
                     }
                 })
             }
 
             override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 binding.layout3v3.alpha = 0.4f
             }
         })
@@ -172,12 +173,13 @@ class PvPFragment : Fragment(){
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp2v2 = response.body()
                 val url = pvp2v2?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
+                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         if (response.isSuccessful && response.body() != null) {
                             val tier = response.body()
                             setTierImage(binding.tierimage2v2, tier!!)
+                            Log.i("2V2 there", "PVP")
                             showBracketInformationOnTouch(binding.layout2v2, tier, pvp2v2!!)
                         } else {
                             binding.layoutrbg.alpha = 0.4f
@@ -185,14 +187,14 @@ class PvPFragment : Fragment(){
                     }
 
                     override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", "trace", t)
+                        Log.e("Error", t.message, t)
                         binding.layout2v2.alpha = 0.4f
                     }
                 })
             }
 
             override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 binding.layout2v2.alpha = 0.4f
             }
         })
@@ -219,13 +221,13 @@ class PvPFragment : Fragment(){
             }
 
             override fun onFailure(call: Call<PvPSummary>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun showBracketInformationOnTouch(layout: View, tier: Tier, bracket: BracketStatistics) {
+    private fun showBracketInformationOnTouch(layout: FrameLayout, tier: Tier, bracket: BracketStatistics) {
         layout.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -235,13 +237,8 @@ class PvPFragment : Fragment(){
                     binding.gameswon.text = bracket.season_matchStatistics.won.toString() + " games won"
                     binding.winrate.text = ((bracket.season_matchStatistics.won * 100) / bracket.season_matchStatistics.played).toString() + "% win rate"
                     binding.bracketinfo.visibility = View.VISIBLE
-                    return@setOnTouchListener true
                 }
                 MotionEvent.ACTION_UP -> binding.bracketinfo.visibility = View.GONE
-            }
-
-            binding.layoutPvp.viewTreeObserver.addOnScrollChangedListener {
-                binding.bracketinfo.visibility = View.GONE
             }
             return@setOnTouchListener true
         }

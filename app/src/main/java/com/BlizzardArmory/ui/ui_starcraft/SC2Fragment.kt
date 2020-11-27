@@ -167,7 +167,7 @@ class SC2Fragment : Fragment() {
                                 }
 
                                 override fun onFailure(call: Call<Profile>, t: Throwable) {
-                                    Log.e("Error", "trace", t)
+                                    Log.e("Error", t.message, t)
                                     showNoConnectionMessage(0)
                                 }
                             })
@@ -183,7 +183,7 @@ class SC2Fragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<Player>>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 showNoConnectionMessage(0)
             }
         })

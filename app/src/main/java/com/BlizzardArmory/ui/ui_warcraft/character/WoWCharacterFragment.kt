@@ -25,7 +25,6 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.databinding.WowAccountFragmentBinding
 import com.BlizzardArmory.databinding.WowCharacterFragmentBinding
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.model.warcraft.equipment.Equipment
@@ -214,7 +213,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Talents>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }
@@ -252,7 +251,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Statistic>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 callErrorAlertDialog(0)
             }
         })
@@ -285,7 +284,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<CharacterSummary>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 callErrorAlertDialog(0)
             }
         })
@@ -382,7 +381,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Equipment>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 callErrorAlertDialog(0)
             }
         })
@@ -403,7 +402,7 @@ class WoWCharacterFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<Media>, t: Throwable) {
-                    Log.e("Error", "trace", t)
+                    Log.e("Error", t.message, t)
                     callErrorAlertDialog(0)
                 }
             })
@@ -493,7 +492,7 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 val errorIcon = resources.getDrawable(R.drawable.error_icon, requireContext().theme)
                 setIcons(itemSlot, equipment, errorIcon)
                 if (index == equipment?.equippedItems!!.size - 1) {
