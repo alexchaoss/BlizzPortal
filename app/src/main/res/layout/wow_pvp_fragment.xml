@@ -119,28 +119,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/honorkills">
 
-                <FrameLayout
+                <RelativeLayout
                     android:id="@+id/layout2v2"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="180dp"
                     android:layout_gravity="center"
-                    android:layout_margin="6dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="#666"
+                    android:background="@drawable/pvp_bg"
                     android:padding="0.5dp">
 
-                    <ImageView
-                        android:layout_width="125dp"
-                        android:layout_height="180dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/background"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/pvp_bracket_bg" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <ImageView
@@ -171,30 +165,24 @@
                             android:textSize="14sp" />
 
                     </LinearLayout>
-                </FrameLayout>
+                </RelativeLayout>
 
-                <FrameLayout
+                <RelativeLayout
                     android:id="@+id/layout3v3"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="180dp"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="#666"
+                    android:background="@drawable/pvp_bg"
                     android:padding="0.5dp">
 
-                    <ImageView
-                        android:layout_width="125dp"
-                        android:layout_height="180dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/background"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/pvp_bracket_bg" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <ImageView
@@ -225,30 +213,23 @@
                             android:textSize="12sp" />
 
                     </LinearLayout>
-                </FrameLayout>
+                </RelativeLayout>
 
-                <FrameLayout
+                <RelativeLayout
                     android:id="@+id/layoutrbg"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="180dp"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="#666"
+                    android:background="@drawable/pvp_bg"
                     android:padding="0.5dp">
-
-                    <ImageView
-                        android:layout_width="125dp"
-                        android:layout_height="180dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/background"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/pvp_bracket_bg" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <ImageView
@@ -279,7 +260,7 @@
                             android:textSize="12sp" />
 
                     </LinearLayout>
-                </FrameLayout>
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -380,6 +361,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#fff"
                         android:textSize="18sp" />
                 </LinearLayout>
@@ -405,7 +387,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="25dp"
-                    android:textColor="#fff"
+                    android:textColor="#00ff00"
                     android:textSize="18sp" />
 
                 <TextView

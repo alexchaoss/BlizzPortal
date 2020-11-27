@@ -9,8 +9,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -227,7 +227,7 @@ class PvPFragment : Fragment(){
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun showBracketInformationOnTouch(layout: FrameLayout, tier: Tier, bracket: BracketStatistics) {
+    private fun showBracketInformationOnTouch(layout: RelativeLayout, tier: Tier, bracket: BracketStatistics) {
         layout.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
