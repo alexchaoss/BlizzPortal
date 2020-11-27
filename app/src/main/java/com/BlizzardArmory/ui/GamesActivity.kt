@@ -21,9 +21,7 @@ import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.databinding.GamesActivityBarBinding
 import com.BlizzardArmory.databinding.GamesActivityBinding
-import com.BlizzardArmory.databinding.GamesActivityNavHeaderBinding
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
 import com.BlizzardArmory.model.warcraft.media.Media
@@ -185,7 +183,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
             override fun onFailure(call: Call<Realms>, t: Throwable) {
                 Log.e("realms", "trace start")
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
         val call2: Call<Realms> = client!!.getRealmIndex("eu", "dynamic-eu", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
@@ -198,7 +196,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
             override fun onFailure(call: Call<Realms>, t: Throwable) {
                 Log.e("realms", "trace start")
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
         val call3: Call<Realms> = client!!.getRealmIndex("kr", "dynamic-kr", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
@@ -211,7 +209,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
             override fun onFailure(call: Call<Realms>, t: Throwable) {
                 Log.e("realms", "trace start")
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
         val call4: Call<Realms> = client!!.getRealmIndex("tw", "dynamic-tw", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
@@ -224,7 +222,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
             override fun onFailure(call: Call<Realms>, t: Throwable) {
                 Log.e("realms", "trace start")
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }
@@ -317,7 +315,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
             }
 
             override fun onFailure(call: Call<UserInformation>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 callErrorAlertDialog(0)
             }
         })
@@ -522,7 +520,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
             }
 
             override fun onFailure(call: Call<Media>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 callWoWCharacterFragment(characterClicked, characterRealm, selectedRegion)
             }
         })

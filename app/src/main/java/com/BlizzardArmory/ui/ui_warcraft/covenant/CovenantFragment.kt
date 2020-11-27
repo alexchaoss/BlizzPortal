@@ -155,7 +155,7 @@ class CovenantFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<CovenantSpells>>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }
@@ -173,7 +173,7 @@ class CovenantFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<CovenantSpells>>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }

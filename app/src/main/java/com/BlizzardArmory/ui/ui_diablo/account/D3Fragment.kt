@@ -4,8 +4,11 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -126,7 +129,7 @@ class D3Fragment : Fragment() {
             }
 
             override fun onFailure(call: Call<AccountInformation>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
                 showNoConnectionMessage(0)
             }
         })

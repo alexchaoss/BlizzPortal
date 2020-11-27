@@ -175,7 +175,7 @@ class CategoriesFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<DetailedAchievements>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }
@@ -189,7 +189,7 @@ class CategoriesFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Achievements>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }
@@ -224,7 +224,7 @@ class CategoriesFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Categories>, t: Throwable) {
-                Log.e("Error", "trace", t)
+                Log.e("Error", t.message, t)
             }
         })
     }
