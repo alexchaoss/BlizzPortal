@@ -9,51 +9,34 @@
     android:orientation="vertical"
     tools:context=".ui.MainActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView2"
+    <Spinner
+        android:id="@+id/realmSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/wow_spinner"
+        android:gravity="center"
+        android:padding="0dp"
+        android:textAlignment="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/character_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:paddingBottom="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/linear_wow_characters"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/Career"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:text="@string/wow_characters"
-                android:textColor="#FFFFFF"
-                android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-    <FrameLayout
-        android:id="@+id/nav_fragment"
-        android:name="com.example.blizzardprofiles.activities.WoWCharacterFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scrollView2"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout="@layout/wow_character_fragment" />
+        app:layout_constraintTop_toBottomOf="@id/realmSpinner"
+        app:layout_constraintVertical_bias="0" />
 
     <RelativeLayout
         android:id="@+id/loadingCircle"

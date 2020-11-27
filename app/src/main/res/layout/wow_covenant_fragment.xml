@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/covenant_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/covenant_background">
+
+    <TextView
+        android:id="@+id/renown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/morpheus"
+        android:gravity="center"
+        android:text="Renown Level"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/renowmLevel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/renowmLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/morpheus"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/character2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/renown" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/character1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/soulbinds"
+        app:layout_constraintEnd_toStartOf="@id/character2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/renowmLevel"
+        app:layout_constraintVertical_bias="1.0">
+
+        <ImageView
+            android:id="@+id/avatar1"
+            android:layout_width="90dp"
+            android:layout_height="110dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/forgelite_prime_mikanikos"
+            app:layout_constraintBottom_toBottomOf="@id/border1"
+            app:layout_constraintEnd_toEndOf="@id/border1"
+            app:layout_constraintStart_toStartOf="@id/border1"
+            app:layout_constraintTop_toTopOf="@id/border1" />
+
+        <ImageView
+            android:id="@+id/border1"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/soulbinds_portrait_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/character2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/soulbinds"
+        app:layout_constraintEnd_toStartOf="@id/character3"
+        app:layout_constraintStart_toEndOf="@id/character1"
+        app:layout_constraintTop_toBottomOf="@id/renowmLevel">
+
+        <ImageView
+            android:id="@+id/avatar2"
+            android:layout_width="90dp"
+            android:layout_height="110dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pelagos"
+            app:layout_constraintBottom_toBottomOf="@id/border2"
+            app:layout_constraintEnd_toEndOf="@id/border2"
+            app:layout_constraintStart_toStartOf="@id/border2"
+            app:layout_constraintTop_toTopOf="@id/border2" />
+
+        <ImageView
+            android:id="@+id/border2"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/soulbinds_portrait_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/character3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/soulbinds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/character2"
+        app:layout_constraintTop_toBottomOf="@id/renowmLevel">
+
+        <ImageView
+            android:id="@+id/avatar3"
+            android:layout_width="90dp"
+            android:layout_height="110dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/kleia"
+            app:layout_constraintBottom_toBottomOf="@id/border3"
+            app:layout_constraintEnd_toEndOf="@id/border3"
+            app:layout_constraintStart_toStartOf="@id/border3"
+            app:layout_constraintTop_toTopOf="@id/border3" />
+
+        <ImageView
+            android:id="@+id/border3"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/soulbinds_portrait_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/soulbinds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/character2">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/soulbinds_background_venthyr" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/conduit_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="25dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:padding="1dp"
+        android:background="#5c5c5c"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/character3">
+
+        <ImageView
+            android:id="@+id/covenant_class_spell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:padding="1dp"
+        android:background="#5c5c5c"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/character1">
+
+        <ImageView
+            android:id="@+id/covenant_spell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/spell_tooltip"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/talent_tooltip_bg"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/spell_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/spell_cost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/spell_cast"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFF"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/spell_cd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#FFF"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/spell_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#edc201"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

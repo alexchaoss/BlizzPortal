@@ -1,7 +1,8 @@
 package com.BlizzardArmory.model.overwatch
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
+
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -9,82 +10,64 @@ import java.util.*
 /**
  * The type Best.
  */
+
 data class Best(
 
         @SerializedName("allDamageDoneMostInGame")
-        @Expose
         var allDamageDoneMostInGame: Double,
 
         @SerializedName("barrierDamageDoneMostInGame")
-        @Expose
         var barrierDamageDoneMostInGame: Double,
 
         @SerializedName("defensiveAssistsMostInGame")
-        @Expose
         var defensiveAssistsMostInGame: Double,
 
         @SerializedName("eliminationsMostInGame")
-        @Expose
         var eliminationsMostInGame: Double,
 
         @SerializedName("environmentalKillsMostInGame")
-        @Expose
         var environmentalKillsMostInGame: Double,
 
         @SerializedName("finalBlowsMostInGame")
-        @Expose
         var finalBlowsMostInGame: Double,
 
         @SerializedName("healingDoneMostInGame")
-        @Expose
         var healingDoneMostInGame: Double,
 
         @SerializedName("heroDamageDoneMostInGame")
-        @Expose
         var heroDamageDoneMostInGame: Double,
 
         @SerializedName("killsStreakBest")
-        @Expose
         var killsStreakBest: Double,
 
         @SerializedName("meleeFinalBlowsMostInGame")
-        @Expose
         var meleeFinalBlowsMostInGame: Double,
 
         @SerializedName("multikillsBest")
-        @Expose
         var multikillsBest: Double,
 
         @SerializedName("objectiveKillsMostInGame")
-        @Expose
         var objectiveKillsMostInGame: Double,
 
         @SerializedName("objectiveTimeMostInGame")
-        @Expose
         var objectiveTimeMostInGame: String,
 
         @SerializedName("offensiveAssistsMostInGame")
-        @Expose
         var offensiveAssistsMostInGame: Double,
 
         @SerializedName("reconAssistsMostInGame")
-        @Expose
         var reconAssistsMostInGame: Double,
 
         @SerializedName("soloKillsMostInGame")
-        @Expose
         var soloKillsMostInGame: Double,
 
         @SerializedName("teleporterPadsDestroyedMostInGame")
-        @Expose
         var teleporterPadsDestroyedMostInGame: Double,
 
         @SerializedName("timeSpentOnFireMostInGame")
-        @Expose
         var timeSpentOnFireMostInGame: String,
 
         @SerializedName("turretsDestroyedMostInGame")
-        @Expose
         var turretsDestroyedMostInGame: Double
 ) {
     val bestList: HashMap<String, String>

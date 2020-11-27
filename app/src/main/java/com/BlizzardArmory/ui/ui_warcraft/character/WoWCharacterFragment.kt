@@ -9,19 +9,24 @@ import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.view.*
-import android.widget.*
-import androidx.appcompat.app.AlertDialog
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.WowAccountFragmentBinding
+import com.BlizzardArmory.databinding.WowCharacterFragmentBinding
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.model.warcraft.equipment.Equipment
 import com.BlizzardArmory.model.warcraft.equipment.EquippedItem
@@ -33,18 +38,21 @@ import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
+import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
-import com.BlizzardArmory.util.events.ClassEvent
-import com.BlizzardArmory.util.events.FactionEvent
-import com.BlizzardArmory.util.events.NetworkEvent
-import com.BlizzardArmory.util.events.RetryEvent
+import com.BlizzardArmory.ui.news.NewsListFragment
+import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
+import com.BlizzardArmory.ui.ui_warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.wow_character_fragment.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,8 +62,8 @@ class WoWCharacterFragment : Fragment() {
     private var characterRealm: String? = null
     private var characterClicked: String? = null
     private var region: String? = null
-    private var dialog: AlertDialog? = null
-    private var favorite: ImageView? = null
+    private var dialog: DialogPrompt? = null
+    lateinit var errorMessages: ErrorMessages
 
     //Character information
     private lateinit var characterSummary: CharacterSummary
@@ -73,12 +81,18 @@ class WoWCharacterFragment : Fragment() {
     private val nameList = HashMap<String, String>()
     private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.wow_character_fragment, container, false)
+    private var _binding: WowCharacterFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        addOnBackPressCallback(activity as GamesActivity)
+        _binding = WowCharacterFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         URLConstants.loading = true
+        errorMessages = ErrorMessages(this.resources)
         val bundle = requireArguments()
         characterRealm = bundle.getString("realm")
         characterClicked = bundle.getString("character")
@@ -87,20 +101,18 @@ class WoWCharacterFragment : Fragment() {
         }
         region = bundle.getString("region")
 
-        item_scroll_view?.setPadding(10, 10, 10, 10)
         val linearLayoutItemStats = LinearLayout(view.context)
         linearLayoutItemStats.orientation = LinearLayout.VERTICAL
         linearLayoutItemStats.gravity = Gravity.CENTER
-        item_stats.addView(linearLayoutItemStats)
+        binding.itemStats.addView(linearLayoutItemStats)
         statsView = TextView(view.context)
         nameView = TextView(view.context)
         linearLayoutItemStats.addView(nameView)
         linearLayoutItemStats.addView(statsView)
 
-        favorite = activity?.findViewById(R.id.favorite)
-        favorite?.visibility = View.VISIBLE
-        favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
-        favorite?.tag = R.drawable.ic_star_border_black_24dp
+        GamesActivity.favorite!!.visibility = View.VISIBLE
+        GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+        GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
 
         activateCloseButton()
 
@@ -111,24 +123,24 @@ class WoWCharacterFragment : Fragment() {
         layoutParamsStats.setMargins(20, 0, 20, 0)
         statsView?.layoutParams = layoutParamsStats
 
-        gearImageView["HEAD"] = head
-        gearImageView["NECK"] = neck
-        gearImageView["SHOULDER"] = shoulder
-        gearImageView["BACK"] = back
-        gearImageView["CHEST"] = chest
-        gearImageView["SHIRT"] = shirt
-        gearImageView["TABARD"] = tabard
-        gearImageView["WRIST"] = wrist
-        gearImageView["HANDS"] = hands
-        gearImageView["WAIST"] = waist
-        gearImageView["LEGS"] = legs
-        gearImageView["FEET"] = feet
-        gearImageView["FINGER_1"] = finger1
-        gearImageView["FINGER_2"] = finger2
-        gearImageView["TRINKET_1"] = trinket1
-        gearImageView["TRINKET_2"] = trinket2
-        gearImageView["MAIN_HAND"] = main_hand
-        gearImageView["OFF_HAND"] = off_hand
+        gearImageView["HEAD"] = binding.head
+        gearImageView["NECK"] = binding.neck
+        gearImageView["SHOULDER"] = binding.shoulder
+        gearImageView["BACK"] = binding.back
+        gearImageView["CHEST"] = binding.chest
+        gearImageView["SHIRT"] = binding.shirt
+        gearImageView["TABARD"] = binding.tabard
+        gearImageView["WRIST"] = binding.wrist
+        gearImageView["HANDS"] = binding.hands
+        gearImageView["WAIST"] = binding.waist
+        gearImageView["LEGS"] = binding.legs
+        gearImageView["FEET"] = binding.feet
+        gearImageView["FINGER_1"] = binding.finger1
+        gearImageView["FINGER_2"] = binding.finger2
+        gearImageView["TRINKET_1"] = binding.trinket1
+        gearImageView["TRINKET_2"] = binding.trinket2
+        gearImageView["MAIN_HAND"] = binding.mainHand
+        gearImageView["OFF_HAND"] = binding.offHand
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val battlenetOAuth2Params: BattlenetOAuth2Params = requireActivity().intent.extras!!.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)!!
@@ -137,9 +149,43 @@ class WoWCharacterFragment : Fragment() {
         downloadInfo()
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun talentClickedReceived(talentClickedEvent: TalentClickedEvent) {
+        if (talentClickedEvent.touch) {
+            binding.talentTooltip.visibility = View.VISIBLE
+            if (talentClickedEvent.powerCost == null || talentClickedEvent.powerCost == "") {
+                binding.spellCost.visibility = View.GONE
+            } else {
+                binding.spellCost.visibility = View.VISIBLE
+            }
+            binding.spellName.text = talentClickedEvent.name
+            binding.spellCost.text = talentClickedEvent.powerCost
+            binding.spellCast.text = talentClickedEvent.castTime
+            binding.spellCd.text = talentClickedEvent.cooldown
+            binding.spellDescription.text = talentClickedEvent.description
+        } else {
+            binding.talentTooltip.visibility = View.GONE
+        }
+    }
+
     private fun downloadInfo() {
         dialog = null
-        loading_circle?.visibility = View.VISIBLE
+        binding.loadingCircle.visibility = View.VISIBLE
         downloadBackground()
         downloadAndSetCharacterInformation()
         downloadStats()
@@ -147,38 +193,34 @@ class WoWCharacterFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun activateCloseButton() {
-        close_button.setOnTouchListener { v: View, event: MotionEvent ->
+        binding.closeButton.setOnTouchListener { v: View, event: MotionEvent ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 v.performClick()
-                item_scroll_view?.visibility = View.GONE
+                binding.itemScrollView.visibility = View.GONE
             }
             false
         }
     }
 
     private fun downloadTalents() {
-        val call: Call<Talents> = RetroClient.getClient.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<Talents> = GamesActivity.client!!.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Talents> {
-            override fun onResponse(call: Call<Talents>, response: retrofit2.Response<Talents>) {
+            override fun onResponse(call: Call<Talents>, response: Response<Talents>) {
                 if (response.isSuccessful) {
                     talentsInfo = response.body()!!
-
                     downloadTalentIconsInfo()
                 }
             }
 
             override fun onFailure(call: Call<Talents>, t: Throwable) {
                 Log.e("Error", "trace", t)
-                //no_talent?.visibility = View.VISIBLE
-                val noTalent = "Talent information outdated"
-                //no_talent?.text = noTalent
             }
         })
     }
 
     private fun downloadTalentIconsInfo() {
-        val call2: Call<List<TalentsIcons>> = RetroClient.getClient.getTalentsWithIcon(URLConstants.getTalentsIcons(characterSummary.characterClass.id, MainActivity.locale))
+        val call2: Call<List<TalentsIcons>> = GamesActivity.client!!.getTalentsWithIcon(URLConstants.getTalentsIcons(characterSummary.characterClass.id, MainActivity.locale))
         call2.enqueue(object : Callback<List<TalentsIcons>> {
             override fun onResponse(call: Call<List<TalentsIcons>>, response: Response<List<TalentsIcons>>) {
                 if (response.isSuccessful) {
@@ -188,14 +230,14 @@ class WoWCharacterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<TalentsIcons>>, t: Throwable) {
-
+                downloadTalentIconsInfo()
             }
         })
     }
 
     private fun downloadStats() {
-        val call: Call<Statistic> = RetroClient.getClient.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<Statistic> = GamesActivity.client!!.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Statistic> {
             override fun onResponse(call: Call<Statistic>, response: retrofit2.Response<Statistic>) {
                 when {
@@ -217,10 +259,10 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun downloadAndSetCharacterInformation() {
-        val call: Call<CharacterSummary> = RetroClient.getClient.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<CharacterSummary> = GamesActivity.client!!.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<CharacterSummary> {
-            override fun onResponse(call: Call<CharacterSummary>, response: retrofit2.Response<CharacterSummary>) {
+            override fun onResponse(call: Call<CharacterSummary>, response: Response<CharacterSummary>) {
                 when {
                     response.code() in 201..Int.MAX_VALUE -> {
                         callErrorAlertDialog(response.code())
@@ -229,13 +271,13 @@ class WoWCharacterFragment : Fragment() {
                         characterSummary = response.body()!!
                         downloadTalents()
                         setBackgroundColor()
-                        character_name.text = characterSummary.name
+                        binding.characterName.text = characterSummary.name
                         manageFavorite(characterSummary)
-                        EventBus.getDefault().post(FactionEvent(characterSummary.faction.name.toLowerCase(Locale.ROOT)))
+                        EventBus.getDefault().post(FactionEvent(characterSummary.faction.type.toLowerCase(Locale.ROOT)))
                         EventBus.getDefault().post(ClassEvent(characterSummary.characterClass.id))
-                        item_lvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
+                        binding.itemLvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
                         val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
-                        level_race_class.text = levelRaceClassString
+                        binding.levelRaceClass.text = levelRaceClassString
                         downloadEquipment()
 
                     }
@@ -261,8 +303,10 @@ class WoWCharacterFragment : Fragment() {
             for (favoriteCharacter in favoriteCharacters.characters) {
                 if (hasCharacter(favoriteCharacter, characterSummary)) {
                     indexOfCharacter = indexTemp
-                    favorite?.setImageResource(R.drawable.ic_star_black_24dp)
-                    favorite?.tag = R.drawable.ic_star_black_24dp
+                    GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
+                    GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                    favoriteCharacters.characters[indexOfCharacter] = FavoriteCharacter(characterSummary, region!!)
+                    prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
                     break
                 } else {
                     addToFavorite(favoriteCharacters, characterSummary, gson, prefs)
@@ -276,20 +320,18 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun hasCharacter(favoriteCharacter: FavoriteCharacter, characterSummary: CharacterSummary): Boolean {
-        return (characterSummary.name.toLowerCase(Locale.ROOT) == favoriteCharacter.characterSummary?.name?.toLowerCase(Locale.ROOT)
+        return (characterSummary.name.equals(favoriteCharacter.characterSummary?.name, ignoreCase = true)
                 && characterSummary.realm.slug == favoriteCharacter.characterSummary?.realm?.slug
-                && region?.toLowerCase(Locale.ROOT) == favoriteCharacter.region?.toLowerCase(Locale.ROOT))
+                && region.equals(favoriteCharacter.region, ignoreCase = true))
     }
 
     private fun deleteFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, indexOfCharacter: Int, gson: Gson, prefs: SharedPreferences) {
-        var favoriteCharactersString: String?
-        if (favorite?.tag == R.drawable.ic_star_black_24dp && indexOfCharacter != -1) {
-            favorite?.setOnClickListener {
-                favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
-                favorite?.tag = R.drawable.ic_star_border_black_24dp
+        if (GamesActivity.favorite!!.tag == R.drawable.ic_star_black_24dp && indexOfCharacter != -1) {
+            GamesActivity.favorite!!.setOnClickListener {
+                GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+                GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
                 favoriteCharacters.characters.removeAt(indexOfCharacter)
-                favoriteCharactersString = gson.toJson(favoriteCharacters)
-                prefs.edit().putString("wow-favorites", favoriteCharactersString).apply()
+                prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
                 Toast.makeText(requireActivity(), "Character removed from favorites", Toast.LENGTH_SHORT).show()
                 addToFavorite(favoriteCharacters, characterSummary, gson, prefs)
 
@@ -298,8 +340,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun addToFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, gson: Gson, prefs: SharedPreferences) {
-        var favoriteCharactersString: String?
-        favorite?.setOnClickListener {
+        GamesActivity.favorite!!.setOnClickListener {
             var containsCharacter = false
             var indexOfCharacter = 0
             for (characters in favoriteCharacters.characters) {
@@ -309,13 +350,12 @@ class WoWCharacterFragment : Fragment() {
                 }
                 indexOfCharacter++
             }
+
             if (!containsCharacter) {
-                favorite?.setImageResource(R.drawable.ic_star_black_24dp)
-                favorite?.tag = R.drawable.ic_star_black_24dp
-                val favoriteCharacter = FavoriteCharacter(characterSummary, region!!)
-                favoriteCharacters.characters.add(favoriteCharacter)
-                favoriteCharactersString = gson.toJson(favoriteCharacters)
-                prefs.edit().putString("wow-favorites", favoriteCharactersString).apply()
+                GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
+                GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                favoriteCharacters.characters.add(FavoriteCharacter(characterSummary, region!!))
+                prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
                 Toast.makeText(requireActivity(), "Character added to favorites", Toast.LENGTH_SHORT).show()
                 deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, gson, prefs)
             }
@@ -323,10 +363,10 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun downloadEquipment() {
-        val call2: Call<Equipment> = RetroClient.getClient.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
-                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call2: Call<Equipment> = GamesActivity.client!!.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
+                characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call2.enqueue(object : Callback<Equipment> {
-            override fun onResponse(call: Call<Equipment>, response: retrofit2.Response<Equipment>) {
+            override fun onResponse(call: Call<Equipment>, response: Response<Equipment>) {
                 when {
                     response.code() in 400..Int.MAX_VALUE -> {
                         callErrorAlertDialog(response.code())
@@ -350,15 +390,15 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadBackground() {
         if (media != null) {
-            Glide.with(this).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(background)
+            Glide.with(this).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(binding.background)
         } else {
-            val call: Call<Media> = RetroClient.getClient.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
-                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+            val call: Call<Media> = GamesActivity.client!!.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
+                    characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
             call.enqueue(object : Callback<Media> {
-                override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
+                override fun onResponse(call: Call<Media>, response: Response<Media>) {
                     if (response.isSuccessful) {
                         media = response.body()!!
-                        Glide.with(this@WoWCharacterFragment).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(background)
+                        Glide.with(this@WoWCharacterFragment).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(binding.background)
                     }
                 }
 
@@ -373,40 +413,40 @@ class WoWCharacterFragment : Fragment() {
     private fun setBackgroundColor() {
         when (characterSummary.characterClass.id) {
             6 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#080812"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#080812"))
             }
             12 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#000900"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#000900"))
             }
             11 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#04100a"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#04100a"))
             }
             3 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#0f091b"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#0f091b"))
             }
             8 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#110617"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#110617"))
             }
             10 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#040b17"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#040b17"))
             }
             2 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#13040a"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#13040a"))
             }
             5 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#15060e"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#15060e"))
             }
             4 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#160720"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#160720"))
             }
             7 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#050414"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#050414"))
             }
             9 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#080516"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#080516"))
             }
             1 -> {
-                item_fragment.setBackgroundColor(Color.parseColor("#1a0407"))
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#1a0407"))
             }
         }
     }
@@ -417,14 +457,14 @@ class WoWCharacterFragment : Fragment() {
             url = url.replace(("static-[0-9].[0-9].[0-9]_[0-9]*-" + region?.toLowerCase(Locale.ROOT)?.toRegex()).toRegex(), "static-" + region?.toLowerCase(Locale.ROOT))
         }
         url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-        val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = RetroClient.getClient.getDynamicEquipmentMedia(url, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
+        val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = GamesActivity.client!!.getDynamicEquipmentMedia(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<com.BlizzardArmory.model.warcraft.equipment.media.Media> {
             override fun onResponse(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>) {
                 when {
                     response.code() in 201..Int.MAX_VALUE -> {
                         if (index == equipment?.equippedItems!!.size - 1) {
                             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            loading_circle?.visibility = View.GONE
+                            binding.loadingCircle.visibility = View.GONE
                             URLConstants.loading = false
                         }
                         val errorIcon = resources.getDrawable(R.drawable.error_icon, requireContext().theme)
@@ -433,7 +473,7 @@ class WoWCharacterFragment : Fragment() {
                     response.code() < 200 -> {
                         if (index == equipment?.equippedItems!!.size - 1) {
                             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            loading_circle?.visibility = View.GONE
+                            binding.loadingCircle.visibility = View.GONE
                             URLConstants.loading = false
                         }
                         val errorIcon = resources.getDrawable(R.drawable.error_icon, requireContext().theme)
@@ -445,7 +485,7 @@ class WoWCharacterFragment : Fragment() {
                         Glide.with(this@WoWCharacterFragment).load(imageURLs[itemSlot]).placeholder(R.drawable.loading_placeholder).into(gearImageView[itemSlot]!!)
                         setIcons(itemSlot, equipment, null)
                         if (index == equipment?.equippedItems!!.size - 1) {
-                            loading_circle?.visibility = View.GONE
+                            binding.loadingCircle.visibility = View.GONE
                             URLConstants.loading = false
                         }
                     }
@@ -458,7 +498,7 @@ class WoWCharacterFragment : Fragment() {
                 setIcons(itemSlot, equipment, errorIcon)
                 if (index == equipment?.equippedItems!!.size - 1) {
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    loading_circle?.visibility = View.GONE
+                    binding.loadingCircle.visibility = View.GONE
                     URLConstants.loading = false
                 }
             }
@@ -477,23 +517,23 @@ class WoWCharacterFragment : Fragment() {
                 if (equipment.equippedItems[i].azeriteDetails != null && equipment.equippedItems[i].item.id != 158075L) {
                     when (itemSlot) {
                         "HEAD" -> {
-                            headAzerite.setImageResource(R.drawable.azerite_gear_border)
-                            headAzerite.visibility = View.VISIBLE
+                            binding.headAzerite.setImageResource(R.drawable.azerite_gear_border)
+                            binding.headAzerite.visibility = View.VISIBLE
                         }
                         "SHOULDER" -> {
-                            shoulderAzerite.setImageResource(R.drawable.azerite_gear_border)
-                            shoulderAzerite.visibility = View.VISIBLE
+                            binding.shoulderAzerite.setImageResource(R.drawable.azerite_gear_border)
+                            binding.shoulderAzerite.visibility = View.VISIBLE
                         }
                         "CHEST" -> {
-                            chestAzerite.setImageResource(R.drawable.azerite_gear_border)
-                            chestAzerite.visibility = View.VISIBLE
+                            binding.chestAzerite.setImageResource(R.drawable.azerite_gear_border)
+                            binding.chestAzerite.visibility = View.VISIBLE
                         }
                     }
                 } else {
                     when (itemSlot) {
-                        "HEAD" -> headAzerite.visibility = View.GONE
-                        "SHOULDER" -> shoulderAzerite.visibility = View.GONE
-                        "CHEST" -> chestAzerite.visibility = View.GONE
+                        "HEAD" -> binding.headAzerite.visibility = View.GONE
+                        "SHOULDER" -> binding.shoulderAzerite.visibility = View.GONE
+                        "CHEST" -> binding.chestAzerite.visibility = View.GONE
                     }
                 }
             }
@@ -550,68 +590,72 @@ class WoWCharacterFragment : Fragment() {
                 }
                 statsView?.setTextColor(Color.WHITE)
                 statsView?.textSize = 13f
-                item_scroll_view?.setPadding(10, 10, 10, 10)
-                item_scroll_view?.background = imageView.background
-                item_scroll_view?.visibility = View.VISIBLE
-                item_scroll_view?.isVerticalScrollBarEnabled = true
+                binding.itemScrollView.setPadding(10, 10, 10, 10)
+                binding.itemScrollView.background = imageView.background
+                binding.itemScrollView.visibility = View.VISIBLE
+                binding.itemScrollView.isVerticalScrollBarEnabled = true
                 return@setOnTouchListener true
-            } else if (item_scroll_view?.visibility == View.VISIBLE && event.action == MotionEvent.ACTION_DOWN) {
-                item_scroll_view?.visibility = View.GONE
+            } else if (binding.itemScrollView.visibility == View.VISIBLE && event.action == MotionEvent.ACTION_DOWN) {
+                binding.itemScrollView.visibility = View.GONE
             }
             return@setOnTouchListener true
         }
-        val currentY = scrollView3.scrollY
-        scrollView3?.viewTreeObserver?.addOnScrollChangedListener {
+        val currentY = binding.scrollView3.scrollY
+        binding.scrollView3.viewTreeObserver?.addOnScrollChangedListener {
 
-            if (scrollView3 != null) {
-                if (currentY != scrollView3.scrollY) {
-                    item_scroll_view.visibility = View.GONE
+            if (_binding != null) {
+                if (currentY != binding.scrollView3.scrollY) {
+                    binding.itemScrollView.visibility = View.GONE
+                    binding.talentTooltip.visibility = View.GONE
                 }
             }
         }
     }
 
     private fun setTalentInformation() {
-        if (talentsInfo.specializations.size == 4) {
-            tabLayout?.addTab(tabLayout!!.newTab())
-            tabLayout?.getTabAt(3)?.text = talentsInfo.specializations[3].specialization.name
-        }
 
-        if (talentsInfo.specializations.size == 2) {
-            tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
-        } else if (talentsInfo.specializations.size == 1) {
-            tabLayout?.getTabAt(2)?.let { tabLayout?.removeTab(it) }
-            tabLayout?.getTabAt(1)?.let { tabLayout?.removeTab(it) }
+        when (talentsInfo.specializations.size) {
+            4 -> {
+                binding.tabLayout.addTab(binding.tabLayout.newTab())
+                binding.tabLayout.getTabAt(3)?.text = talentsInfo.specializations[3].specialization.name
+            }
+            2 -> {
+                binding.tabLayout.getTabAt(2)?.let { binding.tabLayout.removeTab(it) }
+            }
+            1 -> {
+                binding.tabLayout.getTabAt(2)?.let { binding.tabLayout.removeTab(it) }
+                binding.tabLayout.getTabAt(1)?.let { binding.tabLayout.removeTab(it) }
+            }
         }
 
         for (i in talentsInfo.specializations.indices) {
-            val tab = tabLayout?.getTabAt(i)
+            val tab = binding.tabLayout.getTabAt(i)
             tab?.text = talentsInfo.specializations[i].specialization.name
         }
 
         try {
-            talent_recycler.apply {
-                adapter = TalentAdapter(talentsInfo.specializations.find { it.specialization.id == talentsInfo.activeSpecialization.id }?.talents!!, talentsIcons, context)
+            binding.talentRecycler.apply {
+                adapter = TalentAdapter(talentsInfo.specializations[0].talents, talentsIcons, context)
                 adapter!!.notifyDataSetChanged()
             }
         } catch (e: Exception) {
-            no_talent?.visibility = View.VISIBLE
+            binding.noTalent.visibility = View.VISIBLE
         }
 
 
-        tabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
+        binding.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 try {
-                    talent_recycler.apply {
+                    binding.talentRecycler.apply {
                         adapter = TalentAdapter(talentsInfo.specializations[tab.position].talents, talentsIcons, context)
                         adapter!!.notifyDataSetChanged()
                     }
-                    no_talent?.visibility = View.GONE
+                    binding.noTalent.visibility = View.GONE
                 } catch (e: Exception) {
-                    talent_recycler.apply {
+                    binding.talentRecycler.apply {
                         adapter = null
                     }
-                    no_talent?.visibility = View.VISIBLE
+                    binding.noTalent.visibility = View.VISIBLE
                 }
             }
 
@@ -905,102 +949,109 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun setCharacterInformationTextviews() {
-        health?.text = String.format("Health: %s", statistic.health)
-        power?.text = String.format("%s: %s", statistic.powerType.name, statistic.power)
-        strength?.text = String.format("Strength: %s", statistic.strength.effective)
-        agility?.text = String.format("Agility: %s", statistic.agility.effective)
-        intellect?.text = String.format("Intellect: %s", statistic.intellect.effective)
-        stamina?.text = String.format("Stamina: %s", statistic.stamina.effective)
-        crit?.text = String.format(Locale.ENGLISH, "Critical Strike: %.2f%%", statistic.meleeCrit.value)
-        haste?.text = String.format(Locale.ENGLISH, "Haste: %.2f%%", statistic.meleeHaste.value.toDouble())
-        mastery?.text = String.format(Locale.ENGLISH, "Mastery: %.2f%%", statistic.mastery.value.toDouble())
-        versatility?.text = String.format(Locale.ENGLISH, "Versatility: %.2f%%", statistic.versatilityDamageDoneBonus.toDouble())
+        binding.health.text = String.format("Health: %s", statistic.health)
+        binding.power.text = String.format("%s: %s", statistic.powerType.name, statistic.power)
+        binding.strength.text = String.format("Strength: %s", statistic.strength.effective)
+        binding.agility.text = String.format("Agility: %s", statistic.agility.effective)
+        binding.intellect.text = String.format("Intellect: %s", statistic.intellect.effective)
+        binding.stamina.text = String.format("Stamina: %s", statistic.stamina.effective)
+        binding.crit.text = String.format(Locale.ENGLISH, "Critical Strike: %.2f%%", statistic.meleeCrit.value)
+        binding.haste.text = String.format(Locale.ENGLISH, "Haste: %.2f%%", statistic.meleeHaste.value.toDouble())
+        binding.mastery.text = String.format(Locale.ENGLISH, "Mastery: %.2f%%", statistic.mastery.value.toDouble())
+        binding.versatility.text = String.format(Locale.ENGLISH, "Versatility: %.2f%%", statistic.versatilityDamageDoneBonus.toDouble())
     }
 
-    private fun callErrorAlertDialog(responseCode: Int) {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        loading_circle?.visibility = View.GONE
-        URLConstants.loading = false
-        if (dialog == null) {
-            val builder = AlertDialog.Builder(requireContext(), R.style.DialogTransparent)
-            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(0, 20, 0, 0)
-            val titleText = TextView(context)
-            titleText.textSize = 20f
-            titleText.gravity = Gravity.CENTER_HORIZONTAL
-            titleText.setPadding(0, 20, 0, 20)
-            titleText.layoutParams = layoutParams
-            titleText.setTextColor(Color.WHITE)
-            val messageText = TextView(context)
-            messageText.gravity = Gravity.CENTER_HORIZONTAL
-            messageText.layoutParams = layoutParams
-            messageText.setTextColor(Color.WHITE)
-            val button = Button(context)
-            button.textSize = 18f
-            button.setTextColor(Color.WHITE)
-            button.gravity = Gravity.CENTER
-            button.width = 200
-            button.layoutParams = layoutParams
-            button.background = requireContext().getDrawable(R.drawable.buttonstyle)
-            val button2 = Button(context)
-            button2.textSize = 18f
-            button2.setTextColor(Color.WHITE)
-            button2.gravity = Gravity.CENTER
-            button2.width = 200
-            button2.layoutParams = layoutParams
-            button2.background = requireContext().getDrawable(R.drawable.buttonstyle)
-            val buttonLayout = LinearLayout(context)
-            buttonLayout.orientation = LinearLayout.HORIZONTAL
-            buttonLayout.gravity = Gravity.CENTER
-            when (responseCode) {
-                in 400..499 -> {
-                    titleText.text = ErrorMessages.INFORMATION_OUTDATED
-                    messageText.text = ErrorMessages.LOGIN_TO_UPDATE
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
-                500 -> {
-                    titleText.text = ErrorMessages.SERVERS_ERROR
-                    messageText.text = ErrorMessages.BLIZZ_SERVERS_DOWN
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button2)
-                }
-                else -> {
-                    titleText.text = ErrorMessages.NO_INTERNET
-                    messageText.text = ErrorMessages.TURN_ON_CONNECTION_MESSAGE
-                    button.text = ErrorMessages.RETRY
-                    button2.text = ErrorMessages.BACK
-                    buttonLayout.addView(button)
-                    buttonLayout.addView(button2)
-                }
+    private fun getErrorMessage(responseCode: Int): String {
+        return when (responseCode) {
+            in 400..499 -> {
+                errorMessages.LOGIN_TO_UPDATE
             }
-            dialog = builder.show()
-            dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            dialog?.window?.setLayout(800, 500)
-            val linearLayout = LinearLayout(context)
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.gravity = Gravity.CENTER
-            linearLayout.addView(titleText)
-            linearLayout.addView(messageText)
-            linearLayout.addView(buttonLayout)
-            val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(20, 20, 20, 20)
-            dialog?.addContentView(linearLayout, layoutParamsWindow)
-            dialog?.setOnCancelListener {
-                EventBus.getDefault().post(NetworkEvent(true))
+            500 -> {
+                errorMessages.BLIZZ_SERVERS_DOWN
             }
-            button.setOnClickListener {
-                dialog?.hide()
-                downloadInfo()
-                EventBus.getDefault().post(RetryEvent(true))
+            else -> {
+                errorMessages.TURN_ON_CONNECTION_MESSAGE
             }
-            button2.setOnClickListener {
-                dialog?.cancel()
+        }
+
+    }
+
+    private fun getErrorTitle(responseCode: Int): String {
+        return when (responseCode) {
+            in 400..499 -> {
+                errorMessages.INFORMATION_OUTDATED
+            }
+            500 -> {
+                errorMessages.SERVERS_ERROR
+            }
+            else -> {
+                errorMessages.NO_INTERNET
             }
         }
     }
 
+    private fun callErrorAlertDialog(responseCode: Int) {
+        if (URLConstants.loading) {
+            binding.loadingCircle.visibility = View.GONE
+            URLConstants.loading = false
+
+            if(responseCode == 404){
+                dialog = DialogPrompt(requireActivity())
+                dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
+                        .addMessage(getErrorMessage(responseCode), 18f, "message")
+                        .addSideBySideButtons(errorMessages.OK, 18f, errorMessages.BACK, 18f,
+                                {
+                                    dialog!!.cancel()
+                                },
+                                {
+                                    dialog!!.cancel()
+                                    EventBus.getDefault().post(NetworkEvent(true))
+                                },
+                                "retry", "back").show()
+            }else {
+                dialog = DialogPrompt(requireActivity())
+                dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
+                        .addMessage(getErrorMessage(responseCode), 18f, "message")
+                        .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
+                                {
+                                    dialog!!.cancel()
+                                    downloadInfo()
+                                    EventBus.getDefault().post(RetryEvent(true))
+                                    binding.loadingCircle.visibility = View.VISIBLE
+                                    URLConstants.loading = true
+                                },
+                                {
+                                    dialog!!.cancel()
+                                    EventBus.getDefault().post(NetworkEvent(true))
+                                },
+                                "retry", "back").show()
+            }
+        }
+
+    }
+
     companion object {
         var faction: String? = null
+        fun addOnBackPressCallback(activity: GamesActivity){
+            activity.onBackPressedDispatcher.addCallback {
+                GamesActivity.hideFavoriteButton()
+                if(!URLConstants.loading) {
+                    when {
+                        activity.supportFragmentManager.findFragmentByTag("wowfragment") != null -> {
+                            AccountFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        activity.supportFragmentManager.findFragmentByTag("wowfavorites") != null -> {
+                            WoWFavoritesFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        else -> {
+                            NewsListFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

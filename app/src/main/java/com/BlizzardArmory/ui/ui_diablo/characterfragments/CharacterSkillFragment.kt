@@ -25,15 +25,16 @@ import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.D3SkillFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.character.skills.Active
 import com.BlizzardArmory.model.diablo.character.skills.Skill
-import com.BlizzardArmory.util.events.BackPressEvent
+import com.BlizzardArmory.util.events.D3ClosePanelEvent
+import com.BlizzardArmory.util.events.D3SpellShownEvent
 import com.BlizzardArmory.util.events.WoWCharacterEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import kotlinx.android.synthetic.main.d3_skill_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -53,8 +54,12 @@ class CharacterSkillFragment : Fragment() {
     private val skillRuneList = ArrayList<TextView>()
     private val skillLayoutList = ArrayList<ImageView>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.d3_skill_fragment, container, false)
+    private var _binding: D3SkillFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = D3SkillFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,20 +78,25 @@ class CharacterSkillFragment : Fragment() {
         val skillTooltipBG = GradientDrawable()
         skillTooltipBG.setStroke(6, Color.parseColor("#2e2a27"))
         skillTooltipBG.setColor(Color.BLACK)
-        skill_tooltip_scroll.background = skillTooltipBG
-        Collections.addAll(skillList, skill1_icon, skill2_icon, skill3_icon, skill4_icon, skill5_icon, skill6_icon)
-        Collections.addAll(skillRuneList, skill1_rune, skill2_rune, skill3_rune, skill4_rune, skill5_rune, skill6_rune)
-        Collections.addAll(skillNameList, skill1_name, skill2_name, skill3_name, skill4_name, skill5_name, skill6_name)
-        Collections.addAll(skillLayoutList, skill1, skill2, skill3, skill4, skill5, skill6)
-        passiveList.add(passive1)
-        passiveList.add(passive2)
-        passiveList.add(passive3)
-        passiveList.add(passive4)
+        binding.skillTooltipScroll.background = skillTooltipBG
+        Collections.addAll(skillList, binding.skill1Icon, binding.skill2Icon, binding.skill3Icon, binding.skill4Icon, binding.skill5Icon, binding.skill6Icon)
+        Collections.addAll(skillRuneList, binding.skill1Rune, binding.skill2Rune, binding.skill3Rune, binding.skill4Rune, binding.skill5Rune, binding.skill6Rune)
+        Collections.addAll(skillNameList, binding.skill1Name, binding.skill2Name, binding.skill3Name, binding.skill4Name, binding.skill5Name, binding.skill6Name)
+        Collections.addAll(skillLayoutList, binding.skill1, binding.skill2, binding.skill3, binding.skill4, binding.skill5, binding.skill6)
+        passiveList.add(binding.passive1)
+        passiveList.add(binding.passive2)
+        passiveList.add(binding.passive3)
+        passiveList.add(binding.passive4)
     }
 
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onStop() {
@@ -95,8 +105,9 @@ class CharacterSkillFragment : Fragment() {
     }
 
     private fun closeViewsWithoutButton() {
-        skill_tooltip_scroll!!.visibility = View.GONE
-        skill_tooltip_scroll!!.scrollTo(0, 0)
+        binding.skillTooltipScroll.visibility = View.GONE
+        EventBus.getDefault().post(D3SpellShownEvent(false))
+        binding.skillTooltipScroll.scrollTo(0, 0)
     }
 
     private fun downloadSkillIcons() {
@@ -147,43 +158,43 @@ class CharacterSkillFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchSkillTooltip(tempKey: String, runeText: String, icon: Drawable) {
         skillLayoutList[skillIcons[tempKey]!!.first].setOnTouchListener { _: View?, event: MotionEvent ->
-            tooltip_rune_icon!!.visibility = View.VISIBLE
+            binding.tooltipRuneIcon.visibility = View.VISIBLE
             try {
                 (closeButton!!.parent as ViewGroup).removeView(closeButton)
             } catch (e: Exception) {
                 Log.e("Parent", "None")
             }
-            skill_tooltip!!.addView(closeButton)
+            binding.skillTooltip.addView(closeButton)
             if (event.action == MotionEvent.ACTION_DOWN) {
-                skill_name!!.text = skillIcons[tempKey]!!.second.skill.name
-                tooltip_skill_icon!!.setImageDrawable(icon)
-                tooltip_skill_icon!!.setBackgroundResource(0)
-                tooltip_skill_icon!!.setPadding(0, 0, 0, 0)
+                binding.skillName.text = skillIcons[tempKey]!!.second.skill.name
+                binding.tooltipSkillIcon.setImageDrawable(icon)
+                binding.tooltipSkillIcon.setBackgroundResource(0)
+                binding.tooltipSkillIcon.setPadding(0, 0, 0, 0)
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    skill_tooltip_text!!.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
+                    binding.skillTooltipText.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
                             .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                             .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                             .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                             .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    skill_tooltip_text!!.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
+                    binding.skillTooltipText.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
                             .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                             .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                             .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                             .replace("</span>".toRegex(), "</font>"))
                 }
                 if (runeText != "") {
-                    rune_separator!!.visibility = View.VISIBLE
-                    tooltip_rune_icon!!.setImageResource(getRuneIcon(skillIcons[tempKey]!!.second.rune.type))
+                    binding.runeSeparator.visibility = View.VISIBLE
+                    binding.tooltipRuneIcon.setImageResource(getRuneIcon(skillIcons[tempKey]!!.second.rune.type))
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        rune_tooltip_text!!.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
+                        binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
                                 + skillIcons[tempKey]!!.second.rune.descriptionHtml)
                                 .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                                 .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                                 .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                                 .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                     } else {
-                        rune_tooltip_text!!.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
+                        binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
                                 + skillIcons[tempKey]!!.second.rune.descriptionHtml)
                                 .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                                 .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
@@ -191,11 +202,12 @@ class CharacterSkillFragment : Fragment() {
                                 .replace("</span>".toRegex(), "</font>"))
                     }
                 } else {
-                    rune_tooltip_text!!.text = ""
-                    tooltip_rune_icon!!.setImageResource(0)
-                    rune_separator!!.visibility = View.GONE
+                    binding.runeTooltipText.text = ""
+                    binding.tooltipRuneIcon.setImageResource(0)
+                    binding.runeSeparator.visibility = View.GONE
                 }
-                skill_tooltip_scroll!!.visibility = View.VISIBLE
+                binding.skillTooltipScroll.visibility = View.VISIBLE
+                EventBus.getDefault().post(D3SpellShownEvent(true))
             }
             true
         }
@@ -244,42 +256,43 @@ class CharacterSkillFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchPassiveTooltip(tempKey: String, icon: Drawable) {
         passiveList[passiveIcons[tempKey]!!.first].setOnTouchListener { _: View?, event: MotionEvent ->
-            rune_separator!!.visibility = View.VISIBLE
-            tooltip_rune_icon!!.setImageResource(0)
-            tooltip_rune_icon!!.visibility = View.GONE
+            binding.runeSeparator.visibility = View.VISIBLE
+            binding.tooltipRuneIcon.setImageResource(0)
+            binding.tooltipRuneIcon.visibility = View.GONE
             try {
                 (closeButton!!.parent as ViewGroup).removeView(closeButton)
             } catch (e: Exception) {
                 Log.e("Parent", "None")
             }
-            skill_tooltip!!.addView(closeButton)
+            binding.skillTooltip.addView(closeButton)
             if (event.action == MotionEvent.ACTION_DOWN) {
-                skill_name!!.text = passiveIcons[tempKey]!!.second.name
-                tooltip_skill_icon!!.setImageDrawable(icon)
-                tooltip_skill_icon!!.setBackgroundResource(R.drawable.d3_passive_unselected)
-                tooltip_skill_icon!!.setPadding(15, 15, 15, 15)
+                binding.skillName.text = passiveIcons[tempKey]!!.second.name
+                binding.tooltipSkillIcon.setImageDrawable(icon)
+                binding.tooltipSkillIcon.setBackgroundResource(R.drawable.d3_passive_unselected)
+                binding.tooltipSkillIcon.setPadding(15, 15, 15, 15)
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    skill_tooltip_text!!.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
+                    binding.skillTooltipText.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
                             .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                             .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                             .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                             .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    skill_tooltip_text!!.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
+                    binding.skillTooltipText.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
                             .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                             .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                             .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                             .replace("</span>".toRegex(), "</font>"))
                 }
-                skill_tooltip_scroll!!.visibility = View.VISIBLE
+                binding.skillTooltipScroll.visibility = View.VISIBLE
+                EventBus.getDefault().post(D3SpellShownEvent(true))
                 try {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        rune_tooltip_text!!.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
+                        binding.runeTooltipText.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
                     } else {
-                        rune_tooltip_text!!.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>")
+                        binding.runeTooltipText.text = Html.fromHtml("<i>" + passiveIcons[tempKey]!!.second.flavorText + "</i>")
                     }
                 } catch (e: Exception) {
-                    rune_separator!!.visibility = View.GONE
+                    binding.runeSeparator.visibility = View.GONE
                 }
             }
             true
@@ -292,8 +305,9 @@ class CharacterSkillFragment : Fragment() {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 v.performClick()
                 Log.i("CLOSE", "CLICKED")
-                skill_tooltip_scroll!!.visibility = View.GONE
-                skill_tooltip_scroll!!.scrollTo(0, 0)
+                binding.skillTooltipScroll.visibility = View.GONE
+                EventBus.getDefault().post(D3SpellShownEvent(false))
+                binding.skillTooltipScroll.scrollTo(0, 0)
             }
             false
         }
@@ -307,9 +321,7 @@ class CharacterSkillFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun backPressEventReceived(backPressEvent: BackPressEvent) {
-        if (backPressEvent.data) {
-            closeViewsWithoutButton()
-        }
+    public fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
+        closeViewsWithoutButton()
     }
 }

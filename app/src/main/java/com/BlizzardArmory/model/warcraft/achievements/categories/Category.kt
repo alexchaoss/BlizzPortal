@@ -3,6 +3,7 @@ package com.BlizzardArmory.model.warcraft.achievements.categories
 
 import com.google.gson.annotations.SerializedName
 
+
 data class Category(
         @SerializedName("alliance_points")
         val alliancePoints: Int,

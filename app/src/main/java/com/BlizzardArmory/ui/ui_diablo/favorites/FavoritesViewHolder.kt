@@ -53,7 +53,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             bundle.putString("region", profile.region)
             bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
             fragment.arguments = bundle
-            fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3fragment").commit()
+            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "d3fragment").addToBackStack("d3_account").commit()
             fragmentManager.executePendingTransactions()
         }
     }

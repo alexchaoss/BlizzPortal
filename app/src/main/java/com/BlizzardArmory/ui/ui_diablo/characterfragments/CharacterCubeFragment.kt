@@ -11,18 +11,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.D3CubeFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.item.SingleItem
+import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.events.WoWCharacterEvent
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.d3_cube_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -37,9 +36,13 @@ class CharacterCubeFragment : Fragment() {
     private val cubeMap = HashMap<String, ImageView?>()
     private val singleItem = ArrayList<SingleItem>()
     private var characterInformation: CharacterInformation? = null
+    
+    private var _binding: D3CubeFragmentBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.d3_cube_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = D3CubeFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,14 +51,19 @@ class CharacterCubeFragment : Fragment() {
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
-        cube_armor_item.setImageResource(0)
-        cube_sword_item.setImageResource(0)
-        cube_ring_item.setImageResource(0)
+        binding.cubeArmorItem.setImageResource(0)
+        binding.cubeSwordItem.setImageResource(0)
+        binding.cubeRingItem.setImageResource(0)
     }
 
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onStop() {
@@ -73,15 +81,15 @@ class CharacterCubeFragment : Fragment() {
                     when {
                         armorArray.any { s: String? -> characterInformation!!.legendaryPowers[i].icon.contains(s!!) } -> {
                             cubeURL["armor"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation!!.legendaryPowers[i].icon + ".png")
-                            cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = cube_armor_item
+                            cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = binding.cubeArmorItem
                         }
                         ringArray.any { s: String? -> characterInformation!!.legendaryPowers[i].icon.contains(s!!) } -> {
                             cubeURL["ring"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation!!.legendaryPowers[i].icon + ".png")
-                            cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = cube_ring_item
+                            cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = binding.cubeRingItem
                         }
                         else -> {
                             cubeURL["sword"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", characterInformation!!.legendaryPowers[i].icon + ".png")
-                            cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = cube_sword_item
+                            cubeMap[characterInformation!!.legendaryPowers[i].icon.toLowerCase(Locale.ROOT)] = binding.cubeSwordItem
                         }
                     }
                 }
@@ -91,16 +99,16 @@ class CharacterCubeFragment : Fragment() {
             for (key in cubeURL.keys) {
                 when (key) {
                     "sword" -> {
-                        cube_sword_item!!.visibility = View.VISIBLE
-                        Glide.with(this).load(cubeURL[key]).into(cube_sword_item)
+                        binding.cubeSwordItem.visibility = View.VISIBLE
+                        Glide.with(this).load(cubeURL[key]).into(binding.cubeSwordItem)
                     }
                     "armor" -> {
-                        cube_armor_item!!.visibility = View.VISIBLE
-                        Glide.with(this).load(cubeURL[key]).into(cube_armor_item)
+                        binding.cubeArmorItem.visibility = View.VISIBLE
+                        Glide.with(this).load(cubeURL[key]).into(binding.cubeArmorItem)
                     }
                     "ring" -> {
-                        cube_ring_item!!.visibility = View.VISIBLE
-                        Glide.with(this).load(cubeURL[key]).into(cube_ring_item)
+                        binding.cubeRingItem.visibility = View.VISIBLE
+                        Glide.with(this).load(cubeURL[key]).into(binding.cubeRingItem)
                     }
                 }
             }
@@ -110,7 +118,7 @@ class CharacterCubeFragment : Fragment() {
         for (i in characterInformation!!.legendaryPowers.indices) {
             Log.i("Cube", characterInformation!!.legendaryPowers[i].tooltipParams)
             val endpoint = characterInformation!!.legendaryPowers[i].tooltipParams.replace("/item/", "")
-            val call: Call<SingleItem> = RetroClient.getClient.getItem(endpoint, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale)
+            val call: Call<SingleItem> = GamesActivity.client!!.getItem(endpoint, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale)
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
                     when {
@@ -122,17 +130,16 @@ class CharacterCubeFragment : Fragment() {
                             }
                         }
                         response.code() >= 400 -> {
-                            //callErrorAlertDialog(response.code())
+                            Log.e("Error cube item", "${response.code()}")
                         }
                         else -> {
-                            //callErrorAlertDialog(0)
+                            Log.e("Error cube item", "${response.code()}")
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<SingleItem>, t: Throwable) {
                     Log.e("Error", "trace", t)
-                    //callErrorAlertDialog(0)
                 }
             })
         }
@@ -149,11 +156,11 @@ class CharacterCubeFragment : Fragment() {
                                 .replace("span".toRegex(), "font")
                     }
                 }
-                cube_text!!.visibility = View.VISIBLE
+                binding.cubeText.visibility = View.VISIBLE
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    cube_text!!.text = Html.fromHtml(cubeText, Html.FROM_HTML_MODE_LEGACY)
+                    binding.cubeText.text = Html.fromHtml(cubeText, Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    cube_text!!.text = Html.fromHtml(cubeText)
+                    binding.cubeText.text = Html.fromHtml(cubeText)
                 }
                 false
             }

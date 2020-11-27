@@ -1,68 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/character_layout"
     android:layout_width="match_parent"
-    android:layout_margin="1dp"
-    android:padding="3dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginEnd="20dp"
+    app:cardBackgroundColor="#10131c"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/inputstyle">
+    app:cardElevation="8dp">
 
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_marginStart="35dp"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/faction"
-        android:layout_alignStart="@id/info"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="35dp"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/info"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-        <TextView
-            android:id="@+id/name"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFF"
-            android:text="NAME" />
+            android:layout_marginStart="10dp"
+            android:background="#000"
+            android:padding="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/level"
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="55dp"
+                android:layout_height="55dp" />
+        </RelativeLayout>
+
+
+        <ImageView
+            android:id="@+id/faction"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignStart="@id/info"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFF"
-            android:text="Level 120" />
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/character_class"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#FFF"
-            android:text="Demon Hunter" />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF" />
+
+            <TextView
+                android:id="@+id/level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF" />
+
+            <TextView
+                android:id="@+id/character_class"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

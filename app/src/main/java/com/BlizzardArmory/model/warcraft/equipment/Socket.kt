@@ -1,7 +1,7 @@
 package com.BlizzardArmory.model.warcraft.equipment
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
 
 /**
  * The type Socket.
@@ -18,8 +18,7 @@ class Socket {
      * @param socketType the socket type
      */
     @SerializedName("socket_type")
-    @Expose
-    var socketType: SocketType? = null
+        var socketType: SocketType? = null
 
     /**
      * Gets item.
@@ -32,8 +31,7 @@ class Socket {
      * @param item the item
      */
     @SerializedName("item")
-    @Expose
-    var item: Item? = null
+        var item: Item? = null
 
     /**
      * Gets context.
@@ -46,8 +44,7 @@ class Socket {
      * @param context the context
      */
     @SerializedName("context")
-    @Expose
-    var context = 0
+        var context = 0
 
     /**
      * Gets display string.
@@ -60,8 +57,7 @@ class Socket {
      * @param displayString the display string
      */
     @SerializedName("display_string")
-    @Expose
-    var displayString: String? = null
+        var displayString: String? = null
 
     /**
      * Gets media.
@@ -74,8 +70,7 @@ class Socket {
      * @param media the media
      */
     @SerializedName("media")
-    @Expose
-    var media: Media? = null
+        var media: Media? = null
 
     /**
      * Gets bonus list.
@@ -88,7 +83,6 @@ class Socket {
      * @param bonusList the bonus list
      */
     @SerializedName("bonus_list")
-    @Expose
-    var bonusList: List<Int>? = null
+        var bonusList: List<Int>? = null
 
 }

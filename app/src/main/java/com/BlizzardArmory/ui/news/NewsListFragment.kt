@@ -1,20 +1,22 @@
 package com.BlizzardArmory.ui.news
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.R
+import com.BlizzardArmory.databinding.NewsListFragmentBinding
 import com.BlizzardArmory.model.news.NewsMetaData
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
 import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.FilterNewsEvent
-import kotlinx.android.synthetic.main.news_list_fragment.*
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -27,38 +29,58 @@ import java.util.*
 
 class NewsListFragment : Fragment() {
 
-    var downloaded = false
-    var newsList = arrayListOf<NewsMetaData>()
-    var tempList = arrayListOf<NewsMetaData>()
+    private var downloaded = false
+    private var newsList = arrayListOf<NewsMetaData>()
+    private var tempList = arrayListOf<NewsMetaData>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.news_list_fragment, container, false)
+    private lateinit var binding: NewsListFragmentBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        addOnBackPressCallback(activity as GamesActivity)
+        binding = NewsListFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSwipeGestureToRefreshData()
         setupNews()
+        setBackToTopButton()
+    }
 
-        news_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+    private fun setBackToTopButton() {
+        binding.newsRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 100) {
-                    back_to_top.visibility = View.VISIBLE
+                    binding.backToTop.visibility = View.VISIBLE
                 } else if (dy == 0) {
-                    back_to_top.visibility = View.GONE
+                    binding.backToTop.visibility = View.GONE
                 }
             }
         })
 
-        back_to_top.setOnClickListener {
+        binding.backToTop.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 GlobalScope.launch(Dispatchers.Main) {
-                    news_recycler.layoutManager?.smoothScrollToPosition(news_recycler, RecyclerView.State(), 0)
-                    delay((news_recycler.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() * 100L)
+                    binding.newsRecycler.layoutManager?.smoothScrollToPosition(binding.newsRecycler, RecyclerView.State(), 0)
+                    delay((binding.newsRecycler.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() * 100L)
                 }.join()
-                news_recycler.scrollToPosition(0)
+                binding.newsRecycler.scrollToPosition(0)
             }
-            back_to_top.visibility = View.GONE
+            binding.backToTop.visibility = View.GONE
+        }
+    }
+
+    private fun setSwipeGestureToRefreshData() {
+        binding.swipe.setOnRefreshListener {
+            downloaded = false
+            GlobalScope.launch(Dispatchers.Main) {
+                launch(Dispatchers.IO) {
+                    setupNews()
+                }.join()
+                binding.swipe.isRefreshing = false
+            }
         }
     }
 
@@ -74,6 +96,7 @@ class NewsListFragment : Fragment() {
 
     private fun setupNews() {
         if (!downloaded) {
+            WebNewsScrapper.newsList.clear()
             GlobalScope.launch(Dispatchers.Main) {
                 launch(Dispatchers.IO) {
                     WebNewsScrapper.parseNewsList("https://news.blizzard.com/${MainActivity.locale}")
@@ -84,12 +107,16 @@ class NewsListFragment : Fragment() {
                 downloaded = true
             }
         } else {
+            downloaded = false
             setupRecycler()
         }
     }
 
     private fun setupRecycler() {
-        news_recycler.apply {
+        if (newsList.isNotEmpty()) {
+            newsList = newsList.distinct() as ArrayList<NewsMetaData>
+        }
+        binding.newsRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = NewsAdapter(newsList, context)
             adapter!!.notifyDataSetChanged()
@@ -97,13 +124,13 @@ class NewsListFragment : Fragment() {
     }
 
     private fun filterList() {
-        val blizzlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.blizzNews!! && it.game.toLowerCase(Locale.ROOT).contains("blizzard") }
-        val wowlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.wowNews!! && it.game.toLowerCase(Locale.ROOT).contains("warcraft") }
-        val d3list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.d3News!! && it.game.toLowerCase(Locale.ROOT).contains("diablo") }
-        val sc2list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.sc2News!! && it.game.toLowerCase(Locale.ROOT).contains("starcraft") }
-        val owlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.owNews!! && it.game.toLowerCase(Locale.ROOT).contains("overwatch") }
-        val hslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hsNews!! && it.game.toLowerCase(Locale.ROOT).contains("hearthstone") }
-        val hotslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hotsNews!! && it.game.toLowerCase(Locale.ROOT).contains("heroes") }
+        val blizzlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.blizzNews!! && it.game.toLowerCase(Locale.ROOT).contains("blizzard|深入暴雪|블리자드 인사이드".toRegex()) }
+        val wowlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.wowNews!! && it.game.toLowerCase(Locale.ROOT).contains("warcraft|魔獸|워크 래프트".toRegex()) }
+        val d3list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.d3News!! && it.game.toLowerCase(Locale.ROOT).contains("diablo|暗黑破壞神|디아블로".toRegex()) }
+        val sc2list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.sc2News!! && it.game.toLowerCase(Locale.ROOT).contains("starcraft|星海爭霸|스타크래프트".toRegex()) }
+        val owlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.owNews!! && it.game.toLowerCase(Locale.ROOT).contains("overwatch|鬥陣特攻|오버워치".toRegex()) }
+        val hslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hsNews!! && it.game.toLowerCase(Locale.ROOT).contains("hearthstone|爐石戰記|하스스톤".toRegex()) }
+        val hotslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hotsNews!! && it.game.toLowerCase(Locale.ROOT).contains("heroes|暴雪英霸|히어로즈 오브 더 스톰".toRegex()) }
 
         tempList.clear()
         tempList.addAll(blizzlist)
@@ -116,17 +143,33 @@ class NewsListFragment : Fragment() {
 
         newsList = tempList
         newsList.sortBy {
-            SimpleDateFormat("EEE MMM d yyyy HH:mm:ss z").parse(it.timestamp)
+            SimpleDateFormat("EEE MMM d yyyy HH:mm:ss z", Locale.ENGLISH).parse(it.timestamp)
         }
         newsList.reverse()
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(filterNewsEvent: FilterNewsEvent) {
-        val recyclerViewState = news_recycler.layoutManager?.onSaveInstanceState()
+        val recyclerViewState = binding.newsRecycler.layoutManager?.onSaveInstanceState()
         filterList()
         setupRecycler()
-        news_recycler.layoutManager?.onRestoreInstanceState(recyclerViewState)
+        binding.newsRecycler.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun refreshNewsReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        Log.i("REFRESH", "The news have been refreshed")
+        downloaded = false
+        setupNews()
+    }
+
+    companion object{
+        fun addOnBackPressCallback(activity: GamesActivity){
+            activity.onBackPressedDispatcher.addCallback {
+                val intent = Intent(activity, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                activity.startActivity(intent)
+            }
+        }
+    }
 }

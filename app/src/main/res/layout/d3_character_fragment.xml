@@ -8,42 +8,6 @@
     android:clickable="true"
     android:focusable="true">
 
-    <!--<ImageView
-        android:id="@+id/chatgem_statue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:contentDescription="@string/chat_gem_statue"
-        android:src="@drawable/chatgem_statue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/chatgem_inactive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:contentDescription="@string/chat_gem_statue"
-        android:src="@drawable/chatgem_inactive"
-        app:layout_constraintBottom_toBottomOf="@id/chatgem_statue"
-        app:layout_constraintEnd_toEndOf="@id/chatgem_statue"
-        app:layout_constraintStart_toStartOf="@id/chatgem_statue"
-        app:layout_constraintTop_toTopOf="@id/chatgem_statue" />
-
-    <ImageView
-        android:id="@+id/chatgem_active"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:contentDescription="@string/chat_gem_statue"
-        android:src="@drawable/chatgem_active"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/chatgem_statue"
-        app:layout_constraintEnd_toEndOf="@id/chatgem_statue"
-        app:layout_constraintStart_toStartOf="@id/chatgem_statue"
-        app:layout_constraintTop_toTopOf="@id/chatgem_statue" />-->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/stats_layout"
         android:layout_width="match_parent"

@@ -424,12 +424,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:background="#c6cbde"
-                            android:drawableStart="@drawable/ow_best_icon"
                             android:padding="2dp"
                             android:text="@string/best"
                             android:textColor="#405275"
                             android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            app:drawableStartCompat="@drawable/ow_best_icon" />
 
                     </LinearLayout>
 
@@ -451,12 +451,12 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:background="#c6cbde"
-                                android:drawableStart="@drawable/ow_assist_icon"
                                 android:padding="2dp"
                                 android:text="@string/assist"
                                 android:textColor="#405275"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                app:drawableStartCompat="@drawable/ow_assist_icon" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -472,13 +472,13 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:background="#c6cbde"
-                                android:drawableStart="@drawable/ow_game_icon"
                                 android:padding="2dp"
                                 android:paddingBottom="2dp"
                                 android:text="@string/game"
                                 android:textColor="#405275"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                app:drawableStartCompat="@drawable/ow_game_icon" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -494,12 +494,12 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:background="#c6cbde"
-                                android:drawableStart="@drawable/ow_average_icon"
                                 android:padding="2dp"
                                 android:text="@string/average"
                                 android:textColor="#405275"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                app:drawableStartCompat="@drawable/ow_average_icon" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -522,12 +522,12 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:background="#c6cbde"
-                                android:drawableStart="@drawable/ow_combat_icon"
                                 android:padding="2dp"
                                 android:text="@string/combat"
                                 android:textColor="#405275"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                app:drawableStartCompat="@drawable/ow_combat_icon" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -544,12 +544,12 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:background="#c6cbde"
-                                android:drawableStart="@drawable/ow_miscellaneous_icon"
                                 android:padding="2dp"
                                 android:text="@string/miscellaneous"
                                 android:textColor="#405275"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                app:drawableStartCompat="@drawable/ow_miscellaneous_icon" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -566,12 +566,12 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:background="#c6cbde"
-                                android:drawableStart="@drawable/ow_match_icon"
                                 android:padding="2dp"
                                 android:text="@string/match_awards"
                                 android:textColor="#405275"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                app:drawableStartCompat="@drawable/ow_match_icon" />
                         </LinearLayout>
 
                     </LinearLayout>

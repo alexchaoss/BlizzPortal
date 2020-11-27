@@ -1,66 +1,70 @@
 package com.BlizzardArmory.ui
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.databinding.ActivityMainBinding
+import com.BlizzardArmory.util.ConnectionStatus
+import com.BlizzardArmory.util.DialogPrompt
+import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : LocalizationActivity() {
 
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
-    private val regionList = arrayOf("Select Region", "CN", "US", "EU", "KR", "TW")
     private var sharedPreferences: SharedPreferences? = null
     private val REQUEST_CODE_IN_APP_UPDATE = 7500
 
+    private lateinit var binding : ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        FirebaseCrashlytics.getInstance().sendUnsentReports()
+        startWiFiNetworkCallback()
+        startDataNetworkCallback()
         checkForAppUpdates()
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         initLocale()
 
-        val regionAdapter = setAdapater(regionList)
+        val regionAdapter = setAdapater(resources.getStringArray(R.array.regions))
         regionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-        spinner.adapter = regionAdapter
+        binding.spinner.adapter = regionAdapter
 
-        spinnerSelector(spinner)
+        spinnerSelector(binding.spinner)
 
         setLoginButtonToBattlenet()
-        logout.setOnClickListener { clearCredentials() }
+        binding.logout.setOnClickListener { clearCredentials() }
     }
-
-
 
     override fun onResume() {
         super.onResume()
@@ -124,23 +128,67 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoginButtonToBattlenet() {
-        buttonLogin.setOnClickListener {
+        binding.buttonLogin.setOnClickListener {
             if (selectedRegion == "Select Region") {
                 Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT).show()
             } else {
-                openLoginToBattleNet()
+                checkConnectionBeforeLogin()
             }
         }
     }
 
-    private fun openLoginToBattleNet() {
-        if (isNetworkAvailable()) {
-            battlenetOAuth2Params = BattlenetOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
-                    URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BattlenetConstants.SCOPE_WOW, BattlenetConstants.SCOPE_SC2)
-            startOauthFlow(battlenetOAuth2Params!!)
+    private fun checkConnectionBeforeLogin() {
+        if(ConnectionStatus.hasNetwork()){
+            openLoginToBattleNet()
         } else {
-            showNoConnectionMessage(this@MainActivity, 0)
+            val dialog = DialogPrompt(this)
+            dialog.addTitle("Internet connection unstable", 20F, "title")
+                    .addMessage("Are you currently connected to a network?", 16F, "message")
+                    .addSideBySideButtons("Yes", 16F, "No", 16F, { openLoginToBattleNet()}, {
+                        dialog.cancel()
+                        val confirmDialog = DialogPrompt(this)
+                        confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
+                                .addButton("Ok", 16F, {confirmDialog.cancel()}, "close").show()
+                    }, "positive", "negative").show()
         }
+    }
+
+    private fun openLoginToBattleNet() {
+        battlenetOAuth2Params = BattlenetOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
+                URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BattlenetConstants.SCOPE_WOW, BattlenetConstants.SCOPE_SC2)
+        startOauthFlow(battlenetOAuth2Params!!)
+    }
+
+    private fun startWiFiNetworkCallback() {
+        val cm: ConnectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val builder: NetworkRequest.Builder = NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+
+        cm.registerNetworkCallback(builder.build(), object : ConnectivityManager.NetworkCallback() {
+
+            override fun onAvailable(network: Network) {
+                ConnectionStatus.isWiFiNetworkConnected = true
+            }
+
+            override fun onLost(network: Network) {
+                ConnectionStatus.isWiFiNetworkConnected = false
+            }
+        })
+    }
+
+    private fun startDataNetworkCallback() {
+        val cm: ConnectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val builder: NetworkRequest.Builder = NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+
+        cm.registerNetworkCallback(builder.build(), object : ConnectivityManager.NetworkCallback() {
+
+            override fun onAvailable(network: Network) {
+                ConnectionStatus.isDataNetworkConnected = true
+            }
+
+            override fun onLost(network: Network) {
+                ConnectionStatus.isDataNetworkConnected = false
+            }
+        })
     }
 
     private fun startOauthFlow(battlenetOAuth2Params: BattlenetOAuth2Params) {
@@ -163,17 +211,6 @@ class MainActivity : AppCompatActivity() {
         webview.loadUrl(URLConstants.LOGOUT_URL)
     }
 
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val nw = connectivityManager.activeNetwork ?: return false
-        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
-        return when {
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            else -> false
-        }
-    }
-
     private fun checkForAppUpdates() {
         val appUpdateManager = AppUpdateManagerFactory.create(this)
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
@@ -189,91 +226,17 @@ class MainActivity : AppCompatActivity() {
         } else {
             sharedPreferences?.getString("locale", "en_US")!!
         }
-    }
-
-    private fun showNoConnectionMessage(context: Context, responseCode: Int) {
-        val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(0, 20, 0, 0)
-        val titleText = TextView(context)
-        titleText.text = "No Internet Connection"
-        titleText.textSize = 20f
-        titleText.gravity = Gravity.CENTER_HORIZONTAL
-        titleText.setPadding(0, 20, 0, 20)
-        titleText.layoutParams = layoutParams
-        titleText.setTextColor(Color.WHITE)
-        val messageText = TextView(context)
-        messageText.text = "Make sure that Wi-Fi or mobile data is turned on, then try again."
-        messageText.gravity = Gravity.CENTER_HORIZONTAL
-        messageText.layoutParams = layoutParams
-        messageText.setTextColor(Color.WHITE)
-        val buttonLayout = LinearLayout(context)
-        buttonLayout.orientation = LinearLayout.HORIZONTAL
-        buttonLayout.gravity = Gravity.CENTER
-        val button = Button(context)
-        button.textSize = 18f
-        button.setTextColor(Color.WHITE)
-        button.gravity = Gravity.CENTER
-        button.width = 200
-        button.layoutParams = layoutParams
-        button.background = context.getDrawable(R.drawable.buttonstyle)
-        val button2 = Button(context)
-        button2.textSize = 18f
-        button2.setTextColor(Color.WHITE)
-        button2.gravity = Gravity.CENTER
-        button2.width = 200
-        button2.layoutParams = layoutParams
-        button2.background = context.getDrawable(R.drawable.buttonstyle)
-        when (responseCode) {
-            0 -> {
-                button.text = "OK"
-                button2.text = "RETRY"
-                buttonLayout.addView(button)
-                buttonLayout.addView(button2)
-            }
-            /*100 -> {
-                button.text = "Yes"
-                button2.text = "Cancel"
-                titleText.text = "Warning"
-                buttonLayout.addView(button)
-                buttonLayout.addView(button2)
-                messageText.text = "You are about to clear the application data, this will close the application.\n Are you sure you want to continue?"
-            }*/
-            else -> {
-                buttonLayout.addView(button)
-                button.text = "OK"
-            }
-        }
-        val dialog = builder.show()
-        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        if (responseCode == 100) {
-            dialog?.window?.setLayout(800, 600)
-        } else {
-            dialog?.window?.setLayout(800, 500)
-        }
-        val linearLayout = LinearLayout(context)
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.gravity = Gravity.CENTER
-        linearLayout.addView(titleText)
-        linearLayout.addView(messageText)
-        linearLayout.addView(buttonLayout)
-        val layoutParamsWindow = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(20, 20, 20, 20)
-        dialog.addContentView(linearLayout, layoutParamsWindow)
-        when (responseCode) {
-            100 -> {
-                button2.setOnClickListener { dialog.cancel() }
-                button.setOnClickListener { clearCredentials() }
-            }
-            0 -> {
-                dialog.setOnCancelListener { obj: DialogInterface -> obj.cancel() }
-                button2.setOnClickListener { openLoginToBattleNet() }
-                button.setOnClickListener { dialog.cancel() }
-            }
-            else -> {
-                button.setOnClickListener { dialog.cancel() }
-                dialog.setOnCancelListener { obj: DialogInterface -> obj.cancel() }
-            }
+        when (locale) {
+            "en_US" -> setLanguage("en")
+            "es_ES" -> setLanguage("es")
+            "fr_FR" -> setLanguage("fr")
+            "ru_RU" -> setLanguage("ru")
+            "de_DE" -> setLanguage("de")
+            "pt_BR" -> setLanguage("pt")
+            "it_IT" -> setLanguage("it")
+            "ko_KR" -> setLanguage("ko")
+            "zh_CN" -> setLanguage("zh", "CN")
+            "zh_TW" -> setLanguage("zh", "TW")
         }
     }
 

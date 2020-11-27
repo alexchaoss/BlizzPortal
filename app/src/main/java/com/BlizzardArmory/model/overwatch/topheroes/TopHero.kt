@@ -1,7 +1,7 @@
 package com.BlizzardArmory.model.overwatch.topheroes
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
 
 /**
  * The type Top hero.
@@ -18,8 +18,7 @@ open class TopHero {
      * @param timePlayed the time played
      */
     @SerializedName("timePlayed")
-    @Expose
-    var timePlayed: String? = null
+        var timePlayed: String? = null
 
     /**
      * Gets games won.
@@ -32,8 +31,7 @@ open class TopHero {
      * @param gamesWon the games won
      */
     @SerializedName("gamesWon")
-    @Expose
-    var gamesWon = 0.0
+        var gamesWon = 0.0
 
     /**
      * Gets win percentage.
@@ -46,8 +44,7 @@ open class TopHero {
      * @param winPercentage the win percentage
      */
     @SerializedName("winPercentage")
-    @Expose
-    var winPercentage = 0.0
+        var winPercentage = 0.0
 
     /**
      * Gets weapon accuracy.
@@ -60,8 +57,7 @@ open class TopHero {
      * @param weaponAccuracy the weapon accuracy
      */
     @SerializedName("weaponAccuracy")
-    @Expose
-    var weaponAccuracy = 0.0
+        var weaponAccuracy = 0.0
 
     /**
      * Gets eliminations per life.
@@ -74,8 +70,7 @@ open class TopHero {
      * @param eliminationsPerLife the eliminations per life
      */
     @SerializedName("eliminationsPerLife")
-    @Expose
-    var eliminationsPerLife = 0f
+        var eliminationsPerLife = 0f
 
     /**
      * Gets multi kill best.
@@ -88,8 +83,7 @@ open class TopHero {
      * @param multiKillBest the multi kill best
      */
     @SerializedName("multiKillBest")
-    @Expose
-    var multiKillBest = 0.0
+        var multiKillBest = 0.0
 
     /**
      * Gets objective kills.
@@ -102,7 +96,6 @@ open class TopHero {
      * @param objectiveKills the objective kills
      */
     @SerializedName("objectiveKills")
-    @Expose
-    var objectiveKills = 0.0
+        var objectiveKills = 0.0
 
 }

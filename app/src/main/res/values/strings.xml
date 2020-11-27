@@ -41,7 +41,6 @@
     <string name="spec1" translatable="false">spec1</string>
     <string name="spec2" translatable="false">spec2</string>
     <string name="spec3" translatable="false">spec3</string>
-
     <string name="talent_information_not_available">Talent information unavailable</string>
     <string name="career">Career</string>
     <string name="paragon" translatable="false">Paragon</string>
@@ -88,7 +87,7 @@
     <string name="intelligence">Intelligence:</string>
     <string name="vitality">Vitality:</string>
     <string name="snapshot" translatable="false">SNAPSHOT</string>
-    <string name="statistics">statistics</string>
+    <string name="statistics">Statistics</string>
     <string name="_1v1" translatable="false">1v1</string>
     <string name="team">Team</string>
     <string name="total_career_games">Total Career Games</string>
@@ -129,11 +128,10 @@
     <string name="custom_license_title" translatable="false">Licenses</string>
     <string name="licenses" translatable="false">Licenses</string>
     <string name="settingsTitle">Settings</string>
-    <string name="information" translatable="false">Information</string>
+    <string name="information">Information</string>
     <string name="want_to_donate">Want to donate?</string>
     <string name="paypal" translatable="false">Paypal</string>
     <string name="character">Character</string>
-    <string name="progress">Progress</string>
     <string name="pvp" translatable="false">PvP</string>
     <string name="achievs">Achievs</string>
     <string name="banner" translatable="false">banner</string>
@@ -168,7 +166,53 @@
     <string name="achievements">Achievements</string>
     <string name="download_achievements_n_wi_fi_recommended">Download Achievements\n(Wi-Fi recommended)</string>
     <string name="categories">Categories</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
+    <string name="favorite">favorite</string>
+    <string name="select_your_news">Select Your News</string>
+    <string name="blizzard_news">Blizzard News</string>
+    <string name="warcraft_news">Warcraft News</string>
+    <string name="diablo_news">Diablo News</string>
+    <string name="starcraft_news">Starcraft News</string>
+    <string name="overwatch_news">Overwatch News</string>
+    <string name="hearthstone_news">Hearthstone News</string>
+    <string name="heroes_of_the_storm_news">Heroes of The Storm News</string>
+    <string name="news">News</string>
+    <string name="hero">Hero</string>
+    <string name="loadingdot">Loading . . .</string>
+    <string name="battleground">Battleground</string>
+    <string name="games">Games</string>
+    <string name="wins">Wins</string>
+    <string name="winpercent">Win %</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="turn_on_connection">Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
+    <string name="retry">Retry</string>
+    <string name="back">Back</string>
+    <string name="ok">Ok</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="unexpected">There was an unexpected error, please try again.</string>
+    <string name="account_not_found">The account could not be found</string>
+    <string name="ow_account_not_found">There is no Overwatch profile associated with this account.</string>
+    <string name="sc2_account_not_found">There is no Starcraft 2 profile associated with this account.</string>
+    <string name="sc2_servers_down">The Starcraft 2 community servers are down temporarily.</string>
+    <string name="server_error">Server Error</string>
+    <string name="blizz_server_down">There seems to be some problems with Blizzard\'s servers, please try again later</string>
+    <string name="outdated_info">Information Outdated</string>
+    <string name="login_again">Please login in game to update your account\'s information.</string>
+    <string name="leaderboard" translatable="false">Leaderboards</string>
+    <string name="season">Season</string>
+    <string name="era">Era</string>
+    <string name="softcore">Softcore</string>
+    <string name="hardcore">Hardcore</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="search">Search</string>
+    <string name="covenant">Covenant</string>
+    <string name="progress2">Progress</string>
+
+    <string-array name="regions">
+        <item>Select Region</item>
+        <item>US</item>
+        <item>EU</item>
+        <item>KR</item>
+        <item>TW</item>
+    </string-array>
 </resources>

@@ -153,4 +153,17 @@ object URLConstants {
     fun getTalentsIcons(playableClassId: Int, locale: String): String {
         return "https://blizzard-armory-server.herokuapp.com/talents/$playableClassId/$locale"
     }
+
+    fun getCovenantClassSpells(playableClassId: Int, locale: String): String {
+        return "https://blizzard-armory-server.herokuapp.com/covenant/class/$playableClassId/$locale"
+    }
+
+    fun getCovenantSpells(covenantId: Int, locale: String): String {
+        return "https://blizzard-armory-server.herokuapp.com/covenant/$covenantId/$locale"
+    }
+
+    fun getReputations(locale: String): String {
+        return "https://blizzard-armory-server.herokuapp.com/reputations/$locale"
+    }
+
 }

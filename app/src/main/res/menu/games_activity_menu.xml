@@ -16,12 +16,12 @@
             android:title="@string/world_of_warcraft" />
         <item
             android:id="@+id/wow_search"
-            android:title="@string/search_character"
-            app:actionLayout="@layout/search_wow_character" />
+            android:title=""
+            app:actionLayout="@layout/search_wow_character"/>
         <item
             android:id="@+id/wow_favorite"
-            android:title="@string/wow_favorites"
-            app:actionLayout="@layout/favorites" />
+            android:title=""
+            app:actionLayout="@layout/favorites"/>
     </group>
 
     <group android:id="@+id/d3group">
@@ -30,8 +30,12 @@
             android:icon="@drawable/diablo3_icon"
             android:title="@string/diablo_3" />
         <item
+            android:id="@+id/d3_leaderboard"
+            android:title=""
+            app:actionLayout="@layout/d3_leaderboards_menu" />
+        <item
             android:id="@+id/d3_favorite"
-            android:title="@string/d3_favorites"
+            android:title=""
             app:actionLayout="@layout/favorites" />
     </group>
 
@@ -49,7 +53,7 @@
             android:title="@string/overwatch" />
         <item
             android:id="@+id/ow_favorite"
-            android:title="@string/ow_favorites"
+            android:title=""
             app:actionLayout="@layout/favorites" />
     </group>
 

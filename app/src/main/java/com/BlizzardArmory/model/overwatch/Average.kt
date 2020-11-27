@@ -1,7 +1,8 @@
 package com.BlizzardArmory.model.overwatch
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
+
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -9,50 +10,40 @@ import java.util.*
 /**
  * The type Average.
  */
+
 data class Average(
 
         @SerializedName("allDamageDoneAvgPer10Min")
-        @Expose
         var allDamageDoneAvgPer10Min: Double,
 
         @SerializedName("barrierDamageDoneAvgPer10Min")
-        @Expose
         var barrierDamageDoneAvgPer10Min: Double,
 
         @SerializedName("deathsAvgPer10Min")
-        @Expose
         var deathsAvgPer10Min: Float,
 
         @SerializedName("eliminationsAvgPer10Min")
-        @Expose
         var eliminationsAvgPer10Min: Float,
 
         @SerializedName("finalBlowsAvgPer10Min")
-        @Expose
         var finalBlowsAvgPer10Min: Float,
 
         @SerializedName("healingDoneAvgPer10Min")
-        @Expose
         var healingDoneAvgPer10Min: Double,
 
         @SerializedName("heroDamageDoneAvgPer10Min")
-        @Expose
         var heroDamageDoneAvgPer10Min: Double,
 
         @SerializedName("objectiveKillsAvgPer10Min")
-        @Expose
         var objectiveKillsAvgPer10Min: Float,
 
         @SerializedName("objectiveTimeAvgPer10Min")
-        @Expose
         var objectiveTimeAvgPer10Min: String,
 
         @SerializedName("soloKillsAvgPer10Min")
-        @Expose
         var soloKillsAvgPer10Min: Float,
 
         @SerializedName("timeSpentOnFireAvgPer10Min")
-        @Expose
         var timeSpentOnFireAvgPer10Min: String
 ) {
     val average: HashMap<String, String>
