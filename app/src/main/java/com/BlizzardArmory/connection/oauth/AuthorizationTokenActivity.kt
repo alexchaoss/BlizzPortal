@@ -4,14 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.TokenActivityBinding
 import com.BlizzardArmory.ui.MainActivity
 import kotlinx.coroutines.Dispatchers
@@ -61,10 +59,6 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                 if (url.startsWith(battlenetOAuth2Params!!.rederictUri)) {
                     webview.visibility = View.INVISIBLE
                     setContentView(binding.root)
-                    val rotation = AnimationUtils.loadAnimation(this@AuthorizationTokenActivity, R.anim.rotate)
-                    rotation.fillAfter = true
-                    binding.loadingImage.startAnimation(rotation)
-
                     if (!handled) {
                         lifecycleScope.launch {
                             val job = async(Dispatchers.Default) {

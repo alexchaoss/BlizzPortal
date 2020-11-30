@@ -155,8 +155,6 @@ class SC2Fragment : Fragment() {
                                             setRaceLevelInformation()
                                             setCampaignInformation()
                                             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                            binding.loadingCircle.visibility = View.GONE
-                                            URLConstants.loading = false
                                             downloadAvatar()
                                         }
                                         response.code() >= 400 -> {
@@ -454,6 +452,8 @@ class SC2Fragment : Fragment() {
         Glide.with(this).load(accountInformation[0].avatarUrl).into(object : CustomTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 binding.avatar.background = resource
+                binding.loadingCircle.visibility = View.GONE
+                URLConstants.loading = false
             }
 
             override fun onLoadCleared(placeholder: Drawable?) {}
@@ -508,7 +508,6 @@ class SC2Fragment : Fragment() {
                             dialog.cancel()
                             downloadAccountInformation()
                             binding.loadingCircle.visibility = View.VISIBLE
-                            URLConstants.loading = true
                         },
                         {
                             dialog.cancel()
@@ -525,12 +524,13 @@ class SC2Fragment : Fragment() {
 
     companion object{
         fun addOnBackPressCallback(activity: GamesActivity){
-            if(!URLConstants.loading) {
+
                 activity.onBackPressedDispatcher.addCallback {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    if (!URLConstants.loading) {
+                        NewsPageFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    }
                 }
-            }
         }
     }
 }

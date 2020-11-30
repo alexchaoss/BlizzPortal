@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -290,7 +289,7 @@ class CategoriesFragment : Fragment() {
     public fun factionEventReceived(factionEvent: FactionEvent) {
         faction = factionEvent.data
         /*if (prefs?.contains("achievement_categories_${MainActivity.locale}")!! && prefs?.contains("detailed_achievements_${MainActivity.locale}")!!) {*/
-        Glide.with(this).load("").placeholder(R.drawable.loading_placeholder).override(100, 100).into(binding.loading)
+        binding.loading.visibility = View.VISIBLE
         setAchievementInformation()
         /*} else {
             download_request.visibility = View.VISIBLE
