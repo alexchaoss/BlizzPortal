@@ -201,7 +201,6 @@ class PvPFragment : Fragment(){
     }
 
     private fun downloadPvPSummary() {
-
         val call: Call<PvPSummary> = GamesActivity.client!!.getPvPSummary(character!!.toLowerCase(Locale.ROOT),
                 realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<PvPSummary> {

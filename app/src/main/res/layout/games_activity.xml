@@ -19,15 +19,15 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/news_fragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingTop="55dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="55dp" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingTop="55dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="55dp" />
 
     <include
         android:id="@+id/top_bar"

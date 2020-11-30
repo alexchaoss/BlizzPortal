@@ -2,6 +2,7 @@ package com.BlizzardArmory.ui.ui_diablo.account
 
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,6 +20,7 @@ class D3CharacterFrameViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     var frame: ImageView? = null
     var portrait: ImageView? = null
+    var season: ImageView? = null
     var name: TextView? = null
     var eliteKills: TextView? = null
     var level: TextView? = null
@@ -26,6 +28,7 @@ class D3CharacterFrameViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     init {
         frame = itemView.findViewById(R.id.frame)
         portrait = itemView.findViewById(R.id.portrait)
+        season = itemView.findViewById(R.id.season)
         name = itemView.findViewById(R.id.name)
         eliteKills = itemView.findViewById(R.id.elite_kills)
         level = itemView.findViewById(R.id.level)
@@ -38,6 +41,10 @@ class D3CharacterFrameViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         } else {
             frame?.setImageResource(R.drawable.d3_character_frame)
             level?.setTextColor(Color.parseColor("#a99877"))
+        }
+
+        if (hero.seasonal) {
+            season?.visibility = View.VISIBLE
         }
 
         Glide.with(itemView).load(URLConstants.getD3Asset(getGender(hero))).into(portrait!!)

@@ -104,7 +104,9 @@ class ProgressFragment : Fragment() {
             override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
                 encounters = response.body()
                 if (response.isSuccessful) {
-                    setAdapter(encounters?.expansions?.map { it.expansion.name }?.toMutableList()!!, binding.progSpinner)
+                    if (encounters?.expansions != null) {
+                        setAdapter(encounters?.expansions?.map { it.expansion.name }?.toMutableList()!!, binding.progSpinner)
+                    }
                 } else {
                     showOutdatedTextView()
                 }

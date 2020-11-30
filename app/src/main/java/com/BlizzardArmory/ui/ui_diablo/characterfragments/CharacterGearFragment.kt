@@ -189,7 +189,7 @@ class CharacterGearFragment : Fragment() {
 
     @Throws(IOException::class)
     private fun setItemInformation() {
-        val call: Call<Items> = GamesActivity.client!!.getHeroItems(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<Items> = GamesActivity.client!!.getHeroItems(battletag, id, MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<Items> {
             override fun onResponse(call: Call<Items>, response: retrofit2.Response<Items>) {
                 when {

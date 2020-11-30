@@ -19,10 +19,9 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.databinding.D3LeaderboardsFragmentBinding
-import com.BlizzardArmory.databinding.GamesActivityBarBinding
 import com.BlizzardArmory.databinding.GamesActivityBinding
-import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
 import com.BlizzardArmory.model.diablo.data.common.Leaderboard
+import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
 import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
 import com.BlizzardArmory.ui.GamesActivity
 import com.BlizzardArmory.ui.MainActivity
@@ -65,8 +64,8 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
         binding.navigation.itemIconTintList = null
 
-        toggle = ActionBarDrawerToggle(activity, barBinding.drawerLayout, barBinding.topBar.toolbarMain, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        barBinding.drawerLayout.addDrawerListener(toggle)
+        toggle = ActionBarDrawerToggle(activity, binding.drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        binding.drawerLayout.addDrawerListener(toggle)
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
@@ -162,6 +161,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun downloadSeasonIndex() {
         URLConstants.loading = true
+        binding.loadingCircle.visibility = View.VISIBLE
         val seasonCall: Call<SeasonIndex> = GamesActivity.client!!.getSeasonIndex(MainActivity.locale, MainActivity.selectedRegion)
         seasonCall.enqueue(object : Callback<SeasonIndex> {
             override fun onResponse(call: Call<SeasonIndex>, response: Response<SeasonIndex>) {
@@ -179,17 +179,19 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                     downloadSeason(seasonIndexList.last(), "rift-barbarian", MainActivity.selectedRegion)
                     setAdapter(seasonIndexList, binding.spinnerId)
                 }
-                URLConstants.loading = false
             }
 
             override fun onFailure(call: Call<SeasonIndex>, t: Throwable) {
                 Log.e("Error", "Season download", t)
+                URLConstants.loading = false
+                binding.loadingCircle.visibility = View.GONE
             }
         })
     }
 
     private fun downloadSeason(id: String, leaderboardString: String, region: String){
         URLConstants.loading = true
+        binding.loadingCircle.visibility = View.VISIBLE
         val seasonCall: Call<Leaderboard> = GamesActivity.client!!.getSeasonLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
         seasonCall.enqueue(object : Callback<Leaderboard> {
             override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>) {
@@ -200,16 +202,20 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                     }
                 }
                 URLConstants.loading = false
+                binding.loadingCircle.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<Leaderboard>, t: Throwable) {
                 Log.e("Error", "Season download", t)
+                URLConstants.loading = false
+                binding.loadingCircle.visibility = View.GONE
             }
         })
     }
 
     private fun downloadEraIndex() {
         URLConstants.loading = true
+        binding.loadingCircle.visibility = View.VISIBLE
         val eraCall: Call<EraIndex> = GamesActivity.client!!.getEraIndex(MainActivity.locale, MainActivity.selectedRegion)
         eraCall.enqueue(object : Callback<EraIndex> {
             override fun onResponse(call: Call<EraIndex>, response: Response<EraIndex>) {
@@ -226,11 +232,13 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                     }
                 }
                 URLConstants.loading = false
+                binding.loadingCircle.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<EraIndex>, t: Throwable) {
                 Log.e("Error", "Era download", t)
                 URLConstants.loading = false
+                binding.loadingCircle.visibility = View.GONE
             }
         })
     }
@@ -247,6 +255,8 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
             override fun onFailure(call: Call<Leaderboard>, t: Throwable) {
                 Log.e("Error", "Season download", t)
+                URLConstants.loading = false
+                binding.loadingCircle.visibility = View.GONE
             }
         })
     }

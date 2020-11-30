@@ -9,10 +9,7 @@ import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -238,7 +235,7 @@ class WoWCharacterFragment : Fragment() {
         val call: Call<Statistic> = GamesActivity.client!!.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
                 characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Statistic> {
-            override fun onResponse(call: Call<Statistic>, response: retrofit2.Response<Statistic>) {
+            override fun onResponse(call: Call<Statistic>, response: Response<Statistic>) {
                 when {
                     response.code() in 201..Int.MAX_VALUE -> {
                         callErrorAlertDialog(response.code())
@@ -389,7 +386,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun downloadBackground() {
         if (media != null) {
-            Glide.with(this).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.drawable.loading_placeholder).into(binding.background)
+            Glide.with(this).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.color.colorPrimaryDark).override(1080, 1440).centerCrop().into(binding.background)
         } else {
             val call: Call<Media> = GamesActivity.client!!.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
                     characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
@@ -458,7 +455,7 @@ class WoWCharacterFragment : Fragment() {
         url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
         val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = GamesActivity.client!!.getDynamicEquipmentMedia(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<com.BlizzardArmory.model.warcraft.equipment.media.Media> {
-            override fun onResponse(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, response: retrofit2.Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>) {
+            override fun onResponse(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, response: Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>) {
                 when {
                     response.code() in 201..Int.MAX_VALUE -> {
                         if (index == equipment?.equippedItems!!.size - 1) {
@@ -529,10 +526,11 @@ class WoWCharacterFragment : Fragment() {
                         }
                     }
                 } else {
+
                     when (itemSlot) {
-                        "HEAD" -> binding.headAzerite.visibility = View.GONE
-                        "SHOULDER" -> binding.shoulderAzerite.visibility = View.GONE
-                        "CHEST" -> binding.chestAzerite.visibility = View.GONE
+                        "HEAD" -> binding.headAzerite.visibility = View.INVISIBLE
+                        "SHOULDER" -> binding.shoulderAzerite.visibility = View.INVISIBLE
+                        "CHEST" -> binding.chestAzerite.visibility = View.INVISIBLE
                     }
                 }
             }

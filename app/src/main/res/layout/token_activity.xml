@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#272931">
 
     <TextView
@@ -9,15 +10,16 @@
         android:layout_height="wrap_content"
         android:textSize="50sp"
         android:textColor="#fff"
-        android:text="@string/loadingdot"
         android:layout_centerHorizontal="true"
-        android:layout_alignTop="@+id/loading_image" />
+        android:text="@string/loadingdot"
+        android:layout_marginTop="150dp" />
 
-    <ImageView
-        android:id="@+id/loading_image"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/bnet_logo"
-        android:layout_centerInParent="true" />
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/loading"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        app:SpinKit_Color="#fff" />
 
 </RelativeLayout>

@@ -91,7 +91,7 @@ class D3Fragment : Fragment() {
     private fun downloadAccountInformation() {
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
-        val call: Call<AccountInformation> = GamesActivity.client!!.getD3Profile(battleTag, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<AccountInformation> = GamesActivity.client!!.getD3Profile(battleTag, MainActivity.locale, selectedRegion?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<AccountInformation> {
             override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
                 if (response.isSuccessful) {

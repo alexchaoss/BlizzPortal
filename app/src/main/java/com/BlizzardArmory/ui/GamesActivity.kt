@@ -13,7 +13,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.NetworkServices
@@ -109,10 +108,6 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         val newsListFragment = NewsListFragment()
         supportFragmentManager.beginTransaction().replace(R.id.news_fragment, newsListFragment, "news_fragment").commit()
         supportFragmentManager.executePendingTransactions()
-
-        if (BuildConfig.DEBUG && battlenetOAuth2Params == null) {
-            error("Assertion failed")
-        }
 
         battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 

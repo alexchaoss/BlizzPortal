@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -91,7 +93,7 @@ class CharacterStatsFragment : Fragment() {
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
         dialog = null
-        val call: Call<CharacterInformation> = GamesActivity.client!!.getD3Hero(battletag, id, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<CharacterInformation> = GamesActivity.client!!.getD3Hero(battletag, id, MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<CharacterInformation> {
             override fun onResponse(call: Call<CharacterInformation>, response: retrofit2.Response<CharacterInformation>) {
                 when {

@@ -146,7 +146,12 @@ class CovenantFragment : Fragment() {
                     covenantClassSpells = response.body()
                     soulbindInformation = gson.fromJson(TempJSON.string, SoulbindInformation::class.java)
                     techTalentTree = gson.fromJson(TempJSON.soulbind, TechTalentTree::class.java)
-
+                    when (soulbindInformation?.chosenCovenant?.id) {
+                        1 -> binding.renownCircle.setImageResource(R.drawable.renown_level_circle_kyrian)
+                        2 -> binding.renownCircle.setImageResource(R.drawable.renown_level_circle_venthyr)
+                        3 -> binding.renownCircle.setImageResource(R.drawable.renown_level_circle_nightfae)
+                        4 -> binding.renownCircle.setImageResource(R.drawable.renown_level_circle_necrolord)
+                    }
                     setAvatars()
                     Glide.with(requireContext()).load(covenantClassSpells?.find { it.covenant_id == soulbindInformation!!.chosenCovenant.id }?.icon).into(binding.covenantClassSpell)
                     setOnSpellTouched(binding.covenantClassSpell, covenantClassSpells?.find { it.covenant_id == soulbindInformation!!.chosenCovenant.id }!!)
