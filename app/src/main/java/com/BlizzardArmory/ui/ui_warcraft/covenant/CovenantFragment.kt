@@ -13,6 +13,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
@@ -21,8 +22,7 @@ import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.SoulbindInf
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.Soulbinds
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.MetricConversion
 import com.BlizzardArmory.util.TempJSON
 import com.BlizzardArmory.util.events.ClassEvent
@@ -79,7 +79,7 @@ class CovenantFragment : Fragment() {
 
         binding.renowmLevel.text = soulbindInformation!!.renownLevel.toString()
 
-        binding.avatar1.setOnClickListener {
+        /*binding.avatar1.setOnClickListener {
             setGreyShade(binding.avatar1, 1f)
             setGreyShade(binding.avatar2, 0f)
             setGreyShade(binding.avatar3, 0f)
@@ -95,7 +95,7 @@ class CovenantFragment : Fragment() {
             setGreyShade(binding.avatar3, 1f)
             setGreyShade(binding.avatar1, 0f)
             setGreyShade(binding.avatar2, 0f)
-        }
+        }*/
     }
 
     private fun setAvatar(avatar: ImageView, border: ImageView, soulbinds: Soulbinds){
@@ -139,7 +139,7 @@ class CovenantFragment : Fragment() {
     }
 
     private fun downloadCovenantClassSpell(classEvent: ClassEvent) {
-        val call: Call<List<CovenantSpells>> = GamesActivity.client!!.getCovenantSpells(URLConstants.getCovenantClassSpells(classEvent.data, MainActivity.locale))
+        val call: Call<List<CovenantSpells>> = RetroClient.getClient().getCovenantSpells(URLConstants.getCovenantClassSpells(classEvent.data, MainActivity.locale))
         call.enqueue(object : Callback<List<CovenantSpells>> {
             override fun onResponse(call: Call<List<CovenantSpells>>, response: Response<List<CovenantSpells>>) {
                 if (response.isSuccessful) {
@@ -154,7 +154,7 @@ class CovenantFragment : Fragment() {
                     }
                     setAvatars()
                     Glide.with(requireContext()).load(covenantClassSpells?.find { it.covenant_id == soulbindInformation!!.chosenCovenant.id }?.icon).into(binding.covenantClassSpell)
-                    setOnSpellTouched(binding.covenantClassSpell, covenantClassSpells?.find { it.covenant_id == soulbindInformation!!.chosenCovenant.id }!!)
+                    //setOnSpellTouched(binding.covenantClassSpell, covenantClassSpells?.find { it.covenant_id == soulbindInformation!!.chosenCovenant.id }!!)
                     downloadCovenantSpell(soulbindInformation!!.chosenCovenant.id)
                 }
             }
@@ -166,14 +166,14 @@ class CovenantFragment : Fragment() {
     }
 
     private fun downloadCovenantSpell(covenantId: Int) {
-        val call: Call<List<CovenantSpells>> = GamesActivity.client!!.getCovenantSpells(URLConstants.getCovenantSpells(covenantId, MainActivity.locale))
+        val call: Call<List<CovenantSpells>> = RetroClient.getClient().getCovenantSpells(URLConstants.getCovenantSpells(covenantId, MainActivity.locale))
         call.enqueue(object : Callback<List<CovenantSpells>> {
             override fun onResponse(call: Call<List<CovenantSpells>>, response: Response<List<CovenantSpells>>) {
                 if (response.isSuccessful) {
                     val covenantSpells = response.body()
 
                     Glide.with(requireContext()).load(covenantSpells?.get(0)?.icon).into(binding.covenantSpell)
-                    setOnSpellTouched(binding.covenantSpell, covenantSpells?.get(0)!!)
+                    //setOnSpellTouched(binding.covenantSpell, covenantSpells?.get(0)!!)
                 }
             }
 

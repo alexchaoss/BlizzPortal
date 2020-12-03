@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui
+package com.BlizzardArmory.ui.main
 
 import android.content.Context
 import android.content.Intent
@@ -17,6 +17,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
@@ -24,6 +25,7 @@ import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.ActivityMainBinding
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
@@ -36,18 +38,19 @@ import java.util.*
 
 class MainActivity : LocalizationActivity() {
 
-    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
-    private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
+
     private var sharedPreferences: SharedPreferences? = null
     private val REQUEST_CODE_IN_APP_UPDATE = 7500
+    private val viewModel: MainViewModel by viewModels()
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         FirebaseCrashlytics.getInstance().sendUnsentReports()
+
         startWiFiNetworkCallback()
         startDataNetworkCallback()
         checkForAppUpdates()
@@ -64,6 +67,10 @@ class MainActivity : LocalizationActivity() {
 
         setLoginButtonToBattlenet()
         binding.logout.setOnClickListener { clearCredentials() }
+
+        viewModel.getBattlenetOAuth2Params().observe(this, {
+            startOauthFlow(it)
+        })
     }
 
     override fun onResume() {
@@ -127,6 +134,18 @@ class MainActivity : LocalizationActivity() {
         }
     }
 
+    private fun clearCredentials() {
+        val webview = WebView(this)
+        webview.settings.javaScriptEnabled = true
+        webview.visibility = View.GONE
+        webview.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                Toast.makeText(this@MainActivity, "Logout Successful", Toast.LENGTH_SHORT).show()
+            }
+        }
+        webview.loadUrl(URLConstants.LOGOUT_URL)
+    }
+
     private fun setLoginButtonToBattlenet() {
         binding.buttonLogin.setOnClickListener {
             if (selectedRegion == "Select Region") {
@@ -138,25 +157,19 @@ class MainActivity : LocalizationActivity() {
     }
 
     private fun checkConnectionBeforeLogin() {
-        if(ConnectionStatus.hasNetwork()){
-            openLoginToBattleNet()
+        if (ConnectionStatus.hasNetwork()) {
+            viewModel.openLoginToBattleNet()
         } else {
             val dialog = DialogPrompt(this)
             dialog.addTitle("Internet connection unstable", 20F, "title")
                     .addMessage("Are you currently connected to a network?", 16F, "message")
-                    .addSideBySideButtons("Yes", 16F, "No", 16F, { openLoginToBattleNet()}, {
+                    .addSideBySideButtons("Yes", 16F, "No", 16F, { viewModel.openLoginToBattleNet() }, {
                         dialog.cancel()
                         val confirmDialog = DialogPrompt(this)
                         confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
-                                .addButton("Ok", 16F, {confirmDialog.cancel()}, "close").show()
+                                .addButton("Ok", 16F, { confirmDialog.cancel() }, "close").show()
                     }, "positive", "negative").show()
         }
-    }
-
-    private fun openLoginToBattleNet() {
-        battlenetOAuth2Params = BattlenetOAuth2Params(clientID, selectedRegion.toLowerCase(Locale.ROOT),
-                URLConstants.CALLBACK_URL, "Blizzard Games Profiles", BattlenetConstants.SCOPE_WOW, BattlenetConstants.SCOPE_SC2)
-        startOauthFlow(battlenetOAuth2Params!!)
     }
 
     private fun startWiFiNetworkCallback() {
@@ -199,17 +212,6 @@ class MainActivity : LocalizationActivity() {
         startActivity(intent)
     }
 
-    private fun clearCredentials() {
-        val webview = WebView(this)
-        webview.settings.javaScriptEnabled = true
-        webview.visibility = View.GONE
-        webview.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView, url: String) {
-                Toast.makeText(applicationContext, "Logout Successful", Toast.LENGTH_SHORT).show()
-            }
-        }
-        webview.loadUrl(URLConstants.LOGOUT_URL)
-    }
 
     private fun checkForAppUpdates() {
         val appUpdateManager = AppUpdateManagerFactory.create(this)

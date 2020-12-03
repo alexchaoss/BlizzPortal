@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -19,8 +20,7 @@ import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
@@ -161,7 +161,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun downloadAchievementInformation() {
-        val call1: Call<DetailedAchievements> = GamesActivity.client!!.getAllAchievements(URLConstants.selectAchievementsURLFromLocale(MainActivity.locale))
+        val call1: Call<DetailedAchievements> = RetroClient.getClient().getAllAchievements(URLConstants.selectAchievementsURLFromLocale(MainActivity.locale))
         call1.enqueue(object : Callback<DetailedAchievements> {
             override fun onResponse(call: Call<DetailedAchievements>, response: Response<DetailedAchievements>) {
                 if (response.isSuccessful) {
@@ -180,7 +180,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun downloadCharacterAchievements() {
-        val call: Call<Achievements> = GamesActivity.client!!.getCharacterAchievements(character, realm, MainActivity.locale, region, battlenetOAuth2Helper?.accessToken)
+        val call: Call<Achievements> = RetroClient.getClient().getCharacterAchievements(character, realm, MainActivity.locale, region, battlenetOAuth2Helper?.accessToken)
         call.enqueue(object : Callback<Achievements> {
             override fun onResponse(call: Call<Achievements>, response: Response<Achievements>) {
                 characterAchievements = response.body()
@@ -210,7 +210,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun downloadCategories() {
-        val call: Call<Categories> = GamesActivity.client!!.getAchievementCategories(URLConstants.selectAchievementCategoriesURLFromLocale(MainActivity.locale))
+        val call: Call<Categories> = RetroClient.getClient().getAchievementCategories(URLConstants.selectAchievementCategoriesURLFromLocale(MainActivity.locale))
         call.enqueue(object : Callback<Categories> {
             override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
                 if (response.isSuccessful) {

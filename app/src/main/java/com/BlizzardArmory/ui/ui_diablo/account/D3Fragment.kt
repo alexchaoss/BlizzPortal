@@ -1,30 +1,28 @@
 package com.BlizzardArmory.ui.ui_diablo.account
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.D3FragmentBinding
 import com.BlizzardArmory.model.diablo.account.AccountInformation
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.ui_diablo.leaderboard.D3LeaderboardFragment
@@ -38,20 +36,16 @@ import com.google.gson.GsonBuilder
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import java.util.*
 
 class D3Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
-    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
-    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var battleTag: String? = ""
     private var selectedRegion: String? = ""
     private lateinit var errorMessages: ErrorMessages
 
     private var _binding: D3FragmentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: D3ViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         addOnBackPressCallback(activity as GamesActivity)
@@ -79,60 +73,51 @@ class D3Fragment : Fragment() {
         errorMessages = ErrorMessages(this.resources)
         battleTag = arguments?.getString("battletag")
         selectedRegion = arguments?.getString("region")
-        prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        battlenetOAuth2Params = arguments?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
+        prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         GamesActivity.favorite!!.visibility = View.VISIBLE
         GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
         GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
-        downloadAccountInformation()
+        setObservers()
     }
 
-    private fun downloadAccountInformation() {
-        URLConstants.loading = true
-        binding.loadingCircle.visibility = View.VISIBLE
-        val call: Call<AccountInformation> = GamesActivity.client!!.getD3Profile(battleTag, MainActivity.locale, selectedRegion?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<AccountInformation> {
-            override fun onResponse(call: Call<AccountInformation>, response: retrofit2.Response<AccountInformation>) {
-                if (response.isSuccessful) {
-                    accountInformation = response.body()
-                    manageFavorite(accountInformation!!)
-                    sortHeroes()
-                    val paragon = accountInformation?.paragonLevel.toString() +
-                            " | " +
-                            "<font color=#b00000>" +
-                            accountInformation?.paragonLevelHardcore +
-                            "</font>"
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        binding.paragonLevel.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
-                    } else {
-                        binding.paragonLevel.text = Html.fromHtml(paragon)
-                    }
-                    binding.eliteKills.text = accountInformation?.kills?.elites.toString()
-                    binding.lifetimeKills.text = accountInformation?.kills?.monsters.toString()
-                    setProgression()
-                    setTimePlayed()
-                    binding.characterFrameRecycler.apply {
-                        adapter = D3CharacterFrameAdapter(accountInformation?.heroes!!)
-                    }
-                    if (accountInformation?.fallenHeroes != null) {
-                        binding.characterDeadRecycler.apply {
-                            adapter = D3DeadCharacterAdapter(accountInformation?.fallenHeroes!!)
-                        }
-                    }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    URLConstants.loading = false
-                    binding.loadingCircle.visibility = View.GONE
-                } else if (response.code() >= 400) {
-                    showNoConnectionMessage(response.code())
+    private fun setObservers() {
+        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, viewModel.getBnetParams().value!!)
+            binding.loadingCircle.visibility = View.VISIBLE
+            viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
+        })
+
+        viewModel.getProfile().observe(viewLifecycleOwner, {
+            setHeaderData()
+            setProgression()
+            setTimePlayed()
+            binding.characterFrameRecycler.apply {
+                adapter = D3CharacterFrameAdapter(viewModel.getProfile().value?.heroes!!)
+            }
+            if (viewModel.getProfile().value?.fallenHeroes != null) {
+                binding.characterDeadRecycler.apply {
+                    adapter = D3DeadCharacterAdapter(viewModel.getProfile().value?.fallenHeroes!!)
                 }
             }
-
-            override fun onFailure(call: Call<AccountInformation>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                showNoConnectionMessage(0)
-            }
+            manageFavorite(it)
+            binding.loadingCircle.visibility = View.GONE
         })
+    }
+
+    private fun setHeaderData() {
+        val paragon = viewModel.getProfile().value?.paragonLevel.toString() +
+                " | " +
+                "<font color=#b00000>" +
+                viewModel.getProfile().value?.paragonLevelHardcore +
+                "</font>"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            binding.paragonLevel.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            binding.paragonLevel.text = Html.fromHtml(paragon)
+        }
+        binding.eliteKills.text = viewModel.getProfile().value?.kills?.elites.toString()
+        binding.lifetimeKills.text = viewModel.getProfile().value?.kills?.monsters.toString()
     }
 
     private fun manageFavorite(accountInformation: AccountInformation) {
@@ -168,7 +153,6 @@ class D3Fragment : Fragment() {
     }
 
     private fun deleteFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, indexOfProfile: Int, gson: Gson, prefs: SharedPreferences) {
-        var favoriteCharactersString: String
         if (GamesActivity.favorite!!.tag == R.drawable.ic_star_black_24dp && indexOfProfile != -1) {
             GamesActivity.favorite!!.setOnClickListener {
                 GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
@@ -177,13 +161,11 @@ class D3Fragment : Fragment() {
                 prefs.edit().putString("d3-favorites", gson.toJson(profiles)).apply()
                 Toast.makeText(requireActivity(), "Profile removed from favorites", Toast.LENGTH_SHORT).show()
                 addToFavorite(profiles, accountInformation, gson, prefs)
-
             }
         }
     }
 
     private fun addToFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, gson: Gson, prefs: SharedPreferences) {
-        var favoriteCharactersString: String
         GamesActivity.favorite!!.setOnClickListener {
             var containsProfile = false
             var indexOfProfile = 0
@@ -206,49 +188,38 @@ class D3Fragment : Fragment() {
     }
 
     private fun setTimePlayed() {
-        Log.i("prog", "barb: " + accountInformation?.timePlayed?.barbarian.toString()
-                + ", dh: " + accountInformation?.timePlayed?.demonHunter.toString()
-                + ", crusader: " + accountInformation?.timePlayed?.crusader.toString()
-                + ", necro: " + accountInformation?.timePlayed?.necromancer.toString()
-                + ", wd: " + accountInformation?.timePlayed?.witchDoctor.toString()
-                + ", wiz: " + accountInformation?.timePlayed?.wizard.toString()
-                + ", monk: " + accountInformation?.timePlayed?.monk.toString())
-        binding.barbProgress.progress = (accountInformation?.timePlayed?.barbarian?.times(100))?.toInt()!!
-        binding.crusaderProgress.progress = (accountInformation?.timePlayed?.crusader?.times(100))?.toInt()!!
-        binding.dhProgress.progress = (accountInformation?.timePlayed?.demonHunter?.times(100))?.toInt()!!
-        binding.monkProgress.progress = (accountInformation?.timePlayed?.monk?.times(100))?.toInt()!!
-        binding.necroProgress.progress = (accountInformation?.timePlayed?.necromancer?.times(100))?.toInt()!!
-        binding.wdProgress.progress = (accountInformation?.timePlayed?.witchDoctor?.times(100))?.toInt()!!
-        binding.wizardProgress.progress = (accountInformation?.timePlayed?.wizard?.times(100))?.toInt()!!
+        binding.barbProgress.progress = (viewModel.getProfile().value?.timePlayed?.barbarian?.times(100))?.toInt()!!
+        binding.crusaderProgress.progress = (viewModel.getProfile().value?.timePlayed?.crusader?.times(100))?.toInt()!!
+        binding.dhProgress.progress = (viewModel.getProfile().value?.timePlayed?.demonHunter?.times(100))?.toInt()!!
+        binding.monkProgress.progress = (viewModel.getProfile().value?.timePlayed?.monk?.times(100))?.toInt()!!
+        binding.necroProgress.progress = (viewModel.getProfile().value?.timePlayed?.necromancer?.times(100))?.toInt()!!
+        binding.wdProgress.progress = (viewModel.getProfile().value?.timePlayed?.witchDoctor?.times(100))?.toInt()!!
+        binding.wizardProgress.progress = (viewModel.getProfile().value?.timePlayed?.wizard?.times(100))?.toInt()!!
     }
 
-
-    private fun sortHeroes() {
-        accountInformation?.heroes = accountInformation!!.heroes.sortedBy { it.lastUpdated }.reversed()
-    }
 
     private fun setProgression() {
-        if (accountInformation!!.progression.act1) {
+        if (viewModel.getProfile().value!!.progression.act1) {
             Glide.with(this).load(URLConstants.getD3Asset("act1_done")).into(binding.progAct1)
         } else {
             Glide.with(this).load(URLConstants.getD3Asset("act1_not_done")).into(binding.progAct1)
         }
-        if (accountInformation!!.progression.act2) {
+        if (viewModel.getProfile().value!!.progression.act2) {
             Glide.with(this).load(URLConstants.getD3Asset("act2_done")).into(binding.progAct2)
         } else {
             Glide.with(this).load(URLConstants.getD3Asset("act2_not_done")).into(binding.progAct2)
         }
-        if (accountInformation!!.progression.act3) {
+        if (viewModel.getProfile().value!!.progression.act3) {
             Glide.with(this).load(URLConstants.getD3Asset("act3_done")).into(binding.progAct3)
         } else {
             Glide.with(this).load(URLConstants.getD3Asset("act3_not_done")).into(binding.progAct3)
         }
-        if (accountInformation!!.progression.act4) {
+        if (viewModel.getProfile().value!!.progression.act4) {
             Glide.with(this).load(URLConstants.getD3Asset("act4_done")).into(binding.progAct4)
         } else {
             Glide.with(this).load(URLConstants.getD3Asset("act4_not_done")).into(binding.progAct4)
         }
-        if (accountInformation!!.progression.act5) {
+        if (viewModel.getProfile().value!!.progression.act5) {
             Glide.with(this).load(URLConstants.getD3Asset("act5_done")).into(binding.progAct5)
         } else {
             Glide.with(this).load(URLConstants.getD3Asset("act5_not_done")).into(binding.progAct5)
@@ -321,7 +292,7 @@ class D3Fragment : Fragment() {
                 .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                         {
                             dialog.cancel()
-                            downloadAccountInformation()
+                            viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
                             binding.loadingCircle.visibility = View.VISIBLE
                             URLConstants.loading = true
                         },
@@ -340,7 +311,6 @@ class D3Fragment : Fragment() {
     }
 
     companion object {
-        private var accountInformation: AccountInformation? = null
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!URLConstants.loading) {

@@ -8,7 +8,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.databinding.NewsFragmentBinding
 import com.BlizzardArmory.model.news.NewsPage
-import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.HTMLtoViewsConverter
 import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.LocaleSelectedEvent

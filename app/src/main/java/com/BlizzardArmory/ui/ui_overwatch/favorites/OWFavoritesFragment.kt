@@ -11,7 +11,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.databinding.WowFavoritesBinding
 import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfiles
-import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.google.gson.GsonBuilder
 

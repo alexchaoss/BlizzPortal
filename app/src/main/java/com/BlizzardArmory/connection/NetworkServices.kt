@@ -32,6 +32,7 @@ import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -46,16 +47,23 @@ interface NetworkServices {
 
     //User information
     @GET("oauth/userinfo")
-    fun getUserInfo(@Query("token") accessToken: String?,
-                    @Query("region") region: String?): Call<UserInformation>
+    suspend fun getUserInfo(@Query("token") accessToken: String?,
+                            @Query("region") region: String?): Response<UserInformation>
 
     @GET("/data/wow/realm/index")
-    fun getRealmIndex(@Query("region") region: String,
-                      @Query("namespace") namespace: String,
-                      @Query("locale") locale: String,
-                      @Query("token") accessToken: String?): Call<Realms>
+    suspend fun getRealmIndex(@Query("region") region: String,
+                              @Query("namespace") namespace: String,
+                              @Query("locale") locale: String,
+                              @Query("token") accessToken: String?): Response<Realms>
 
     //WoW Endpoints
+    @GET("/profile/wow/character/{realm}/{character}/character-media")
+    suspend fun getMediaSus(@Path("character", encoded = true) character: String?,
+                            @Path("realm", encoded = true) realm: String?,
+                            @Query("locale") locale: String?,
+                            @Query("region") region: String?,
+                            @Query("token") accessToken: String?): Response<Media>
+
     @GET("/profile/wow/character/{realm}/{character}/character-media")
     fun getMedia(@Path("character", encoded = true) character: String?,
                  @Path("realm", encoded = true) realm: String?,
@@ -167,10 +175,10 @@ interface NetworkServices {
 
     //D3 Endpoints
     @GET("d3/profile/{battletag}/")
-    fun getD3Profile(@Path("battletag") battletag: String?,
-                     @Query("locale") locale: String?,
-                     @Query("region") region: String?,
-                     @Query("token") accessToken: String?): Call<AccountInformation>
+    suspend fun getD3Profile(@Path("battletag") battletag: String?,
+                             @Query("locale") locale: String?,
+                             @Query("region") region: String?,
+                             @Query("token") accessToken: String?): Response<AccountInformation>
 
     @GET("d3/profile/{battletag}/hero/{id}")
     fun getD3Hero(@Path("battletag") battletag: String?,
@@ -223,20 +231,20 @@ interface NetworkServices {
 
     //Sc2 endpoints
     @GET("sc2/player/{id}")
-    fun getSc2Player(@Path("id") id: String?,
-                     @Query("locale") locale: String?,
-                     @Query("region") region: String?,
-                     @Query("token") accessToken: String?): Call<List<Player>>
+    suspend fun getSc2Player(@Path("id") id: String?,
+                             @Query("locale") locale: String?,
+                             @Query("region") region: String?,
+                             @Query("token") accessToken: String?): Response<List<Player>>
 
     @GET("sc2/profile/{region_id}/{realm_id}/{profile_id}")
-    fun getSc2Profile(@Path("region_id") regionId: String,
-                      @Path("realm_id") realmId: Int,
-                      @Path("profile_id") profileId: String?,
-                      @Query("locale") locale: String?,
-                      @Query("region") region: String?,
-                      @Query("token") accessToken: String?): Call<Profile>
+    suspend fun getSc2Profile(@Path("region_id") regionId: String,
+                              @Path("realm_id") realmId: Int,
+                              @Path("profile_id") profileId: String?,
+                              @Query("locale") locale: String?,
+                              @Query("region") region: String?,
+                              @Query("token") accessToken: String?): Response<Profile>
 
     //Overwatch endpoint
     @GET
-    fun getOWProfile(@Url url: String?): Call<com.BlizzardArmory.model.overwatch.Profile>
+    suspend fun getOWProfile(@Url url: String?): Response<com.BlizzardArmory.model.overwatch.Profile>
 }

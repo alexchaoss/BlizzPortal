@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.databinding.TokenActivityBinding
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -93,7 +93,7 @@ class AuthorizationTokenActivity : AppCompatActivity() {
                 if (url.contains("code=")) {
                     val authorizationCode = extractCodeFromUrl(url)
                     Log.i(BattlenetConstants.TAG, "Found code = $authorizationCode")
-                    oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode, this)
+                    oAuth2Helper!!.retrieveAndStoreAccessToken(authorizationCode)
 
                     startActivity = true
                     hasLoggedIn = true

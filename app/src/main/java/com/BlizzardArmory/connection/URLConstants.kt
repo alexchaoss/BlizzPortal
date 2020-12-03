@@ -1,6 +1,6 @@
 package com.BlizzardArmory.connection
 
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 
 /**
  * The type Url constants.

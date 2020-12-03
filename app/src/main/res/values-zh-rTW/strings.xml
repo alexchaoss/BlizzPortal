@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Profiles for Blizzard Games</string>
+    <string name="app_name">Blizz-Portal</string>
     <string name="select_region">選擇區域</string>
     <string name="login">登錄</string>
     <string name="clear_credentials">清除憑據</string>

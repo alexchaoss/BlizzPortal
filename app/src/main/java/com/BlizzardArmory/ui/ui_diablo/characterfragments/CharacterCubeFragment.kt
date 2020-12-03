@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -18,8 +19,7 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.D3CubeFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.item.SingleItem
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.WoWCharacterEvent
 import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
@@ -118,7 +118,7 @@ class CharacterCubeFragment : Fragment() {
         for (i in characterInformation!!.legendaryPowers.indices) {
             Log.i("Cube", characterInformation!!.legendaryPowers[i].tooltipParams)
             val endpoint = characterInformation!!.legendaryPowers[i].tooltipParams.replace("/item/", "")
-            val call: Call<SingleItem> = GamesActivity.client!!.getItem(endpoint, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale)
+            val call: Call<SingleItem> = RetroClient.getClient().getItem(endpoint, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale)
             call.enqueue(object : retrofit2.Callback<SingleItem> {
                 override fun onResponse(call: Call<SingleItem>, response: retrofit2.Response<SingleItem>) {
                     when {

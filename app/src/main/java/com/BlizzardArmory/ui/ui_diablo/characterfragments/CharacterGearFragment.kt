@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -23,8 +24,7 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.D3GearFragmentBinding
 import com.BlizzardArmory.model.diablo.items.Item
 import com.BlizzardArmory.model.diablo.items.Items
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.D3ClosePanelEvent
 import com.BlizzardArmory.util.events.D3ItemShownEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -189,7 +189,7 @@ class CharacterGearFragment : Fragment() {
 
     @Throws(IOException::class)
     private fun setItemInformation() {
-        val call: Call<Items> = GamesActivity.client!!.getHeroItems(battletag, id, MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<Items> = RetroClient.getClient().getHeroItems(battletag, id, MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<Items> {
             override fun onResponse(call: Call<Items>, response: retrofit2.Response<Items>) {
                 when {

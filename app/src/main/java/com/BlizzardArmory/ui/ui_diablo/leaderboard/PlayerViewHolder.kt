@@ -8,19 +8,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.model.diablo.account.Hero
 import com.BlizzardArmory.model.diablo.data.common.Player
-import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
-import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 import com.bumptech.glide.Glide
 

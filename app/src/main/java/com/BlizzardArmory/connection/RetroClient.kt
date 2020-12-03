@@ -1,6 +1,6 @@
 package com.BlizzardArmory.connection
 
-import android.content.Context
+import com.BlizzardArmory.BlizzardArmory
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object RetroClient {
     var BASE_URL: String = URLConstants.HEROKU_AUTHENTICATE
-    fun getClient(context: Context): NetworkServices {
+    fun getClient(): NetworkServices {
         val gson = GsonBuilder().create()
 
         val interceptor = HttpLoggingInterceptor()
@@ -23,7 +23,7 @@ object RetroClient {
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .cache(Cache(
-                        directory = File(context.cacheDir, "http_cache"),
+                        directory = File(BlizzardArmory.instance?.cacheDir, "http_cache"),
                         maxSize = 60 * 1024 * 1024
                 ))
                 .addInterceptor(RewriteRequestInterceptor())

@@ -17,7 +17,7 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
 import com.BlizzardArmory.model.warcraft.media.Media
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -83,7 +83,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
 
-        val call: Call<Media> = RetroClient.getClient(context).getMedia(character?.characterSummary?.name, character?.characterSummary?.realm?.slug, MainActivity.locale, character?.region?.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
+        val call: Call<Media> = RetroClient.getClient().getMedia(character?.characterSummary?.name, character?.characterSummary?.realm?.slug, MainActivity.locale, character?.region?.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
         call.enqueue(object : Callback<Media> {
             override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
                 val media: Media? = response.body()
@@ -108,7 +108,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             media.assets?.first { it.key == "avatar" }?.value
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
-        Glide.with(context.applicationContext).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
+        Glide.with(context).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
     }
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {

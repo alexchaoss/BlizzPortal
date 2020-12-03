@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui
+package com.BlizzardArmory.ui.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -21,7 +21,8 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.databinding.SettingsBinding
-import com.BlizzardArmory.ui.MainActivity.Companion.locale
+import com.BlizzardArmory.ui.main.MainActivity.Companion.locale
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 import com.BlizzardArmory.ui.ui_diablo.characterfragments.CharacterStatsFragment
@@ -118,7 +119,7 @@ class SettingsFragment : Fragment() {
                 Log.i("lang", selectedLanguage)
                 setLocale()
                 if (position != 0) {
-                    EventBus.getDefault().postSticky(LocaleSelectedEvent(locale))
+                    EventBus.getDefault().post(LocaleSelectedEvent(locale))
                 }
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
@@ -173,5 +174,4 @@ class SettingsFragment : Fragment() {
         }
         sharedPreferences!!.edit().putString("locale", locale).apply()
     }
-
 }

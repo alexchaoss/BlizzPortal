@@ -13,7 +13,7 @@ import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.D3FavoritesBinding
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
-import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.google.gson.GsonBuilder
 

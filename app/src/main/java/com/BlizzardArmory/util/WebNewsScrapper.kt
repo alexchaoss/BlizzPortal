@@ -10,20 +10,23 @@ object WebNewsScrapper {
     val newsList = arrayListOf<NewsMetaData>()
 
     fun parseNewsList(pageURL: String) {
+        newsList.clear()
         Log.i("JSOUP", "URL: $pageURL")
         Jsoup.connect(pageURL).get().run {
-            select(".ArticleListItem").forEachIndexed { index, element ->
-                val url = "https://news.blizzard.com${element.select(".ArticleLink").attr("href")}"
-                val title = element.select(".sr-only").text()
-                val game = element.select(".ArticleListItem-labelInner").text()
-                val description = element.select("div.ArticleListItem-description > div.h6").text()
-                val time = element.select(".ArticleListItem-footerTimeStamp").text()
-                var imageURL = element.select(".ArticleListItem-image").attr("style")
-                val timestamp = element.select(".ArticleListItem-footerTimestamp").attr("timestamp")
-                imageURL = "https:${imageURL.substring(21, imageURL.length - 1)}"
-                newsList.add(NewsMetaData(url, game, imageURL, title, description, time, timestamp))
+            if (newsList.size < 26) {
+                select(".ArticleListItem").forEachIndexed { index, element ->
+                    val url = "https://news.blizzard.com${element.select(".ArticleLink").attr("href")}"
+                    val title = element.select(".sr-only").text()
+                    val game = element.select(".ArticleListItem-labelInner").text()
+                    val description = element.select("div.ArticleListItem-description > div.h6").text()
+                    val time = element.select(".ArticleListItem-footerTimeStamp").text()
+                    var imageURL = element.select(".ArticleListItem-image").attr("style")
+                    val timestamp = element.select(".ArticleListItem-footerTimestamp").attr("timestamp")
+                    imageURL = "https:${imageURL.substring(21, imageURL.length - 1)}"
+                    newsList.add(NewsMetaData(url, game, imageURL, title, description, time, timestamp))
+                }
+                Log.i("JSOUP", "ITEMS: ${newsList.size}")
             }
-            Log.i("JSOUP", "ITEMS: ${newsList.size}")
         }
     }
 

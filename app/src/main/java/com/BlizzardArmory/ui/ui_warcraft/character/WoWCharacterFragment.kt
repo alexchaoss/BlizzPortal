@@ -18,6 +18,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -34,8 +35,8 @@ import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.ui_warcraft.favorites.WoWFavoritesFragment
@@ -199,7 +200,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun downloadTalents() {
-        val call: Call<Talents> = GamesActivity.client!!.getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
+        val call: Call<Talents> = RetroClient.getClient().getSpecs(characterClicked!!.toLowerCase(Locale.ROOT),
                 characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Talents> {
             override fun onResponse(call: Call<Talents>, response: Response<Talents>) {
@@ -216,7 +217,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun downloadTalentIconsInfo() {
-        val call2: Call<List<TalentsIcons>> = GamesActivity.client!!.getTalentsWithIcon(URLConstants.getTalentsIcons(characterSummary.characterClass.id, MainActivity.locale))
+        val call2: Call<List<TalentsIcons>> = RetroClient.getClient().getTalentsWithIcon(URLConstants.getTalentsIcons(characterSummary.characterClass.id, MainActivity.locale))
         call2.enqueue(object : Callback<List<TalentsIcons>> {
             override fun onResponse(call: Call<List<TalentsIcons>>, response: Response<List<TalentsIcons>>) {
                 if (response.isSuccessful) {
@@ -232,7 +233,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun downloadStats() {
-        val call: Call<Statistic> = GamesActivity.client!!.getStats(characterClicked!!.toLowerCase(Locale.ROOT),
+        val call: Call<Statistic> = RetroClient.getClient().getStats(characterClicked!!.toLowerCase(Locale.ROOT),
                 characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Statistic> {
             override fun onResponse(call: Call<Statistic>, response: Response<Statistic>) {
@@ -255,7 +256,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun downloadAndSetCharacterInformation() {
-        val call: Call<CharacterSummary> = GamesActivity.client!!.getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
+        val call: Call<CharacterSummary> = RetroClient.getClient().getCharacter(characterClicked!!.toLowerCase(Locale.ROOT),
                 characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<CharacterSummary> {
             override fun onResponse(call: Call<CharacterSummary>, response: Response<CharacterSummary>) {
@@ -359,7 +360,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun downloadEquipment() {
-        val call2: Call<Equipment> = GamesActivity.client!!.getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
+        val call2: Call<Equipment> = RetroClient.getClient().getEquippedItems(characterClicked!!.toLowerCase(Locale.ROOT),
                 characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call2.enqueue(object : Callback<Equipment> {
             override fun onResponse(call: Call<Equipment>, response: Response<Equipment>) {
@@ -388,7 +389,7 @@ class WoWCharacterFragment : Fragment() {
         if (media != null) {
             Glide.with(this).load(media?.assets?.first { it.key == "main" }?.value).placeholder(R.color.colorPrimaryDark).override(1080, 1440).centerCrop().into(binding.background)
         } else {
-            val call: Call<Media> = GamesActivity.client!!.getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
+            val call: Call<Media> = RetroClient.getClient().getMedia(characterClicked!!.toLowerCase(Locale.ROOT),
                     characterRealm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
             call.enqueue(object : Callback<Media> {
                 override fun onResponse(call: Call<Media>, response: Response<Media>) {
@@ -453,7 +454,7 @@ class WoWCharacterFragment : Fragment() {
             url = url.replace(("static-[0-9].[0-9].[0-9]_[0-9]*-" + region?.toLowerCase(Locale.ROOT)?.toRegex()).toRegex(), "static-" + region?.toLowerCase(Locale.ROOT))
         }
         url = url.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-        val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = GamesActivity.client!!.getDynamicEquipmentMedia(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
+        val call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media> = RetroClient.getClient().getDynamicEquipmentMedia(url, MainActivity.locale, region?.toLowerCase(Locale.ROOT))
         call.enqueue(object : Callback<com.BlizzardArmory.model.warcraft.equipment.media.Media> {
             override fun onResponse(call: Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>, response: Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>) {
                 when {

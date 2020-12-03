@@ -6,16 +6,15 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
@@ -23,12 +22,8 @@ import com.BlizzardArmory.connection.ErrorMessages
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.Sc2FragmentBinding
-import com.BlizzardArmory.model.starcraft.Player
-import com.BlizzardArmory.model.starcraft.profile.Profile
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -38,22 +33,17 @@ import com.bumptech.glide.request.transition.Transition
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
 import java.util.*
 
 class SC2Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
-    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
-    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
-    private var accountInformation = listOf<Player>()
-    private var sc2Profile: Profile? = null
-    lateinit var errorMessages: ErrorMessages
+    private lateinit var errorMessages: ErrorMessages
     
     private var _binding: Sc2FragmentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: SC2ViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as GamesActivity)
         _binding = Sc2FragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -62,6 +52,9 @@ class SC2Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         errorMessages = ErrorMessages(this.resources)
+        setObservers()
+        prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         val summaryBG = GradientDrawable()
         summaryBG.setStroke(6, Color.parseColor("#122a42"))
         summaryBG.setColor(Color.parseColor("#75091c2e"))
@@ -102,10 +95,26 @@ class SC2Fragment : Fragment() {
         binding.avatar.setImageDrawable(avatarShadow)
 
         binding.loadingCircle.visibility = View.VISIBLE
-        prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
-        downloadAccountInformation()
+    }
+
+    private fun setObservers() {
+        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, viewModel.getBnetParams().value!!)
+            viewModel.downloadAccountInformation()
+        })
+
+        viewModel.getProfile().observe(viewLifecycleOwner, {
+            setSummaryInformation()
+            setSnapshotInformation()
+            setStatisticsInformation()
+            setRaceLevelInformation()
+            setCampaignInformation()
+            downloadAvatar()
+        })
+
+        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+            showNoConnectionMessage(it)
+        })
     }
 
     override fun onStart() {
@@ -133,63 +142,9 @@ class SC2Fragment : Fragment() {
         })
     }
 
-    private fun downloadAccountInformation() {
-        URLConstants.loading = true
-        val call: Call<List<Player>> = GamesActivity.client!!.getSc2Player(GamesActivity.userInformation!!.userID, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<List<Player>> {
-            override fun onResponse(call: Call<List<Player>>, response: retrofit2.Response<List<Player>>) {
-                when {
-                    response.isSuccessful -> {
-                        accountInformation = response.body()!!
-                        if (accountInformation.isNotEmpty()) {
-                            val call2: Call<Profile> = GamesActivity.client!!.getSc2Profile(parseRegionId(accountInformation[0].regionId), accountInformation[0].realmId,
-                                    accountInformation[0].profileId, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-                            call2.enqueue(object : Callback<Profile> {
-                                override fun onResponse(call: Call<Profile>, response: retrofit2.Response<Profile>) {
-                                    when {
-                                        response.isSuccessful -> {
-                                            sc2Profile = response.body()
-                                            setSummaryInformation()
-                                            setSnapshotInformation()
-                                            setStatisticsInformation()
-                                            setRaceLevelInformation()
-                                            setCampaignInformation()
-                                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                            downloadAvatar()
-                                        }
-                                        response.code() >= 400 -> {
-                                            Log.e("Error", "Response code: " + response.code())
-                                            showNoConnectionMessage(response.code())
-                                        }
-                                    }
-                                }
-
-                                override fun onFailure(call: Call<Profile>, t: Throwable) {
-                                    Log.e("Error", t.message, t)
-                                    showNoConnectionMessage(0)
-                                }
-                            })
-                        } else {
-                            showNoConnectionMessage(404)
-                        }
-                    }
-                    response.code() >= 400 -> {
-                        Log.e("Error", "Response code: " + response.code() + " " + response.message())
-                        showNoConnectionMessage(response.code())
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<List<Player>>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                showNoConnectionMessage(0)
-            }
-        })
-    }
-
     private fun setCampaignInformation() {
-        if (sc2Profile!!.campaign.difficultyCompleted.wingsOfLiberty != null) {
-            when (sc2Profile!!.campaign.difficultyCompleted.wingsOfLiberty) {
+        if (viewModel.getProfile().value!!.campaign.difficultyCompleted.wingsOfLiberty != null) {
+            when (viewModel.getProfile().value!!.campaign.difficultyCompleted.wingsOfLiberty) {
                 "CASUAL" -> {
                     binding.wolIcon.setImageResource(R.drawable.campaign_badge_wol_casual)
                     binding.campaignWol.text = "Casual Campaign Ace"
@@ -208,8 +163,8 @@ class SC2Fragment : Fragment() {
                 }
             }
         }
-        if (sc2Profile!!.campaign.difficultyCompleted.heartOfTheSwarm != null) {
-            when (sc2Profile!!.campaign.difficultyCompleted.heartOfTheSwarm) {
+        if (viewModel.getProfile().value!!.campaign.difficultyCompleted.heartOfTheSwarm != null) {
+            when (viewModel.getProfile().value!!.campaign.difficultyCompleted.heartOfTheSwarm) {
                 "CASUAL" -> {
                     binding.hotsIcon.setImageResource(R.drawable.campaign_badge_hots_casual)
                     binding.campaignHots.text = "Casual Campaign Ace"
@@ -228,8 +183,8 @@ class SC2Fragment : Fragment() {
                 }
             }
         }
-        if (sc2Profile!!.campaign.difficultyCompleted.legacyOfTheVoid != null) {
-            when (sc2Profile!!.campaign.difficultyCompleted.legacyOfTheVoid) {
+        if (viewModel.getProfile().value!!.campaign.difficultyCompleted.legacyOfTheVoid != null) {
+            when (viewModel.getProfile().value!!.campaign.difficultyCompleted.legacyOfTheVoid) {
                 "CASUAL" -> {
                     binding.lotvIcon.setImageResource(R.drawable.campaign_badge_lotv_casual)
                     binding.campaignLotv.text = "Casual Campaign Ace"
@@ -251,42 +206,32 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setRaceLevelInformation() {
-        val terranTemp = "Level " + sc2Profile!!.swarmLevels.terran.level
-        val zergTemp = "Level " + sc2Profile!!.swarmLevels.zerg.level
-        val protossTemp = "Level " + sc2Profile!!.swarmLevels.protoss.level
+        val terranTemp = "Level " + viewModel.getProfile().value!!.swarmLevels.terran.level
+        val zergTemp = "Level " + viewModel.getProfile().value!!.swarmLevels.zerg.level
+        val protossTemp = "Level " + viewModel.getProfile().value!!.swarmLevels.protoss.level
         binding.terranLevel.text = terranTemp
         binding.zergLevel.text = zergTemp
         binding.protossLevel.text = protossTemp
     }
 
-    private fun parseRegionId(regionId: Int): String {
-        when (regionId) {
-            1 -> return "US"
-            2 -> return "EU"
-            3 -> return "KO"
-            5 -> return "CN"
-        }
-        return "US"
-    }
-
     private fun setStatisticsInformation() {
-        binding.terranWins.text = sc2Profile!!.career.terranWins.toString()
-        binding.zergWins.text = sc2Profile!!.career.zergWins.toString()
-        binding.protossWins.text = sc2Profile!!.career.protossWins.toString()
-        binding.seasonPlayed.text = sc2Profile!!.career.totalGamesThisSeason.toString()
-        binding.careerPlayed.text = sc2Profile!!.career.totalCareerGames.toString()
-        if (sc2Profile!!.career.best1v1Finish.leagueName != null) {
-            setSnapshotIcons(sc2Profile!!.career.best1v1Finish.leagueName, 500, binding.bestOneIcon)
-            var temp = sc2Profile!!.career.best1v1Finish.leagueName.substring(1).toLowerCase(Locale.ROOT)
-            temp = sc2Profile!!.career.best1v1Finish.leagueName.substring(0, 1) + temp
+        binding.terranWins.text = viewModel.getProfile().value!!.career.terranWins.toString()
+        binding.zergWins.text = viewModel.getProfile().value!!.career.zergWins.toString()
+        binding.protossWins.text = viewModel.getProfile().value!!.career.protossWins.toString()
+        binding.seasonPlayed.text = viewModel.getProfile().value!!.career.totalGamesThisSeason.toString()
+        binding.careerPlayed.text = viewModel.getProfile().value!!.career.totalCareerGames.toString()
+        if (viewModel.getProfile().value!!.career.best1v1Finish.leagueName != null) {
+            setSnapshotIcons(viewModel.getProfile().value!!.career.best1v1Finish.leagueName, 500, binding.bestOneIcon)
+            var temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(1).toLowerCase(Locale.ROOT)
+            temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(0, 1) + temp
             binding.bestOne.text = temp
         } else {
             binding.bestOne.visibility = View.GONE
         }
-        if (sc2Profile!!.career.bestTeamFinish.leagueName != null) {
-            setSnapshotIcons(sc2Profile!!.career.bestTeamFinish.leagueName, 500, binding.bestTeamIcon)
-            var temp = sc2Profile!!.career.bestTeamFinish.leagueName.substring(1).toLowerCase(Locale.ROOT)
-            temp = sc2Profile!!.career.bestTeamFinish.leagueName.substring(0, 1) + temp
+        if (viewModel.getProfile().value!!.career.bestTeamFinish.leagueName != null) {
+            setSnapshotIcons(viewModel.getProfile().value!!.career.bestTeamFinish.leagueName, 500, binding.bestTeamIcon)
+            var temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(1).toLowerCase(Locale.ROOT)
+            temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(0, 1) + temp
             binding.bestTeam.text = temp
         } else {
             binding.bestTeam.visibility = View.GONE
@@ -294,16 +239,16 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setSnapshotInformation() {
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.oneVone.leagueName, sc2Profile!!.snapshot.seasonSnapshot.oneVone.rank, binding.oneOne)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.archon.leagueName, sc2Profile!!.snapshot.seasonSnapshot.archon.rank, binding.archon)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.leagueName, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.rank, binding.twoTwo)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.leagueName, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.rank, binding.threeThree)
-        setSnapshotIcons(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.leagueName, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.rank, binding.fourFour)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalGames, sc2Profile!!.snapshot.seasonSnapshot.oneVone.totalWins, binding.oneOneText)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.archon.totalGames, sc2Profile!!.snapshot.seasonSnapshot.archon.totalWins, binding.archonText)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalGames, sc2Profile!!.snapshot.seasonSnapshot.twoVtwo.totalWins, binding.twoTwoText)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalGames, sc2Profile!!.snapshot.seasonSnapshot.threeVthree.totalWins, binding.threeThreeText)
-        setSnapshotText(sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalGames, sc2Profile!!.snapshot.seasonSnapshot.fourVfour.totalWins, binding.fourFourText)
+        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.rank, binding.oneOne)
+        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.rank, binding.archon)
+        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.rank, binding.twoTwo)
+        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.rank, binding.threeThree)
+        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.rank, binding.fourFour)
+        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.totalWins, binding.oneOneText)
+        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.totalWins, binding.archonText)
+        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.totalWins, binding.twoTwoText)
+        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.totalWins, binding.threeThreeText)
+        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.totalWins, binding.fourFourText)
     }
 
     private fun setSnapshotText(totalGames: Int, totalWins: Int, text: TextView?) {
@@ -419,27 +364,27 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setSummaryInformation() {
-        if (sc2Profile?.swarmLevels != null && sc2Profile?.swarmLevels?.level != null) {
-            binding.totalLevelText.text = sc2Profile!!.swarmLevels.level.toString()
+        if (viewModel.getProfile().value!!.swarmLevels != null && viewModel.getProfile().value!!.swarmLevels?.level != null) {
+            binding.totalLevelText.text = viewModel.getProfile().value!!.swarmLevels.level.toString()
         } else {
             binding.totalLevelText.text = "0"
         }
-        binding.name.text = sc2Profile!!.summary.displayName
-        if (sc2Profile!!.summary.clanName != null) {
-            val clanName = "[" + sc2Profile!!.summary.clanTag + "] " + sc2Profile!!.summary.clanName
+        binding.name.text = viewModel.getProfile().value!!.summary.displayName
+        if (viewModel.getProfile().value!!.summary.clanName != null) {
+            val clanName = "[" + viewModel.getProfile().value!!.summary.clanTag + "] " + viewModel.getProfile().value!!.summary.clanName
             binding.clan.text = clanName
         } else {
             binding.clan.visibility = View.GONE
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
+            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
                 val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
                 val drawable = resources.getDrawable(resourceId, requireActivity().theme)
                 drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
                 drawable
             }, null)
         } else {
-            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + sc2Profile!!.summary.totalAchievementPoints, { source: String? ->
+            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, { source: String? ->
                 val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
                 val drawable = resources.getDrawable(resourceId, requireActivity().theme)
                 drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
@@ -449,7 +394,7 @@ class SC2Fragment : Fragment() {
     }
 
     private fun downloadAvatar() {
-        Glide.with(this).load(accountInformation[0].avatarUrl).into(object : CustomTarget<Drawable>() {
+        Glide.with(this).load(viewModel.getAccount().value!![0].avatarUrl).into(object : CustomTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 binding.avatar.background = resource
                 binding.loadingCircle.visibility = View.GONE
@@ -506,7 +451,7 @@ class SC2Fragment : Fragment() {
                 .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                         {
                             dialog.cancel()
-                            downloadAccountInformation()
+                            viewModel.downloadAccountInformation()
                             binding.loadingCircle.visibility = View.VISIBLE
                         },
                         {
