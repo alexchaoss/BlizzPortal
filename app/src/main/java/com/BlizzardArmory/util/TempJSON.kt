@@ -29,7 +29,7 @@ object TempJSON {
             "      },\n" +
             "      \"name\":\"Night Fae\"\n" +
             "   },\n" +
-            "   \"renown_level\":39,\n" +
+            "   \"renown_level\":40,\n" +
             "   \"soulbinds\":[\n" +
             "      {\n" +
             "         \"soulbind\":{\n" +

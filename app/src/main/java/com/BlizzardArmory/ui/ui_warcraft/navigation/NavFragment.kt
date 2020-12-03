@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
-import com.BlizzardArmory.ui.GamesActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
 import com.BlizzardArmory.util.IOnBackPressed
 import com.BlizzardArmory.util.events.LocaleSelectedEvent

@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -24,8 +25,7 @@ import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByE
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
 import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -107,7 +107,7 @@ class ReputationsFragment : Fragment() {
     }
 
     private fun downloadReputationsPlusParentInfo() {
-        val call: Call<List<ReputationPlusParentInfo>> = GamesActivity.client!!.getReputationPlusParentInfo(URLConstants.getReputations(MainActivity.locale))
+        val call: Call<List<ReputationPlusParentInfo>> = RetroClient.getClient().getReputationPlusParentInfo(URLConstants.getReputations(MainActivity.locale))
         call.enqueue(object : Callback<List<ReputationPlusParentInfo>> {
             override fun onResponse(call: Call<List<ReputationPlusParentInfo>>, response: Response<List<ReputationPlusParentInfo>>) {
 
@@ -126,7 +126,7 @@ class ReputationsFragment : Fragment() {
     }
 
     private fun downloadReputations() {
-        val call: Call<Reputation> = GamesActivity.client!!.getReputations(character!!.toLowerCase(Locale.ROOT),
+        val call: Call<Reputation> = RetroClient.getClient().getReputations(character!!.toLowerCase(Locale.ROOT),
                 realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Reputation> {
             override fun onResponse(call: Call<Reputation>, response: Response<Reputation>) {

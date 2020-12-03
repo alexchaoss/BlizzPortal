@@ -16,8 +16,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 99
-        versionName "4.21"
+        versionCode 101
+        versionName "4.31"
         multiDexEnabled true
     }
     buildTypes {

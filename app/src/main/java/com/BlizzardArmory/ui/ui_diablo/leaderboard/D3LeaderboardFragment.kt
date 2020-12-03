@@ -17,14 +17,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.databinding.D3LeaderboardsFragmentBinding
 import com.BlizzardArmory.databinding.GamesActivityBinding
 import com.BlizzardArmory.model.diablo.data.common.Leaderboard
 import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
 import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import retrofit2.Call
@@ -162,7 +163,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private fun downloadSeasonIndex() {
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
-        val seasonCall: Call<SeasonIndex> = GamesActivity.client!!.getSeasonIndex(MainActivity.locale, MainActivity.selectedRegion)
+        val seasonCall: Call<SeasonIndex> = RetroClient.getClient().getSeasonIndex(MainActivity.locale, MainActivity.selectedRegion)
         seasonCall.enqueue(object : Callback<SeasonIndex> {
             override fun onResponse(call: Call<SeasonIndex>, response: Response<SeasonIndex>) {
                 if (response.isSuccessful) {
@@ -192,7 +193,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private fun downloadSeason(id: String, leaderboardString: String, region: String){
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
-        val seasonCall: Call<Leaderboard> = GamesActivity.client!!.getSeasonLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
+        val seasonCall: Call<Leaderboard> = RetroClient.getClient().getSeasonLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
         seasonCall.enqueue(object : Callback<Leaderboard> {
             override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>) {
                 if (response.isSuccessful) {
@@ -216,7 +217,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private fun downloadEraIndex() {
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
-        val eraCall: Call<EraIndex> = GamesActivity.client!!.getEraIndex(MainActivity.locale, MainActivity.selectedRegion)
+        val eraCall: Call<EraIndex> = RetroClient.getClient().getEraIndex(MainActivity.locale, MainActivity.selectedRegion)
         eraCall.enqueue(object : Callback<EraIndex> {
             override fun onResponse(call: Call<EraIndex>, response: Response<EraIndex>) {
                 if (response.isSuccessful) {
@@ -231,8 +232,6 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                         binding.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
                     }
                 }
-                URLConstants.loading = false
-                binding.loadingCircle.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<EraIndex>, t: Throwable) {
@@ -243,14 +242,18 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         })
     }
 
-    private fun downloadEra(id: String, leaderboardString: String, region: String){
-        val seasonCall: Call<Leaderboard> = GamesActivity.client!!.getEraLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
+    private fun downloadEra(id: String, leaderboardString: String, region: String) {
+        URLConstants.loading = true
+        binding.loadingCircle.visibility = View.VISIBLE
+        val seasonCall: Call<Leaderboard> = RetroClient.getClient().getEraLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
         seasonCall.enqueue(object : Callback<Leaderboard> {
             override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>) {
                 val leaderboard = response.body()
                 binding.leaderboardRecycler.apply {
                     adapter = LeaderboardAdapter(leaderboard?.row!!, region, requireActivity())
                 }
+                URLConstants.loading = false
+                binding.loadingCircle.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<Leaderboard>, t: Throwable) {

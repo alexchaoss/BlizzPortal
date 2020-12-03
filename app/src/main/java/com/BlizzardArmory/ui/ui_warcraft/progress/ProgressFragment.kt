@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -22,8 +23,7 @@ import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.WowProgressFragmentBinding
 import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.model.warcraft.encounters.Expansions
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -98,7 +98,7 @@ class ProgressFragment : Fragment() {
     }
 
     private fun downloadEncounterInformation() {
-        val call: Call<EncountersInformation> = GamesActivity.client!!.getEncounters(character!!.toLowerCase(Locale.ROOT),
+        val call: Call<EncountersInformation> = RetroClient.getClient().getEncounters(character!!.toLowerCase(Locale.ROOT),
                 realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<EncountersInformation> {
             override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {

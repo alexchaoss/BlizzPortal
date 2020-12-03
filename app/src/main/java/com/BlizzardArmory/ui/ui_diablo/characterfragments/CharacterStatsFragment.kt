@@ -17,14 +17,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.D3CharacterFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.*
@@ -93,7 +94,7 @@ class CharacterStatsFragment : Fragment() {
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
         dialog = null
-        val call: Call<CharacterInformation> = GamesActivity.client!!.getD3Hero(battletag, id, MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<CharacterInformation> = RetroClient.getClient().getD3Hero(battletag, id, MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : retrofit2.Callback<CharacterInformation> {
             override fun onResponse(call: Call<CharacterInformation>, response: retrofit2.Response<CharacterInformation>) {
                 when {

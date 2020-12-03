@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui
+package com.BlizzardArmory.ui.navigation
 
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -19,13 +20,12 @@ import com.BlizzardArmory.connection.NetworkServices
 import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.GamesActivityBinding
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
-import com.BlizzardArmory.model.warcraft.media.Media
-import com.BlizzardArmory.model.warcraft.realm.Realms
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
+import com.BlizzardArmory.ui.settings.SettingsFragment
 import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
 import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.ui_diablo.leaderboard.D3LeaderboardFragment
@@ -47,27 +47,27 @@ import kotlinx.android.synthetic.main.games_activity_nav_header.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 
 class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
-    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
+
     private lateinit var toggle: ActionBarDrawerToggle
     private var searchText: SpannableString? = null
     private var wowFavoritesText: SpannableString? = null
     private var d3FavoritesText: SpannableString? = null
     private var owFavoritesText: SpannableString? = null
     private var d3LeaderboardText: SpannableString? = null
-    private var wowMediaCharacter: Media? = null
     private var prefs: SharedPreferences? = null
     private val gson = GsonBuilder().create()
-    private var wowRealms = mutableMapOf<String, Realms>()
+
+    private var characterClicked: String = ""
+    private var characterRealm: String = ""
+    private var selectedRegion: String = ""
+
     private lateinit var errorMessage: ErrorMessages
-    
+
     private lateinit var binding: GamesActivityBinding
+    private val viewModel: GamesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,40 +79,32 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
             Log.e("Crash Prevented", throwable.message!!, throwable)
             handleUncaughtException(thread, throwable)
         }
-        client = RetroClient.getClient(this)
+        setOberservers()
+        client = RetroClient.getClient()
 
         favorite = binding.topBar.favorite
         errorMessage = ErrorMessages(this.resources)
         binding.drawerLayout.setScrimColor(Color.TRANSPARENT)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        battlenetOAuth2Params = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
-        if (!prefs?.contains("news_pulled")!!) {
-            val dialog = DialogPrompt(this)
-            dialog.addTitle("New Feature!", 20F)
-                    .addMessage("Pull from the right side to select which news you want to see here!", 18F)
-                    .addButton("Close", 16F, { dialog.cancel() }).show()
-            prefs?.edit()?.putString("news_pulled", "done")?.apply()
-        }
-
-        val userNewsPrefs = prefs?.getString("user_news", "DEFAULT")
-        if (userNewsPrefs == "DEFAULT") {
-            userNews = UserNews()
-            prefs?.edit()?.putString("user_news", gson.toJson(userNews))?.apply()
-        } else {
-            userNews = gson.fromJson(userNewsPrefs, UserNews::class.java)
-        }
-
+        openFirstTimeNewsDialog()
+        getUserNewsPreferences()
         setUserNews()
+        openNewsFragment()
 
-        val newsListFragment = NewsListFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.news_fragment, newsListFragment, "news_fragment").commit()
-        supportFragmentManager.executePendingTransactions()
+        setNavigation()
 
-        battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params!!)
+        binding.settings.setOnClickListener {
+            val fragment = SettingsFragment()
+            favorite!!.visibility = View.GONE
+            supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings").commit()
+            supportFragmentManager.executePendingTransactions()
+            binding.drawerLayout.closeDrawers()
+        }
+    }
 
-        getRealms()
-
+    private fun setNavigation() {
         binding.navView.setNavigationItemSelectedListener(this)
         binding.navView.itemIconTintList = null
         setSupportActionBar(binding.topBar.toolbarMain)
@@ -124,16 +116,32 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = ""
         makeTitlesTransparent()
+    }
 
-        binding.settings.setOnClickListener {
-            val fragment = SettingsFragment()
-            favorite!!.visibility = View.GONE
-            supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings").commit()
-            supportFragmentManager.executePendingTransactions()
-            binding.drawerLayout.closeDrawers()
+    private fun openNewsFragment() {
+        val newsListFragment = NewsListFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.news_fragment, newsListFragment, "news_fragment").commit()
+        supportFragmentManager.executePendingTransactions()
+    }
+
+    private fun getUserNewsPreferences() {
+        val userNewsPrefs = prefs?.getString("user_news", "DEFAULT")
+        if (userNewsPrefs == "DEFAULT") {
+            userNews = UserNews()
+            prefs?.edit()?.putString("user_news", gson.toJson(userNews))?.apply()
+        } else {
+            userNews = gson.fromJson(userNewsPrefs, UserNews::class.java)
         }
+    }
 
-        downloadUserInfo()
+    private fun openFirstTimeNewsDialog() {
+        if (!prefs?.contains("news_pulled")!!) {
+            val dialog = DialogPrompt(this)
+            dialog.addTitle("New Feature!", 20F)
+                    .addMessage("Pull from the right side to select which news you want to see here!", 18F)
+                    .addButton("Close", 16F, { dialog.cancel() }).show()
+            prefs?.edit()?.putString("news_pulled", "done")?.apply()
+        }
     }
 
     override fun onStart() {
@@ -146,9 +154,33 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         EventBus.getDefault().unregister(this)
     }
 
+    private fun setOberservers() {
+        viewModel.getBnetParams().observe(this, {
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, viewModel.getBnetParams().value!!)
+            viewModel.getRealms()
+            viewModel.downloadUserInfo()
+        })
+
+        viewModel.getUserInformation().observe(this, {
+            userInformation = it
+            if (binding.drawerLayout.battletag != null) {
+                binding.topBar.barTitle.text = userInformation?.battleTag
+                binding.drawerLayout.battletag.text = userInformation?.battleTag
+            }
+        })
+
+        viewModel.getErrorCode().observe(this, {
+            callErrorAlertDialog(it)
+        })
+
+        viewModel.getMedia().observe(this, {
+            callWoWCharacterFragment(characterClicked, characterRealm, selectedRegion)
+        })
+    }
+
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
-        getRealms()
+        viewModel.getRealms()
         when (localeSelectedEvent.locale) {
             "en_US" -> setLanguage("en")
             "es_ES" -> setLanguage("es")
@@ -165,61 +197,6 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
     private fun handleUncaughtException(thread: Thread?, e: Throwable) {
         FirebaseCrashlytics.getInstance().log(e.message!!)
-    }
-
-    private fun getRealms() {
-        val call: Call<Realms> = client!!.getRealmIndex("us", "dynamic-us", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<Realms> {
-            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
-                if (response.isSuccessful) {
-                    wowRealms["US"] = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<Realms>, t: Throwable) {
-                Log.e("realms", "trace start")
-                Log.e("Error", t.message, t)
-            }
-        })
-        val call2: Call<Realms> = client!!.getRealmIndex("eu", "dynamic-eu", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
-        call2.enqueue(object : Callback<Realms> {
-            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
-                if (response.isSuccessful) {
-                    wowRealms["EU"] = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<Realms>, t: Throwable) {
-                Log.e("realms", "trace start")
-                Log.e("Error", t.message, t)
-            }
-        })
-        val call3: Call<Realms> = client!!.getRealmIndex("kr", "dynamic-kr", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
-        call3.enqueue(object : Callback<Realms> {
-            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
-                if (response.isSuccessful) {
-                    wowRealms["KR"] = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<Realms>, t: Throwable) {
-                Log.e("realms", "trace start")
-                Log.e("Error", t.message, t)
-            }
-        })
-        val call4: Call<Realms> = client!!.getRealmIndex("tw", "dynamic-tw", MainActivity.locale, battlenetOAuth2Helper!!.accessToken)
-        call4.enqueue(object : Callback<Realms> {
-            override fun onResponse(call: Call<Realms>, response: Response<Realms>) {
-                if (response.isSuccessful) {
-                    wowRealms["TW"] = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<Realms>, t: Throwable) {
-                Log.e("realms", "trace start")
-                Log.e("Error", t.message, t)
-            }
-        })
     }
 
     private fun setUserNews() {
@@ -288,34 +265,6 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         binding.navView.menu.findItem(R.id.d3_leaderboard).title = d3LeaderboardText
     }
 
-    private fun downloadUserInfo() {
-        val call: Call<UserInformation> = client!!.getUserInfo(battlenetOAuth2Helper!!.accessToken, MainActivity.selectedRegion.toLowerCase(Locale.ROOT))
-        call.enqueue(object : Callback<UserInformation> {
-            override fun onResponse(call: Call<UserInformation>, response: Response<UserInformation>) {
-                if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        userInformation = response.body()
-
-                        binding.topBar.barTitle.text = userInformation?.battleTag
-                        binding.drawerLayout.battletag.text = userInformation?.battleTag
-                    } else {
-                        callErrorAlertDialog(500)
-                    }
-                } else if (response.code() == 500) {
-                    callErrorAlertDialog(response.code())
-                }
-                if (userInformation?.battleTag == null) {
-                    callErrorAlertDialog(404)
-                }
-            }
-
-            override fun onFailure(call: Call<UserInformation>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                callErrorAlertDialog(0)
-            }
-        })
-    }
-
     private fun getErrorMessage(responseCode: Int): String {
         return when (responseCode) {
             in 201..499 -> {
@@ -350,7 +299,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         if (responseCode == 404 || responseCode == 403 || responseCode == 500) {
             dialog.setOnCancelListener { finish() }
         } else {
-            dialog.setOnCancelListener { downloadUserInfo() }
+            dialog.setOnCancelListener { viewModel.downloadUserInfo() }
         }
 
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
@@ -388,7 +337,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                         .addEditText("character_field")
                         .addMessage("Realm", 18F, "realm_label")
-                        .addAutoCompleteEditText("realm_field", wowRealms.values.flatMap { it.realms }.map { it.name }.distinct())
+                        .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }.map { it.name }.distinct())
                         .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                         .addButton("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button").show()
                 binding.drawerLayout.closeDrawers()
@@ -453,10 +402,10 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         val btagRegex = Regex(".*#[0-9]*")
         when {
             (dialog.tagMap["btag_field"] as EditText).text.toString().matches(btagRegex) -> {
-                Toast.makeText(this, "Please enter a BattleTag", Toast.LENGTH_SHORT).show()
+                Toast.makeText(dialog.context, "Please enter a BattleTag", Toast.LENGTH_SHORT).show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString().equals("Select Region", ignoreCase = true) -> {
-                Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
+                Toast.makeText(dialog.context, "Please enter the region", Toast.LENGTH_SHORT).show()
             }
             else -> {
                 dialog.cancel()
@@ -465,23 +414,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         }
     }
 
-    private fun callD3Activity(battletag: String, region: String) {
-        val fragment: Fragment = D3Fragment()
-        val bundle = Bundle()
-        bundle.putString("battletag", battletag)
-        bundle.putString("region", region)
-        bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
-        fragment.arguments = bundle
-        supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                .replace(R.id.fragment, fragment, "d3fragment")
-                .addToBackStack("d3_account").commit()
-        supportFragmentManager.executePendingTransactions()
-    }
-
     private fun openSearchedWoWCharacter(dialog: DialogPrompt) {
-        val characterClicked: String
-        val characterRealm: String
         when {
             (dialog.tagMap["character_field"] as EditText).text.toString() == "" -> {
                 Toast.makeText(this, "Please enter the character name", Toast.LENGTH_SHORT).show()
@@ -494,38 +427,32 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
             }
             else -> {
                 characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString().toLowerCase(Locale.ROOT)
-                characterRealm = wowRealms[(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]?.realms?.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
-                downloadMedia(dialog, characterClicked, characterRealm, (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString())
+                characterRealm = viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                viewModel.downloadMedia(dialog, characterClicked, characterRealm, selectedRegion)
             }
         }
     }
 
-    private fun downloadMedia(dialog: DialogPrompt, characterClicked: String, characterRealm: String, selectedRegion: String) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val battlenetOAuth2Params: BattlenetOAuth2Params = Objects.requireNonNull(this).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)!!
-        val bnOAuth2Helper = BattlenetOAuth2Helper(prefs, battlenetOAuth2Params)
-
-        val call: Call<Media> = client!!.getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT),
-                MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale, bnOAuth2Helper.accessToken)
-        call.enqueue(object : Callback<Media> {
-            override fun onResponse(call: Call<Media>, response: Response<Media>) {
-                wowMediaCharacter = response.body()
-                dialog.cancel()
-                callWoWCharacterFragment(characterClicked, characterRealm, selectedRegion)
-            }
-
-            override fun onFailure(call: Call<Media>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                callWoWCharacterFragment(characterClicked, characterRealm, selectedRegion)
-            }
-        })
+    private fun callD3Activity(battletag: String, region: String) {
+        val fragment: Fragment = D3Fragment()
+        val bundle = Bundle()
+        bundle.putString("battletag", battletag)
+        bundle.putString("region", region)
+        bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, viewModel.getBnetParams().value)
+        fragment.arguments = bundle
+        supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
+                .replace(R.id.fragment, fragment, "d3fragment")
+                .addToBackStack("d3_account").commit()
+        supportFragmentManager.executePendingTransactions()
     }
 
     private fun callWoWCharacterFragment(characterClicked: String, characterRealm: String, selectedRegion: String) {
         if (supportFragmentManager.primaryNavigationFragment != null && supportFragmentManager.primaryNavigationFragment!!.isVisible) {
             supportFragmentManager.beginTransaction().remove(supportFragmentManager.primaryNavigationFragment!!).commit()
         }
-        val mediaString = Gson().toJson(wowMediaCharacter)
+        val mediaString = Gson().toJson(viewModel.getMedia().value)
         val woWNavFragment = WoWNavFragment.newInstance(characterClicked, characterRealm, mediaString, selectedRegion)
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
@@ -533,6 +460,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 .addToBackStack("wow_nav").commit()
         supportFragmentManager.executePendingTransactions()
     }
+
 
     companion object {
         var client: NetworkServices? = null

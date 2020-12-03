@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
@@ -23,8 +24,7 @@ import com.BlizzardArmory.databinding.WowPvpFragmentBinding
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
@@ -101,13 +101,13 @@ class PvPFragment : Fragment(){
     }
 
     private fun downloadRBGInfo() {
-        val call: Call<BracketStatistics> = GamesActivity.client!!.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+        val call: Call<BracketStatistics> = RetroClient.getClient().getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
                 "rbg", MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvpRBG = response.body()
                 val url = pvpRBG?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
+                val call2: Call<Tier> = RetroClient.getClient().getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         if (response.isSuccessful && response.body() != null) {
@@ -134,13 +134,13 @@ class PvPFragment : Fragment(){
     }
 
     private fun download3v3Info() {
-        val call: Call<BracketStatistics> = GamesActivity.client!!.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+        val call: Call<BracketStatistics> = RetroClient.getClient().getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
                 "3v3", MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp3v3 = response.body()
                 val url = pvp3v3?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
+                val call2: Call<Tier> = RetroClient.getClient().getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         if (response.isSuccessful && response.body() != null) {
@@ -167,13 +167,13 @@ class PvPFragment : Fragment(){
     }
 
     private fun download2v2Info() {
-        val call: Call<BracketStatistics> = GamesActivity.client!!.getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
+        val call: Call<BracketStatistics> = RetroClient.getClient().getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
                 "2v2", MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<BracketStatistics> {
             override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
                 val pvp2v2 = response.body()
                 val url = pvp2v2?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = GamesActivity.client!!.getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
+                val call2: Call<Tier> = RetroClient.getClient().getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
                 call2.enqueue(object : Callback<Tier> {
                     override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
                         if (response.isSuccessful && response.body() != null) {
@@ -201,7 +201,7 @@ class PvPFragment : Fragment(){
     }
 
     private fun downloadPvPSummary() {
-        val call: Call<PvPSummary> = GamesActivity.client!!.getPvPSummary(character!!.toLowerCase(Locale.ROOT),
+        val call: Call<PvPSummary> = RetroClient.getClient().getPvPSummary(character!!.toLowerCase(Locale.ROOT),
                 realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<PvPSummary> {
             override fun onResponse(call: Call<PvPSummary>, response: retrofit2.Response<PvPSummary>) {

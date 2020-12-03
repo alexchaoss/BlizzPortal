@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Profiles for Blizzard Games</string>
+    <string name="app_name">Blizz-Portal</string>
     <string name="select_region">Seleccione región</string>
     <string name="login">Iniciar sesión</string>
     <string name="clear_credentials">Credenciales claras</string>

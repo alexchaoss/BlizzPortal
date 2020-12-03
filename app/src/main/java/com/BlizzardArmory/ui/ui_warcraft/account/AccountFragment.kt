@@ -11,14 +11,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
+import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.WowAccountFragmentBinding
 import com.BlizzardArmory.model.warcraft.account.Account
-import com.BlizzardArmory.ui.GamesActivity
-import com.BlizzardArmory.ui.MainActivity
+import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -74,7 +75,7 @@ class AccountFragment : Fragment() {
     private fun downloadWoWCharacters() {
         binding.loadingCircle.visibility = View.VISIBLE
         URLConstants.loading = true
-        val call: Call<Account> = GamesActivity.client!!.getAccount(MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
+        val call: Call<Account> = RetroClient.getClient().getAccount(MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
         call.enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 when {

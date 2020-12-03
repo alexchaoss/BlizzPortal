@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.ui.GamesActivity.Companion.userInformation
+import com.BlizzardArmory.ui.navigation.GamesActivity.Companion.userInformation
 import com.BlizzardArmory.util.MetricConversion.getDPMetric
 
 /**

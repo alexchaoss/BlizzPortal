@@ -18,25 +18,26 @@
         android:largeHeap="true"
         android:fullBackupContent="@xml/backup_descriptor">
         <activity
-            android:name="com.BlizzardArmory.ui.MainActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="unspecified">
+            android:name="com.BlizzardArmory.ui.SplashScreenActivity"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
+            android:name="com.BlizzardArmory.ui.main.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="unspecified"></activity>
+        <activity
             android:name="com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity"
-            android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
+            android:parentActivityName="com.BlizzardArmory.ui.main.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"
             android:launchMode="singleTop" />
         <activity
-            android:name="com.BlizzardArmory.ui.GamesActivity"
-            android:parentActivityName="com.BlizzardArmory.ui.MainActivity"
+            android:name="com.BlizzardArmory.ui.navigation.GamesActivity"
+            android:parentActivityName="com.BlizzardArmory.ui.main.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"
             android:launchMode="singleTop" />
