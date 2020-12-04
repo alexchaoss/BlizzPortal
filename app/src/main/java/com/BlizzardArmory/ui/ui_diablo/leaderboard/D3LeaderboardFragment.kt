@@ -15,42 +15,32 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.URLConstants
 import com.BlizzardArmory.databinding.D3LeaderboardsFragmentBinding
 import com.BlizzardArmory.databinding.GamesActivityBinding
-import com.BlizzardArmory.model.diablo.data.common.Leaderboard
-import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
-import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
-    private var eraIndex: EraIndex? = null
-    private var seasonIndex: SeasonIndex? = null
-
-    private var eraIndexList = arrayListOf<String>()
-    private var seasonIndexList = arrayListOf<String>()
-    
     private var leaderboardList = arrayListOf("Category", "Barbarian", "Crusader", "Demon Hunter", "Monk", "Necromancer", "Witch Doctor", "Wizard", "2 Player", "3 Player", "4 Player")
-    
+
     private lateinit var toggle: ActionBarDrawerToggle
 
     private var hardcoreToggle = false
     private var seasonToggle = true
-    
+    private var region: String = "US"
+    private var updatedSpinners = false
+
     private var _binding: D3LeaderboardsFragmentBinding? = null
     private var _barBinding: GamesActivityBinding? = null
     private val binding get() = _binding!!
     private val barBinding get() = _barBinding!!
+    private val viewModel: D3LeaderboardViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as GamesActivity)
@@ -91,9 +81,6 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         }
 
         setAdapter(leaderboardList, binding.leaderboard)
-
-        eraIndexList.add("Era")
-        seasonIndexList.add("Season")
         setAdapter(resources.getStringArray(R.array.regions).asList(), binding.region)
 
         setSearchButton()
@@ -104,7 +91,11 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         textView.setHintTextColor(Color.parseColor("#ffffff"))
         binding.searchView.setOnQueryTextListener(this)
 
-        downloadInfos()
+        URLConstants.loading = true
+        binding.loadingCircle.visibility = View.VISIBLE
+        setObservers()
+        viewModel.downloadEraIndex()
+        viewModel.downloadSeasonIndex()
     }
 
     override fun onResume() {
@@ -115,6 +106,41 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onPause() {
         activity?.findViewById<DrawerLayout>(R.id.drawer_layout)?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END)
         super.onPause()
+    }
+
+    private fun setObservers() {
+        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+            binding.loadingCircle.visibility = View.GONE
+        })
+
+        viewModel.getEraIndex().observe(viewLifecycleOwner, {
+            binding.eraButton.setOnClickListener {
+                seasonToggle = false
+                setAdapter(viewModel.getEraIndexList(), binding.spinnerId)
+                binding.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+                binding.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            }
+        })
+
+        viewModel.getSeasonIndex().observe(viewLifecycleOwner, {
+            binding.seasonButton.setOnClickListener {
+                seasonToggle = true
+                setAdapter(viewModel.getSeasonIndexList(), binding.spinnerId)
+                binding.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+                binding.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            }
+        })
+
+        viewModel.getLeaderboard().observe(viewLifecycleOwner, {
+            if (!updatedSpinners) {
+                updatedSpinners = true
+                setAdapter(viewModel.getSeasonIndexList(), binding.spinnerId)
+            }
+            binding.leaderboardRecycler.apply {
+                adapter = LeaderboardAdapter(viewModel.getLeaderboard().value?.row!!, region, requireActivity())
+            }
+            binding.loadingCircle.visibility = View.GONE
+        })
     }
 
     private fun setSearchButton() {
@@ -142,126 +168,20 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                     "4 Player" -> if (hardcoreToggle) "rift-hardcore-team-4" else "rift-team-4"
                     else -> "rift-barbarian"
                 }
+                region = binding.region.selectedItem.toString()
                 if (seasonToggle) {
-                    downloadSeason(binding.spinnerId.selectedItem.toString(), leaderboard, binding.region.selectedItem.toString())
+                    viewModel.downloadSeason(binding.spinnerId.selectedItem.toString(), leaderboard, region)
                 } else {
-                    downloadEra(binding.spinnerId.selectedItem.toString(), leaderboard, binding.region.selectedItem.toString())
+                    viewModel.downloadEra(binding.spinnerId.selectedItem.toString(), leaderboard, region)
                 }
+                URLConstants.loading = true
+                binding.loadingCircle.visibility = View.VISIBLE
                 binding.leaderboardRecycler.apply {
                     adapter = LeaderboardAdapter(listOf(), "US", requireContext())
                 }
                 binding.drawerLayout.closeDrawers()
             }
         }
-    }
-
-    private fun downloadInfos() {
-        downloadEraIndex()
-        downloadSeasonIndex()
-    }
-
-    private fun downloadSeasonIndex() {
-        URLConstants.loading = true
-        binding.loadingCircle.visibility = View.VISIBLE
-        val seasonCall: Call<SeasonIndex> = RetroClient.getClient().getSeasonIndex(MainActivity.locale, MainActivity.selectedRegion)
-        seasonCall.enqueue(object : Callback<SeasonIndex> {
-            override fun onResponse(call: Call<SeasonIndex>, response: Response<SeasonIndex>) {
-                if (response.isSuccessful) {
-                    seasonIndex = response.body()
-                    seasonIndex?.season?.forEachIndexed { index, season ->
-                        seasonIndexList.add((index + 1).toString())
-                    }
-                    binding.seasonButton.setOnClickListener {
-                        seasonToggle = true
-                        setAdapter(seasonIndexList, binding.spinnerId)
-                        binding.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
-                        binding.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
-                    }
-                    downloadSeason(seasonIndexList.last(), "rift-barbarian", MainActivity.selectedRegion)
-                    setAdapter(seasonIndexList, binding.spinnerId)
-                }
-            }
-
-            override fun onFailure(call: Call<SeasonIndex>, t: Throwable) {
-                Log.e("Error", "Season download", t)
-                URLConstants.loading = false
-                binding.loadingCircle.visibility = View.GONE
-            }
-        })
-    }
-
-    private fun downloadSeason(id: String, leaderboardString: String, region: String){
-        URLConstants.loading = true
-        binding.loadingCircle.visibility = View.VISIBLE
-        val seasonCall: Call<Leaderboard> = RetroClient.getClient().getSeasonLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
-        seasonCall.enqueue(object : Callback<Leaderboard> {
-            override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>) {
-                if (response.isSuccessful) {
-                    val leaderboard = response.body()
-                    binding.leaderboardRecycler.apply {
-                        adapter = LeaderboardAdapter(leaderboard?.row!!, region, requireActivity())
-                    }
-                }
-                URLConstants.loading = false
-                binding.loadingCircle.visibility = View.GONE
-            }
-
-            override fun onFailure(call: Call<Leaderboard>, t: Throwable) {
-                Log.e("Error", "Season download", t)
-                URLConstants.loading = false
-                binding.loadingCircle.visibility = View.GONE
-            }
-        })
-    }
-
-    private fun downloadEraIndex() {
-        URLConstants.loading = true
-        binding.loadingCircle.visibility = View.VISIBLE
-        val eraCall: Call<EraIndex> = RetroClient.getClient().getEraIndex(MainActivity.locale, MainActivity.selectedRegion)
-        eraCall.enqueue(object : Callback<EraIndex> {
-            override fun onResponse(call: Call<EraIndex>, response: Response<EraIndex>) {
-                if (response.isSuccessful) {
-                    eraIndex = response.body()
-                    eraIndex?.era?.forEachIndexed { index, era ->
-                        eraIndexList.add((index + 1).toString())
-                    }
-                    binding.eraButton.setOnClickListener {
-                        seasonToggle = false
-                        setAdapter(eraIndexList, binding.spinnerId)
-                        binding.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
-                        binding.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<EraIndex>, t: Throwable) {
-                Log.e("Error", "Era download", t)
-                URLConstants.loading = false
-                binding.loadingCircle.visibility = View.GONE
-            }
-        })
-    }
-
-    private fun downloadEra(id: String, leaderboardString: String, region: String) {
-        URLConstants.loading = true
-        binding.loadingCircle.visibility = View.VISIBLE
-        val seasonCall: Call<Leaderboard> = RetroClient.getClient().getEraLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
-        seasonCall.enqueue(object : Callback<Leaderboard> {
-            override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>) {
-                val leaderboard = response.body()
-                binding.leaderboardRecycler.apply {
-                    adapter = LeaderboardAdapter(leaderboard?.row!!, region, requireActivity())
-                }
-                URLConstants.loading = false
-                binding.loadingCircle.visibility = View.GONE
-            }
-
-            override fun onFailure(call: Call<Leaderboard>, t: Throwable) {
-                Log.e("Error", "Season download", t)
-                URLConstants.loading = false
-                binding.loadingCircle.visibility = View.GONE
-            }
-        })
     }
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {

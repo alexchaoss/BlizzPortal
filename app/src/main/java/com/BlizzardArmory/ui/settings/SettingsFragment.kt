@@ -25,7 +25,7 @@ import com.BlizzardArmory.ui.main.MainActivity.Companion.locale
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
-import com.BlizzardArmory.ui.ui_diablo.characterfragments.CharacterStatsFragment
+import com.BlizzardArmory.ui.ui_diablo.characterfragments.stats.CharacterStatsFragment
 import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.ui_diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.ui_overwatch.OWFragment

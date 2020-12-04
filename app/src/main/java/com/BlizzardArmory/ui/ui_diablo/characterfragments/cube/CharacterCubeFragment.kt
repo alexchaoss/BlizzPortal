@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.ui_diablo.characterfragments
+package com.BlizzardArmory.ui.ui_diablo.characterfragments.cube
 
 import android.annotation.SuppressLint
 import android.os.Bundle

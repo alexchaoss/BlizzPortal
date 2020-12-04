@@ -29,10 +29,7 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
         repLayout = itemView.findViewById(R.id.rep_layout)
     }
 
-    fun bind(reputations: Reputations, position: Int) {
-        if (position % 2 == 1) {
-            repLayout?.setBackgroundResource(R.drawable.bgbaground)
-        }
+    fun bind(reputations: Reputations) {
         when (reputations.standing.tier) {
             7 -> repTier?.setTextColor(Color.parseColor("#28a586"))
             4, 5, 6 -> repTier?.setTextColor(Color.parseColor("#0f9601"))
@@ -45,9 +42,10 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
     }
 
     private fun setTextViewsText(reputations: Reputations) {
-        if (reputations.standing.tier == 7) {
+        if (reputations.standing.tier >= 7) {
             progressBar?.max = 1000
             progressBar?.progress = 1000
+            progressCount?.text = ""
         } else {
             progressBar?.max = reputations.standing.max
             progressBar?.progress = reputations.standing.value

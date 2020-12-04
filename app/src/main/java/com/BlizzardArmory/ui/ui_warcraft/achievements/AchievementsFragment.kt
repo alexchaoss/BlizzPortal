@@ -26,8 +26,8 @@ import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -229,8 +229,8 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun createAchievementsMap() {
-        GlobalScope.launch(Dispatchers.Main) {
-            GlobalScope.launch(Dispatchers.Default) {
+        CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 mappedAchievements = categories?.groupBy { it.id }
                         ?.mapValues { map ->
                             allAchievements?.filter { a ->

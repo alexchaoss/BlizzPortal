@@ -4,10 +4,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.BlizzardArmory.ui.ui_diablo.characterfragments.CharacterCubeFragment
-import com.BlizzardArmory.ui.ui_diablo.characterfragments.CharacterGearFragment
-import com.BlizzardArmory.ui.ui_diablo.characterfragments.CharacterSkillFragment
-import com.BlizzardArmory.ui.ui_diablo.characterfragments.CharacterStatsFragment
+import com.BlizzardArmory.ui.ui_diablo.characterfragments.cube.CharacterCubeFragment
+import com.BlizzardArmory.ui.ui_diablo.characterfragments.gear.CharacterGearFragment
+import com.BlizzardArmory.ui.ui_diablo.characterfragments.skill.CharacterSkillFragment
+import com.BlizzardArmory.ui.ui_diablo.characterfragments.stats.CharacterStatsFragment
 
 
 class MyAdapter(fm: FragmentManager, private var totalTabs: Int, internal var bundle: Bundle) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
