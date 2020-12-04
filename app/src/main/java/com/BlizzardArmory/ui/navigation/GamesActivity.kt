@@ -16,8 +16,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.NetworkServices
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.connection.oauth.BattlenetConstants
 import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.databinding.GamesActivityBinding
@@ -76,11 +74,10 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         setContentView(view)
 
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Log.e("Crash Prevented", throwable.message!!, throwable)
             handleUncaughtException(thread, throwable)
         }
+
         setOberservers()
-        client = RetroClient.getClient()
 
         favorite = binding.topBar.favorite
         errorMessage = ErrorMessages(this.resources)
@@ -196,6 +193,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun handleUncaughtException(thread: Thread?, e: Throwable) {
+        Log.e("Crash Prevented", e.message!!, e)
         FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 
@@ -319,14 +317,11 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         when (item.title) {
             this.resources.getString(R.string.home) -> {
                 hideFavoriteButton()
-                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
-                    supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
-                }
-                supportFragmentManager.executePendingTransactions()
+                resetBackStack()
                 binding.drawerLayout.closeDrawers()
             }
             "World of Warcraft" -> {
+                resetBackStack()
                 fragment = AccountFragment()
                 favorite!!.visibility = View.GONE
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").addToBackStack("wow_account").commit()
@@ -398,6 +393,14 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         return true
     }
 
+    private fun resetBackStack() {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
+            supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
+        }
+        supportFragmentManager.executePendingTransactions()
+    }
+
     private fun searchD3Profile(dialog: DialogPrompt) {
         val btagRegex = Regex(".*#[0-9]*")
         when {
@@ -441,6 +444,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         bundle.putString("region", region)
         bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, viewModel.getBnetParams().value)
         fragment.arguments = bundle
+        resetBackStack()
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
                 .replace(R.id.fragment, fragment, "d3fragment")
@@ -463,7 +467,6 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
 
     companion object {
-        var client: NetworkServices? = null
         var userInformation: UserInformation? = null
         var userNews: UserNews? = null
         var favorite: ImageView? = null

@@ -193,7 +193,7 @@ class ReputationsFragment : Fragment() {
 
     private fun populateRecyclerView() {
         binding.repRecycler.apply {
-            adapter = ReputationsAdapter(repsByExpac[binding.repSpinner.selectedItemPosition - 1], context)
+            adapter = ReputationsAdapter(repsByExpac[binding.repSpinner.selectedItemPosition - 1].sortedBy { RepByExpansion.getFaction(it.faction.name) }, context)
             adapter!!.notifyDataSetChanged()
         }
     }

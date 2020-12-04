@@ -4,10 +4,8 @@ import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.diablo.account.AccountInformation
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.data.common.Leaderboard
-import com.BlizzardArmory.model.diablo.data.eras.era.Era
 import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
 import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
-import com.BlizzardArmory.model.diablo.data.seasons.season.Season
 import com.BlizzardArmory.model.diablo.item.SingleItem
 import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.model.starcraft.Player
@@ -181,18 +179,18 @@ interface NetworkServices {
                              @Query("token") accessToken: String?): Response<AccountInformation>
 
     @GET("d3/profile/{battletag}/hero/{id}")
-    fun getD3Hero(@Path("battletag") battletag: String?,
-                  @Path("id") id: Long,
-                  @Query("locale") locale: String?,
-                  @Query("region") region: String?,
-                  @Query("token") accessToken: String?): Call<CharacterInformation>
+    suspend fun getD3Hero(@Path("battletag") battletag: String?,
+                          @Path("id") id: Long,
+                          @Query("locale") locale: String?,
+                          @Query("region") region: String?,
+                          @Query("token") accessToken: String?): Response<CharacterInformation>
 
     @GET("d3/profile/{battletag}/hero/{id}/items")
-    fun getHeroItems(@Path("battletag") battletag: String?,
-                     @Path("id") id: Long,
-                     @Query("locale") locale: String?,
-                     @Query("region") region: String?,
-                     @Query("token") accessToken: String?): Call<Items>
+    suspend fun getHeroItems(@Path("battletag") battletag: String?,
+                             @Path("id") id: Long,
+                             @Query("locale") locale: String?,
+                             @Query("region") region: String?,
+                             @Query("token") accessToken: String?): Response<Items>
 
     @GET("d3/data/item/{slug}")
     fun getItem(@Path("slug", encoded = true) slug: String?,
@@ -200,34 +198,24 @@ interface NetworkServices {
                 @Query("locale") locale: String?): Call<SingleItem>
 
     @GET("data/d3/season/")
-    fun getSeasonIndex(@Query("locale") locale: String,
-                       @Query("region") region: String): Call<SeasonIndex>
-
-    @GET("data/d3/season/{id}")
-    fun getSeasonById(@Path("id") id: Int,
-                      @Query("locale") locale: String,
-                      @Query("region") region: String): Call<Season>
+    suspend fun getSeasonIndex(@Query("locale") locale: String,
+                               @Query("region") region: String): Response<SeasonIndex>
 
     @GET("data/d3/season/{id}/leaderboard/{leaderboard}")
-    fun getSeasonLeaderboard(@Path("id") id: Int,
-                             @Path("leaderboard") leaderboard: String,
-                             @Query("locale") locale: String,
-                             @Query("region") region: String): Call<Leaderboard>
+    suspend fun getSeasonLeaderboard(@Path("id") id: Int,
+                                     @Path("leaderboard") leaderboard: String,
+                                     @Query("locale") locale: String,
+                                     @Query("region") region: String): Response<Leaderboard>
 
     @GET("data/d3/era/")
-    fun getEraIndex(@Query("locale") locale: String,
-                    @Query("region") region: String): Call<EraIndex>
-
-    @GET("data/d3/era/{id}")
-    fun getEraById(@Path("id") id: Int,
-                   @Query("locale") locale: String,
-                   @Query("region") region: String): Call<Era>
+    suspend fun getEraIndex(@Query("locale") locale: String,
+                            @Query("region") region: String): Response<EraIndex>
 
     @GET("data/d3/era/{id}/leaderboard/{leaderboard}")
-    fun getEraLeaderboard(@Path("id") id: Int,
-                          @Path("leaderboard") leaderboard: String,
-                          @Query("locale") locale: String,
-                          @Query("region") region: String): Call<Leaderboard>
+    suspend fun getEraLeaderboard(@Path("id") id: Int,
+                                  @Path("leaderboard") leaderboard: String,
+                                  @Query("locale") locale: String,
+                                  @Query("region") region: String): Response<Leaderboard>
 
     //Sc2 endpoints
     @GET("sc2/player/{id}")
