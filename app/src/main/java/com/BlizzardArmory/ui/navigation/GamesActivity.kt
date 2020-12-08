@@ -15,24 +15,24 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.ErrorMessages
-import com.BlizzardArmory.connection.oauth.BattlenetConstants
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.databinding.GamesActivityBinding
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
+import com.BlizzardArmory.network.ErrorMessages
+import com.BlizzardArmory.network.oauth.BattlenetConstants
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.ui.diablo.account.D3Fragment
+import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
+import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
+import com.BlizzardArmory.ui.overwatch.OWPlatformChoiceDialog
+import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.settings.SettingsFragment
-import com.BlizzardArmory.ui.ui_diablo.account.D3Fragment
-import com.BlizzardArmory.ui.ui_diablo.favorites.D3FavoriteFragment
-import com.BlizzardArmory.ui.ui_diablo.leaderboard.D3LeaderboardFragment
-import com.BlizzardArmory.ui.ui_overwatch.OWPlatformChoiceDialog
-import com.BlizzardArmory.ui.ui_overwatch.favorites.OWFavoritesFragment
-import com.BlizzardArmory.ui.ui_starcraft.SC2Fragment
-import com.BlizzardArmory.ui.ui_warcraft.account.AccountFragment
-import com.BlizzardArmory.ui.ui_warcraft.favorites.WoWFavoritesFragment
-import com.BlizzardArmory.ui.ui_warcraft.navigation.WoWNavFragment
+import com.BlizzardArmory.ui.starcraft.SC2Fragment
+import com.BlizzardArmory.ui.warcraft.account.AccountFragment
+import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -41,7 +41,6 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.games_activity_nav_header.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -153,16 +152,16 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
     private fun setOberservers() {
         viewModel.getBnetParams().observe(this, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(prefs, viewModel.getBnetParams().value!!)
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(viewModel.getBnetParams().value!!)
             viewModel.getRealms()
             viewModel.downloadUserInfo()
         })
 
         viewModel.getUserInformation().observe(this, {
             userInformation = it
-            if (binding.drawerLayout.battletag != null) {
+            if (binding.drawerLayout.findViewById<TextView>(R.id.battletag) != null) {
                 binding.topBar.barTitle.text = userInformation?.battleTag
-                binding.drawerLayout.battletag.text = userInformation?.battleTag
+                binding.drawerLayout.findViewById<TextView>(R.id.battletag).text = userInformation?.battleTag
             }
         })
 
@@ -432,7 +431,8 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString().toLowerCase(Locale.ROOT)
                 characterRealm = viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
                 selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                viewModel.downloadMedia(dialog, characterClicked, characterRealm, selectedRegion)
+                viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
+                dialog.cancel()
             }
         }
     }

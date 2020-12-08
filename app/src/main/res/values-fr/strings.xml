@@ -52,8 +52,8 @@
     <string name="diablo_3">Diablo 3</string>
     <string name="starcraft_2">Starcraft 2</string>
     <string name="overwatch">Overwatch</string>
-    <string name="search_character">Rerchercher un personnage</string>
-    <string name="search_user">Rechercher un utilisateur</string>
+    <string name="search_character">Rerchercher personnage</string>
+    <string name="search_user">Rechercher utilisateur</string>
     <string name="honorable_kills">Victoires Honorables</string>
     <string name="favorites">Favoris</string>
     <string name="d3_favorites">D3 Favoris</string>
@@ -64,7 +64,7 @@
     <string name="categories">Catégories</string>
     <string name="home">Acceuil</string>
     <string name="favorite">favoris</string>
-    <string name="select_your_news">Choisissez votre actualité</string>
+    <string name="select_your_news">Choix d\'actualité</string>
     <string name="blizzard_news">Actualités Blizzard</string>
     <string name="warcraft_news">Actualités Warcraft</string>
     <string name="diablo_news">Actualités Diablo</string>

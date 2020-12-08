@@ -15,7 +15,7 @@ import com.BlizzardArmory.R
 
 class DialogPrompt(val context: Context) {
 
-    private val builder = AlertDialog.Builder(context, R.style.DialogTransparent)
+    private val builder = AlertDialog.Builder(context, R.style.DialogBlizzPortal)
     private var dialog: AlertDialog? = null
     private val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
     private val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -110,7 +110,7 @@ class DialogPrompt(val context: Context) {
         button.setTextColor(Color.WHITE)
         button.gravity = Gravity.CENTER
         button.layoutParams = buttonParams
-        button.setPadding(10, 0, 10, 0)
+        button.setPadding(15, 0, 15, 0)
         button.background = ContextCompat.getDrawable(context, R.drawable.buttonstyle)
         button.setOnClickListener { onClick() }
         container.addView(button)

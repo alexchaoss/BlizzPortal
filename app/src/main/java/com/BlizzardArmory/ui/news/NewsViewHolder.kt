@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.news.NewsMetaData
-import com.BlizzardArmory.ui.ui_warcraft.covenant.CovenantFragment
 import com.bumptech.glide.Glide
 
 class NewsViewHolder(inflater: LayoutInflater, parent: ViewGroup, val context: Context) :

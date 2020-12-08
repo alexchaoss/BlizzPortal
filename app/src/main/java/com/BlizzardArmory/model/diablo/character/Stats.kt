@@ -12,13 +12,13 @@ data class Stats(
         var life: Double,
 
         @SerializedName("damage")
-        var damage: Int,
+        var damage: Double,
 
         @SerializedName("toughness")
-        var toughness: Int,
+        var toughness: Double,
 
         @SerializedName("healing")
-        var healing: Int,
+        var healing: Double,
 
         @SerializedName("attackSpeed")
         var attackSpeed: Double,
@@ -35,26 +35,26 @@ data class Stats(
         @SerializedName("vitality")
         var vitality: Double,
 
-        @SerializedName("intelligence")
+        @SerializedName("Doubleelligence")
         var intelligence: Double,
 
         @SerializedName("physicalResist")
-        var physicalResist: Int,
+        var physicalResist: Double,
 
         @SerializedName("fireResist")
-        var fireResist: Int,
+        var fireResist: Double,
 
         @SerializedName("coldResist")
-        var coldResist: Int,
+        var coldResist: Double,
 
         @SerializedName("lightningResist")
-        var lightningResist: Int,
+        var lightningResist: Double,
 
         @SerializedName("poisonResist")
-        var poisonResist: Int,
+        var poisonResist: Double,
 
         @SerializedName("arcaneResist")
-        var arcaneResist: Int,
+        var arcaneResist: Double,
 
         @SerializedName("blockChance")
         var blockChance: Double,
@@ -84,9 +84,9 @@ data class Stats(
         var lifeOnHit: Double,
 
         @SerializedName("primaryResource")
-        var primaryResource: Int,
+        var primaryResource: Double,
 
         @SerializedName("secondaryResource")
-        var secondaryResource: Int
+        var secondaryResource: Double
 
 )

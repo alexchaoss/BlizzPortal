@@ -20,11 +20,10 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity
-import com.BlizzardArmory.connection.oauth.BattlenetConstants
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.databinding.ActivityMainBinding
+import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.oauth.BattlenetConstants
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt

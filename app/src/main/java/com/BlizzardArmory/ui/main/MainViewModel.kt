@@ -3,9 +3,9 @@ package com.BlizzardArmory.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.BlizzardArmory.connection.URLConstants
-import com.BlizzardArmory.connection.oauth.BattlenetConstants
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.oauth.BattlenetConstants
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import java.util.*
 
 class MainViewModel : ViewModel() {

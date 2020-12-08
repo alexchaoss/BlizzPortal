@@ -30,7 +30,7 @@
             android:configChanges="orientation"
             android:screenOrientation="unspecified"></activity>
         <activity
-            android:name="com.BlizzardArmory.connection.oauth.AuthorizationTokenActivity"
+            android:name="com.BlizzardArmory.ui.main.AuthorizationTokenActivity"
             android:parentActivityName="com.BlizzardArmory.ui.main.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"
