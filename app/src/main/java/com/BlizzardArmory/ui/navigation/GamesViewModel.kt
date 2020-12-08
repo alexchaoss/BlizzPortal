@@ -3,13 +3,12 @@ package com.BlizzardArmory.ui.navigation
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.BlizzardArmory.connection.RetroClient
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.realm.Realms
+import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
-import com.BlizzardArmory.util.DialogPrompt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -99,20 +98,19 @@ class GamesViewModel : BaseViewModel() {
         jobs.add(jobTW)
     }
 
-    fun downloadMedia(dialog: DialogPrompt, characterClicked: String, characterRealm: String, selectedRegion: String) {
-
-        coroutineScope.launch {
+    fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
+        val job = coroutineScope.launch {
             val response = RetroClient.getClient().getMediaSus(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT),
                     MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     wowMediaCharacter.value = response.body()
-                    dialog.cancel()
                 } else {
                     Log.e("Error", response.message())
-                    dialog.cancel()
+                    wowMediaCharacter.value = null
                 }
             }
         }
+        jobs.add(job)
     }
 }

@@ -34,7 +34,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="DialogTransparent" parent="Theme.AppCompat.Dialog">
+    <style name="DialogBlizzPortal" parent="Theme.AppCompat.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@drawable/alert_dialog</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>

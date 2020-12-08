@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.connection.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
