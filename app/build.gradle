@@ -99,7 +99,7 @@ dependencies {
 
     implementation 'com.akexorcist:localization:1.2.6'
 
-    implementation('com.google.apis:google-api-services-oauth2:v2-rev99-1.21.0') {
+    implementation('com.google.apis:google-api-services-oauth2:v2-rev20200213-1.31.0') {
         exclude module: 'httpclient' //by artifact name
         exclude group: 'org.apache.httpcomponents' //by group
         exclude group: 'org.apache.httpcomponents', module: 'httpclient' //by both name and group
