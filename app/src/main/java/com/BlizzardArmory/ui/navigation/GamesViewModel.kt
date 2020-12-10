@@ -100,7 +100,7 @@ class GamesViewModel : BaseViewModel() {
 
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getClient().getMediaSus(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT),
+            val response = RetroClient.getClient().getMedia(characterClicked.toLowerCase(Locale.ROOT), characterRealm.toLowerCase(Locale.ROOT),
                     MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

@@ -57,81 +57,74 @@ interface NetworkServices {
 
     //WoW Endpoints
     @GET("/profile/wow/character/{realm}/{character}/character-media")
-    suspend fun getMediaSus(@Path("character", encoded = true) character: String?,
-                            @Path("realm", encoded = true) realm: String?,
-                            @Query("locale") locale: String?,
-                            @Query("region") region: String?,
-                            @Query("token") accessToken: String?): Response<Media>
-
-    @GET("/profile/wow/character/{realm}/{character}/character-media")
-    fun getMedia(@Path("character", encoded = true) character: String?,
-                 @Path("realm", encoded = true) realm: String?,
-                 @Query("locale") locale: String?,
-                 @Query("region") region: String?,
-                 @Query("token") accessToken: String?): Call<Media>
+    suspend fun getMedia(@Path("character", encoded = true) character: String?,
+                         @Path("realm", encoded = true) realm: String?,
+                         @Query("locale") locale: String?,
+                         @Query("region") region: String?,
+                         @Query("token") accessToken: String?): Response<Media>
 
     @GET
-    fun getDynamicEquipmentMedia(@Url url: String?,
-                                 @Query("locale") locale: String?,
-                                 @Query("region") region: String?): Call<com.BlizzardArmory.model.warcraft.equipment.media.Media>
+    suspend fun getDynamicEquipmentMedia(@Url url: String?,
+                                         @Query("locale") locale: String?,
+                                         @Query("region") region: String?): Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>
 
     @GET
-    fun getAchievementCategories(@Url url: String?): Call<Categories>
+    suspend fun getAchievementCategories(@Url url: String?): Response<Categories>
 
     @GET
-    fun getAllAchievements(@Url url: String?): Call<DetailedAchievements>
+    suspend fun getAllAchievements(@Url url: String?): Response<DetailedAchievements>
 
     @GET
-    fun getTalentsWithIcon(@Url url: String?): Call<List<TalentsIcons>>
+    suspend fun getTalentsWithIcon(@Url url: String?): Response<List<TalentsIcons>>
 
     @GET
     fun getCovenantSpells(@Url url: String): Call<List<CovenantSpells>>
 
     @GET
-    fun getReputationPlusParentInfo(@Url url: String): Call<List<ReputationPlusParentInfo>>
+    suspend fun getReputationPlusParentInfo(@Url url: String): Response<List<ReputationPlusParentInfo>>
 
     @GET("/profile/wow/character/{realm}/{character}/achievements")
-    fun getCharacterAchievements(@Path("character", encoded = true) character: String?,
+    suspend fun getCharacterAchievements(@Path("character", encoded = true) character: String?,
+                                         @Path("realm", encoded = true) realm: String?,
+                                         @Query("locale") locale: String?,
+                                         @Query("region") region: String?,
+                                         @Query("token") accessToken: String?): Response<Achievements>
+
+    @GET("profile/wow/character/{realm}/{character}/encounters/raids")
+    suspend fun getEncounters(@Path("character", encoded = true) character: String?,
+                              @Path("realm", encoded = true) realm: String?,
+                              @Query("locale") locale: String?,
+                              @Query("region") region: String?,
+                              @Query("token") accessToken: String?): Response<EncountersInformation>
+
+    @GET("profile/wow/character/{realm}/{character}/equipment")
+    suspend fun getEquippedItems(@Path("character", encoded = true) character: String?,
                                  @Path("realm", encoded = true) realm: String?,
                                  @Query("locale") locale: String?,
                                  @Query("region") region: String?,
-                                 @Query("token") accessToken: String?): Call<Achievements>
+                                 @Query("token") accessToken: String?): Response<Equipment>
 
-    @GET("profile/wow/character/{realm}/{character}/encounters/raids")
-    fun getEncounters(@Path("character", encoded = true) character: String?,
-                      @Path("realm", encoded = true) realm: String?,
-                      @Query("locale") locale: String?,
-                      @Query("region") region: String?,
-                      @Query("token") accessToken: String?): Call<EncountersInformation>
-
-    @GET("profile/wow/character/{realm}/{character}/equipment")
-    fun getEquippedItems(@Path("character", encoded = true) character: String?,
+    @GET("profile/wow/character/{realm}/{character}/statistics")
+    suspend fun getStats(@Path("character", encoded = true) character: String?,
                          @Path("realm", encoded = true) realm: String?,
                          @Query("locale") locale: String?,
                          @Query("region") region: String?,
-                         @Query("token") accessToken: String?): Call<Equipment>
-
-    @GET("profile/wow/character/{realm}/{character}/statistics")
-    fun getStats(@Path("character", encoded = true) character: String?,
-                 @Path("realm", encoded = true) realm: String?,
-                 @Query("locale") locale: String?,
-                 @Query("region") region: String?,
-                 @Query("token") accessToken: String?): Call<Statistic>
+                         @Query("token") accessToken: String?): Response<Statistic>
 
     @GET("profile/wow/character/{realm}/{character}/specializations")
-    fun getSpecs(@Path("character", encoded = true) character: String?,
-                 @Path("realm", encoded = true) realm: String?,
-                 @Query("locale") locale: String?,
-                 @Query("region") region: String?,
-                 @Query("token") accessToken: String?): Call<Talents>
+    suspend fun getSpecs(@Path("character", encoded = true) character: String?,
+                         @Path("realm", encoded = true) realm: String?,
+                         @Query("locale") locale: String?,
+                         @Query("region") region: String?,
+                         @Query("token") accessToken: String?): Response<Talents>
 
 
     @GET("profile/wow/character/{realm}/{character}")
-    fun getCharacter(@Path("character", encoded = true) character: String?,
-                     @Path("realm", encoded = true) realm: String?,
-                     @Query("locale") locale: String?,
-                     @Query("region") region: String?,
-                     @Query("token") accessToken: String?): Call<CharacterSummary>
+    suspend fun getCharacter(@Path("character", encoded = true) character: String?,
+                             @Path("realm", encoded = true) realm: String?,
+                             @Query("locale") locale: String?,
+                             @Query("region") region: String?,
+                             @Query("token") accessToken: String?): Response<CharacterSummary>
 
     @GET("profile/user/wow")
     suspend fun getAccount(@Query("locale") locale: String?,
@@ -139,38 +132,38 @@ interface NetworkServices {
                            @Query("token") accessToken: String?): Response<Account>
 
     @GET("profile/wow/character/{realm}/{character}/pvp-summary")
-    fun getPvPSummary(@Path("character", encoded = true) character: String?,
-                      @Path("realm", encoded = true) realm: String?,
-                      @Query("locale") locale: String?,
-                      @Query("region") region: String?,
-                      @Query("token") accessToken: String?): Call<PvPSummary>
+    suspend fun getPvPSummary(@Path("character", encoded = true) character: String?,
+                              @Path("realm", encoded = true) realm: String?,
+                              @Query("locale") locale: String?,
+                              @Query("region") region: String?,
+                              @Query("token") accessToken: String?): Response<PvPSummary>
 
     @GET("profile/wow/character/{realm}/{character}/pvp-bracket/{BRACKET}")
-    fun getPvPBrackets(@Path("character", encoded = true) character: String?,
-                       @Path("realm", encoded = true) realm: String?,
-                       @Path("BRACKET") bracket: String?,
-                       @Query("locale") locale: String?,
-                       @Query("region") region: String?,
-                       @Query("token") accessToken: String?): Call<BracketStatistics>
+    suspend fun getPvPBrackets(@Path("character", encoded = true) character: String?,
+                               @Path("realm", encoded = true) realm: String?,
+                               @Path("BRACKET") bracket: String?,
+                               @Query("locale") locale: String?,
+                               @Query("region") region: String?,
+                               @Query("token") accessToken: String?): Response<BracketStatistics>
 
     @GET
-    fun getDynamicTier(@Url url: String?,
-                       @Query("region") region: String?,
-                       @Query("locale") locale: String?): Call<Tier>
+    suspend fun getDynamicTier(@Url url: String?,
+                               @Query("region") region: String?,
+                               @Query("locale") locale: String?): Response<Tier>
 
     @GET("profile/wow/character/{realm}/{character}/reputations")
-    fun getReputations(@Path("character", encoded = true) character: String?,
-                       @Path("realm", encoded = true) realm: String?,
-                       @Query("locale") locale: String?,
-                       @Query("region") region: String?,
-                       @Query("token") accessToken: String?): Call<Reputation>
+    suspend fun getReputations(@Path("character", encoded = true) character: String?,
+                               @Path("realm", encoded = true) realm: String?,
+                               @Query("locale") locale: String?,
+                               @Query("region") region: String?,
+                               @Query("token") accessToken: String?): Response<Reputation>
 
     @GET("/profile/wow/character/{realm}/{character}/soulbinds")
-    fun getSoulbinds(@Path("character", encoded = true) character: String?,
-                     @Path("realm", encoded = true) realm: String?,
-                     @Query("locale") locale: String?,
-                     @Query("region") region: String?,
-                     @Query("token") accessToken: String?): Call<SoulbindInformation>
+    suspend fun getSoulbinds(@Path("character", encoded = true) character: String?,
+                             @Path("realm", encoded = true) realm: String?,
+                             @Query("locale") locale: String?,
+                             @Query("region") region: String?,
+                             @Query("token") accessToken: String?): Response<SoulbindInformation>
 
     //D3 Endpoints
     @GET("d3/profile/{battletag}/")

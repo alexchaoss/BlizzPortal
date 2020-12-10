@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
@@ -24,13 +23,10 @@ import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
 import java.util.*
 
 
@@ -47,6 +43,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var fragmentManager: FragmentManager? = null
     private var character: FavoriteCharacter? = null
+    private var downloaded = false
 
     init {
         avatar = itemView.findViewById(R.id.avatar)
@@ -57,9 +54,12 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         characterLayout = itemView.findViewById(R.id.character_layout)
         gson = GsonBuilder().create()
         EventBus.getDefault().register(this)
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             do {
-                EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+                delay(3000)
+                if (!downloaded) {
+                    EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+                }
             } while (!ConnectionStatus.hasNetwork())
         }
     }
@@ -80,25 +80,21 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     private fun downloadMedia() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
-
-        val call: Call<Media> = RetroClient.getClient().getMedia(character?.characterSummary?.name, character?.characterSummary?.realm?.slug, MainActivity.locale, character?.region?.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
-        call.enqueue(object : Callback<Media> {
-            override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
-                val media: Media? = response.body()
-                onClickCharacter(gson?.toJson(response.body())!!, fragmentManager!!)
-                downloadAvatar(media)
-
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = RetroClient.getClient().getMedia(character?.characterSummary?.name?.toLowerCase(Locale.ROOT),
+                    character?.characterSummary?.realm?.slug, MainActivity.locale, character?.region?.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    val media = response.body()!!
+                    onClickCharacter(gson?.toJson(response.body())!!, fragmentManager!!)
+                    downloadAvatar(media)
+                } else {
+                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                    onClickCharacter(gson?.toJson(response.body())!!, fragmentManager!!)
+                }
             }
-
-            override fun onFailure(call: Call<Media>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                val media: Media? = null
-                downloadAvatar(media)
-                onClickCharacter("", fragmentManager!!)
-            }
-        })
+        }
     }
 
     private fun downloadAvatar(media: Media?) {
@@ -109,6 +105,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         }
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
         Glide.with(context).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
+        downloaded = true
     }
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {

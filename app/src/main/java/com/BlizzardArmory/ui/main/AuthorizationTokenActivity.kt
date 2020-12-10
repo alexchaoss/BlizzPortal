@@ -71,7 +71,7 @@ class AuthorizationTokenActivity : AppCompatActivity() {
 
     private fun setOberservers() {
         viewModel.getBnetParams().observe(this, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(viewModel.getBnetParams().value!!)
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             initWebView()
         })
 

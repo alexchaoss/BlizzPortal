@@ -23,13 +23,10 @@ import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
 import java.util.*
 
 
@@ -80,23 +77,19 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun downloadMedia() {
         val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
-
-        val call: Call<Media> = RetroClient.getClient().getMedia(character?.name?.toLowerCase(Locale.ROOT), character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
-        call.enqueue(object : Callback<Media> {
-            override fun onResponse(call: Call<Media>, response: retrofit2.Response<Media>) {
-                val media: Media? = response.body()
-                onClickCharacter(character!!, gson?.toJson(response.body())!!, fragmentManager!!)
-                downloadAvatar(media, character!!)
-
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = RetroClient.getClient().getMedia(character?.name?.toLowerCase(Locale.ROOT),
+                    character?.realm?.slug, MainActivity.locale, MainActivity.selectedRegion.toLowerCase(Locale.ROOT), bnOAuth2Helper.accessToken)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    val media = response.body()!!
+                    onClickCharacter(character!!, gson?.toJson(response.body())!!, fragmentManager!!)
+                    downloadAvatar(media, character!!)
+                } else {
+                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                }
             }
-
-            override fun onFailure(call: Call<Media>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                val media: Media? = null
-                downloadAvatar(media, character!!)
-                onClickCharacter(character!!, "", fragmentManager!!)
-            }
-        })
+        }
     }
 
     private fun downloadAvatar(media: Media?, character: Character) {

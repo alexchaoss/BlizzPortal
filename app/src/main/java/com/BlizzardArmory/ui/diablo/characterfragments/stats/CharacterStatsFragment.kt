@@ -87,7 +87,7 @@ class CharacterStatsFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(viewModel.getBnetParams().value!!)
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             viewModel.downloadCharacterInformation(battletag, id, selectedRegion)
         })
 
