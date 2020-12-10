@@ -186,13 +186,13 @@ class AccountFragment : Fragment() {
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             viewModel.downloadWoWCharacters()
                             binding.loadingCircle.visibility = View.VISIBLE
                             URLConstants.loading = true
                         },
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             GamesActivity.hideFavoriteButton()
                             parentFragmentManager.popBackStack()
                             NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)

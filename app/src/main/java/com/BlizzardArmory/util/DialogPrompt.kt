@@ -26,6 +26,7 @@ class DialogPrompt(val context: Context) {
         layoutParams.gravity = Gravity.CENTER
         dialog = builder.create()
         dialog!!.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog!!.setCancelable(true)
         container.orientation = LinearLayout.VERTICAL
         container.gravity = Gravity.CENTER
         container.setPadding(30, 30, 30, 30)
@@ -222,8 +223,12 @@ class DialogPrompt(val context: Context) {
         dialog!!.addContentView(container, layoutParams)
     }
 
-    fun cancel() {
-        dialog!!.cancel()
+    fun dismiss() {
+        dialog?.dismiss()
+    }
+
+    fun setCancellable(cancellable: Boolean) {
+        dialog?.setCancelable(cancellable)
     }
 
     fun setOnCancelListener(cancelListerner: () -> Unit): DialogPrompt {

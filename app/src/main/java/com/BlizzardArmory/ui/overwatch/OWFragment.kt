@@ -464,13 +464,13 @@ class OWFragment : Fragment() {
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addSideBySideButtons(errorMessages!!.RETRY, 18f, errorMessages!!.BACK, 18f,
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             viewModel.downloadAccountInformation(username!!, platform!!)
                             binding.loadingCircle.visibility = View.VISIBLE
                             URLConstants.loading = true
                         },
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             GamesActivity.hideFavoriteButton()
                             parentFragmentManager.beginTransaction().remove(this).commit()
                             NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
