@@ -4,7 +4,6 @@ package com.BlizzardArmory.ui.warcraft.pvp
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,19 +11,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowPvpFragmentBinding
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
-import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
@@ -33,8 +29,6 @@ import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
 import java.util.*
 
 
@@ -46,23 +40,19 @@ private const val REGION = "region"
 
 class PvPFragment : Fragment(){
 
-    private var character: String? = null
-    private var realm: String? = null
     private var media: String? = null
-    private var region: String? = null
-    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
-    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
 
     private var _binding: WowPvpFragmentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: PvPViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            character = it.getString(CHARACTER)
-            realm = it.getString(REALM)
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
             media = it.getString(MEDIA)
-            region = it.getString(REGION)
+            viewModel.region = it.getString(REGION)!!
         }
     }
 
@@ -89,138 +79,52 @@ class PvPFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
-        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-        battlenetOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
+        setObservers()
+        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
-
-        downloadPvPSummary()
-        download2v2Info()
-        download3v3Info()
-        downloadRBGInfo()
     }
 
-    private fun downloadRBGInfo() {
-        val call: Call<BracketStatistics> = RetroClient.getClient().getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "rbg", MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<BracketStatistics> {
-            override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
-                val pvpRBG = response.body()
-                val url = pvpRBG?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = RetroClient.getClient().getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
-                call2.enqueue(object : Callback<Tier> {
-                    override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
-                        if (response.isSuccessful && response.body() != null) {
-                            val tier = response.body()
-                            setTierImage(binding.tierimagerbg, tier!!)
-                            showBracketInformationOnTouch(binding.layoutrbg, tier, pvpRBG!!)
-                        } else {
-                            binding.layoutrbg.alpha = 0.4f
-                        }
-                    }
+    private fun setObservers() {
+        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
+            viewModel.downloadPvPSummary()
+            viewModel.download2v2Info()
+            viewModel.download3v3Info()
+            viewModel.downloadRBGInfo()
+        })
 
-                    override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", t.message, t)
-                        binding.layoutrbg.alpha = 0.4f
-                    }
-                })
-            }
-
-            override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                binding.layoutrbg.alpha = 0.4f
+        viewModel.geterrorBracket().observe(viewLifecycleOwner, {
+            when (it) {
+                "rbg" -> binding.layoutrbg.alpha = 0.4f
+                "2v2" -> binding.layout2v2.alpha = 0.4f
+                "3v3" -> binding.layout3v3.alpha = 0.4f
             }
         })
-    }
 
-    private fun download3v3Info() {
-        val call: Call<BracketStatistics> = RetroClient.getClient().getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "3v3", MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<BracketStatistics> {
-            override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
-                val pvp3v3 = response.body()
-                val url = pvp3v3?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = RetroClient.getClient().getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
-                call2.enqueue(object : Callback<Tier> {
-                    override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
-                        if (response.isSuccessful && response.body() != null) {
-                            val tier = response.body()
-                            setTierImage(binding.tierimage3v3, tier!!)
-                            showBracketInformationOnTouch(binding.layout3v3, tier, pvp3v3!!)
-                        } else {
-                            binding.layoutrbg.alpha = 0.4f
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", t.message, t)
-                        binding.layout3v3.alpha = 0.4f
-                    }
-                })
-            }
-
-            override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                binding.layout3v3.alpha = 0.4f
-            }
+        viewModel.getTier2v2().observe(viewLifecycleOwner, {
+            setTierImage(binding.tierimage3v3, it)
+            showBracketInformationOnTouch(binding.layout2v2, it, viewModel.pvp2v2)
         })
-    }
 
-    private fun download2v2Info() {
-        val call: Call<BracketStatistics> = RetroClient.getClient().getPvPBrackets(character!!.toLowerCase(Locale.ROOT), realm!!.toLowerCase(Locale.ROOT),
-                "2v2", MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<BracketStatistics> {
-            override fun onResponse(call: Call<BracketStatistics>, response: retrofit2.Response<BracketStatistics>) {
-                val pvp2v2 = response.body()
-                val url = pvp2v2?.tier?.key?.href?.replace("https://${region?.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
-                val call2: Call<Tier> = RetroClient.getClient().getDynamicTier(url, region?.toLowerCase(Locale.ROOT), MainActivity.locale)
-                call2.enqueue(object : Callback<Tier> {
-                    override fun onResponse(call: Call<Tier>, response: retrofit2.Response<Tier>) {
-                        if (response.isSuccessful && response.body() != null) {
-                            val tier = response.body()
-                            setTierImage(binding.tierimage2v2, tier!!)
-                            Log.i("2V2 there", "PVP")
-                            showBracketInformationOnTouch(binding.layout2v2, tier, pvp2v2!!)
-                        } else {
-                            binding.layoutrbg.alpha = 0.4f
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Tier>, t: Throwable) {
-                        Log.e("Error", t.message, t)
-                        binding.layout2v2.alpha = 0.4f
-                    }
-                })
-            }
-
-            override fun onFailure(call: Call<BracketStatistics>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                binding.layout2v2.alpha = 0.4f
-            }
+        viewModel.getTier3v3().observe(viewLifecycleOwner, {
+            setTierImage(binding.tierimage3v3, it)
+            showBracketInformationOnTouch(binding.layout3v3, it, viewModel.pvp3v3)
         })
-    }
 
-    private fun downloadPvPSummary() {
-        val call: Call<PvPSummary> = RetroClient.getClient().getPvPSummary(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<PvPSummary> {
-            override fun onResponse(call: Call<PvPSummary>, response: retrofit2.Response<PvPSummary>) {
-                val pvpSummary = response.body()
-                if (pvpSummary != null) {
-                    binding.kills.text = pvpSummary.honorable_kills.toString()
-                    binding.level.text = "LEVEL " + pvpSummary.honor_level.toString()
-                    setHonorRankIcon(pvpSummary)
-                    if (pvpSummary.pvp_map_statistics != null) {
-                        binding.recyclerviewbg.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = BattlegroundAdapter(pvpSummary.pvp_map_statistics, context)
-                        }
-                    }
+        viewModel.getTierRBG().observe(viewLifecycleOwner, {
+            setTierImage(binding.tierimage3v3, it)
+            showBracketInformationOnTouch(binding.layoutrbg, it, viewModel.pvpRBG)
+        })
+
+        viewModel.getSummary().observe(viewLifecycleOwner, {
+            binding.kills.text = it.honorable_kills.toString()
+            binding.level.text = "LEVEL ${it.honor_level}"
+            setHonorRankIcon(it)
+            if (it.pvp_map_statistics != null) {
+                binding.recyclerviewbg.apply {
+                    layoutManager = LinearLayoutManager(activity)
+                    adapter = BattlegroundAdapter(it.pvp_map_statistics, context)
                 }
-            }
-
-            override fun onFailure(call: Call<PvPSummary>, t: Throwable) {
-                Log.e("Error", t.message, t)
             }
         })
     }
@@ -272,10 +176,10 @@ class PvPFragment : Fragment(){
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
-            downloadPvPSummary()
-            download2v2Info()
-            download3v3Info()
-            downloadRBGInfo()
+            viewModel.downloadPvPSummary()
+            viewModel.download2v2Info()
+            viewModel.download3v3Info()
+            viewModel.downloadRBGInfo()
         }
     }
 

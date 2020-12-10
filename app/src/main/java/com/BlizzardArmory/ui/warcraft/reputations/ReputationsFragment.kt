@@ -13,19 +13,13 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
+import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowRepFragmentBinding
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
-import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
-import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
-import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
-import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -34,10 +28,6 @@ import okhttp3.internal.toImmutableList
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.*
 
 
 private const val CHARACTER = "character"
@@ -48,27 +38,21 @@ private const val REGION = "region"
 
 class ReputationsFragment : Fragment() {
 
-    private var character: String? = null
-    private var realm: String? = null
     private var media: String? = null
-    private var region: String? = null
-    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
-    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
-    private val repsByExpac = arrayListOf<ArrayList<Reputations>>()
-    private var reputations: Reputation? = null
-    private var reputationsWithParentInfo: List<ReputationPlusParentInfo>? = null
+
     private val expansionsId = listOf(1118L, 980L, 1097L, 1162L, 1245L, 1444L, 1834L, 2104L, 2414L)
 
     private var _binding: WowRepFragmentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: ReputationsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            character = it.getString(CHARACTER)
-            realm = it.getString(REALM)
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
             media = it.getString(MEDIA)
-            region = it.getString(REGION)
+            viewModel.region = it.getString(REGION)!!
         }
     }
 
@@ -94,56 +78,23 @@ class ReputationsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
-        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-        battlenetOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
-
-        for (i in 0..8) {
-            repsByExpac.add(arrayListOf())
-        }
-
-        downloadReputationsPlusParentInfo()
+        setObservers()
+        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
     }
 
-    private fun downloadReputationsPlusParentInfo() {
-        val call: Call<List<ReputationPlusParentInfo>> = RetroClient.getClient().getReputationPlusParentInfo(URLConstants.getReputations(MainActivity.locale))
-        call.enqueue(object : Callback<List<ReputationPlusParentInfo>> {
-            override fun onResponse(call: Call<List<ReputationPlusParentInfo>>, response: Response<List<ReputationPlusParentInfo>>) {
-
-                if (response.isSuccessful) {
-                    reputationsWithParentInfo = response.body()
-                    downloadReputations()
-                }
-
-            }
-
-            override fun onFailure(call: Call<List<ReputationPlusParentInfo>>, t: Throwable) {
-                Log.e("Error", "trace: ", t)
-
-            }
+    private fun setObservers() {
+        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
+            viewModel.downloadReputationsPlusParentInfo()
         })
-    }
 
-    private fun downloadReputations() {
-        val call: Call<Reputation> = RetroClient.getClient().getReputations(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<Reputation> {
-            override fun onResponse(call: Call<Reputation>, response: Response<Reputation>) {
-                reputations = response.body()
-                if (reputations != null) {
-                    val xpacs = reputationsWithParentInfo?.filter { expansionsId.contains(it.id) }?.sortedBy { expansionsId.indexOf(it.id) }?.map { it.name }
-                    setAdapter(xpacs?.toMutableList()!!, binding.repSpinner)
-                    sortRepsByExpansions(reputations!!)
-                } else {
-                    showOutdatedTextView()
-                }
-            }
+        viewModel.getReputations().observe(viewLifecycleOwner, {
+            val xpacs = viewModel.getReputationsWithParentInfo().value!!.filter { expansionsId.contains(it.id) }.sortedBy { expansionsId.indexOf(it.id) }.map { it.name }
+            setAdapter(xpacs.toMutableList(), binding.repSpinner)
+        })
 
-            override fun onFailure(call: Call<Reputation>, t: Throwable) {
-                Log.e("Error", "trace: ", t)
-
-            }
+        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+            showOutdatedTextView()
         })
     }
 
@@ -193,28 +144,8 @@ class ReputationsFragment : Fragment() {
 
     private fun populateRecyclerView() {
         binding.repRecycler.apply {
-            adapter = ReputationsAdapter(repsByExpac[binding.repSpinner.selectedItemPosition - 1].sortedBy { RepByExpansion.getFaction(it.faction.name) }, context)
+            adapter = ReputationsAdapter(viewModel.repsByExpac[binding.repSpinner.selectedItemPosition - 1].sortedBy { RepByExpansion.getFaction(it.faction.name) }, context)
             adapter!!.notifyDataSetChanged()
-        }
-    }
-
-    private fun sortRepsByExpansions(reputation: Reputation) {
-        for (reps in reputation.reputations) {
-            for (enumRep in RepByExpansion.values()) {
-                if (reps.faction.id == enumRep.id) {
-                    when (enumRep.xpac) {
-                        "Classic" -> repsByExpac[0].add(reps)
-                        "Burning Crusade" -> repsByExpac[1].add(reps)
-                        "Wrath of the Lich King" -> repsByExpac[2].add(reps)
-                        "Cataclysm" -> repsByExpac[3].add(reps)
-                        "Mists of Pandaria" -> repsByExpac[4].add(reps)
-                        "Warlords of Draenor" -> repsByExpac[5].add(reps)
-                        "Legion" -> repsByExpac[6].add(reps)
-                        "Battle for Azeroth" -> repsByExpac[7].add(reps)
-                        "Shadowlands" -> repsByExpac[8].add(reps)
-                    }
-                }
-            }
         }
     }
 
@@ -238,7 +169,7 @@ class ReputationsFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
-            downloadReputations()
+            viewModel.downloadReputationsPlusParentInfo()
         }
     }
 

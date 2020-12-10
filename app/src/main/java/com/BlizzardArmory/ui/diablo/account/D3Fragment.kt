@@ -83,7 +83,7 @@ class D3Fragment : Fragment() {
 
     private fun setObservers() {
         viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(viewModel.getBnetParams().value!!)
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             binding.loadingCircle.visibility = View.VISIBLE
             viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
         })

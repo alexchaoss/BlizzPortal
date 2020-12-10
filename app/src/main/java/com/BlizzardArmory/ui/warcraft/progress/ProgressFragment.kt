@@ -13,17 +13,12 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
+import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowProgressFragmentBinding
-import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
-import com.BlizzardArmory.model.warcraft.encounters.Expansions
-import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -32,9 +27,6 @@ import okhttp3.internal.toImmutableList
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import java.util.*
 
 
 private const val CHARACTER = "character"
@@ -44,27 +36,19 @@ private const val REGION = "region"
 
 class ProgressFragment : Fragment() {
 
-    private var character: String? = null
-    private var realm: String? = null
     private var media: String? = null
-    private var region: String? = null
-    private var battlenetOAuth2Helper: BattlenetOAuth2Helper? = null
-    private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
-    private val adapterList = ArrayList<EncounterAdapter>()
-
-    private var encounters: EncountersInformation? = null
 
     private var _binding: WowProgressFragmentBinding? = null
     private val binding get() = _binding!!
-
+    private val viewModel: ProgressViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            character = it.getString(CHARACTER)
-            realm = it.getString(REALM)
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
             media = it.getString(MEDIA)
-            region = it.getString(REGION)
+            viewModel.region = it.getString(REGION)!!
         }
     }
 
@@ -90,32 +74,25 @@ class ProgressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
-        battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-        battlenetOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
-
-        downloadEncounterInformation()
+        setObservers()
+        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
     }
 
-    private fun downloadEncounterInformation() {
-        val call: Call<EncountersInformation> = RetroClient.getClient().getEncounters(character!!.toLowerCase(Locale.ROOT),
-                realm!!.toLowerCase(Locale.ROOT), MainActivity.locale, region?.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
-        call.enqueue(object : Callback<EncountersInformation> {
-            override fun onResponse(call: Call<EncountersInformation>, response: retrofit2.Response<EncountersInformation>) {
-                encounters = response.body()
-                if (response.isSuccessful) {
-                    if (encounters?.expansions != null) {
-                        setAdapter(encounters?.expansions?.map { it.expansion.name }?.toMutableList()!!, binding.progSpinner)
-                    }
-                } else {
-                    showOutdatedTextView()
-                }
-            }
 
-            override fun onFailure(call: Call<EncountersInformation>, t: Throwable) {
-                Log.e("Error", t.message, t)
-                showOutdatedTextView()
+    private fun setObservers() {
+        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
+            viewModel.downloadEncounterInformation()
+        })
+
+        viewModel.getEncounters().observe(viewLifecycleOwner, { encounters ->
+            if (encounters.expansions != null) {
+                setAdapter(encounters.expansions.map { it.expansion.name }.toMutableList(), binding.progSpinner)
             }
+        })
+
+        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+            showOutdatedTextView()
         })
     }
 
@@ -165,8 +142,8 @@ class ProgressFragment : Fragment() {
 
     private fun populateRecyclerView() {
         binding.raidRecycler.apply {
-            val expansion = encounters?.expansions?.findLast { it.expansion.name == binding.progSpinner.selectedItem }
-            adapter = EncounterAdapter(expansion?.instances!!, getRaidLevel(expansion), context)
+            val expansion = viewModel.getEncounters().value?.expansions?.findLast { it.expansion.name == binding.progSpinner.selectedItem }
+            adapter = EncounterAdapter(expansion?.instances!!, viewModel.getRaidLevel(expansion), context)
             adapter!!.notifyDataSetChanged()
         }
     }
@@ -188,25 +165,10 @@ class ProgressFragment : Fragment() {
                 }
     }
 
-    private fun getRaidLevel(expansion: Expansions): String {
-        return when (expansion.expansion.id) {
-            68L -> "Level 25"
-            70L -> "Level 27"
-            72L -> "Level 30"
-            73L -> "Level 32"
-            74L -> "Level 35"
-            124L -> "Level 40"
-            395L -> "Level 45"
-            396L -> "Level 50"
-            397L -> "Level 60"
-            else -> ""
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
-            downloadEncounterInformation()
+            viewModel.downloadEncounterInformation()
         }
     }
 
