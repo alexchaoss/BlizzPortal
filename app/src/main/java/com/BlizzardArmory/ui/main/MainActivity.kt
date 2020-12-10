@@ -163,10 +163,10 @@ class MainActivity : LocalizationActivity() {
             dialog.addTitle("Internet connection unstable", 20F, "title")
                     .addMessage("Are you currently connected to a network?", 16F, "message")
                     .addSideBySideButtons("Yes", 16F, "No", 16F, { viewModel.openLoginToBattleNet() }, {
-                        dialog.cancel()
+                        dialog.dismiss()
                         val confirmDialog = DialogPrompt(this)
                         confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
-                                .addButton("Ok", 16F, { confirmDialog.cancel() }, "close").show()
+                                .addButton("Ok", 16F, { confirmDialog.dismiss() }, "close").show()
                     }, "positive", "negative").show()
         }
     }

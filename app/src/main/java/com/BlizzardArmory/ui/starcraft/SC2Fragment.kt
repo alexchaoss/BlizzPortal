@@ -7,13 +7,15 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -21,6 +23,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.Sc2FragmentBinding
+import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
@@ -40,7 +43,7 @@ import java.util.*
 class SC2Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
     private lateinit var errorMessages: ErrorMessages
-    
+
     private var _binding: Sc2FragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SC2ViewModel by viewModels()
@@ -109,15 +112,16 @@ class SC2Fragment : Fragment() {
             if (it.size > 1) {
                 binding.loadingCircle.visibility = View.GONE
                 val dialog = DialogPrompt(requireContext())
+                dialog.setCancellable(false)
                 dialog.addTitle("Choose Account", 20F, "title")
                 it.forEach { player ->
-                    dialog.addButton("${viewModel.parseRegionId(player.regionId)} - ${player.name}", 17F, {
-                        viewModel.downloadProfile(player)
-                        binding.loadingCircle.visibility = View.VISIBLE
-                        dialog.cancel()
-                    }, player.profileId)
-                    val button = dialog.tagMap[player.profileId] as Button
-
+                    val layout = LinearLayout(requireContext())
+                    createCustomButton(layout, player, dialog)
+                    dialog.addCustomView(layout, player.profileId)
+                }
+                dialog.setOnCancelListener {
+                    viewModel.downloadProfile(it[0])
+                    binding.loadingCircle.visibility = View.VISIBLE
                 }
                 dialog.show()
             } else {
@@ -137,6 +141,41 @@ class SC2Fragment : Fragment() {
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             showNoConnectionMessage(it)
         })
+    }
+
+    private fun createCustomButton(layout: LinearLayout, player: Player, dialog: DialogPrompt) {
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val paramsButton = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val paramsIcon = LinearLayout.LayoutParams(80, 80)
+        paramsIcon.gravity = Gravity.CENTER_VERTICAL.and(Gravity.END)
+        paramsIcon.weight = 1F
+        params.setMargins(30, 20, 30, 20)
+        layout.weightSum = 2F
+        layout.layoutParams = params
+        layout.setPadding(20, 20, 20, 20)
+        layout.background = ContextCompat.getDrawable(requireContext(), R.drawable.buttonstyle)
+
+        val icon = ImageView(requireContext())
+        icon.layoutParams = paramsIcon
+        Glide.with(this).load(player.avatarUrl).into(icon)
+
+        val button = TextView(requireContext())
+        paramsButton.weight = 1F
+        paramsButton.gravity = Gravity.CENTER_VERTICAL.and(Gravity.START)
+        button.text = "${viewModel.parseRegionId(player.regionId)} - ${player.name}"
+        button.textSize = 17F
+        button.setTextColor(Color.WHITE)
+
+        button.setPadding(15, 0, 15, 0)
+
+        layout.addView(icon)
+        layout.addView(button)
+
+        button.setOnClickListener {
+            viewModel.downloadProfile(player)
+            binding.loadingCircle.visibility = View.VISIBLE
+            dialog.dismiss()
+        }
     }
 
     override fun onStart() {
@@ -474,12 +513,12 @@ class SC2Fragment : Fragment() {
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             viewModel.downloadAccountInformation()
                             binding.loadingCircle.visibility = View.VISIBLE
                         },
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
                             parentFragmentManager.popBackStack()
                         },
@@ -491,15 +530,15 @@ class SC2Fragment : Fragment() {
         activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 
-    companion object{
-        fun addOnBackPressCallback(activity: GamesActivity){
+    companion object {
+        fun addOnBackPressCallback(activity: GamesActivity) {
 
-                activity.onBackPressedDispatcher.addCallback {
-                    if (!URLConstants.loading) {
-                        NewsPageFragment.addOnBackPressCallback(activity)
-                        activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    }
+            activity.onBackPressedDispatcher.addCallback {
+                if (!URLConstants.loading) {
+                    NewsPageFragment.addOnBackPressCallback(activity)
+                    activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
+            }
         }
     }
 }

@@ -241,13 +241,13 @@ class CharacterStatsFragment : Fragment() {
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             viewModel.downloadCharacterInformation(battletag, id, selectedRegion)
                             EventBus.getDefault().post(RetryEvent(true))
                             binding.loadingCircle.visibility = View.VISIBLE
                         },
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             EventBus.getDefault().post(NetworkEvent(true))
                             parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                         },

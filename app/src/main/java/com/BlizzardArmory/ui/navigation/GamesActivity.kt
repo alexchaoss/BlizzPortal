@@ -135,7 +135,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
             val dialog = DialogPrompt(this)
             dialog.addTitle("New Feature!", 20F)
                     .addMessage("Pull from the right side to select which news you want to see here!", 18F)
-                    .addButton("Close", 16F, { dialog.cancel() }).show()
+                    .addButton("Close", 16F, { dialog.dismiss() }).show()
             prefs?.edit()?.putString("news_pulled", "done")?.apply()
         }
     }
@@ -302,9 +302,9 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addSideBySideButtons(errorMessage.RETRY, 18f, errorMessage.BACK, 18f,
-                        { dialog.cancel() },
+                        { dialog.dismiss() },
                         {
-                            dialog.cancel()
+                            dialog.dismiss()
                             onBackPressed()
                         },
                         "retry", "back").show()
@@ -366,7 +366,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                         .addSideBySideButtons("Search", 16F, "My Profile", 16F, { searchD3Profile(searchDialog) },
                                 {
                                     callD3Activity(userInformation?.battleTag!!, MainActivity.selectedRegion)
-                                    searchDialog.cancel()
+                                    searchDialog.dismiss()
                                 }, "search_button", "myprofile_button").show()
                 binding.drawerLayout.closeDrawers()
             }
@@ -410,7 +410,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 Toast.makeText(dialog.context, "Please enter the region", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                dialog.cancel()
+                dialog.dismiss()
                 callD3Activity((dialog.tagMap["btag_field"] as EditText).text.toString().toLowerCase(Locale.ROOT), (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString())
             }
         }
@@ -432,7 +432,7 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                 characterRealm = viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
                 selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
-                dialog.cancel()
+                dialog.dismiss()
             }
         }
     }

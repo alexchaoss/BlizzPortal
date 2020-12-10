@@ -549,10 +549,10 @@ class WoWCharacterFragment : Fragment() {
                         .addMessage(getErrorMessage(responseCode), 18f, "message")
                         .addSideBySideButtons(errorMessages.OK, 18f, errorMessages.BACK, 18f,
                                 {
-                                    dialog!!.cancel()
+                                    dialog!!.dismiss()
                                 },
                                 {
-                                    dialog!!.cancel()
+                                    dialog!!.dismiss()
                                     EventBus.getDefault().post(NetworkEvent(true))
                                 },
                                 "retry", "back").show()
@@ -562,14 +562,14 @@ class WoWCharacterFragment : Fragment() {
                         .addMessage(getErrorMessage(responseCode), 18f, "message")
                         .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
                                 {
-                                    dialog!!.cancel()
+                                    dialog!!.dismiss()
                                     startDownloads()
                                     EventBus.getDefault().post(RetryEvent(true))
                                     binding.loadingCircle.visibility = View.VISIBLE
                                     URLConstants.loading = true
                                 },
                                 {
-                                    dialog!!.cancel()
+                                    dialog!!.dismiss()
                                     EventBus.getDefault().post(NetworkEvent(true))
                                 },
                                 "retry", "back").show()
