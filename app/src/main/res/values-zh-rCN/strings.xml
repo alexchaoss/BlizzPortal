@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Blizz-Portal</string>
+    <string name="app_name">BlizzPortal</string>
     <string name="select_region">选择地区</string>
     <string name="login">登录</string>
     <string name="clear_credentials">清除凭据</string>
@@ -101,4 +101,5 @@
     <string name="leaderboards">Leaderboards</string>
     <string name="search">搜索</string>
     <string name="covenant">境的誓盟</string>
+    <string name="account">帐户</string>
 </resources>

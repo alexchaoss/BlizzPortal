@@ -545,6 +545,7 @@ class WoWCharacterFragment : Fragment() {
 
             if (responseCode == 404) {
                 dialog = DialogPrompt(requireActivity())
+                dialog!!.setCancellable(false)
                 dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
                         .addMessage(getErrorMessage(responseCode), 18f, "message")
                         .addSideBySideButtons(errorMessages.OK, 18f, errorMessages.BACK, 18f,
@@ -558,6 +559,7 @@ class WoWCharacterFragment : Fragment() {
                                 "retry", "back").show()
             } else {
                 dialog = DialogPrompt(requireActivity())
+                dialog!!.setCancellable(false)
                 dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
                         .addMessage(getErrorMessage(responseCode), 18f, "message")
                         .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,

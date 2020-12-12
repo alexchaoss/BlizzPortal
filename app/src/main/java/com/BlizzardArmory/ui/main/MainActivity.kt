@@ -20,7 +20,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.databinding.ActivityMainBinding
+import com.BlizzardArmory.databinding.MainActivityBinding
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
@@ -42,11 +42,11 @@ class MainActivity : LocalizationActivity() {
     private val REQUEST_CODE_IN_APP_UPDATE = 7500
     private val viewModel: MainViewModel by viewModels()
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         FirebaseCrashlytics.getInstance().sendUnsentReports()
 
