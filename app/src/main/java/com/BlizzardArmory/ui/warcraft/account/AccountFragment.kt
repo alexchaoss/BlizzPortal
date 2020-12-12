@@ -181,6 +181,7 @@ class AccountFragment : Fragment() {
         URLConstants.loading = false
 
         val dialog = DialogPrompt(requireActivity())
+        dialog.setCancellable(false)
 
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")

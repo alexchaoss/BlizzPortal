@@ -157,9 +157,9 @@ class CharacterStatsFragment : Fragment() {
         }
         binding.totalLife.text = life
         val ressourceText: String = if (viewModel.getCharacterInformation().value!!.class_ == "demon-hunter") {
-            viewModel.getCharacterInformation().value!!.stats.primaryResource.toString() + "\n" + viewModel.getCharacterInformation().value!!.stats.secondaryResource.toString()
+            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt().toString() + "\n" + viewModel.getCharacterInformation().value!!.stats.secondaryResource.roundToInt().toString()
         } else {
-            viewModel.getCharacterInformation().value!!.stats.primaryResource.toString()
+            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt().toString()
         }
         binding.ressource.text = ressourceText
         when (viewModel.getCharacterInformation().value!!.class_) {
@@ -182,7 +182,7 @@ class CharacterStatsFragment : Fragment() {
     private fun setName() {
         val levelClass = ("<font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.level + "</font>" + "<font color=#555da5> (" + viewModel.getCharacterInformation().value!!.paragonLevel
                 + ")</font> <font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.class_)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.levelClass.text = Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY)
         } else {
             binding.levelClass.text = Html.fromHtml(levelClass)
@@ -236,7 +236,7 @@ class CharacterStatsFragment : Fragment() {
         URLConstants.loading = false
 
         val dialog = DialogPrompt(requireActivity())
-
+        dialog.setCancellable(false)
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,

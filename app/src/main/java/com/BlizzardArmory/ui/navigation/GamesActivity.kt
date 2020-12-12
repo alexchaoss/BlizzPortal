@@ -3,10 +3,7 @@ package com.BlizzardArmory.ui.navigation
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
@@ -16,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.GamesActivityBinding
+import com.BlizzardArmory.model.MenuItem
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
 import com.BlizzardArmory.network.ErrorMessages
@@ -36,8 +34,8 @@ import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
+import com.BlizzardArmory.util.events.MenuItemClickEvent
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -46,14 +44,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
-class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSelectedListener {
+class GamesActivity : LocalizationActivity() {
 
     private lateinit var toggle: ActionBarDrawerToggle
-    private var searchText: SpannableString? = null
-    private var wowFavoritesText: SpannableString? = null
-    private var d3FavoritesText: SpannableString? = null
-    private var owFavoritesText: SpannableString? = null
-    private var d3LeaderboardText: SpannableString? = null
     private var prefs: SharedPreferences? = null
     private val gson = GsonBuilder().create()
 
@@ -65,6 +58,8 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
     private lateinit var binding: GamesActivityBinding
     private val viewModel: GamesViewModel by viewModels()
+
+    val menuList = arrayListOf<MenuItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,17 +86,32 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
 
         setNavigation()
 
-        binding.settings.setOnClickListener {
-            val fragment = SettingsFragment()
-            favorite!!.visibility = View.GONE
-            supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings").commit()
-            supportFragmentManager.executePendingTransactions()
-            binding.drawerLayout.closeDrawers()
+
+        createMenuList()
+
+        binding.menu.apply {
+            adapter = MenuAdapter(menuList, context)
         }
     }
 
+    private fun createMenuList() {
+        menuList.add(MenuItem(true, "", resources.getString(R.string.home), R.drawable.ic_baseline_home_24, false))
+        menuList.add(MenuItem(true, "", resources.getString(R.string.world_of_warcraft), R.drawable.wow_icon_glow, true))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_character), R.drawable.rep_search, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
+        menuList.add(MenuItem(true, "", resources.getString(R.string.diablo_3), R.drawable.diablo3_icon_glow, true))
+        menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
+        menuList.add(MenuItem(true, "", resources.getString(R.string.starcraft_2), R.drawable.sc2_icon, false))
+        menuList.add(MenuItem(true, "", resources.getString(R.string.overwatch), R.drawable.overwatch_icon_glow, true))
+        menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
+        menuList.add(MenuItem(true, "", resources.getString(R.string.settingsTitle), R.drawable.settings, false))
+    }
+
     private fun setNavigation() {
-        binding.navView.setNavigationItemSelectedListener(this)
         binding.navView.itemIconTintList = null
         setSupportActionBar(binding.topBar.toolbarMain)
 
@@ -111,7 +121,6 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = ""
-        makeTitlesTransparent()
     }
 
     private fun openNewsFragment() {
@@ -240,28 +249,6 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
         EventBus.getDefault().post(FilterNewsEvent(true))
     }
 
-    private fun makeTitlesTransparent() {
-        searchText = SpannableString(binding.navView.menu.findItem(R.id.wow_search).title)
-        searchText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, searchText!!.length, 0)
-        binding.navView.menu.findItem(R.id.wow_search).title = searchText
-
-        wowFavoritesText = SpannableString(binding.navView.menu.findItem(R.id.wow_favorite).title)
-        wowFavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, wowFavoritesText!!.length, 0)
-        binding.navView.menu.findItem(R.id.wow_favorite).title = wowFavoritesText
-
-        d3FavoritesText = SpannableString(binding.navView.menu.findItem(R.id.d3_favorite).title)
-        d3FavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, d3FavoritesText!!.length, 0)
-        binding.navView.menu.findItem(R.id.d3_favorite).title = d3FavoritesText
-
-        owFavoritesText = SpannableString(binding.navView.menu.findItem(R.id.ow_favorite).title)
-        owFavoritesText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, owFavoritesText!!.length, 0)
-        binding.navView.menu.findItem(R.id.ow_favorite).title = owFavoritesText
-
-        d3LeaderboardText = SpannableString(binding.navView.menu.findItem(R.id.d3_leaderboard).title)
-        d3LeaderboardText!!.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, d3LeaderboardText!!.length, 0)
-        binding.navView.menu.findItem(R.id.d3_leaderboard).title = d3LeaderboardText
-    }
-
     private fun getErrorMessage(responseCode: Int): String {
         return when (responseCode) {
             in 201..499 -> {
@@ -310,24 +297,73 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                         "retry", "back").show()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun menuItemClickedReceived(menuItem: MenuItemClickEvent) {
         val fragment: Fragment
         val searchDialog = DialogPrompt(this)
-        when (item.title) {
+        when (menuItem.menuItem.title) {
             this.resources.getString(R.string.home) -> {
                 hideFavoriteButton()
                 resetBackStack()
-                binding.drawerLayout.closeDrawers()
-            }
-            "World of Warcraft" -> {
-                resetBackStack()
-                fragment = AccountFragment()
                 favorite!!.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").addToBackStack("wow_account").commit()
-                supportFragmentManager.executePendingTransactions()
                 binding.drawerLayout.closeDrawers()
             }
-            searchText -> {
+            resources.getString(R.string.diablo_3) -> {
+                if (menuItem.menuItem.toggle) {
+                    menuList.find { it.title == resources.getString(R.string.diablo_3) }?.icon = R.drawable.diablo3_icon
+                    (binding.menu.adapter as MenuAdapter).hideSubMenu(menuItem.menuItem)
+                } else {
+                    menuList.find { it.title == resources.getString(R.string.diablo_3) }?.icon = R.drawable.diablo3_icon_glow
+                    (binding.menu.adapter as MenuAdapter).showSubMenu(menuItem.menuItem)
+                }
+                menuList.find { it.title == resources.getString(R.string.diablo_3) }?.toggle = !menuItem.menuItem.toggle
+            }
+            resources.getString(R.string.overwatch) -> {
+                if (menuItem.menuItem.toggle) {
+                    menuList.find { it.title == resources.getString(R.string.overwatch) }?.icon = R.drawable.overwatch_icon
+                    (binding.menu.adapter as MenuAdapter).hideSubMenu(menuItem.menuItem)
+                } else {
+                    menuList.find { it.title == resources.getString(R.string.overwatch) }?.icon = R.drawable.overwatch_icon_glow
+                    (binding.menu.adapter as MenuAdapter).showSubMenu(menuItem.menuItem)
+                }
+                menuList.find { it.title == resources.getString(R.string.overwatch) }?.toggle = !menuItem.menuItem.toggle
+            }
+            resources.getString(R.string.world_of_warcraft) -> {
+                if (menuItem.menuItem.toggle) {
+                    menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.icon = R.drawable.wow_icon
+                    (binding.menu.adapter as MenuAdapter).hideSubMenu(menuItem.menuItem)
+                } else {
+                    menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.icon = R.drawable.wow_icon_glow
+                    (binding.menu.adapter as MenuAdapter).showSubMenu(menuItem.menuItem)
+                }
+                menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.toggle = !menuItem.menuItem.toggle
+            }
+            resources.getString(R.string.account) -> {
+                when (menuItem.menuItem.parent) {
+                    resources.getString(R.string.world_of_warcraft) -> {
+                        resetBackStack()
+                        favorite!!.visibility = View.GONE
+                        fragment = AccountFragment()
+                        supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfragment").addToBackStack("wow_account").commit()
+                        supportFragmentManager.executePendingTransactions()
+                    }
+                    resources.getString(R.string.diablo_3) -> {
+                        searchDialog.addTitle("Enter a BattleTag", 18F, "battletag")
+                                .addEditText("btag_field")
+                                .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
+                                .addSideBySideButtons("Search", 16F, "My Profile", 16F, { searchD3Profile(searchDialog) },
+                                        {
+                                            callD3Activity(userInformation?.battleTag!!, MainActivity.selectedRegion)
+                                            searchDialog.dismiss()
+                                        }, "search_button", "myprofile_button").show()
+                    }
+                    resources.getString(R.string.overwatch) -> {
+                        OWPlatformChoiceDialog.overwatchPrompt(this, supportFragmentManager)
+                    }
+                }
+                binding.drawerLayout.closeDrawers()
+            }
+            resources.getString(R.string.search_character) -> {
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                         .addEditText("character_field")
                         .addMessage("Realm", 18F, "realm_label")
@@ -336,60 +372,50 @@ class GamesActivity : LocalizationActivity(), NavigationView.OnNavigationItemSel
                         .addButton("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button").show()
                 binding.drawerLayout.closeDrawers()
             }
-            wowFavoritesText -> {
-                fragment = WoWFavoritesFragment()
-                favorite!!.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav").commit()
-                supportFragmentManager.executePendingTransactions()
+            resources.getString(R.string.favorites) -> {
+                when (menuItem.menuItem.parent) {
+                    resources.getString(R.string.world_of_warcraft) -> {
+                        favorite!!.visibility = View.GONE
+                        fragment = WoWFavoritesFragment()
+                        supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav").commit()
+                        supportFragmentManager.executePendingTransactions()
+                    }
+                    resources.getString(R.string.diablo_3) -> {
+                        favorite!!.visibility = View.GONE
+                        fragment = D3FavoriteFragment()
+                        supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3favorites").addToBackStack("d3_fav").commit()
+                        supportFragmentManager.executePendingTransactions()
+                    }
+                    resources.getString(R.string.overwatch) -> {
+                        favorite!!.visibility = View.GONE
+                        fragment = OWFavoritesFragment()
+                        supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "owfavorites").addToBackStack("ow_fav").commit()
+                        supportFragmentManager.executePendingTransactions()
+                    }
+                }
                 binding.drawerLayout.closeDrawers()
             }
-            d3FavoritesText -> {
-                fragment = D3FavoriteFragment()
-                favorite!!.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3favorites").addToBackStack("d3_fav").commit()
-                supportFragmentManager.executePendingTransactions()
-                binding.drawerLayout.closeDrawers()
-            }
-            owFavoritesText -> {
-                fragment = OWFavoritesFragment()
-                favorite!!.visibility = View.GONE
-                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "owfavorites").addToBackStack("ow_fav").commit()
-                supportFragmentManager.executePendingTransactions()
-                binding.drawerLayout.closeDrawers()
-            }
-            "Diablo 3" -> {
-                favorite!!.visibility = View.GONE
-                favorite?.setImageResource(R.drawable.ic_star_border_black_24dp)
-                searchDialog.addTitle("Enter a BattleTag", 18F, "battletag")
-                        .addEditText("btag_field")
-                        .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                        .addSideBySideButtons("Search", 16F, "My Profile", 16F, { searchD3Profile(searchDialog) },
-                                {
-                                    callD3Activity(userInformation?.battleTag!!, MainActivity.selectedRegion)
-                                    searchDialog.dismiss()
-                                }, "search_button", "myprofile_button").show()
-                binding.drawerLayout.closeDrawers()
-            }
-            d3LeaderboardText -> {
+            resources.getString(R.string.leaderboards) -> {
                 favorite!!.visibility = View.GONE
                 fragment = D3LeaderboardFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "d3leaderboard").addToBackStack("d3_leaderboard").commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.drawerLayout.closeDrawers()
             }
-            "Starcraft 2" -> {
+            resources.getString(R.string.starcraft_2) -> {
                 favorite!!.visibility = View.GONE
                 fragment = SC2Fragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "sc2fragment").addToBackStack("sc2").commit()
+                binding.drawerLayout.closeDrawers()
+            }
+            resources.getString(R.string.settingsTitle) -> {
+                favorite!!.visibility = View.GONE
+                fragment = SettingsFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings").commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.drawerLayout.closeDrawers()
             }
-            "Overwatch" -> {
-                OWPlatformChoiceDialog.overwatchPrompt(this, supportFragmentManager)
-                binding.drawerLayout.closeDrawers()
-            }
         }
-        return true
     }
 
     private fun resetBackStack() {

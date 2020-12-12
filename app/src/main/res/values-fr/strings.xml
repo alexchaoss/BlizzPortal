@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Blizz-Portal</string>
+    <string name="app_name">BlizzPortal</string>
     <string name="select_region">Choisir la région</string>
     <string name="login">Connection</string>
     <string name="clear_credentials">Effacer les données</string>
@@ -52,7 +52,7 @@
     <string name="diablo_3">Diablo 3</string>
     <string name="starcraft_2">Starcraft 2</string>
     <string name="overwatch">Overwatch</string>
-    <string name="search_character">Rerchercher personnage</string>
+    <string name="search_character">Rerchercher</string>
     <string name="search_user">Rechercher utilisateur</string>
     <string name="honorable_kills">Victoires Honorables</string>
     <string name="favorites">Favoris</string>
@@ -74,7 +74,7 @@
     <string name="heroes_of_the_storm_news">Actualités Heroes of The Storm</string>
     <string name="news">Actualités</string>
     <string name="hero">Héro</string>
-    <string name="loadingdot">Chargement . . .</string>
+    <string name="loadingdot">Chargement...</string>
     <string name="battleground">Champ de bataille</string>
     <string name="games">Jeux</string>
     <string name="wins">Victoires</string>
@@ -101,4 +101,5 @@
     <string name="leaderboards">Leaderboards</string>
     <string name="search">Suche</string>
     <string name="covenant">Congrégations</string>
+    <string name="account">Compte</string>
 </resources>

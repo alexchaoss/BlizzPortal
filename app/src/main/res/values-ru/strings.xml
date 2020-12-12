@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Blizz-Portal</string>
+    <string name="app_name">BlizzPortal</string>
     <string name="select_region">Выбор региона</string>
     <string name="login">Авторизоваться</string>
     <string name="clear_credentials">Очистить учетные данные</string>
@@ -101,4 +101,5 @@
     <string name="leaderboards">Leaderboards</string>
     <string name="search">поиск</string>
     <string name="covenant">ковенантами</string>
+    <string name="account">Счет</string>
 </resources>

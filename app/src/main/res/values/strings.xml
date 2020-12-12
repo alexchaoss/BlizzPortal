@@ -207,6 +207,7 @@
     <string name="search">Search</string>
     <string name="covenant">Covenant</string>
     <string name="progress2">Progress</string>
+    <string name="account">Account</string>
 
     <string-array name="regions">
         <item>Select Region</item>
