@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.navigation.GamesActivity.Companion.userInformation
+import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.util.MetricConversion.getDPMetric
 
 /**
@@ -42,6 +43,12 @@ object OWPlatformChoiceDialog {
         bundle.putString("username", username)
         bundle.putString("platform", platform)
         fragment.arguments = bundle
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        if (fragmentManager.findFragmentById(R.id.fragment) != null) {
+            fragmentManager.beginTransaction().remove(fragmentManager.findFragmentById(R.id.fragment)!!).commit()
+        }
+        val newsListFragment = NewsListFragment()
+        fragmentManager.beginTransaction().replace(R.id.fragment, newsListFragment, "news_fragment").commit()
         fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment").addToBackStack("ow_account").commit()
         fragmentManager.executePendingTransactions()
     }

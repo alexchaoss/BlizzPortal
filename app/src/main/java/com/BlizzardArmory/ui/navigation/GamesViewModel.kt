@@ -9,6 +9,9 @@ import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.discord.panels.PanelState
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,8 +23,33 @@ class GamesViewModel : BaseViewModel() {
     private var userInformation: MutableLiveData<UserInformation> = MutableLiveData()
     private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
 
+    data class ViewState(
+            val startPanelState: PanelState,
+            val endPanelState: PanelState
+    )
+
+    private val viewStateSubject: BehaviorSubject<ViewState> =
+            BehaviorSubject.createDefault(
+                    ViewState(
+                            startPanelState = PanelState.Closed,
+                            endPanelState = PanelState.Closed
+                    )
+            )
+
     init {
         wowRealms.value = mutableMapOf()
+    }
+
+    fun observeViewState(): Observable<ViewState> = viewStateSubject
+
+    fun onStartPanelStateChange(panelState: PanelState) {
+        val viewState = viewStateSubject.value
+        viewStateSubject.onNext(viewState.copy(startPanelState = panelState))
+    }
+
+    fun onEndPanelStateChange(panelState: PanelState) {
+        val viewState = viewStateSubject.value
+        viewStateSubject.onNext(viewState.copy(endPanelState = panelState))
     }
 
     fun getUserInformation(): LiveData<UserInformation> {

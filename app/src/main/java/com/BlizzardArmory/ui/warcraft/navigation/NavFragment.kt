@@ -10,6 +10,7 @@ import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayout
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -50,6 +51,7 @@ class WoWNavFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.wowPager.addOnLayoutChangeListener(PanelsChildGestureRegionObserver.Provider.get())
 
         val bundle = Bundle()
         bundle.putString("character", character)
@@ -84,6 +86,7 @@ class WoWNavFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        PanelsChildGestureRegionObserver.Provider.get().remove(binding.wowPager.id)
         _binding = null
     }
 

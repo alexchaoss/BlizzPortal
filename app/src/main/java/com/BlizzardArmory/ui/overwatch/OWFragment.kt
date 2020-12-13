@@ -13,7 +13,6 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
@@ -488,7 +487,7 @@ class OWFragment : Fragment() {
                         activity.supportFragmentManager.popBackStack()
                     } else {
                         NewsPageFragment.addOnBackPressCallback(activity)
-                        activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        activity.supportFragmentManager.popBackStack()
                     }
                 }
             }

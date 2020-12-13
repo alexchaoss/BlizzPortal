@@ -45,7 +45,7 @@ class NewsViewHolder(inflater: LayoutInflater, parent: ViewGroup, val context: C
             val fragmentManager = (context as AppCompatActivity).supportFragmentManager
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                    .add(R.id.news_fragment, fragment, "news_page_fragment")
+                    .add(R.id.fragment, fragment, "news_page_fragment")
                     .addToBackStack("news_page").commit()
             fragmentManager.executePendingTransactions()
         }
