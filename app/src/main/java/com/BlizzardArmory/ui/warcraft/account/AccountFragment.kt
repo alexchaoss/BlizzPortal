@@ -14,7 +14,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
@@ -211,7 +210,7 @@ class AccountFragment : Fragment() {
             activity.onBackPressedDispatcher.addCallback {
                 if(!URLConstants.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    activity.supportFragmentManager.popBackStack()
                 }
             }
         }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.databinding.D3FavoritesBinding
@@ -53,7 +52,7 @@ class D3FavoriteFragment : Fragment() {
         fun addOnBackPressCallback(activity: GamesActivity){
             activity.onBackPressedDispatcher.addCallback {
                 NewsPageFragment.addOnBackPressCallback(activity)
-                activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

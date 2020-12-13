@@ -1,0 +1,180 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nav_view_news"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:background="@drawable/rounded_layout_right"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_layout_right">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:text="@string/select_your_news"
+            android:textColor="#FFF"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/blizzard_news"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/blizzard_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/SwitchTheme" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/warcraft_news"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/wow_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/SwitchTheme" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/diablo_news"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/d3_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/SwitchTheme" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/starcraft_news"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/sc2_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/SwitchTheme" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/overwatch_news"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/ow_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/SwitchTheme" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/hearthstone_news"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/hs_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/SwitchTheme" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/heroes_of_the_storm_news"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/hots_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/SwitchTheme" />
+
+    </RelativeLayout>
+
+</LinearLayout>

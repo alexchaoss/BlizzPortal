@@ -1,240 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#272931"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/bnetlogo"
-        app:srcCompat="@drawable/bnet_logo" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/news_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="55dp" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="55dp" />
+    android:orientation="vertical">
 
     <include
         android:id="@+id/top_bar"
         layout="@layout/games_activity_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#272931"
-        app:headerLayout="@layout/games_activity_nav_header"
-        app:itemIconSize="50dp"
-        app:itemTextAppearance="@style/menu_text_style">
+    <com.discord.panels.OverlappingPanelsLayout
+        android:id="@+id/overlapping_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/menu"
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/rounded_layout_left"
+            app:itemIconSize="50dp"
+            app:itemTextAppearance="@style/menu_text_style">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </com.google.android.material.navigation.NavigationView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/fragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="90dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:layout_height="match_parent" />
 
-    </com.google.android.material.navigation.NavigationView>
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/right_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@color/colorPrimary"
+            app:itemTextAppearance="@style/menu_text_style">
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view_news"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="#272931"
-        app:headerLayout="@layout/games_activity_nav_header"
-        app:itemIconSize="50dp"
-        app:itemTextAppearance="@style/menu_text_style">
+            <include
+                android:id="@+id/right_panel_games"
+                layout="@layout/games_activity_right_panel"
+                android:visibility="visible" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="center_horizontal"
-            android:text="@string/select_your_news"
-            android:textColor="#FFF"
-            android:textSize="30sp" />
+            <include
+                android:id="@+id/right_panel_d3"
+                layout="@layout/d3_leaderboard_right_panel"
+                android:visibility="gone" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:orientation="vertical">
+        </com.google.android.material.navigation.NavigationView>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="10dp">
+    </com.discord.panels.OverlappingPanelsLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/blizzard_news"
-                    android:textColor="#FFF"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/blizzard_swtich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:theme="@style/SwitchTheme" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/warcraft_news"
-                    android:textColor="#FFF"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/wow_swtich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:theme="@style/SwitchTheme" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/diablo_news"
-                    android:textColor="#FFF"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/d3_swtich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:theme="@style/SwitchTheme" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/starcraft_news"
-                    android:textColor="#FFF"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/sc2_swtich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:theme="@style/SwitchTheme" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/overwatch_news"
-                    android:textColor="#FFF"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/ow_swtich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:theme="@style/SwitchTheme" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/hearthstone_news"
-                    android:textColor="#FFF"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/hs_swtich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:theme="@style/SwitchTheme" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/heroes_of_the_storm_news"
-                    android:textColor="#FFF"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/hots_swtich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:theme="@style/SwitchTheme" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </com.google.android.material.navigation.NavigationView>
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</LinearLayout>

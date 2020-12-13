@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
@@ -330,7 +329,7 @@ class D3Fragment : Fragment() {
                         }
                         else -> {
                             NewsPageFragment.addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                            activity.supportFragmentManager.popBackStack()
                         }
                     }
                 }

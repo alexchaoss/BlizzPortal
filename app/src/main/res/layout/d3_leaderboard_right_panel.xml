@@ -1,0 +1,142 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:background="@drawable/d3_leaderboard_gradient_bg"
+    android:paddingStart="20dp"
+    android:paddingTop="40dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="40dp">
+
+    <LinearLayout
+        android:id="@+id/season_era"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:weightSum="2"
+        app:layout_constraintBottom_toTopOf="@id/spinner_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/season_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/d3_leaderboards_button_selected"
+            android:gravity="center"
+            android:text="@string/season"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/era_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/d3_leaderboards_button"
+            android:gravity="center"
+            android:text="@string/era"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spinner_id"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/gradient_spinner"
+        app:layout_constraintBottom_toTopOf="@id/difficulty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/season_era" />
+
+    <LinearLayout
+        android:id="@+id/difficulty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:weightSum="2"
+        app:layout_constraintBottom_toTopOf="@id/region"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_id">
+
+        <Button
+            android:id="@+id/softcore"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/d3_leaderboards_button_selected"
+            android:gravity="center"
+            android:text="@string/softcore"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/hardcore"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/d3_leaderboards_button"
+            android:gravity="center"
+            android:text="@string/hardcore"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/region"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/gradient_spinner"
+        app:layout_constraintBottom_toTopOf="@id/leaderboard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/difficulty" />
+
+    <Spinner
+        android:id="@+id/leaderboard"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/gradient_spinner"
+        app:layout_constraintBottom_toTopOf="@id/search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/region" />
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/d3_leaderboards_button_selected"
+        android:text="@string/search"
+        android:textColor="#FFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/leaderboard" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
