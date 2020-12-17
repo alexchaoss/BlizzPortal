@@ -9,9 +9,12 @@ import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class D3LeaderboardViewModel : BaseViewModel() {
 
@@ -73,6 +76,9 @@ class D3LeaderboardViewModel : BaseViewModel() {
                     URLConstants.loading = false
                     errorCode.value = response.code()
                 }
+                if (!EventBus.getDefault().isRegistered(this@D3LeaderboardViewModel)) {
+                    EventBus.getDefault().register(this@D3LeaderboardViewModel)
+                }
             }
         }
         jobs.add(job)
@@ -110,5 +116,12 @@ class D3LeaderboardViewModel : BaseViewModel() {
             }
         }
         jobs.add(job)
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadEraIndex()
+        downloadEraIndex()
     }
 }

@@ -60,6 +60,11 @@
                 layout="@layout/d3_leaderboard_right_panel"
                 android:visibility="gone" />
 
+            <include
+                android:id="@+id/right_panel_sc2"
+                layout="@layout/sc2_leaderboard_right_panel"
+                android:visibility="gone" />
+
         </com.google.android.material.navigation.NavigationView>
 
     </com.discord.panels.OverlappingPanelsLayout>

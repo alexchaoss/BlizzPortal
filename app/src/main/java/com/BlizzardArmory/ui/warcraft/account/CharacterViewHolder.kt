@@ -43,6 +43,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private var battlenetOAuth2Params: BattlenetOAuth2Params? = null
     private var fragmentManager: FragmentManager? = null
     private var character: Character? = null
+    private var downloaded = false
+    private var job: Job? = null
 
     init {
         avatar = itemView.findViewById(R.id.avatar)
@@ -53,9 +55,12 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         characterLayout = itemView.findViewById(R.id.character_layout)
         gson = GsonBuilder().create()
         EventBus.getDefault().register(this)
-        GlobalScope.launch {
+        job = GlobalScope.launch {
             do {
-                EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+                delay(3000)
+                if (!downloaded) {
+                    EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+                }
             } while (!ConnectionStatus.hasNetwork())
         }
     }
@@ -101,6 +106,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
         Glide.with(context.applicationContext).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
+        downloaded = true
+        job?.cancel()
     }
 
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {

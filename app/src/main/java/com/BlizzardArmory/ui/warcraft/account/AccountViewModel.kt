@@ -7,9 +7,12 @@ import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
+import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 class AccountViewModel : BaseViewModel() {
@@ -31,8 +34,17 @@ class AccountViewModel : BaseViewModel() {
                 } else {
                     errorCode.value = response.code()
                 }
+                if (!EventBus.getDefault().isRegistered(this@AccountViewModel)) {
+                    EventBus.getDefault().register(this@AccountViewModel)
+                }
             }
         }
         jobs.add(job)
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadWoWCharacters()
     }
 }

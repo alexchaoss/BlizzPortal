@@ -104,7 +104,7 @@ class D3CharacterNav : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
+
     }
 
 }

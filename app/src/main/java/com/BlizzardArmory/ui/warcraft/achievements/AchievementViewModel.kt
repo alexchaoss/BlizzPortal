@@ -11,9 +11,12 @@ import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class AchievementViewModel : BaseViewModel() {
 
@@ -93,5 +96,14 @@ class AchievementViewModel : BaseViewModel() {
                         a.category_id == map.key && characterAchievements.value!!.achievements.any { b -> a.id == b.id }
                     }
                 }?.toMutableMap()!!
+        if (!EventBus.getDefault().isRegistered(this@AchievementViewModel)) {
+            EventBus.getDefault().register(this@AchievementViewModel)
+        }
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadAchievementInformation()
     }
 }

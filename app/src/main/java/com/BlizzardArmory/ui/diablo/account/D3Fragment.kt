@@ -28,7 +28,6 @@ import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.D3CharacterEvent
-import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -306,11 +305,6 @@ class D3Fragment : Fragment() {
                             NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
                         },
                         "retry", "back").show()
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 
     companion object {

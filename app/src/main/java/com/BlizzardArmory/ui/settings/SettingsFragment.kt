@@ -30,7 +30,7 @@ import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.OWFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
-import com.BlizzardArmory.ui.starcraft.SC2Fragment
+import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.character.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment

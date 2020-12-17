@@ -17,6 +17,8 @@ import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -34,6 +36,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private var layout: ConstraintLayout? = null
     private var fragmentManager: FragmentManager? = null
     private var profile: FavoriteProfile? = null
+    private var downloaded = false
+    private var job: Job? = null
 
     init {
         avatar = itemView.findViewById(R.id.avatar)
@@ -42,9 +46,12 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         level = itemView.findViewById(R.id.level)
         layout = itemView.findViewById(R.id.profile_layout)
         EventBus.getDefault().register(this)
-        GlobalScope.launch {
+        job = GlobalScope.launch {
             do {
-                EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+                delay(3000)
+                if (!downloaded) {
+                    EventBus.getDefault().post(NetworkEvent(ConnectionStatus.hasNetwork()))
+                }
             } while (!ConnectionStatus.hasNetwork())
         }
     }
@@ -71,6 +78,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun downloadAvatar() {
         Glide.with(context.applicationContext).load(profile?.profile?.icon).into(avatar!!)
+        downloaded = true
+        job?.cancel()
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
-import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayout
@@ -102,11 +101,6 @@ class WoWNavFragment : Fragment() {
             GamesActivity.hideFavoriteButton()
             activity?.supportFragmentManager?.popBackStack()
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 
     companion object {

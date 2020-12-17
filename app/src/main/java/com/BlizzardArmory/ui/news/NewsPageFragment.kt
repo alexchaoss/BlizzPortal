@@ -6,16 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.BlizzardArmory.databinding.NewsFragmentBinding
-import com.BlizzardArmory.model.news.NewsPage
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.HTMLtoViewsConverter
-import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -23,8 +19,9 @@ import org.greenrobot.eventbus.ThreadMode
 
 class NewsPageFragment : Fragment() {
 
-    private var newsPage: NewsPage? = null
+
     private lateinit var binding: NewsFragmentBinding
+    private val viewModel: NewsPageViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as GamesActivity)
@@ -36,19 +33,17 @@ class NewsPageFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val bundle = requireArguments()
         val url = bundle.getString("url")
-        GlobalScope.launch(Dispatchers.Main) {
-            launch(Dispatchers.IO) {
-                newsPage = WebNewsScrapper.parseNewsPage(url!!)
-            }.join()
-            Glide.with(requireContext()).load(newsPage?.imageURL).into(binding.image)
-            binding.game.text = newsPage?.game
-            binding.title.text = newsPage?.title
-            binding.author.text = newsPage?.author
-            binding.date.text = newsPage?.date
+        viewModel.downloadNewsPage(url!!)
+        viewModel.getNewsPage().observe(viewLifecycleOwner, {
+            Glide.with(requireContext()).load(it.imageURL).into(binding.image)
+            binding.game.text = it.game
+            binding.title.text = it.title
+            binding.author.text = it.author
+            binding.date.text = it.date
             val htmlConverter = HTMLtoViewsConverter(requireContext())
-            htmlConverter.parseHtml(newsPage?.body!!)
+            htmlConverter.parseHtml(it.body)
             binding.container.addView(htmlConverter.linearLayout)
-        }
+        })
     }
 
     override fun onStart() {
@@ -63,7 +58,7 @@ class NewsPageFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
+        activity?.supportFragmentManager?.popBackStack()
     }
 
     companion object{

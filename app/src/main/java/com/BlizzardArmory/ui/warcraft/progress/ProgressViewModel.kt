@@ -8,9 +8,12 @@ import com.BlizzardArmory.model.warcraft.encounters.Expansions
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 class ProgressViewModel : BaseViewModel() {
@@ -36,8 +39,12 @@ class ProgressViewModel : BaseViewModel() {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
             }
+            if (!EventBus.getDefault().isRegistered(this@ProgressViewModel)) {
+                EventBus.getDefault().register(this@ProgressViewModel)
+            }
         }
         jobs.add(job)
+
     }
 
 
@@ -54,5 +61,11 @@ class ProgressViewModel : BaseViewModel() {
             397L -> "Level 60"
             else -> ""
         }
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadEncounterInformation()
     }
 }

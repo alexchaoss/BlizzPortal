@@ -3,34 +3,43 @@ package com.BlizzardArmory.ui.news
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.BlizzardArmory.model.news.NewsMetaData
+import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.WebNewsScrapper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import com.BlizzardArmory.util.events.FilterNewsEvent
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
+import com.BlizzardArmory.util.events.MoreNewsClickEvent
+import kotlinx.coroutines.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NewsListViewModel : ViewModel() {
+class NewsListViewModel : BaseViewModel() {
 
     private val parentJob = SupervisorJob()
     private val coroutineScrope = CoroutineScope(parentJob + Dispatchers.IO)
 
     private var downloaded: MutableLiveData<Boolean> = MutableLiveData()
+    private var showMore: MutableLiveData<Boolean> = MutableLiveData()
     private var newsList: MutableLiveData<ArrayList<NewsMetaData>> = MutableLiveData()
-    private var tempList: MutableLiveData<ArrayList<NewsMetaData>> = MutableLiveData()
+    private var tempList: ArrayList<NewsMetaData> = arrayListOf()
+
+    private var pageNumber: Int = 1
 
     init {
         newsList.value = arrayListOf()
-        tempList.value = arrayListOf()
     }
 
     fun getDownloaded(): MutableLiveData<Boolean> {
         return downloaded
+    }
+
+    fun getShowMore(): MutableLiveData<Boolean> {
+        return showMore
     }
 
     fun getNewsList(): LiveData<ArrayList<NewsMetaData>> {
@@ -43,16 +52,20 @@ class NewsListViewModel : ViewModel() {
         }
     }
 
-    suspend fun downloadNews() {
+    fun downloadNews() {
         Log.i("called", "webscrapper download")
-        coroutineScrope.launch {
+        val job = coroutineScrope.launch {
             WebNewsScrapper.parseNewsList("https://news.blizzard.com/${MainActivity.locale}")
             Log.i("NEWS", WebNewsScrapper.newsList.toString())
-        }.join()
-        downloaded.value = true
+            withContext(Dispatchers.Main) {
+                downloaded.value = true
+            }
+        }
+        jobs.add(job)
     }
 
     fun filterList() {
+        Log.i("WEBSCRAP NEWS SIZE", WebNewsScrapper.newsList.size.toString())
         val blizzlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.blizzNews!! && it.game.toLowerCase(Locale.ROOT).contains("blizzard|深入暴雪|블리자드 인사이드".toRegex()) }
         val wowlist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.wowNews!! && it.game.toLowerCase(Locale.ROOT).contains("warcraft|魔獸|워크 래프트".toRegex()) }
         val d3list = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.d3News!! && it.game.toLowerCase(Locale.ROOT).contains("diablo|暗黑破壞神|디아블로".toRegex()) }
@@ -61,18 +74,55 @@ class NewsListViewModel : ViewModel() {
         val hslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hsNews!! && it.game.toLowerCase(Locale.ROOT).contains("hearthstone|爐石戰記|하스스톤".toRegex()) }
         val hotslist = WebNewsScrapper.newsList.filter { GamesActivity.userNews?.hotsNews!! && it.game.toLowerCase(Locale.ROOT).contains("heroes|暴雪英霸|히어로즈 오브 더 스톰".toRegex()) }
 
-        tempList.value!!.clear()
-        tempList.value!!.addAll(blizzlist)
-        tempList.value!!.addAll(wowlist)
-        tempList.value!!.addAll(d3list)
-        tempList.value!!.addAll(sc2list)
-        tempList.value!!.addAll(owlist)
-        tempList.value!!.addAll(hslist)
-        tempList.value!!.addAll(hotslist)
-        tempList.value!!.sortBy {
+        tempList.clear()
+        tempList.addAll(blizzlist)
+        tempList.addAll(wowlist)
+        tempList.addAll(d3list)
+        tempList.addAll(sc2list)
+        tempList.addAll(owlist)
+        tempList.addAll(hslist)
+        tempList.addAll(hotslist)
+        tempList.sortBy {
             SimpleDateFormat("EEE MMM d yyyy HH:mm:ss z", Locale.ENGLISH).parse(it.timestamp)
         }
-        tempList.value!!.reverse()
-        newsList.value = tempList.value
+        tempList.reverse()
+
+        Log.i("TEMP NEWS SIZE", tempList.size.toString())
+
+        newsList.value = tempList
+        newsList.value?.add(NewsMetaData())
+
+        Log.i("NEWS SIZE", newsList.value?.size.toString())
+
+        if (!EventBus.getDefault().isRegistered(this@NewsListViewModel)) {
+            EventBus.getDefault().register(this@NewsListViewModel)
+        }
+        showMore.value = false
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloaded.value = false
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun showMoreEventClicked(moreNewsClickEvent: MoreNewsClickEvent) {
+        pageNumber++
+        Log.i("Show More", "page #${pageNumber}")
+        val job = coroutineScrope.launch {
+            WebNewsScrapper.parseMoreNews("https://news.blizzard.com/${MainActivity.locale}/blog/list?pageNum=${pageNumber}&pageSize=30&community=all")
+            Log.i("NEWS", WebNewsScrapper.newsList.toString())
+            withContext(Dispatchers.Main) {
+                showMore.value = true
+            }
+        }
+        jobs.add(job)
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun filterEventReceived(filterNewsEvent: FilterNewsEvent) {
+        filterList()
+        setupRecycler()
     }
 }
