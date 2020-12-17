@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.starcraft
+package com.BlizzardArmory.ui.starcraft.profile
 
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -30,13 +30,9 @@ import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 class SC2Fragment : Fragment() {
@@ -177,19 +173,9 @@ class SC2Fragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
     }
 
     private fun getRaceImage(imageView: ImageView, name: String) {
@@ -523,11 +509,6 @@ class SC2Fragment : Fragment() {
                             parentFragmentManager.popBackStack()
                         },
                         "retry", "back").show()
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 
     companion object {

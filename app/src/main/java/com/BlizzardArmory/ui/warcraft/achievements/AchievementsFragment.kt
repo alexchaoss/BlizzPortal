@@ -188,14 +188,19 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun setRecyclerViewToParentCategories() {
-        binding.categoriesRecycler.apply {
-            adapter = CategoriesAdapter(viewModel.getCategories().value!!.filter {
-                it.parentCategoryId == null
-            }.sortedBy {
-                it.displayOrder
-            }, MainActivity.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
-            adapter!!.notifyDataSetChanged()
+        try {
+            binding.categoriesRecycler.apply {
+                adapter = CategoriesAdapter(viewModel.getCategories().value!!.filter {
+                    it.parentCategoryId == null
+                }.sortedBy {
+                    it.displayOrder
+                }, MainActivity.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
+                adapter!!.notifyDataSetChanged()
+            }
+        } catch (e: Exception) {
+            setAchievementInformation()
         }
+
         binding.loading.visibility = View.GONE
     }
 

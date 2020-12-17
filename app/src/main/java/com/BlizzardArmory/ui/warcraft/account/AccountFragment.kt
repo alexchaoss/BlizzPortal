@@ -25,11 +25,7 @@ import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import okhttp3.internal.toImmutableList
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class AccountFragment : Fragment() {
 
@@ -71,19 +67,9 @@ class AccountFragment : Fragment() {
         })
     }
 
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
     }
 
     private fun populateRecyclerView() {
@@ -198,11 +184,6 @@ class AccountFragment : Fragment() {
                             NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
                         },
                         "retry", "back").show()
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        activity?.supportFragmentManager?.beginTransaction()?.detach(this)?.attach(this)?.commit()
     }
 
     companion object {

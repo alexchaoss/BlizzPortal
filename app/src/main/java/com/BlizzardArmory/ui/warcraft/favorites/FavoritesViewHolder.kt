@@ -44,6 +44,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private var fragmentManager: FragmentManager? = null
     private var character: FavoriteCharacter? = null
     private var downloaded = false
+    private var job: Job? = null
 
     init {
         avatar = itemView.findViewById(R.id.avatar)
@@ -54,7 +55,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         characterLayout = itemView.findViewById(R.id.character_layout)
         gson = GsonBuilder().create()
         EventBus.getDefault().register(this)
-        CoroutineScope(Dispatchers.Default).launch {
+        job = CoroutineScope(Dispatchers.Default).launch {
             do {
                 delay(3000)
                 if (!downloaded) {
@@ -63,6 +64,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             } while (!ConnectionStatus.hasNetwork())
         }
     }
+
 
     fun bind(character: FavoriteCharacter, battlenetOAuth2Params: BattlenetOAuth2Params, fragmentManager: FragmentManager) {
         this.battlenetOAuth2Params = battlenetOAuth2Params
@@ -106,6 +108,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
         Glide.with(context).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
         downloaded = true
+        job?.cancel()
     }
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {

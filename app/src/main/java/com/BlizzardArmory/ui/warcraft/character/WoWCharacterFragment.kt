@@ -24,8 +24,6 @@ import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
 import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacters
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
-import com.BlizzardArmory.model.warcraft.talents.Talents
-import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
@@ -135,7 +133,8 @@ class WoWCharacterFragment : Fragment() {
         })
 
         viewModel.getTalentsIcons().observe(viewLifecycleOwner, {
-            setTalentInformation(viewModel.getTalentsInfo().value!!, it)
+            binding.tabLayout.clearOnTabSelectedListeners()
+            setTalentInformation()
         })
 
         viewModel.getCharacterSummary().observe(viewLifecycleOwner, {
@@ -171,9 +170,7 @@ class WoWCharacterFragment : Fragment() {
 
         viewModel.getIconURLs().observe(viewLifecycleOwner, {
             val equippedItems = viewModel.getEquipment().value!!.equippedItems
-
             binding.loadingCircle.visibility = View.GONE
-            URLConstants.loading = false
             val errorIcon = ResourcesCompat.getDrawable(resources, R.drawable.error_icon, context?.theme)
             for (item in equippedItems) {
                 Glide.with(this).load(it[item.slot.type]).placeholder(R.drawable.loading_placeholder).into(gearImageView[item.slot.type]!!)
@@ -442,8 +439,9 @@ class WoWCharacterFragment : Fragment() {
         }
     }
 
-    private fun setTalentInformation(talents: Talents, talentsIcons: List<TalentsIcons>) {
-
+    private fun setTalentInformation() {
+        val talents = viewModel.getTalentsInfo().value!!
+        val talentsIcons = viewModel.getTalentsIcons().value!!
         when (talents.specializations.size) {
             4 -> {
                 binding.tabLayout.addTab(binding.tabLayout.newTab())

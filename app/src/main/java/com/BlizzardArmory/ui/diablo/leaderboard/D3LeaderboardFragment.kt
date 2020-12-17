@@ -43,11 +43,13 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         super.onDestroy()
         GamesActivity.binding.rightPanelGames.root.visibility = View.VISIBLE
         GamesActivity.binding.rightPanelD3.root.visibility = View.GONE
+        GamesActivity.binding.rightPanelSc2.root.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GamesActivity.binding.rightPanelGames.root.visibility = View.GONE
+        GamesActivity.binding.rightPanelSc2.root.visibility = View.GONE
         GamesActivity.binding.rightPanelD3.root.visibility = View.VISIBLE
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
@@ -80,7 +82,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         val textView: TextView = binding.searchView.findViewById(R.id.search_src_text)
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
-        binding.searchView.setOnQueryTextListener(this)
+
 
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
@@ -211,7 +213,11 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        (binding.leaderboardRecycler.adapter as LeaderboardAdapter).filter(newText!!)
+        try {
+            (binding.leaderboardRecycler.adapter as LeaderboardAdapter).filter(newText!!)
+        } catch (e: Exception) {
+            Log.e("Error", "Couldn't filter leaderboards")
+        }
         return false
     }
 

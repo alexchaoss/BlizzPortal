@@ -7,9 +7,12 @@ import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 class CharacterGearViewModel : BaseViewModel() {
@@ -21,6 +24,10 @@ class CharacterGearViewModel : BaseViewModel() {
     private val primaryStatsMap = mutableMapOf<Int, String>()
     private val secondaryStatsMap = mutableMapOf<Int, String>()
     private val gemsMap = mutableMapOf<Int, String>()
+
+    private var battletag = ""
+    private var selectedRegion = ""
+    private var id = 0L
 
     fun getItemsInformation(): LiveData<Items> {
         return itemsInformation
@@ -47,6 +54,9 @@ class CharacterGearViewModel : BaseViewModel() {
     }
 
     fun downloadItemInformation(battletag: String, id: Long, selectedRegion: String) {
+        this.battletag = battletag
+        this.id = id
+        this.selectedRegion = selectedRegion
         val job = coroutineScope.launch {
             val response = RetroClient.getClient().getHeroItems(battletag, id, MainActivity.locale, selectedRegion.toLowerCase(Locale.ROOT), battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
@@ -55,6 +65,9 @@ class CharacterGearViewModel : BaseViewModel() {
                     itemInformation
                     items.forEachIndexed { index, item ->
                         setItemInformation(item, index)
+                    }
+                    if (!EventBus.getDefault().isRegistered(this@CharacterGearViewModel)) {
+                        EventBus.getDefault().register(this@CharacterGearViewModel)
                     }
                     itemsInfoSetup.value = true
                 } else {
@@ -136,5 +149,11 @@ class CharacterGearViewModel : BaseViewModel() {
         primaryStatsMap[index] = primary.toString()
         secondaryStatsMap[index] = secondary.toString()
         gemsMap[index] = gem.toString()
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadItemInformation(battletag, id, selectedRegion)
     }
 }

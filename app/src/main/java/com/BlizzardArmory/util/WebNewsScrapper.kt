@@ -4,6 +4,7 @@ import android.util.Log
 import com.BlizzardArmory.model.news.NewsMetaData
 import com.BlizzardArmory.model.news.NewsPage
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 object WebNewsScrapper {
 
@@ -12,21 +13,43 @@ object WebNewsScrapper {
     fun parseNewsList(pageURL: String) {
         newsList.clear()
         Log.i("JSOUP", "URL: $pageURL")
-        Jsoup.connect(pageURL).get().run {
-            if (newsList.size < 26) {
-                select(".ArticleListItem").forEachIndexed { index, element ->
-                    val url = "https://news.blizzard.com${element.select(".ArticleLink").attr("href")}"
-                    val title = element.select(".sr-only").text()
-                    val game = element.select(".ArticleListItem-labelInner").text()
-                    val description = element.select("div.ArticleListItem-description > div.h6").text()
-                    val time = element.select(".ArticleListItem-footerTimeStamp").text()
-                    var imageURL = element.select(".ArticleListItem-image").attr("style")
-                    val timestamp = element.select(".ArticleListItem-footerTimestamp").attr("timestamp")
-                    imageURL = "https:${imageURL.substring(21, imageURL.length - 1)}"
-                    newsList.add(NewsMetaData(url, game, imageURL, title, description, time, timestamp))
-                }
-                Log.i("JSOUP", "ITEMS: ${newsList.size}")
+        Jsoup.connect(pageURL).ignoreContentType(true).get().run {
+            extractHtml()
+            Log.i("JSOUP", "ITEMS: ${newsList.size}")
+        }
+    }
+
+    fun parseMoreNews(pageURL: String) {
+        Jsoup.connect(pageURL).ignoreContentType(true).get().run {
+            var html = this.select("body").html()
+                    .replace("\\&quot;", "")
+                    .replace("flush-top\"", "flush-top")
+                    .replace("articlelistitem-labelinner\\", "Articlelistitem-labelinner")
+                    .replace("""timestamp="[a-zA-Z]{3}"""".toRegex()) { it.value.substring(0, it.value.length - 1) }
+                    .replace("""timestamp="[a-zA-Z]{3}.+\\""".toRegex()) { it.value.substring(0, it.value.length - 1) }
+            html = html.substring(10, html.length - 3)
+            Log.i("JSOUP", html)
+            Jsoup.parse(html).run {
+                extractHtml()
             }
+            newsList.forEach {
+                Log.i("TEST DATA", it.game)
+            }
+            Log.i("JSOUP", "ITEMS: ${newsList.size}")
+        }
+    }
+
+    private fun Document.extractHtml() {
+        select(".ArticleListItem").forEachIndexed { index, element ->
+            val url = "https://news.blizzard.com${element.select(".ArticleLink").attr("href")}"
+            val title = element.select(".sr-only").text()
+            val game = element.select(".ArticleListItem-labelInner").text()
+            val description = element.select("div.ArticleListItem-description > div.h6").text()
+            val time = element.select(".ArticleListItem-footerTimeStamp").text()
+            var imageURL = element.select(".ArticleListItem-image").attr("style")
+            val timestamp = element.select(".ArticleListItem-footerTimestamp").attr("timestamp")
+            imageURL = "https:${imageURL.substring(21, imageURL.length - 1)}"
+            newsList.add(NewsMetaData(url, game, imageURL, title, description, time, timestamp))
         }
     }
 

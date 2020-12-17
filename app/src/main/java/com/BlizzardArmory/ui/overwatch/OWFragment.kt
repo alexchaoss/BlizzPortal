@@ -216,10 +216,12 @@ class OWFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner!!.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                (view as TextView).setTextColor(Color.parseColor("#CCCCCC"))
-                view.textSize = 15f
-                view.gravity = Gravity.CENTER_VERTICAL
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (view != null) {
+                    (view as TextView).setTextColor(Color.parseColor("#CCCCCC"))
+                    view.textSize = 15f
+                    view.gravity = Gravity.CENTER_VERTICAL
+                }
                 if (viewModel.getCompToggle().value!!) {
                     viewModel.sortList(viewModel.getTopHeroesCompetitive().value, viewModel.getSortList()[position])
                     binding.topHeroRecycler.adapter = OWProgressAdapter(viewModel.getTopHeroesCompetitive().value!!, requireActivity(), viewModel.getSortList()[position])
@@ -251,10 +253,12 @@ class OWFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner!!.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                (view as TextView).setTextColor(Color.parseColor("#CCCCCC"))
-                view.textSize = 15f
-                view.gravity = Gravity.CENTER_VERTICAL
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (view != null) {
+                    (view as TextView).setTextColor(Color.parseColor("#CCCCCC"))
+                    view.textSize = 15f
+                    view.gravity = Gravity.CENTER_VERTICAL
+                }
                 if (viewModel.getCompToggle().value!!) {
                     setCareerStats(position, viewModel.getCareerCompetitive().value!!)
                 } else {
@@ -477,10 +481,10 @@ class OWFragment : Fragment() {
                         }, "retry", "back").show()
     }
 
-    companion object{
-        fun addOnBackPressCallback(activity: GamesActivity){
-            activity.onBackPressedDispatcher.addCallback{
-                if(!URLConstants.loading) {
+    companion object {
+        fun addOnBackPressCallback(activity: GamesActivity) {
+            activity.onBackPressedDispatcher.addCallback {
+                if (!URLConstants.loading) {
                     GamesActivity.hideFavoriteButton()
                     if (activity.supportFragmentManager.findFragmentByTag("owfavorites") != null) {
                         OWFavoritesFragment.addOnBackPressCallback(activity)

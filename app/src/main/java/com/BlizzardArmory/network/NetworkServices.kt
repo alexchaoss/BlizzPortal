@@ -9,6 +9,8 @@ import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
 import com.BlizzardArmory.model.diablo.item.SingleItem
 import com.BlizzardArmory.model.diablo.items.Items
 import com.BlizzardArmory.model.starcraft.Player
+import com.BlizzardArmory.model.starcraft.leaderboard.LadderTeam
+import com.BlizzardArmory.model.starcraft.league.League
 import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.model.warcraft.account.Account
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
@@ -225,6 +227,16 @@ interface NetworkServices {
                               @Query("locale") locale: String?,
                               @Query("region") region: String?,
                               @Query("token") accessToken: String?): Response<Profile>
+
+    @GET(" sc2/legacy/ladder/{regionId}/{ladderId}")
+    suspend fun getSc2LadderLeaderboard(@Path("regionId") regionId: Int,
+                                        @Path("ladderId") ladderId: Int): Response<LadderTeam>
+
+    @GET("data/sc2/league/{seasonId}/{queueId}/{teamType}/{leagueId}")
+    suspend fun getSc2League(@Path("seasonId") seasonId: Int,
+                             @Path("queueId") queueId: Int,
+                             @Path("teamType") teamType: Int,
+                             @Path("leagueId") leagueId: Int): Response<League>
 
     //Overwatch endpoint
     @GET

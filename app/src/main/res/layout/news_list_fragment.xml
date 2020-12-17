@@ -6,7 +6,8 @@
     android:background="@color/colorPrimary"
     android:paddingStart="15dp"
     android:paddingTop="10dp"
-    android:paddingEnd="15dp">
+    android:paddingEnd="15dp"
+    android:paddingBottom="10dp">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -37,6 +38,7 @@
             android:textColor="#FFF"
             android:textSize="20sp" />
 
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe"
             android:layout_width="match_parent"
@@ -47,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     </LinearLayout>
 
     <ImageView
@@ -55,6 +58,7 @@
         android:layout_height="50dp"
         android:src="@drawable/ic_baseline_arrow_circle_up_24"
         android:visibility="gone"
+        android:layout_marginBottom="35dp"
         app:layout_constraintBottom_toBottomOf="@id/container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

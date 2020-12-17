@@ -11,9 +11,12 @@ import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 class ReputationsViewModel : BaseViewModel() {
@@ -69,12 +72,18 @@ class ReputationsViewModel : BaseViewModel() {
                     errorCode.value = response.code()
                 }
             }
+            if (!EventBus.getDefault().isRegistered(this@ReputationsViewModel)) {
+                EventBus.getDefault().register(this@ReputationsViewModel)
+            }
         }
         jobs.add(job)
     }
 
 
     private fun sortRepsByExpansions(reputation: Reputation) {
+        repsByExpac.forEach {
+            it.clear()
+        }
         for (reps in reputation.reputations) {
             for (enumRep in RepByExpansion.values()) {
                 if (reps.faction.id == enumRep.id) {
@@ -92,5 +101,11 @@ class ReputationsViewModel : BaseViewModel() {
                 }
             }
         }
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadReputationsPlusParentInfo()
     }
 }

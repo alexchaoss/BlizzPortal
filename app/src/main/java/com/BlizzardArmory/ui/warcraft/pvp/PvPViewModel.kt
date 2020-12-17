@@ -10,9 +10,12 @@ import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 class PvPViewModel : BaseViewModel() {
@@ -134,8 +137,20 @@ class PvPViewModel : BaseViewModel() {
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
+                if (!EventBus.getDefault().isRegistered(this@PvPViewModel)) {
+                    EventBus.getDefault().register(this@PvPViewModel)
+                }
             }
         }
         jobs.add(job)
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        download2v2Info()
+        download3v3Info()
+        downloadRBGInfo()
+        downloadPvPSummary()
     }
 }

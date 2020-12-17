@@ -102,7 +102,7 @@ class PvPFragment : Fragment(){
         })
 
         viewModel.getTier2v2().observe(viewLifecycleOwner, {
-            setTierImage(binding.tierimage3v3, it)
+            setTierImage(binding.tierimage2v2, it)
             showBracketInformationOnTouch(binding.layout2v2, it, viewModel.pvp2v2)
         })
 
@@ -112,7 +112,7 @@ class PvPFragment : Fragment(){
         })
 
         viewModel.getTierRBG().observe(viewLifecycleOwner, {
-            setTierImage(binding.tierimage3v3, it)
+            setTierImage(binding.tierimagerbg, it)
             showBracketInformationOnTouch(binding.layoutrbg, it, viewModel.pvpRBG)
         })
 

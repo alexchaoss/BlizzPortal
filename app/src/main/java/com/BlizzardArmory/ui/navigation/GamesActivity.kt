@@ -27,7 +27,8 @@ import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.settings.SettingsFragment
-import com.BlizzardArmory.ui.starcraft.SC2Fragment
+import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
+import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
@@ -70,7 +71,6 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             handleUncaughtException(thread, throwable)
         }
-
         barBinding = GamesActivityBarBinding.inflate(layoutInflater)
         binding = GamesActivityBinding.inflate(layoutInflater)
         val view = binding.root
@@ -118,6 +118,7 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.starcraft_2), R.drawable.sc2_icon, false))
         menuList.add(MenuItem(false, resources.getString(R.string.starcraft_2), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.starcraft_2), resources.getString(R.string.leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.overwatch), R.drawable.overwatch_icon, false))
         menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
@@ -235,18 +236,20 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
-        viewModel.getRealms()
-        when (localeSelectedEvent.locale) {
-            "en_US" -> setLanguage("en")
-            "es_ES" -> setLanguage("es")
-            "fr_FR" -> setLanguage("fr")
-            "ru_RU" -> setLanguage("ru")
-            "de_DE" -> setLanguage("de")
-            "pt_BR" -> setLanguage("pt")
-            "it_IT" -> setLanguage("it")
-            "ko_KR" -> setLanguage("ko")
-            "zh_CN" -> setLanguage("zh", "CN")
-            "zh_TW" -> setLanguage("zh", "TW")
+        if (!localeSelectedEvent.locale.contains((getCurrentLanguage().language + "_" + getCurrentLanguage().country))) {
+            viewModel.getRealms()
+            when (localeSelectedEvent.locale) {
+                "en_US" -> setLanguage("en")
+                "es_ES" -> setLanguage("es")
+                "fr_FR" -> setLanguage("fr")
+                "ru_RU" -> setLanguage("ru")
+                "de_DE" -> setLanguage("de")
+                "pt_BR" -> setLanguage("pt")
+                "it_IT" -> setLanguage("it")
+                "ko_KR" -> setLanguage("ko")
+                "zh_CN" -> setLanguage("zh", "CN")
+                "zh_TW" -> setLanguage("zh", "TW")
+            }
         }
     }
 
@@ -464,12 +467,22 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.leaderboards) -> {
-                if (supportFragmentManager.findFragmentByTag("d3leaderboard") == null) {
-                    favorite!!.visibility = View.GONE
-                    fragment = D3LeaderboardFragment()
-                    resetBackStack()
-                    supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "d3leaderboard").addToBackStack("d3_leaderboard").commit()
-                    supportFragmentManager.executePendingTransactions()
+                resetBackStack()
+                when (menuItem.menuItem.parent) {
+                    resources.getString(R.string.diablo_3) -> {
+                        favorite!!.visibility = View.GONE
+                        fragment = D3LeaderboardFragment()
+                        resetBackStack()
+                        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "d3leaderboard").addToBackStack("d3_leaderboard").commit()
+                        supportFragmentManager.executePendingTransactions()
+                    }
+                    resources.getString(R.string.starcraft_2) -> {
+                        favorite!!.visibility = View.GONE
+                        fragment = SC2LeaderboardFragment()
+                        resetBackStack()
+                        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "sc2leaderboard").addToBackStack("sc2_leaderboard").commit()
+                        supportFragmentManager.executePendingTransactions()
+                    }
                 }
                 binding.overlappingPanel.closePanels()
             }
@@ -573,8 +586,7 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
 
     override fun onGestureRegionsUpdate(gestureRegions: List<Rect>) {
         for (rect in gestureRegions) {
-            rect.set(rect.left + 250, rect.top, rect.right - 250, rect.bottom)
-            Log.i("RECT SIZE", "left ${rect.left} top ${rect.top} right ${rect.right} bottom ${rect.bottom}")
+            rect.set(215, rect.top, 865, rect.bottom)
         }
         binding.overlappingPanel.setChildGestureRegions(gestureRegions)
     }

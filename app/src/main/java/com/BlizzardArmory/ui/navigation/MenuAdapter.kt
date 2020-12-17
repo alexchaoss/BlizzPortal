@@ -32,7 +32,7 @@ class MenuAdapter(private val list: ArrayList<MenuItem>, private val context: Co
             EventBus.getDefault().post(MenuItemClickEvent(menuItem, position))
         }
         when (holder.itemViewType) {
-            0 -> (holder as MenuHeaderViewHolder).bind(menuItem)
+            0 -> (holder as MenuHeaderViewHolder).bind(menuItem, position)
             1 -> (holder as MenuSubViewHolder).bind(menuItem)
         }
     }
@@ -40,6 +40,8 @@ class MenuAdapter(private val list: ArrayList<MenuItem>, private val context: Co
     override fun getItemCount(): Int = list.size
 
     fun hideSubMenu(item: MenuItem) {
+        val first = list.indexOfFirst { it.parent == item.title }
+        val itemCount = list.filter { it.parent == item.title }.size
         if (list.any { it.parent == item.title }) {
             list.removeAll {
                 val contains = it.parent == item.title
@@ -48,7 +50,7 @@ class MenuAdapter(private val list: ArrayList<MenuItem>, private val context: Co
                 }
                 contains
             }
-            notifyDataSetChanged()
+            notifyItemRangeRemoved(first, itemCount)
         }
     }
 
@@ -57,7 +59,9 @@ class MenuAdapter(private val list: ArrayList<MenuItem>, private val context: Co
         hiddenItems.removeAll {
             it.parent == item.title
         }
-        notifyDataSetChanged()
+        val first = list.indexOfFirst { it.parent == item.title }
+        val itemCount = list.filter { it.parent == item.title }.size
+        notifyItemRangeInserted(first, itemCount)
     }
 
 }
