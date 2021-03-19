@@ -31,6 +31,7 @@ import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
@@ -84,7 +85,8 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
 
         errorMessage = ErrorMessages(this.resources)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        viewModel.getBnetParams().value = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value =
+            this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         openFirstTimeNewsDialog()
         getUserNewsPreferences()
@@ -92,6 +94,8 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         if (supportFragmentManager.backStackEntryCount == 0) {
             openNewsFragment()
         }
+
+        viewModel.initWoWServer()
 
         setNavigation()
 
@@ -110,6 +114,7 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         menuList.add(MenuItem(true, "", resources.getString(R.string.home), R.drawable.ic_baseline_home_24, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.world_of_warcraft), R.drawable.wow_icon, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.raid_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_character), R.drawable.rep_search, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.diablo_3), R.drawable.diablo3_icon, false))
@@ -478,16 +483,30 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
                         favorite!!.visibility = View.GONE
                         fragment = SC2LeaderboardFragment()
                         resetBackStack()
-                        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "sc2leaderboard").addToBackStack("sc2_leaderboard").commit()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment, fragment, "sc2leaderboard")
+                            .addToBackStack("sc2_leaderboard").commit()
                         supportFragmentManager.executePendingTransactions()
                     }
                 }
                 binding.overlappingPanel.closePanels()
             }
+            resources.getString(R.string.raid_leaderboards) -> {
+                favorite!!.visibility = View.GONE
+                fragment = MRaidLeaderboardsFragment()
+                resetBackStack()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment, fragment, "mraidleaderboard")
+                    .addToBackStack("mraid_leaderboard").commit()
+                supportFragmentManager.executePendingTransactions()
+                binding.overlappingPanel.closePanels()
+            }
             resources.getString(R.string.settingsTitle) -> {
                 favorite!!.visibility = View.GONE
                 fragment = SettingsFragment()
-                supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings").commit()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings")
+                    .commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
             }

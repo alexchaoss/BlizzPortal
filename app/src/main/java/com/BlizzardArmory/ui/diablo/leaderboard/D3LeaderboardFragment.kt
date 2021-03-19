@@ -78,11 +78,11 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
         setSearchButton()
 
+        binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
         val textView: TextView = binding.searchView.findViewById(R.id.search_src_text)
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
-
 
         URLConstants.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
@@ -214,6 +214,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         try {
+            Log.i("TEST", "TEST")
             (binding.leaderboardRecycler.adapter as LeaderboardAdapter).filter(newText!!)
         } catch (e: Exception) {
             Log.e("Error", "Couldn't filter leaderboards")

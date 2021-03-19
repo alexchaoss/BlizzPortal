@@ -24,7 +24,8 @@ class LeaderboardAdapter(private val list: List<List<LadderMembers>>, private va
 
     override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
         val team: List<LadderMembers> = fullLeaderboardList[position]
-        holder.bind(team, playerRank + position)
+        holder.bind(team, playerRank +
+                list.indexOfFirst { Triple(it[0].joinTimestamp, it[0].wins, it[0].losses) == Triple(team[0].joinTimestamp, team[0].wins, team[0].losses) })
     }
 
     override fun getItemCount(): Int = fullLeaderboardList.size
@@ -35,8 +36,8 @@ class LeaderboardAdapter(private val list: List<List<LadderMembers>>, private va
         if (constraint.toLowerCase(Locale.ROOT).isEmpty()) {
             fullLeaderboardList.addAll(list)
         } else {
-            if (constraint.toIntOrNull() != null && constraint.toInt() < list.size - 1) {
-                fullLeaderboardList.add(list[constraint.toInt() - 1])
+            if (constraint.toIntOrNull() != null && constraint.toInt() <= list.size + playerRank) {
+                fullLeaderboardList.add(list[constraint.toInt() - playerRank])
             } else {
                 searchWithConstraint(constraint) { data, const ->
                     return@searchWithConstraint data.contains(const)

@@ -5,25 +5,26 @@ buildscript {
         kotlin_version = '1.4.21'
     }
     repositories {
+        mavenCentral()
         google()
-        jcenter()
         maven { url 'https://jitpack.io' }
+        jcenter()
     }
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.0'
-        classpath 'com.android.tools.build:gradle:4.2.0-beta04'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.1'
+        classpath 'com.android.tools.build:gradle:4.2.0-beta06'
         classpath 'com.google.gms:google-services:4.3.5'
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
-        classpath("de.mannodermaus.gradle.plugins:android-junit5:1.6.0.0")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31"
     }
 }
 
 allprojects {
     repositories {
+        mavenCentral()
         google()
-        jcenter()
         maven { url 'https://jitpack.io' }
+        jcenter()
     }
 }
 

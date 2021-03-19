@@ -5,6 +5,7 @@ import com.BlizzardArmory.network.oauth.TokenResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface GeneralNetworkServices {
 
@@ -15,10 +16,12 @@ interface GeneralNetworkServices {
         @Query("redirect_uri") redirectUri: String?
     ): Response<TokenResponse>
 
-    //User information
     @GET("oauth/userinfo")
     suspend fun getUserInfo(
         @Query("token") accessToken: String?,
         @Query("region") region: String?
     ): Response<UserInformation>
+
+    @GET
+    suspend fun initWoWServer(@Url url: String?): Response<String>
 }

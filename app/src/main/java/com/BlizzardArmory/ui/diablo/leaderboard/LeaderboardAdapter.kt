@@ -35,12 +35,9 @@ class LeaderboardAdapter(private val list: List<Row>, private val region: String
         if (constraint.toLowerCase(Locale.ROOT).isEmpty()) {
             fullLeaderboardList.addAll(list)
         } else {
-            if (constraint.toIntOrNull() != null && constraint.toInt() < list.size - 1) {
+            if (constraint.toIntOrNull() != null && constraint.toInt() <= list.size) {
                 fullLeaderboardList.add(list[constraint.toInt() - 1])
             } else {
-                //val dataList = list.flatMap { it.player.flatMap { it.data }.map {  it.string }.filter { it != null && it.contains(constraint) }}
-                //fullLeaderboardList.addAll( list.filter { data -> dataList.any { data.player.flatMap { it.data }.map { it.string }.contains(it) } } )
-
                 if (constraint == "m" || constraint == "f") {
                     searchWithConstraint(constraint) { data, const ->
                         return@searchWithConstraint data == const

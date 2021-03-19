@@ -85,10 +85,10 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
         CoroutineScope(Dispatchers.IO).launch {
             val response = RetroClient.getWoWClient().getMedia(
-                character?.characterSummary?.name?.toLowerCase(Locale.ROOT),
-                character?.characterSummary?.realm?.slug,
+                character?.characterSummary?.name?.toLowerCase(Locale.ROOT)!!,
+                character?.characterSummary?.realm?.slug!!,
                 MainActivity.locale,
-                character?.region?.toLowerCase(Locale.ROOT),
+                character?.region?.toLowerCase(Locale.ROOT)!!,
                 bnOAuth2Helper.accessToken
             )
             withContext(Dispatchers.Main) {

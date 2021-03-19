@@ -2,13 +2,13 @@ package com.BlizzardArmory.network
 
 import com.BlizzardArmory.BlizzardArmory
 import com.BlizzardArmory.network.services.*
+import com.BlizzardArmory.util.ConnectionStatus
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -26,12 +26,22 @@ object RetroClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .cache(
                 Cache(
-                    directory = File(BlizzardArmory.instance?.cacheDir, "http_cache"),
+                    directory = BlizzardArmory.instance?.cacheDir!!,
                     maxSize = 60 * 1024 * 1024
                 )
             )
-            .addInterceptor(RewriteRequestInterceptor())
-            .addNetworkInterceptor(RewriteResponseCacheControlInterceptor())
+            .addInterceptor { chain ->
+                var request = chain.request()
+                request = if (ConnectionStatus.hasNetwork()) {
+                    request.newBuilder().header("Cache-Control", "public, max-age=" + 60).build()
+                } else {
+                    request.newBuilder().header(
+                        "Cache-Control",
+                        "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7
+                    ).build()
+                }
+                chain.proceed(request)
+            }
             .addInterceptor(interceptor)
             .build()
 

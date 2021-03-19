@@ -74,6 +74,8 @@ object URLConstants {
      */
     const val WOW_ASSETS = "https://alexchaoss.github.io/BnetAuthorize/img/wow/image.jpg"
 
+    const val WOW_SERVER = "https://blizzard-armory-server.herokuapp.com/"
+
     /**
      * Gets base url for user information.
      *

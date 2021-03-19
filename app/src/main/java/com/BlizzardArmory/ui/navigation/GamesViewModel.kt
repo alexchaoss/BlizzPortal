@@ -7,6 +7,7 @@ import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.network.RetroClient
+import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.main.MainActivity
 import com.discord.panels.PanelState
@@ -80,6 +81,15 @@ class GamesViewModel : BaseViewModel() {
             }
         }
         jobs.add(job)
+    }
+
+    fun initWoWServer() {
+        val job = coroutineScope.launch {
+            val response = RetroClient.getGeneralClient().initWoWServer(URLConstants.WOW_SERVER)
+            withContext(Dispatchers.Main) {
+                Log.i("init wow server", response.message())
+            }
+        }
     }
 
     fun getRealms() {

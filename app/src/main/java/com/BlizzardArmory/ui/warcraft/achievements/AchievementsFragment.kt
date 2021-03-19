@@ -33,7 +33,7 @@ private const val MEDIA = "media"
 private const val REGION = "region"
 
 
-class CategoriesFragment : Fragment() {
+class AchievementsFragment : Fragment() {
 
     private var media: String? = null
 

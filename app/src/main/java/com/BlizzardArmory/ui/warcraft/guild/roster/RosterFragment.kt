@@ -1,0 +1,90 @@
+package com.BlizzardArmory.ui.warcraft.guild.roster
+
+
+import android.graphics.Color
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.BlizzardArmory.R
+import com.BlizzardArmory.databinding.WowGuildRosterBinding
+import com.BlizzardArmory.model.warcraft.guild.roster.Members
+import com.BlizzardArmory.network.oauth.BattlenetConstants
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+
+
+class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
+
+    private var _binding: WowGuildRosterBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: RosterViewModel by viewModels()
+
+    private var realm: String? = null
+    private var guildName: String? = null
+    private var region: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = WowGuildRosterBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bundle = requireArguments()
+        realm = bundle.getString("realm")
+        guildName = bundle.getString("guildName")
+        region = bundle.getString("region")
+
+        binding.searchView.setOnQueryTextListener(this)
+        binding.searchView.queryHint = "Search.."
+        val textView: TextView = binding.searchView.findViewById(R.id.search_src_text)
+        textView.setTextColor(Color.parseColor("#ffffff"))
+        textView.setHintTextColor(Color.parseColor("#ffffff"))
+
+        setObservers()
+        viewModel.getBnetParams().value =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+
+    }
+
+    private fun setObservers() {
+        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
+            viewModel.downloadGuildRoster(realm!!, guildName!!, region!!)
+        })
+
+        viewModel.getGuildRoster().observe(viewLifecycleOwner, {
+            binding.rosterRecyclerview.apply {
+                adapter =
+                    RosterAdapter(it.members.sortedWith(compareBy<Members> { it.rank }.thenByDescending { it.character.level }))
+            }
+        })
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        try {
+            (binding.rosterRecyclerview.adapter as RosterAdapter).filter(newText!!)
+        } catch (e: Exception) {
+            Log.e("Error", "Couldn't filter leaderboards")
+        }
+        return false
+    }
+}

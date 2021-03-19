@@ -67,7 +67,7 @@ class AchievementViewModel : BaseViewModel() {
                 realm,
                 MainActivity.locale,
                 region,
-                battlenetOAuth2Helper?.accessToken
+                battlenetOAuth2Helper?.accessToken!!
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -88,6 +88,9 @@ class AchievementViewModel : BaseViewModel() {
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     categories.value = response.body()
+                    val tempCats = categories.value?.filter { it.id != 15076L }
+                    categories.value?.clear()
+                    categories.value?.addAll(tempCats!!)
                     createAchievementsMap()
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")

@@ -87,6 +87,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         setTeamTypeButtons()
         setSearchButton()
 
+        binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
         val textView: TextView = binding.searchView.findViewById(R.id.search_src_text)
         textView.setTextColor(Color.parseColor("#ffffff"))
@@ -342,7 +343,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         try {
             (binding.leaderboardRecycler.adapter as LeaderboardAdapter).filter(newText!!)
         } catch (e: Exception) {
-            Log.e("Error", "Couldn't filter leaderboards")
+            Log.e("Error", "Couldn't filter leaderboards", e)
         }
         return false
     }

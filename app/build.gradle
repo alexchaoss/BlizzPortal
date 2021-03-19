@@ -14,8 +14,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 105
-        versionName "4.5"
+        versionCode 106
+        versionName "4.6"
         multiDexEnabled true
     }
     buildTypes {
@@ -43,8 +43,10 @@ android {
 
 buildscript {
     repositories {
-        jcenter()
+        maven { url "https://jitpack.io" }
+        mavenCentral()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.2'
@@ -54,20 +56,20 @@ buildscript {
 dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
     
-    implementation 'com.google.firebase:firebase-database:19.6.0'
+    implementation 'com.google.firebase:firebase-database:19.7.0'
     implementation 'com.google.firebase:firebase-analytics:18.0.2'
-    implementation 'com.google.firebase:firebase-auth:20.0.2'
+    implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'com.google.firebase:firebase-analytics:18.0.2'
-    implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.4.0'
 
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "androidx.preference:preference-ktx:1.1.1"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.3"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.4'
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.4"
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -75,19 +77,18 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
     implementation 'com.github.discord:OverlappingPanels:0.1.1'
 
-    implementation "com.google.android.play:core:1.9.1"
+    implementation "com.google.android.play:core:1.10.0"
 
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.21"
-    implementation 'androidx.fragment:fragment-ktx:1.3.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
+    implementation 'androidx.fragment:fragment-ktx:1.3.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha08"
 
     implementation ("com.github.bumptech.glide:glide:4.11.0")
 
@@ -99,7 +100,7 @@ dependencies {
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
     implementation "io.reactivex.rxjava3:rxjava:3.0.8"
 
-    implementation 'com.akexorcist:localization:1.2.6'
+    implementation 'com.github.akexorcist:Android-LocalizationActivity:1.2.7'
 
     implementation('com.google.apis:google-api-services-oauth2:v2-rev99-1.21.0') {
         exclude module: 'httpclient' //by artifact name

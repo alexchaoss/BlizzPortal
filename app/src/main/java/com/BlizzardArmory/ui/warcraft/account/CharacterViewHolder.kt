@@ -84,8 +84,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
         CoroutineScope(Dispatchers.IO).launch {
             val response = RetroClient.getWoWClient().getMedia(
-                character?.name?.toLowerCase(Locale.ROOT),
-                character?.realm?.slug,
+                character?.name?.toLowerCase(Locale.ROOT)!!,
+                character?.realm?.slug!!,
                 MainActivity.locale,
                 MainActivity.selectedRegion.toLowerCase(Locale.ROOT),
                 bnOAuth2Helper.accessToken

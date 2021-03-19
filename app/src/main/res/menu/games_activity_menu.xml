@@ -14,6 +14,7 @@
             android:id="@+id/wow_button"
             android:icon="@drawable/wow_icon"
             android:title="@string/world_of_warcraft" />
+
         <item
             android:id="@+id/wow_search"
             android:title=""
