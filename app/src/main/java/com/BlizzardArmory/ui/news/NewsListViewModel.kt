@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.news.NewsMetaData
+import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.WebNewsScrapper
 import com.BlizzardArmory.util.events.FilterNewsEvent
@@ -52,7 +52,7 @@ class NewsListViewModel : BaseViewModel() {
 
     fun downloadNews() {
         val job = coroutineScope.launch {
-            WebNewsScrapper.parseNewsList("https://news.blizzard.com/${MainActivity.locale}")
+            WebNewsScrapper.parseNewsList("https://news.blizzard.com/${URLConstants.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
             Log.i("NEWS", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 downloaded.value = true
@@ -82,6 +82,7 @@ class NewsListViewModel : BaseViewModel() {
             SimpleDateFormat("EEE MMM d yyyy HH:mm:ss z", Locale.ENGLISH).parse(it.timestamp)
         }
         tempList.reverse()
+        tempList.distinctBy { Triple(it.title, it.timestamp, it.url) }
 
         newsList.value = tempList
         newsList.value?.add(NewsMetaData())
@@ -102,7 +103,8 @@ class NewsListViewModel : BaseViewModel() {
     public fun showMoreEventClicked(moreNewsClickEvent: MoreNewsClickEvent) {
         pageNumber++
         val job = coroutineScope.launch {
-            WebNewsScrapper.parseMoreNews("https://news.blizzard.com/${MainActivity.locale}/blog/list?pageNum=${pageNumber}&pageSize=30&community=all")
+            WebNewsScrapper.parseMoreNews("https://news.blizzard.com/${URLConstants.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
+            Log.i("TEST", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 showMore.value = true
                 EventBus.getDefault().post(LoadNewsEvent())

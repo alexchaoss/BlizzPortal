@@ -5,9 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
+import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayout
@@ -95,14 +99,30 @@ class WoWNavFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
-            AccountFragment.addOnBackPressCallback(activity as GamesActivity)
-            activity?.supportFragmentManager?.popBackStack()
+            GamesActivity.hideFavoriteButton()
+            when {
+                activity?.supportFragmentManager?.findFragmentByTag("guild_nav_fragment") != null -> {
+                    ActivityFragment.addOnBackPressCallback(activity as GamesActivity)
+                }
+                activity?.supportFragmentManager?.findFragmentByTag("wowfragment") != null -> {
+                    AccountFragment.addOnBackPressCallback(activity as GamesActivity)
+                    activity?.supportFragmentManager?.popBackStack()
+                }
+                activity?.supportFragmentManager?.findFragmentByTag("wowfavorites") != null -> {
+                    WoWFavoritesFragment.addOnBackPressCallback(activity as GamesActivity)
+                    activity?.supportFragmentManager?.popBackStack()
+                }
+                else -> {
+                    NewsListFragment.addOnBackPressCallback(activity as GamesActivity)
+                    activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+            }
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(character: String, realm: String, media: String, region: String) =
+        fun newInstance(character: String, realm: String, media: String?, region: String) =
             WoWNavFragment().apply {
                 arguments = Bundle().apply {
                     putString(CHARACTER, character)

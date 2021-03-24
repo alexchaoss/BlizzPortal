@@ -6,7 +6,6 @@ import com.BlizzardArmory.model.warcraft.mythicraid.Entries
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,8 +28,8 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
             val job1 = coroutineScope.launch {
                 val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                     parseRaidName(raid), "horde",
-                    "dynamic-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale,
-                    MainActivity.selectedRegion.toLowerCase(Locale.ROOT)
+                    "dynamic-" + URLConstants.region, URLConstants.locale,
+                    URLConstants.region
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
@@ -48,8 +47,8 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
             val job2 = coroutineScope.launch {
                 val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                     parseRaidName(raid), "alliance",
-                    "dynamic-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale,
-                    MainActivity.selectedRegion.toLowerCase(Locale.ROOT)
+                    "dynamic-" + URLConstants.region, URLConstants.locale,
+                    URLConstants.region
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
@@ -76,8 +75,8 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                 parseRaidName(raid), faction.toLowerCase(Locale.ROOT),
-                "dynamic-" + MainActivity.selectedRegion.toLowerCase(Locale.ROOT), MainActivity.locale,
-                MainActivity.selectedRegion.toLowerCase(Locale.ROOT)
+                "dynamic-" + URLConstants.region, URLConstants.locale,
+                URLConstants.region
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

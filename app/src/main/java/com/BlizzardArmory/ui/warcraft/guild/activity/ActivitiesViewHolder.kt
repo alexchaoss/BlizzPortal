@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.guild.activity
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,7 +12,7 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
-class ActivitiesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
+class ActivitiesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_activity_list, parent, false)) {
 
     var info: TextView? = null
@@ -29,7 +30,7 @@ class ActivitiesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
             activityInfo += "${activity.encounterCompleted.mode.name} ${activity.encounterCompleted.encounter.name} was defeated on $date"
         } else {
             activityInfo += "<font color=#ffffff>${activity.characterAchievement.character.name}</font>"
-            activityInfo += " has completed "
+            activityInfo += context.resources.getString(R.string.hascompleted)
             activityInfo += "<font color=#f8b700>${activity.characterAchievement.achievement.name}</font>"
             activityInfo += " on $date"
         }

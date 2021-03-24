@@ -103,4 +103,9 @@
     <string name="covenant">ковенантами</string>
     <string name="account">Счет</string>
     <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="search_guild">Искать в гильдии</string>
+    <string name="guild_not_found">Гильдию найти не удалось</string>
+    <string name="guild_not_found_message">Не удалось найти гильдию по введенной информации</string>
+    <string name="hascompleted">" завершил "</string>
+    <string name="recent_activity">Недавняя активность</string>
 </resources>

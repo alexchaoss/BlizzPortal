@@ -44,7 +44,7 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 bundle.putString("region", guild.region)
                 fragment.arguments = bundle
                 context.supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment, fragment, "NAV_FRAGMENT").addToBackStack("wow_guild")
+                    .add(R.id.fragment, fragment, "guild_nav_fragment").addToBackStack("wow_guild")
                     .commit()
                 context.supportFragmentManager.executePendingTransactions()
             } else {

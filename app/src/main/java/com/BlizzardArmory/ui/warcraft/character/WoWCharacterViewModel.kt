@@ -16,7 +16,6 @@ import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,7 +76,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getCharacter(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -101,7 +100,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getSpecs(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -121,7 +120,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getTalentsWithIcon(
                 URLConstants.getTalentsIcons(
                     characterSummary.value!!.characterClass.id,
-                    MainActivity.locale
+                    URLConstants.locale
                 )
             )
             withContext(Dispatchers.Main) {
@@ -140,7 +139,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getStats(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -160,7 +159,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getEquippedItems(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -180,7 +179,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getMedia(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -207,7 +206,7 @@ class WoWCharacterViewModel : BaseViewModel() {
 
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicEquipmentMedia(url, MainActivity.locale, region.toLowerCase(Locale.ROOT))
+                .getDynamicEquipmentMedia(url, URLConstants.locale, region.toLowerCase(Locale.ROOT))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val mediaItem = response.body()!!

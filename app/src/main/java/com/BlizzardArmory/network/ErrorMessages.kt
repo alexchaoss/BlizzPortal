@@ -44,6 +44,13 @@ class ErrorMessages(resources: Resources) {
     val ACCOUNT_NOT_FOUND = resources.getString(R.string.account_not_found)
 
     /**
+     * The constant ACCOUNT_NOT_FOUND.
+     */
+    val GUILD_NOT_FOUND = resources.getString(R.string.guild_not_found)
+
+    val GUILD_NOT_FOUND_MESSAGE = resources.getString(R.string.guild_not_found_message)
+
+    /**
      * The constant OW_ACCOUNT_NOT_FOUND.
      */
     val OW_ACCOUNT_NOT_FOUND = resources.getString(R.string.ow_account_not_found)

@@ -16,7 +16,6 @@ import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -86,8 +85,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val response = RetroClient.getWoWClient().getMedia(
                 character?.name?.toLowerCase(Locale.ROOT)!!,
                 character?.realm?.slug!!,
-                MainActivity.locale,
-                MainActivity.selectedRegion.toLowerCase(Locale.ROOT),
+                URLConstants.locale,
+                URLConstants.region,
                 bnOAuth2Helper.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -117,7 +116,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {
         characterLayout?.setOnClickListener {
-            val woWNavFragment = WoWNavFragment.newInstance(character.name.toLowerCase(Locale.ROOT), character.realm.slug, media, MainActivity.selectedRegion)
+            val woWNavFragment =
+                WoWNavFragment.newInstance(character.name.toLowerCase(Locale.ROOT), character.realm.slug, media, URLConstants.region)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
             fragmentTransaction.add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")

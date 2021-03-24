@@ -6,7 +6,6 @@ import com.BlizzardArmory.model.warcraft.account.Account
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +26,8 @@ class AccountViewModel : BaseViewModel() {
         URLConstants.loading = true
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getAccount(
-                MainActivity.locale,
-                MainActivity.selectedRegion.toLowerCase(Locale.ROOT),
+                URLConstants.locale,
+                URLConstants.region,
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {

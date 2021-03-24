@@ -6,7 +6,6 @@ import com.BlizzardArmory.model.diablo.account.AccountInformation
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +31,7 @@ class D3ViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client().getD3Profile(
                 battleTag,
-                MainActivity.locale,
+                URLConstants.locale,
                 selectedRegion.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )

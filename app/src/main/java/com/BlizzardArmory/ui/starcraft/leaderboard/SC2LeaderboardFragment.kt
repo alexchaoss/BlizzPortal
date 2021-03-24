@@ -16,7 +16,6 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.Sc2LeaderboardsFragmentBinding
 import com.BlizzardArmory.network.URLConstants
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
@@ -27,7 +26,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private var leagueList = arrayListOf("Select League", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster")
 
     private var regionId: Int = 1
-    private var region: String = MainActivity.selectedRegion
+    private var region: String = URLConstants.region
 
     private var v1Toggle = true
     private var v2Toggle = false

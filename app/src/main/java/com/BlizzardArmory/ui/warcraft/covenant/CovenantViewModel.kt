@@ -10,7 +10,6 @@ import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,7 +60,7 @@ class CovenantViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getSoulbinds(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -79,7 +78,7 @@ class CovenantViewModel : BaseViewModel() {
     fun downloadTechTree(id: Int, soulbindId: Int) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getTechTree(id, MainActivity.locale, region.toLowerCase(Locale.ROOT))
+                .getTechTree(id, URLConstants.locale, region.toLowerCase(Locale.ROOT))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     treeMap[soulbindId] = response.body()!!
@@ -100,7 +99,7 @@ class CovenantViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getCovenantSpells(
                 URLConstants.getCovenantClassSpells(
                     characterClass,
-                    MainActivity.locale
+                    URLConstants.locale
                 )
             )
             withContext(Dispatchers.Main) {
@@ -117,7 +116,7 @@ class CovenantViewModel : BaseViewModel() {
     fun downloadCovenantSpell(covenantId: Int) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getCovenantSpells(URLConstants.getCovenantSpells(covenantId, MainActivity.locale))
+                .getCovenantSpells(URLConstants.getCovenantSpells(covenantId, URLConstants.locale))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     covenantSpell.value = response.body()
@@ -134,7 +133,7 @@ class CovenantViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getTechTalentsWithIcon(
                 URLConstants.getTechTalents(
                     soulbindId,
-                    MainActivity.locale
+                    URLConstants.locale
                 )
             )
             withContext(Dispatchers.Main) {

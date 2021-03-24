@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.warcraft.guild.activity
 
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.guild.Guild
 import com.BlizzardArmory.model.warcraft.guild.activity.ActivitiesInformation
@@ -8,7 +9,6 @@ import com.BlizzardArmory.model.warcraft.guild.media.Media
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,7 +41,7 @@ class ActivityViewModel : BaseViewModel() {
     fun downloadGuildSummary(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildSummary(
-                realm, name, "profile-$region", MainActivity.locale,
+                realm, name, "profile-$region", URLConstants.locale,
                 region, battlenetOAuth2Helper?.accessToken!!
             )
             withContext(Dispatchers.Main) {
@@ -57,32 +57,43 @@ class ActivityViewModel : BaseViewModel() {
     }
 
     private fun downloadGuildCrest() {
+
         val job1 = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
-                .getGuildCrestBorder(guildSummary.value?.crest?.border?.id!!)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    guildCrestBorder.value = response.body()
+            try {
+                val response = RetroClient.getWoWClient()
+                    .getGuildCrestBorder(guildSummary.value?.crest?.border?.id!!)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        guildCrestBorder.value = response.body()
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("Error", "No Crest", e)
             }
         }
         jobs.add(job1)
         val job2 = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
-                .getGuildCrestEmblem(guildSummary.value?.crest?.emblem?.id!!)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    guildCrestEmblem.value = response.body()
+            try {
+                val response = RetroClient.getWoWClient()
+                    .getGuildCrestEmblem(guildSummary.value?.crest?.emblem?.id!!)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        guildCrestEmblem.value = response.body()
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("Error", "No Crest", e)
             }
         }
         jobs.add(job2)
+
+
     }
 
     fun downloadGuildActivity(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildActivity(
-                realm, name, "profile-$region", MainActivity.locale,
+                realm, name, "profile-$region", URLConstants.locale,
                 region, battlenetOAuth2Helper?.accessToken!!
             )
             withContext(Dispatchers.Main) {
@@ -91,7 +102,6 @@ class ActivityViewModel : BaseViewModel() {
                 } else {
                     errorCode.value = response.code()
                 }
-                URLConstants.loading = false
             }
         }
         jobs.add(job)

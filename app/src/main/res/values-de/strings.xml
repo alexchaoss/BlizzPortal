@@ -103,4 +103,9 @@
     <string name="covenant">Pakte</string>
     <string name="account">Konto</string>
     <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="search_guild">Gilde suchen</string>
+    <string name="guild_not_found">Die Gilde konnte nicht gefunden werden</string>
+    <string name="guild_not_found_message">Die Gilde konnte mit den eingegebenen Informationen nicht gefunden werden</string>
+    <string name="hascompleted">" hat vervollständigt "</string>
+    <string name="recent_activity">Letzte Aktivität</string>
 </resources>

@@ -11,9 +11,7 @@ object WebNewsScrapper {
 
     fun parseNewsList(pageURL: String) {
         newsList.clear()
-        Jsoup.connect(pageURL).ignoreContentType(true).get().run {
-            extractHtml()
-        }
+        parseMoreNews(pageURL)
     }
 
     fun parseMoreNews(pageURL: String) {
@@ -27,8 +25,6 @@ object WebNewsScrapper {
             html = html.substring(10, html.length - 3)
             Jsoup.parse(html).run {
                 extractHtml()
-            }
-            newsList.forEach {
             }
         }
     }

@@ -98,8 +98,13 @@ class CovenantFragment : Fragment() {
         })
 
         viewModel.getcovenantSpell().observe(viewLifecycleOwner, {
-            Glide.with(requireContext()).load(it[0].icon).into(binding.covenantSpell)
-            setOnSpellTouched(binding.covenantSpell, it[0])
+            try {
+                Glide.with(requireContext()).load(it[0].icon).into(binding.covenantSpell)
+                setOnSpellTouched(binding.covenantSpell, it[0])
+            } catch (e: Exception) {
+                Log.e("Error", "no icon", e)
+            }
+
         })
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {

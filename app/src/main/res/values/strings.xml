@@ -209,6 +209,11 @@
     <string name="progress2">Progress</string>
     <string name="account">Account</string>
     <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="search_guild">Search Guild</string>
+    <string name="guild_not_found">Guild Not Found</string>
+    <string name="guild_not_found_message">The guild could not be found with the entered information</string>
+    <string name="hascompleted">" has completed "</string>
+    <string name="recent_activity">Recent Activity</string>
 
     <string-array name="regions">
         <item>Select Region</item>

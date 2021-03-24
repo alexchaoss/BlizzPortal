@@ -8,7 +8,6 @@ import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -42,8 +41,8 @@ class SC2ViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getSc2Client().getSc2Player(
                 GamesActivity.userInformation!!.userID,
-                MainActivity.locale,
-                MainActivity.selectedRegion.toLowerCase(Locale.ROOT),
+                URLConstants.locale,
+                URLConstants.region,
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -67,8 +66,8 @@ class SC2ViewModel : BaseViewModel() {
                 parseRegionId(regionId),
                 realmId,
                 profileId,
-                MainActivity.locale,
-                MainActivity.selectedRegion.toLowerCase(Locale.ROOT),
+                URLConstants.locale,
+                URLConstants.region,
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {

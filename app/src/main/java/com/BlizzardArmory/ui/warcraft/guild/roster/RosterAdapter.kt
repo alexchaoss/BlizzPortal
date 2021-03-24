@@ -1,14 +1,18 @@
 package com.BlizzardArmory.ui.warcraft.guild.roster
 
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
+import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import java.util.*
 
-class RosterAdapter(private val activities: List<Members>) :
+class RosterAdapter(private val activities: List<Members>, private val context: Context, private val region: String) :
     RecyclerView.Adapter<RosterViewHolder>() {
 
     private var fullActivitiesList = ArrayList<Members>()
@@ -30,6 +34,16 @@ class RosterAdapter(private val activities: List<Members>) :
         }
         val member = fullActivitiesList[position]
         holder.bind(member)
+
+        holder.itemView.setOnClickListener {
+            val woWNavFragment =
+                WoWNavFragment.newInstance(member.character.name, member.character.realm.slug, "null", region)
+            (context as GamesActivity).supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
+                .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+                .addToBackStack("wow_nav").commit()
+            context.supportFragmentManager.executePendingTransactions()
+        }
     }
 
     override fun getItemCount(): Int = fullActivitiesList.size

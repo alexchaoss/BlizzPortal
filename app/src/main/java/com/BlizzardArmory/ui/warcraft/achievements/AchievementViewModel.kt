@@ -10,7 +10,6 @@ import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,7 +47,7 @@ class AchievementViewModel : BaseViewModel() {
     fun downloadAchievementInformation() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getAllAchievements(URLConstants.selectAchievementsURLFromLocale(MainActivity.locale))
+                .getAllAchievements(URLConstants.selectAchievementsURLFromLocale(URLConstants.locale))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     allAchievements.value = response.body()
@@ -65,7 +64,7 @@ class AchievementViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getCharacterAchievements(
                 character,
                 realm,
-                MainActivity.locale,
+                URLConstants.locale,
                 region,
                 battlenetOAuth2Helper?.accessToken!!
             )
@@ -83,7 +82,7 @@ class AchievementViewModel : BaseViewModel() {
     fun downloadCategories() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getAchievementCategories(
-                URLConstants.selectAchievementCategoriesURLFromLocale(MainActivity.locale)
+                URLConstants.selectAchievementCategoriesURLFromLocale(URLConstants.locale)
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

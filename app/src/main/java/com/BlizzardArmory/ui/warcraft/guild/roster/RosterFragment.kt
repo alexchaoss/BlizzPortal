@@ -16,6 +16,11 @@ import com.BlizzardArmory.databinding.WowGuildRosterBinding
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.util.events.FactionEvent
+import com.BlizzardArmory.util.events.RetryEvent
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -32,9 +37,19 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -70,9 +85,30 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
         viewModel.getGuildRoster().observe(viewLifecycleOwner, {
             binding.rosterRecyclerview.apply {
                 adapter =
-                    RosterAdapter(it.members.sortedWith(compareBy<Members> { it.rank }.thenByDescending { it.character.level }))
+                    RosterAdapter(it.members.sortedWith(compareBy<Members> { it.rank }.thenByDescending { it.character.level }), requireContext(), region!!)
             }
         })
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun retryEventReceived(retryEvent: RetryEvent) {
+        if (retryEvent.data) {
+            viewModel.downloadGuildRoster(realm!!, guildName!!, region!!)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun factionEventReceived(factionEvent: FactionEvent) {
+        setBackground(factionEvent.data)
+        EventBus.getDefault().unregister(this)
+    }
+
+    private fun setBackground(faction: String) {
+        if (faction == "ALLIANCE") {
+            binding.background.setBackgroundColor(Color.parseColor("#090B13"))
+        } else {
+            binding.background.setBackgroundColor(Color.parseColor("#1A1511"))
+        }
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

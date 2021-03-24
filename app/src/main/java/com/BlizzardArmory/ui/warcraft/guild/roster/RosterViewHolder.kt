@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
 import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.util.WoWClassColor
 import com.bumptech.glide.Glide
 
 class RosterViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
@@ -36,24 +37,7 @@ class RosterViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
         rank?.text = rankString
         getCharacterClassIcon(member.character.playable_class.id)
-        getCharacterNameColor(member.character.playable_class.id)
-    }
-
-    private fun getCharacterNameColor(id: Int) {
-        when (id) {
-            1 -> name?.setTextColor(Color.parseColor("#C79C6E"))
-            2 -> name?.setTextColor(Color.parseColor("#F58CBA"))
-            3 -> name?.setTextColor(Color.parseColor("#ABD473"))
-            4 -> name?.setTextColor(Color.parseColor("#FFF569"))
-            5 -> name?.setTextColor(Color.parseColor("#FFFFFF"))
-            6 -> name?.setTextColor(Color.parseColor("#C41F3B"))
-            7 -> name?.setTextColor(Color.parseColor("#0070DE"))
-            8 -> name?.setTextColor(Color.parseColor("#69CCF0"))
-            9 -> name?.setTextColor(Color.parseColor("#9482C9"))
-            10 -> name?.setTextColor(Color.parseColor("#00FF96"))
-            11 -> name?.setTextColor(Color.parseColor("#FF7D0A"))
-            12 -> name?.setTextColor(Color.parseColor("#A330C9"))
-        }
+        name?.setTextColor(Color.parseColor(WoWClassColor.getClassColor(member.character.playable_class.id)))
     }
 
     private fun getCharacterClassIcon(id: Int) {

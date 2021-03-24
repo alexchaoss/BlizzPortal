@@ -3,8 +3,8 @@ package com.BlizzardArmory.ui.warcraft.guild.roster
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.guild.roster.Roster
 import com.BlizzardArmory.network.RetroClient
+import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ class RosterViewModel : BaseViewModel() {
     fun downloadGuildRoster(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildRoster(
-                realm, name, "profile-$region", MainActivity.locale,
+                realm, name, "profile-$region", URLConstants.locale,
                 region, battlenetOAuth2Helper?.accessToken!!
             )
             withContext(Dispatchers.Main) {

@@ -103,4 +103,9 @@
     <string name="covenant">境的誓盟</string>
     <string name="account">帐户</string>
     <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="search_guild">搜索公會</string>
+    <string name="guild_not_found">找不到公會</string>
+    <string name="guild_not_found_message">輸入的信息找不到行會</string>
+    <string name="hascompleted">已經完成</string>
+    <string name="recent_activity">近期活動</string>
 </resources>

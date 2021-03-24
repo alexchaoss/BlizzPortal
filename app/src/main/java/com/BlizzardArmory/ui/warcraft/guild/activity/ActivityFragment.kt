@@ -7,14 +7,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowGuildActivityBinding
 import com.BlizzardArmory.model.warcraft.guild.Guild
+import com.BlizzardArmory.network.ErrorMessages
+import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.news.NewsListFragment
+import com.BlizzardArmory.ui.warcraft.character.WoWCharacterFragment
+import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
+import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.events.FactionEvent
+import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.events.RetryEvent
 import com.bumptech.glide.Glide
+import org.greenrobot.eventbus.EventBus
 
 
 class ActivityFragment : Fragment() {
@@ -23,13 +36,11 @@ class ActivityFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: ActivityViewModel by viewModels()
 
+    lateinit var errorMessages: ErrorMessages
+
     private var realm: String? = null
     private var guildName: String? = null
     private var region: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -37,12 +48,16 @@ class ActivityFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        addOnBackPressCallback(activity as GamesActivity)
         _binding = WowGuildActivityBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        errorMessages = ErrorMessages(this.resources)
+        URLConstants.loading = true
+
         val bundle = requireArguments()
         realm = bundle.getString("realm")
         guildName = bundle.getString("guildName")
@@ -66,13 +81,17 @@ class ActivityFragment : Fragment() {
         viewModel.getGuildSummary().observe(viewLifecycleOwner, {
             binding.name.text = it.name
             binding.realm.text = it.realm.name
+            EventBus.getDefault().post(FactionEvent(it.faction.type))
             setBackground(it)
             setCrest(it)
         })
 
         viewModel.getGuildActivity().observe(viewLifecycleOwner, {
-            binding.activityRecycler.apply {
-                adapter = ActivitiesAdapter(it.activities)
+            URLConstants.loading = false
+            if (!it.activities.isNullOrEmpty()) {
+                binding.activityRecycler.apply {
+                    adapter = ActivitiesAdapter(it.activities, requireContext())
+                }
             }
             binding.loadingCircle.visibility = View.GONE
         })
@@ -83,7 +102,10 @@ class ActivityFragment : Fragment() {
 
         viewModel.getGuildCrestEmblem().observe(viewLifecycleOwner, {
             Glide.with(this).load(it.assets[0].value).into(binding.crestIcon)
+        })
 
+        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+            callErrorAlertDialog(it)
         })
     }
 
@@ -111,6 +133,109 @@ class ActivityFragment : Fragment() {
                 binding.crestBorder.setImageResource(R.drawable.alliance_logo)
             } else {
                 binding.crestBorder.setImageResource(R.drawable.horde_logo)
+            }
+        }
+    }
+
+    private fun getErrorMessage(responseCode: Int): String {
+        return when (responseCode) {
+            in 400..499 -> {
+                errorMessages.GUILD_NOT_FOUND_MESSAGE
+            }
+            500 -> {
+                errorMessages.BLIZZ_SERVERS_DOWN
+            }
+            else -> {
+                errorMessages.TURN_ON_CONNECTION_MESSAGE
+            }
+        }
+
+    }
+
+    private fun getErrorTitle(responseCode: Int): String {
+        return when (responseCode) {
+            in 400..499 -> {
+                errorMessages.GUILD_NOT_FOUND
+            }
+            500 -> {
+                errorMessages.SERVERS_ERROR
+            }
+            else -> {
+                errorMessages.NO_INTERNET
+            }
+        }
+    }
+
+    private fun callErrorAlertDialog(responseCode: Int) {
+        var dialog = DialogPrompt(requireActivity())
+        if (URLConstants.loading) {
+            binding.loadingCircle.visibility = View.GONE
+            URLConstants.loading = false
+
+            if (responseCode == 404) {
+                dialog.setCancellable(false)
+                dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+                    .addMessage(getErrorMessage(responseCode), 18f, "message")
+                    .addSideBySideButtons(
+                        errorMessages.OK, 18f, errorMessages.BACK, 18f,
+                        {
+                            dialog.dismiss()
+                        },
+                        {
+                            dialog.dismiss()
+                            EventBus.getDefault().post(NetworkEvent(true))
+                        },
+                        "retry", "back"
+                    ).show()
+            } else {
+                dialog = DialogPrompt(requireActivity())
+                dialog.setCancellable(false)
+                dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+                    .addMessage(getErrorMessage(responseCode), 18f, "message")
+                    .addSideBySideButtons(
+                        errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
+                        {
+                            dialog.dismiss()
+                            viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
+                            viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
+                            EventBus.getDefault().post(RetryEvent(true))
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            URLConstants.loading = true
+                        },
+                        {
+                            dialog.dismiss()
+                            EventBus.getDefault().post(NetworkEvent(true))
+                        },
+                        "retry", "back"
+                    ).show()
+            }
+        }
+    }
+
+    companion object {
+        fun addOnBackPressCallback(activity: GamesActivity) {
+            activity.onBackPressedDispatcher.addCallback {
+                if (!URLConstants.loading) {
+                    when {
+                        activity.supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
+                            WoWCharacterFragment.addOnBackPressCallback(activity)
+                            GamesActivity.favorite?.visibility = View.VISIBLE
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        activity.supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {
+                            MRaidLeaderboardsFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        activity.supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                            addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        else -> {
+                            NewsListFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        }
+                    }
+                }
             }
         }
     }

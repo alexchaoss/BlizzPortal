@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.*
 import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -32,7 +33,10 @@ import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
+import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.WoWClassColor
 import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
@@ -70,7 +74,10 @@ class WoWCharacterFragment : Fragment() {
         viewModel.realm = bundle.getString("realm")!!
         viewModel.character = bundle.getString("character")!!
         if (Gson().fromJson(bundle.getString("media"), Media::class.java) != null) {
-            viewModel.getMedia().value = Gson().fromJson(bundle.getString("media"), Media::class.java)
+            viewModel.getMedia().value =
+                Gson().fromJson(bundle.getString("media"), Media::class.java)
+        } else {
+            viewModel.getMedia().value = null
         }
         viewModel.region = bundle.getString("region")!!
 
@@ -141,6 +148,27 @@ class WoWCharacterFragment : Fragment() {
             viewModel.downloadTalents()
             setBackgroundColor()
             binding.characterName.text = it.name
+            binding.characterName.setTextColor(Color.parseColor(WoWClassColor.getClassColor(it.characterClass.id)))
+            if (it.guild == null) {
+                binding.guild.visibility = View.GONE
+            } else {
+                val guild = "&lt;<u>${it.guild.name}</u>&gt;"
+                binding.guild.text = HtmlCompat.fromHtml(guild, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                binding.guild.setOnClickListener { view ->
+                    GamesActivity.favorite?.visibility = View.GONE
+                    val fragment: Fragment = GuildNavFragment()
+                    val bundle = Bundle()
+                    bundle.putString("realm", it.realm.slug)
+                    bundle.putString("guildName", it.guild.name)
+                    bundle.putString("region", viewModel.region.toLowerCase(Locale.ROOT))
+                    fragment.arguments = bundle
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .add(R.id.fragment, fragment, "guild_nav_fragment")
+                        .addToBackStack("wow_guild")
+                        .commit()
+                    requireActivity().supportFragmentManager.executePendingTransactions()
+                }
+            }
             manageFavorite(it)
             EventBus.getDefault().post(FactionEvent(it.faction.type.toLowerCase(Locale.ROOT)))
             EventBus.getDefault().post(ClassEvent(it.characterClass.id))
@@ -575,7 +603,6 @@ class WoWCharacterFragment : Fragment() {
                                 "retry", "back").show()
             }
         }
-
     }
 
     companion object {
@@ -591,6 +618,10 @@ class WoWCharacterFragment : Fragment() {
                         }
                         activity.supportFragmentManager.findFragmentByTag("wowfavorites") != null -> {
                             WoWFavoritesFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        activity.supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                            ActivityFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
                         else -> {

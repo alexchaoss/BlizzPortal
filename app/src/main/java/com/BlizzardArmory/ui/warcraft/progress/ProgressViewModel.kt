@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.model.warcraft.encounters.Expansions
 import com.BlizzardArmory.network.RetroClient
+import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ class ProgressViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getEncounters(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )

@@ -103,4 +103,9 @@
     <string name="covenant">Pactos</string>
     <string name="account">Conta</string>
     <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="search_guild">Guilda de pesquisa</string>
+    <string name="guild_not_found">A guilda não foi encontrada</string>
+    <string name="guild_not_found_message">A guilda não foi encontrada com as informações inseridas</string>
+    <string name="hascompleted">" completou "</string>
+    <string name="recent_activity">Atividade recente</string>
 </resources>

@@ -8,7 +8,6 @@ import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,14 +48,14 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadSeasonIndex() {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getSeasonIndex(MainActivity.locale, MainActivity.selectedRegion)
+                .getSeasonIndex(URLConstants.locale, URLConstants.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     seasonIndex.value = response.body()
                     seasonIndex.value?.season?.forEachIndexed { index, season ->
                         seasonIndexList.add((index + 1).toString())
                     }
-                    downloadSeason(seasonIndexList.last(), "rift-barbarian", MainActivity.selectedRegion)
+                    downloadSeason(seasonIndexList.last(), "rift-barbarian", URLConstants.region)
                 } else {
                     URLConstants.loading = false
                     errorCode.value = response.code()
@@ -69,7 +68,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadSeason(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getSeasonLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
+                .getSeasonLeaderboard(id.toInt(), leaderboardString, URLConstants.locale, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     leaderboard.value = response.body()
@@ -89,7 +88,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadEraIndex() {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getEraIndex(MainActivity.locale, MainActivity.selectedRegion)
+                .getEraIndex(URLConstants.locale, URLConstants.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     eraIndex.value = response.body()
@@ -108,7 +107,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadEra(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getEraLeaderboard(id.toInt(), leaderboardString, MainActivity.locale, region)
+                .getEraLeaderboard(id.toInt(), leaderboardString, URLConstants.locale, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     leaderboard.value = response.body()

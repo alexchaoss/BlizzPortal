@@ -17,12 +17,12 @@ import com.BlizzardArmory.model.MenuItem
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
 import com.BlizzardArmory.network.ErrorMessages
+import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.overwatch.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
@@ -31,6 +31,7 @@ import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
@@ -116,6 +117,7 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.raid_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_character), R.drawable.rep_search, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_guild), R.drawable.rep_search, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.diablo_3), R.drawable.diablo3_icon, false))
         menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
@@ -419,7 +421,7 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
                                 .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                                 .addSideBySideButtons("Search", 16F, "My Profile", 16F, { searchD3Profile(searchDialog) },
                                         {
-                                            callD3Activity(userInformation?.battleTag!!, MainActivity.selectedRegion)
+                                            callD3Activity(userInformation?.battleTag!!, URLConstants.region)
                                             searchDialog.dismiss()
                                         }, "search_button", "myprofile_button").show()
                     }
@@ -438,11 +440,24 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
             }
             resources.getString(R.string.search_character) -> {
                 searchDialog.addTitle("Character Name", 18F, "character_label")
-                        .addEditText("character_field")
-                        .addMessage("Realm", 18F, "realm_label")
-                        .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }.map { it.name }.distinct())
-                        .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                        .addButton("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button").show()
+                    .addEditText("character_field")
+                    .addMessage("Realm", 18F, "realm_label")
+                    .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
+                        .map { it.name }.distinct())
+                    .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
+                    .addButton("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button")
+                    .show()
+                binding.overlappingPanel.closePanels()
+            }
+            resources.getString(R.string.search_guild) -> {
+                searchDialog.addTitle("Guild Name", 18F, "guild_label")
+                    .addEditText("guild_field")
+                    .addMessage("Realm", 18F, "realm_label")
+                    .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
+                        .map { it.name }.distinct())
+                    .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
+                    .addButton("GO", 16F, { openSearchedWoWGuild(searchDialog) }, "search_button")
+                    .show()
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.favorites) -> {
@@ -451,7 +466,9 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
                     resources.getString(R.string.world_of_warcraft) -> {
                         favorite!!.visibility = View.GONE
                         fragment = WoWFavoritesFragment()
-                        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav").commit()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav")
+                            .commit()
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.diablo_3) -> {
@@ -513,10 +530,47 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         }
     }
 
+    private fun openSearchedWoWGuild(dialog: DialogPrompt) {
+        when {
+            (dialog.tagMap["guild_field"] as EditText).text.toString() == "" -> {
+                Toast.makeText(this, "Please enter the guild name", Toast.LENGTH_SHORT).show()
+            }
+            (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() == "" -> {
+                Toast.makeText(this, "Please enter the realm", Toast.LENGTH_SHORT).show()
+            }
+            (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                .equals("Select Region", ignoreCase = true) -> {
+                Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                val guildName = (dialog.tagMap["guild_field"] as EditText).text.toString()
+                    .toLowerCase(Locale.ROOT)
+                val guildRealm =
+                    viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                val selectedRegion =
+                    (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                val fragment = GuildNavFragment()
+                val bundle = Bundle()
+                bundle.putString("guildName", guildName)
+                bundle.putString("region", selectedRegion)
+                bundle.putString("realm", guildRealm)
+                fragment.arguments = bundle
+                resetBackStack()
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
+                    .add(R.id.fragment, fragment, "guild_nav_fragment")
+                    .addToBackStack("wow_guild").commit()
+                supportFragmentManager.executePendingTransactions()
+                dialog.dismiss()
+            }
+        }
+    }
+
     private fun resetBackStack() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
-            supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
+            supportFragmentManager.beginTransaction()
+                .remove(supportFragmentManager.findFragmentById(R.id.fragment)!!).commit()
         }
         openNewsFragment()
         supportFragmentManager.executePendingTransactions()
@@ -550,8 +604,10 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
                 Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString().toLowerCase(Locale.ROOT)
-                characterRealm = viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString()
+                    .toLowerCase(Locale.ROOT).replace(" ", "-")
+                characterRealm =
+                    viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
                 selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
                 dialog.dismiss()
@@ -604,10 +660,13 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
     override fun onGestureRegionsUpdate(gestureRegions: List<Rect>) {
         when (supportFragmentManager.fragments.last().tag) {
             "NAV_FRAGMENT",
-            "overwatchfragment" -> {
+            "overwatchfragment",
+            "guild_nav_fragment" -> {
                 for (rect in gestureRegions) {
-                    rect.set((resources.displayMetrics.widthPixels * 0.25).toInt(), rect.top,
-                            (resources.displayMetrics.widthPixels * 0.75).toInt(), rect.bottom)
+                    rect.set(
+                        (resources.displayMetrics.widthPixels * 0.25).toInt(), rect.top,
+                        (resources.displayMetrics.widthPixels * 0.75).toInt(), rect.bottom
+                    )
                 }
             }
             else -> {

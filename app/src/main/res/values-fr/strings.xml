@@ -103,4 +103,9 @@
     <string name="covenant">Congrégations</string>
     <string name="account">Compte</string>
     <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="search_guild">Recherche Guilde</string>
+    <string name="guild_not_found">La guilde n\'a pas pu être trouvée</string>
+    <string name="guild_not_found_message">La guilde n\'a pas pu être trouvée avec les informations saisies</string>
+    <string name="hascompleted">" à complété "</string>
+    <string name="recent_activity">Activité Récente</string>
 </resources>

@@ -16,7 +16,6 @@ import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
@@ -112,7 +111,9 @@ class AchievementsFragment : Fragment() {
 
         viewModel.getAllAchievements().observe(viewLifecycleOwner, {
             val savedAchievs = Pair(System.currentTimeMillis(), it)
-            prefs!!.edit().putString("detailed_achievements_${MainActivity.locale}", gson?.toJson(savedAchievs)).apply()
+            prefs!!.edit()
+                .putString("detailed_achievements_${URLConstants.locale}", gson?.toJson(savedAchievs))
+                .apply()
             needToUpdate = false
             viewModel.downloadCharacterAchievements()
         })
@@ -123,7 +124,9 @@ class AchievementsFragment : Fragment() {
 
         viewModel.getCategories().observe(viewLifecycleOwner, {
             val savedCategories = Pair(System.currentTimeMillis(), it)
-            prefs!!.edit().putString("achievement_categories_${MainActivity.locale}", gson!!.toJson(savedCategories)).apply()
+            prefs!!.edit()
+                .putString("achievement_categories_${URLConstants.locale}", gson!!.toJson(savedCategories))
+                .apply()
             needToUpdate = false
         })
 
@@ -153,38 +156,11 @@ class AchievementsFragment : Fragment() {
     }
 
     private fun setAchievementInformation() {
-        /*if (!prefs?.contains("detailed_achievements_${MainActivity.locale}")!! || needToUpdate) {*/
         viewModel.downloadAchievementInformation()
-        /*} else {
-            val saveAchievs =
-                    gson!!.fromJson<Pair<Long, DetailedAchievements>>(
-                            prefs!!.getString("detailed_achievements_${MainActivity.locale}", "DEFAULT"),
-                            object : TypeToken<Pair<Long, DetailedAchievements>>() {}.type)
-
-            if ((System.currentTimeMillis() - saveAchievs.first) > 435000000L) {
-                needToUpdate = true
-                downloadAchievementInformation()
-            } else {
-                allAchievements = saveAchievs.second
-                downloadCharacterAchievements()
-            }
-        }*/
     }
 
     private fun setCategories() {
-        /*if (!prefs?.contains("achievement_categories_${MainActivity.locale}")!! || needToUpdate) {*/
         viewModel.downloadCategories()
-        /*} else {
-            val savedCategories =
-                    gson!!.fromJson<Pair<Long, Categories>>(prefs!!.getString("achievement_categories_${MainActivity.locale}", "DEFAULT"), object : TypeToken<Pair<Long, Categories>>() {}.type)
-            if ((System.currentTimeMillis() - savedCategories.first) > 435000000L) {
-                needToUpdate = true
-                downloadCategories()
-            } else {
-                categories = savedCategories.second
-                createAchievementsMap()
-            }
-        }*/
     }
 
     private fun setRecyclerViewToParentCategories() {
@@ -194,7 +170,7 @@ class AchievementsFragment : Fragment() {
                     it.parentCategoryId == null
                 }.sortedBy {
                     it.displayOrder
-                }, MainActivity.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
+                }, URLConstants.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
                 adapter!!.notifyDataSetChanged()
             }
         } catch (e: Exception) {
@@ -223,7 +199,7 @@ class AchievementsFragment : Fragment() {
                 it.parentCategoryId == id
             }.sortedBy {
                 it.displayOrder
-            }, MainActivity.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
+            }, URLConstants.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
         if (viewModel.getMappedAchievements().value!![currentCategory]?.size != 0) {
@@ -237,12 +213,8 @@ class AchievementsFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun factionEventReceived(factionEvent: FactionEvent) {
         faction = factionEvent.data
-        /*if (prefs?.contains("achievement_categories_${MainActivity.locale}")!! && prefs?.contains("detailed_achievements_${MainActivity.locale}")!!) {*/
         binding.loading.visibility = View.VISIBLE
         setAchievementInformation()
-        /*} else {
-            download_request.visibility = View.VISIBLE
-        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

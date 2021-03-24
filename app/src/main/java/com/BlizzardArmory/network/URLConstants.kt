@@ -1,6 +1,7 @@
 package com.BlizzardArmory.network
 
 import com.BlizzardArmory.ui.main.MainActivity
+import java.util.*
 
 /**
  * The type Url constants.
@@ -83,10 +84,10 @@ object URLConstants {
      */
     @JvmStatic
     val baseURLforUserInformation: String
-        get() = if (MainActivity.selectedRegion.equals("cn", ignoreCase = true)) {
+        get() = if (URLConstants.region.equals("cn", ignoreCase = true)) {
             BASE_URL_CN_USER_INFO
         } else {
-            BASE_URL_USER_INFO.replace("zone", MainActivity.selectedRegion.toLowerCase())
+            BASE_URL_USER_INFO.replace("zone", URLConstants.region.toLowerCase())
         }
 
     /**
@@ -95,7 +96,10 @@ object URLConstants {
      * @return the region
      */
     val region: String
-        get() = MainActivity.selectedRegion.toLowerCase()
+        get() = MainActivity.selectedRegion.toLowerCase(Locale.ROOT)
+
+    val locale: String
+        get() = MainActivity.locale
 
     /**
      * Gets ow profile.
@@ -110,11 +114,12 @@ object URLConstants {
         if (platform.equals("PC", ignoreCase = true)) {
             url = OW_PROFILE.replace(":battletag", username.replace("#", "-"))
             url = url.replace(":platform", "pc")
-            url = if (MainActivity.selectedRegion.equals("cn", ignoreCase = true) || MainActivity.selectedRegion.equals("tw", ignoreCase = true)) {
-                url.replace(":region", "asia")
-            } else {
-                url.replace(":region", MainActivity.selectedRegion.toLowerCase())
-            }
+            url =
+                if (URLConstants.region.equals("cn", ignoreCase = true) || URLConstants.region.equals("tw", ignoreCase = true)) {
+                    url.replace(":region", "asia")
+                } else {
+                    url.replace(":region", URLConstants.region.toLowerCase())
+                }
         } else {
             url = OW_PROFILE.replace(":battletag", username)
             url = url.replace(":platform", platform)

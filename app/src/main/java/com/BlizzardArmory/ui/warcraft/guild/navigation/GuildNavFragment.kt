@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.databinding.WowGuildNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.news.NewsListFragment
+import com.BlizzardArmory.ui.warcraft.character.WoWCharacterFragment
+import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.discord.panels.PanelsChildGestureRegionObserver
@@ -77,8 +81,25 @@ class GuildNavFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
-            MRaidLeaderboardsFragment.addOnBackPressCallback(activity as GamesActivity)
-            activity?.supportFragmentManager?.popBackStack()
+            when {
+                requireActivity().supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
+                    WoWCharacterFragment.addOnBackPressCallback(activity as GamesActivity)
+                    GamesActivity.favorite?.visibility = View.VISIBLE
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+                requireActivity().supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {
+                    MRaidLeaderboardsFragment.addOnBackPressCallback(activity as GamesActivity)
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+                requireActivity().supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                    ActivityFragment.addOnBackPressCallback(activity as GamesActivity)
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+                else -> {
+                    NewsListFragment.addOnBackPressCallback(activity as GamesActivity)
+                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+            }
         }
     }
 }

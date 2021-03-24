@@ -9,7 +9,6 @@ import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,7 +59,7 @@ class PvPViewModel : BaseViewModel() {
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
                 "rbg",
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -84,7 +83,7 @@ class PvPViewModel : BaseViewModel() {
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
                 "3v3",
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -108,7 +107,7 @@ class PvPViewModel : BaseViewModel() {
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
                 "2v2",
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -129,7 +128,7 @@ class PvPViewModel : BaseViewModel() {
     private fun downloadBracket(url: String, bracket: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicTier(url, region.toLowerCase(Locale.ROOT), MainActivity.locale)
+                .getDynamicTier(url, region.toLowerCase(Locale.ROOT), URLConstants.locale)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     when (bracket) {
@@ -151,7 +150,7 @@ class PvPViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getPvPSummary(
                 character.toLowerCase(Locale.ROOT),
                 realm.toLowerCase(Locale.ROOT),
-                MainActivity.locale,
+                URLConstants.locale,
                 region.toLowerCase(Locale.ROOT),
                 battlenetOAuth2Helper!!.accessToken
             )

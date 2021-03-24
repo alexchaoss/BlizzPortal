@@ -8,7 +8,6 @@ import com.BlizzardArmory.model.diablo.item.SingleItem
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,8 +33,8 @@ class CharacterCubeViewModel : BaseViewModel() {
             val job = coroutineScope.launch {
                 val response = RetroClient.getD3Client().getItem(
                     endpoint,
-                    MainActivity.selectedRegion.toLowerCase(Locale.ROOT),
-                    MainActivity.locale
+                    URLConstants.region,
+                    URLConstants.locale
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {

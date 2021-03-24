@@ -103,4 +103,9 @@
     <string name="covenant">Las Curias</string>
     <string name="account">Cuenta</string>
     <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="search_guild">Buscar gremio</string>
+    <string name="guild_not_found">Gremio no encontrado</string>
+    <string name="guild_not_found_message">No se pudo encontrar el gremio con la información ingresada</string>
+    <string name="hascompleted">" ha completado "</string>
+    <string name="recent_activity">Actividad reciente</string>
 </resources>

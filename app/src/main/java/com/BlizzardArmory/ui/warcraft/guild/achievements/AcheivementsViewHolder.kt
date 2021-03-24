@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievement
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
+import com.BlizzardArmory.model.warcraft.guild.achievements.Achievements
 import com.bumptech.glide.Glide
 import java.sql.Date
 import java.sql.Timestamp
@@ -31,7 +31,7 @@ class AcheivementsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         date = itemView.findViewById(R.id.completed_date)
     }
 
-    fun bind(detailedAchievement: DetailedAchievement, achievements: List<Achievement>) {
+    fun bind(detailedAchievement: DetailedAchievement, achievements: List<Achievements>) {
         Glide.with(itemView).load(detailedAchievement.icon).into(icon!!)
         if (detailedAchievement.is_account_wide) {
             name?.setTextColor(Color.parseColor("#0081ff"))

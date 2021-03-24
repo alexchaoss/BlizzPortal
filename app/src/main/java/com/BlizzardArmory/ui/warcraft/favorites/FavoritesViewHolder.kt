@@ -16,7 +16,6 @@ import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -87,7 +86,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val response = RetroClient.getWoWClient().getMedia(
                 character?.characterSummary?.name?.toLowerCase(Locale.ROOT)!!,
                 character?.characterSummary?.realm?.slug!!,
-                MainActivity.locale,
+                URLConstants.locale,
                 character?.region?.toLowerCase(Locale.ROOT)!!,
                 bnOAuth2Helper.accessToken
             )
