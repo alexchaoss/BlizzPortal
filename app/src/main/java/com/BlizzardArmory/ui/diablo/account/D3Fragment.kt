@@ -304,21 +304,21 @@ class D3Fragment : Fragment() {
         } else {
             dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
-                .addSideBySideButtons(
-                    errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
-                    {
+                .addButtons(
+                    dialog.CustomButton(errorMessages.RETRY, 18f, {
                         dialog.dismiss()
                         viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
                         binding.loadingCircle.visibility = View.VISIBLE
                         URLConstants.loading = true
-                    },
-                    {
-                        dialog.dismiss()
-                        GamesActivity.hideFavoriteButton()
-                        parentFragmentManager.popBackStack()
-                        NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
-                    },
-                    "retry", "back"
+                    }, "retry"), dialog.CustomButton(errorMessages.BACK, 18f,
+
+                        {
+                            dialog.dismiss()
+                            GamesActivity.hideFavoriteButton()
+                            parentFragmentManager.popBackStack()
+                            NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                        }, "back"
+                    )
                 ).show()
         }
     }

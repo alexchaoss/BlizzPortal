@@ -90,7 +90,8 @@ class MainActivity : LocalizationActivity() {
     }
 
     private fun setAdapater(list: Array<String>): ArrayAdapter<String> {
-        return object : ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, list) {
+        return object :
+            ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, list) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
@@ -146,7 +147,8 @@ class MainActivity : LocalizationActivity() {
     private fun setLoginButtonToBattlenet() {
         binding.buttonLogin.setOnClickListener {
             if (selectedRegion == "Select Region") {
-                Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 checkConnectionBeforeLogin()
             }
@@ -159,19 +161,27 @@ class MainActivity : LocalizationActivity() {
         } else {
             val dialog = DialogPrompt(this)
             dialog.addTitle("Internet connection unstable", 20F, "title")
-                    .addMessage("Are you currently connected to a network?", 16F, "message")
-                    .addSideBySideButtons("Yes", 16F, "No", 16F, { viewModel.openLoginToBattleNet() }, {
-                        dialog.dismiss()
-                        val confirmDialog = DialogPrompt(this)
-                        confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
-                                .addButton("Ok", 16F, { confirmDialog.dismiss() }, "close").show()
-                    }, "positive", "negative").show()
+                .addMessage("Are you currently connected to a network?", 16F, "message")
+                .addButtons(
+                    dialog.CustomButton("Yes", 16F, { viewModel.openLoginToBattleNet() }, "positive"),
+                    dialog.CustomButton("No", 16F,
+                        {
+                            dialog.dismiss()
+                            val confirmDialog = DialogPrompt(this)
+                            confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
+                                .addButtons(dialog.CustomButton("Ok", 16F, { confirmDialog.dismiss() }, "close"))
+                                .show()
+                        }, "negative"
+                    )
+                ).show()
         }
     }
 
     private fun startWiFiNetworkCallback() {
-        val cm: ConnectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val builder: NetworkRequest.Builder = NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+        val cm: ConnectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val builder: NetworkRequest.Builder =
+            NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
 
         cm.registerNetworkCallback(builder.build(), object : ConnectivityManager.NetworkCallback() {
 
@@ -186,8 +196,10 @@ class MainActivity : LocalizationActivity() {
     }
 
     private fun startDataNetworkCallback() {
-        val cm: ConnectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val builder: NetworkRequest.Builder = NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+        val cm: ConnectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val builder: NetworkRequest.Builder =
+            NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
 
         cm.registerNetworkCallback(builder.build(), object : ConnectivityManager.NetworkCallback() {
 

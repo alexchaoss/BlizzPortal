@@ -3,13 +3,8 @@
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">Выбор региона</string>
     <string name="login">Авторизоваться</string>
-    <string name="clear_credentials">Очистить учетные данные</string>
-    <string name="wow_characters">Символы</string>
-    <string name="item_level">уровень предмета</string>
     <string name="spec">специализация</string>
     <string name="talent_information_not_available">Talent информация недоступна</string>
-    <string name="career">Карьера</string>
-    <string name="character_outdated">Информация устарела, пожалуйста, Войти на этот символ, чтобы обновить информацию</string>
     <string name="strength">Прочность:</string>
     <string name="dexterity">Ловкость:</string>
     <string name="intelligence">Интеллект:</string>
@@ -36,16 +31,13 @@
     <string name="match_awards">MATCH НАГРАДЫ</string>
     <string name="miscellaneous">РАЗНОЕ</string>
     <string name="settingsTitle">настройки</string>
-    <string name="information">Информация</string>
     <string name="want_to_donate">Хотите помочь?</string>
     <string name="character">символ</string>
     <string name="progress2">Прогресс</string>
-    <string name="achievs">Достижения</string>
     <string name="level">уровень</string>
     <string name="honor">Честь</string>
     <string name="reputation">репутации</string>
     <string name="rate_my_app">Оцените мое приложение!</string>
-    <string name="rate_it">Вот!</string>
     <string name="select_a_language">Выберите язык</string>
     <string name="logout">ВЫЙТИ</string>
     <string name="world_of_warcraft">World of Warcraft</string>
@@ -53,12 +45,8 @@
     <string name="starcraft_2">Starcraft 2</string>
     <string name="overwatch">Overwatch</string>
     <string name="search_character">Поиск символов</string>
-    <string name="search_user">Поиск пользователей</string>
     <string name="honorable_kills">Почетные убийства</string>
     <string name="favorites">Избранные</string>
-    <string name="d3_favorites">D3 Избранное</string>
-    <string name="wow_favorites">WoW Избранное</string>
-    <string name="ow_favorites">OW Избранное</string>
     <string name="achievements">достижения</string>
     <string name="download_achievements_n_wi_fi_recommended">СКАЧАТЬ ДОСТИЖЕНИЯ \ N (Wi-Fi рекомендуется)</string>
     <string name="categories">категории</string>
@@ -108,4 +96,5 @@
     <string name="guild_not_found_message">Не удалось найти гильдию по введенной информации</string>
     <string name="hascompleted">" завершил "</string>
     <string name="recent_activity">Недавняя активность</string>
+    <string name="search_profile">Search Profile</string>
 </resources>

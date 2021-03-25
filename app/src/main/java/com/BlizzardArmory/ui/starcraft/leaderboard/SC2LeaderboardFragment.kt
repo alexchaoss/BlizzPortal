@@ -71,8 +71,8 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         if (!prefs?.contains("leaderboard_pulled_sc2")!!) {
             val dialog = DialogPrompt(requireContext())
             dialog.addTitle("New Feature!", 20F)
-                    .addMessage("Welcome to the Starcraft 2 Leaderboards!\nPull from the right to open the Leaderboard menu!", 18F)
-                    .addButton("Close", 16F, { dialog.dismiss() }).show()
+                .addMessage("Welcome to the Starcraft 2 Leaderboards!\nPull from the right to open the Leaderboard menu!", 18F)
+                .addButtons(dialog.CustomButton("Close", 16F, { dialog.dismiss() })).show()
             prefs.edit()?.putString("leaderboard_pulled_sc2", "done")?.apply()
         }
 

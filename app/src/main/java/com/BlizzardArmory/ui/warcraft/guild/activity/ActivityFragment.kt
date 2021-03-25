@@ -176,37 +176,37 @@ class ActivityFragment : Fragment() {
                 dialog.setCancellable(false)
                 dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                     .addMessage(getErrorMessage(responseCode), 18f, "message")
-                    .addSideBySideButtons(
-                        errorMessages.OK, 18f, errorMessages.BACK, 18f,
-                        {
+                    .addButtons(
+                        dialog.CustomButton(errorMessages.OK, 18f, {
                             dialog.dismiss()
-                        },
-                        {
-                            dialog.dismiss()
-                            EventBus.getDefault().post(NetworkEvent(true))
-                        },
-                        "retry", "back"
+                        }, "retry"), dialog.CustomButton(errorMessages.BACK, 18f,
+
+                            {
+                                dialog.dismiss()
+                                EventBus.getDefault().post(NetworkEvent(true))
+                            }, "back"
+                        )
                     ).show()
             } else {
                 dialog = DialogPrompt(requireActivity())
                 dialog.setCancellable(false)
                 dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                     .addMessage(getErrorMessage(responseCode), 18f, "message")
-                    .addSideBySideButtons(
-                        errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
-                        {
+                    .addButtons(
+                        dialog.CustomButton(errorMessages.RETRY, 18f, {
                             dialog.dismiss()
                             viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
                             viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
                             EventBus.getDefault().post(RetryEvent(true))
                             binding.loadingCircle.visibility = View.VISIBLE
                             URLConstants.loading = true
-                        },
-                        {
-                            dialog.dismiss()
-                            EventBus.getDefault().post(NetworkEvent(true))
-                        },
-                        "retry", "back"
+                        }, "retry"), dialog.CustomButton(errorMessages.BACK, 18f,
+
+                            {
+                                dialog.dismiss()
+                                EventBus.getDefault().post(NetworkEvent(true))
+                            }, "back"
+                        )
                     ).show()
             }
         }

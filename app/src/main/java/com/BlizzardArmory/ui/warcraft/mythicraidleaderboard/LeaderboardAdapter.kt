@@ -51,7 +51,7 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 val dialog = DialogPrompt(context)
                 dialog.addMessage("Chinese region is not supported yet.", 15F, "message1")
                     .addMessage("Sorry for any inconvenience this may cause.", 15F, "message2")
-                    .addButton("Close", 20F, { dialog.dismiss() }, "button")
+                    .addButtons(dialog.CustomButton("Close", 20F, { dialog.dismiss() }, "button"))
                     .show()
             }
         }

@@ -3,13 +3,8 @@
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">지역 선택</string>
     <string name="login">로그인</string>
-    <string name="clear_credentials">클리어 자격 증명</string>
-    <string name="wow_characters">등장 인물</string>
-    <string name="item_level">항목 수준</string>
     <string name="spec">전문화</string>
     <string name="talent_information_not_available">인재 정보를 사용할 수 없습니다에게</string>
-    <string name="career">직업</string>
-    <string name="character_outdated">오래된 정보는 정보를 업데이트하는이 문자에 로그인하십시오</string>
     <string name="strength">힘:</string>
     <string name="dexterity">재치:</string>
     <string name="intelligence">지성:</string>
@@ -36,16 +31,13 @@
     <string name="match_awards">MATCH 어워드</string>
     <string name="miscellaneous">여러 가지 잡다한</string>
     <string name="settingsTitle">설정</string>
-    <string name="information">정보</string>
     <string name="want_to_donate">기부를 원하십니까?</string>
     <string name="character">캐릭터</string>
     <string name="progress2">진행</string>
-    <string name="achievs">업적</string>
     <string name="level">수평</string>
     <string name="honor">명예</string>
     <string name="reputation">평판</string>
     <string name="rate_my_app">내 응용 프로그램을 평가하기!</string>
-    <string name="rate_it">여기!</string>
     <string name="select_a_language">언어를 선택</string>
     <string name="logout">로그 아웃</string>
     <string name="world_of_warcraft">World of Warcraft</string>
@@ -53,12 +45,8 @@
     <string name="starcraft_2">Starcraft 2</string>
     <string name="overwatch">Overwatch</string>
     <string name="search_character">검색 문자</string>
-    <string name="search_user">검색 사용자</string>
     <string name="honorable_kills">존경하는 킬</string>
     <string name="favorites">즐겨 찾기</string>
-    <string name="d3_favorites">D3 즐겨 찾기</string>
-    <string name="wow_favorites">와우 즐겨 찾기</string>
-    <string name="ow_favorites">OW 즐겨 찾기</string>
     <string name="achievements">업적</string>
     <string name="download_achievements_n_wi_fi_recommended">다운로드 성과 \ n (와이파이 권장)</string>
     <string name="categories">카테고리</string>
@@ -108,4 +96,5 @@
     <string name="guild_not_found_message">길드는 입력된 정보로 찾을 수 없습니다.</string>
     <string name="hascompleted">완료되었습니다.</string>
     <string name="recent_activity">최근 활동</string>
+    <string name="search_profile">Search Profile</string>
 </resources>

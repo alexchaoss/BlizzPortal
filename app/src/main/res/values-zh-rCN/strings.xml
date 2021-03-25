@@ -3,13 +3,8 @@
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">选择地区</string>
     <string name="login">登录</string>
-    <string name="clear_credentials">清除凭据</string>
-    <string name="wow_characters">人物</string>
-    <string name="item_level">物品等级</string>
     <string name="spec">专业化</string>
     <string name="talent_information_not_available">人才信息不可用</string>
-    <string name="career">事业</string>
-    <string name="character_outdated">信息已过期，请登录后再字符信息的更新</string>
     <string name="strength">强度：</string>
     <string name="dexterity">灵巧：</string>
     <string name="intelligence">情报：</string>
@@ -36,16 +31,13 @@
     <string name="match_awards">比赛奖项</string>
     <string name="miscellaneous">杂项</string>
     <string name="settingsTitle">设置</string>
-    <string name="information">信息</string>
     <string name="want_to_donate">想捐款吗？</string>
     <string name="character">字符</string>
     <string name="progress2">进展</string>
-    <string name="achievs">成就</string>
     <string name="level">水平</string>
     <string name="honor">荣誉</string>
     <string name="reputation">声誉</string>
     <string name="rate_my_app">评价我的应用程序！</string>
-    <string name="rate_it">这里！</string>
     <string name="select_a_language">选择语言</string>
     <string name="logout">注销</string>
     <string name="world_of_warcraft">World of Warcraft</string>
@@ -53,12 +45,8 @@
     <string name="starcraft_2">Starcraft 2</string>
     <string name="overwatch">Overwatch</string>
     <string name="search_character">搜索字符</string>
-    <string name="search_user">搜索用户</string>
     <string name="honorable_kills">光荣的杀戮</string>
     <string name="favorites">收藏 夹</string>
-    <string name="d3_favorites">D3 收藏夹</string>
-    <string name="wow_favorites">WoW 收藏夹</string>
-    <string name="ow_favorites">OW 收藏夹</string>
     <string name="achievements">成就</string>
     <string name="download_achievements_n_wi_fi_recommended">下载成就\n(建议使用 Wi-Fi）</string>
     <string name="categories">类别</string>
@@ -108,4 +96,5 @@
     <string name="guild_not_found_message">輸入的信息找不到行會</string>
     <string name="hascompleted">已經完成</string>
     <string name="recent_activity">近期活動</string>
+    <string name="search_profile">Search Profile</string>
 </resources>

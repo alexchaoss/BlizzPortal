@@ -49,7 +49,8 @@ class AccountFragment : Fragment() {
         binding.loadingCircle.visibility = View.VISIBLE
         setObservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
     }
 
     private fun setObservers() {
@@ -63,7 +64,8 @@ class AccountFragment : Fragment() {
         })
 
         viewModel.getCharacters().observe(viewLifecycleOwner, { account ->
-            setAdapter(account.wowAccounts.flatMap { it.characters }.map { it.realm.name }.distinct().sorted().toMutableList(), binding.realmSpinner)
+            setAdapter(account.wowAccounts.flatMap { it.characters }.map { it.realm.name }
+                .distinct().sorted().toMutableList(), binding.realmSpinner)
             binding.loadingCircle.visibility = View.GONE
         })
     }
@@ -76,16 +78,19 @@ class AccountFragment : Fragment() {
     private fun populateRecyclerView() {
         binding.characterRecycler.apply {
             adapter = CharacterAdapter(viewModel.getCharacters().value?.wowAccounts!!
-                    .flatMap { it.characters }
-                    .filter { it.realm.name == binding.realmSpinner.selectedItem.toString() }.sortedByDescending { it.level.toInt() },
-                    parentFragmentManager, requireActivity(), viewModel.getBnetParams().value!!)
+                .flatMap { it.characters }
+                .filter { it.realm.name == binding.realmSpinner.selectedItem.toString() }
+                .sortedByDescending { it.level.toInt() },
+                parentFragmentManager, requireActivity(), viewModel.getBnetParams().value!!
+            )
             adapter!!.notifyDataSetChanged()
         }
     }
 
     private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {
         spinnerList.add(0, "Select Realm")
-        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
+        val arrayAdapter: ArrayAdapter<*> = object :
+            ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
@@ -180,29 +185,30 @@ class AccountFragment : Fragment() {
         } else {
             dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
-                .addSideBySideButtons(
-                    errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
-                    {
+                .addButtons(
+                    dialog.CustomButton(errorMessages.RETRY, 18f, {
                         dialog.dismiss()
                         viewModel.downloadWoWCharacters()
                         binding.loadingCircle.visibility = View.VISIBLE
                         URLConstants.loading = true
-                    },
-                    {
-                        dialog.dismiss()
-                        GamesActivity.hideFavoriteButton()
-                        parentFragmentManager.popBackStack()
-                        NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
-                    },
-                    "retry", "back"
+                    }, "retry"), dialog.CustomButton(
+                        errorMessages.BACK, 18f,
+
+                        {
+                            dialog.dismiss()
+                            GamesActivity.hideFavoriteButton()
+                            parentFragmentManager.popBackStack()
+                            NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                        }, "back"
+                    )
                 ).show()
         }
     }
 
     companion object {
-        fun addOnBackPressCallback(activity: GamesActivity){
+        fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if(!URLConstants.loading) {
+                if (!URLConstants.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
                     activity.supportFragmentManager.popBackStack()
                 }

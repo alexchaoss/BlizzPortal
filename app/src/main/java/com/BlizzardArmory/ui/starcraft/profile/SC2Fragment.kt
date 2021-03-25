@@ -61,7 +61,8 @@ class SC2Fragment : Fragment() {
         regionId = arguments?.getInt("regionId")
         realmId = arguments?.getInt("realmId")
         profileId = arguments?.getString("profileId")
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         val summaryBG = GradientDrawable()
         summaryBG.setStroke(6, Color.parseColor("#122a42"))
         summaryBG.setColor(Color.parseColor("#75091c2e"))
@@ -151,8 +152,10 @@ class SC2Fragment : Fragment() {
     }
 
     private fun createCustomButton(layout: LinearLayout, player: Player, dialog: DialogPrompt) {
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val paramsButton = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val params =
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val paramsButton =
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val paramsIcon = LinearLayout.LayoutParams(80, 80)
         paramsIcon.gravity = Gravity.CENTER_VERTICAL.and(Gravity.END)
         paramsIcon.weight = 1F
@@ -191,13 +194,14 @@ class SC2Fragment : Fragment() {
     }
 
     private fun getRaceImage(imageView: ImageView, name: String) {
-        Glide.with(this).load(URLConstants.getSC2Asset(name)).into(object : CustomTarget<Drawable>() {
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                imageView.background = resource
-            }
+        Glide.with(this).load(URLConstants.getSC2Asset(name))
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    imageView.background = resource
+                }
 
-            override fun onLoadCleared(placeholder: Drawable?) {}
-        })
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
     }
 
     private fun setCampaignInformation() {
@@ -276,20 +280,26 @@ class SC2Fragment : Fragment() {
         binding.terranWins.text = viewModel.getProfile().value!!.career.terranWins.toString()
         binding.zergWins.text = viewModel.getProfile().value!!.career.zergWins.toString()
         binding.protossWins.text = viewModel.getProfile().value!!.career.protossWins.toString()
-        binding.seasonPlayed.text = viewModel.getProfile().value!!.career.totalGamesThisSeason.toString()
-        binding.careerPlayed.text = viewModel.getProfile().value!!.career.totalCareerGames.toString()
+        binding.seasonPlayed.text =
+            viewModel.getProfile().value!!.career.totalGamesThisSeason.toString()
+        binding.careerPlayed.text =
+            viewModel.getProfile().value!!.career.totalCareerGames.toString()
         if (viewModel.getProfile().value!!.career.best1v1Finish.leagueName != null) {
             setSnapshotIcons(viewModel.getProfile().value!!.career.best1v1Finish.leagueName, 500, binding.bestOneIcon)
-            var temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(1).toLowerCase(Locale.ROOT)
-            temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(0, 1) + temp
+            var temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(1)
+                .toLowerCase(Locale.ROOT)
+            temp =
+                viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(0, 1) + temp
             binding.bestOne.text = temp
         } else {
             binding.bestOne.visibility = View.GONE
         }
         if (viewModel.getProfile().value!!.career.bestTeamFinish.leagueName != null) {
             setSnapshotIcons(viewModel.getProfile().value!!.career.bestTeamFinish.leagueName, 500, binding.bestTeamIcon)
-            var temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(1).toLowerCase(Locale.ROOT)
-            temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(0, 1) + temp
+            var temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(1)
+                .toLowerCase(Locale.ROOT)
+            temp =
+                viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(0, 1) + temp
             binding.bestTeam.text = temp
         } else {
             binding.bestTeam.visibility = View.GONE
@@ -425,44 +435,51 @@ class SC2Fragment : Fragment() {
 
     private fun setSummaryInformation() {
         if (viewModel.getProfile().value!!.swarmLevels != null && viewModel.getProfile().value!!.swarmLevels?.level != null) {
-            binding.totalLevelText.text = viewModel.getProfile().value!!.swarmLevels.level.toString()
+            binding.totalLevelText.text =
+                viewModel.getProfile().value!!.swarmLevels.level.toString()
         } else {
             binding.totalLevelText.text = "0"
         }
         binding.name.text = viewModel.getProfile().value!!.summary.displayName
         if (viewModel.getProfile().value!!.summary.clanName != null) {
-            val clanName = "[" + viewModel.getProfile().value!!.summary.clanTag + "] " + viewModel.getProfile().value!!.summary.clanName
+            val clanName =
+                "[" + viewModel.getProfile().value!!.summary.clanTag + "] " + viewModel.getProfile().value!!.summary.clanName
             binding.clan.text = clanName
         } else {
             binding.clan.visibility = View.GONE
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = resources.getDrawable(resourceId, requireActivity().theme)
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
+            binding.achievementPoints.text =
+                Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
+                    val resourceId =
+                        resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                    val drawable = resources.getDrawable(resourceId, requireActivity().theme)
+                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                    drawable
+                }, null)
         } else {
-            binding.achievementPoints.text = Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = resources.getDrawable(resourceId, requireActivity().theme)
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
+            binding.achievementPoints.text =
+                Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, { source: String? ->
+                    val resourceId =
+                        resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                    val drawable = resources.getDrawable(resourceId, requireActivity().theme)
+                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                    drawable
+                }, null)
         }
     }
 
     private fun downloadAvatar() {
-        Glide.with(this).load(viewModel.getProfile().value!!.summary.portrait).into(object : CustomTarget<Drawable>() {
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                binding.avatar.background = resource
-                binding.loadingCircle.visibility = View.GONE
-                URLConstants.loading = false
-            }
+        Glide.with(this).load(viewModel.getProfile().value!!.summary.portrait)
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    binding.avatar.background = resource
+                    binding.loadingCircle.visibility = View.GONE
+                    URLConstants.loading = false
+                }
 
-            override fun onLoadCleared(placeholder: Drawable?) {}
-        })
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
     }
 
     private fun getErrorMessage(responseCode: Int): String {
@@ -508,19 +525,23 @@ class SC2Fragment : Fragment() {
         dialog.setCancellable(false)
 
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
-                .addMessage(getErrorMessage(responseCode), 18f, "message")
-                .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
-                        {
-                            dialog.dismiss()
-                            viewModel.downloadAccountInformation()
-                            binding.loadingCircle.visibility = View.VISIBLE
-                        },
-                        {
-                            dialog.dismiss()
-                            NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
-                            parentFragmentManager.popBackStack()
-                        },
-                        "retry", "back").show()
+            .addMessage(getErrorMessage(responseCode), 18f, "message")
+            .addButtons(
+                dialog.CustomButton(errorMessages.RETRY, 18f, {
+                    dialog.dismiss()
+                    viewModel.downloadAccountInformation()
+                    binding.loadingCircle.visibility = View.VISIBLE
+                }, "retry"), dialog.CustomButton(
+                    errorMessages.BACK, 18f,
+
+                    {
+                        dialog.dismiss()
+                        NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                        parentFragmentManager.popBackStack()
+                    },
+                    "back"
+                )
+            ).show()
     }
 
     companion object {

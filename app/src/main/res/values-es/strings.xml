@@ -3,13 +3,8 @@
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">Seleccione región</string>
     <string name="login">Iniciar sesión</string>
-    <string name="clear_credentials">Credenciales claras</string>
-    <string name="wow_characters">personaje</string>
-    <string name="item_level">nivel de objeto</string>
     <string name="spec">Especialización</string>
     <string name="talent_information_not_available">Información de talento no disponible</string>
-    <string name="career">Carrera</string>
-    <string name="character_outdated">Información desactualizada, inicie sesión con este personaje para actualizar la información</string>
     <string name="strength">Fuerza:</string>
     <string name="dexterity">Destreza:</string>
     <string name="intelligence">Inteligencia:</string>
@@ -36,16 +31,13 @@
     <string name="match_awards">PREMIOS DEL PARTIDO</string>
     <string name="miscellaneous">DIVERSO</string>
     <string name="settingsTitle">Configuraciones</string>
-    <string name="information">Información</string>
     <string name="want_to_donate">¿Quieres donar?</string>
     <string name="character">Personaje</string>
     <string name="progress2">Progreso</string>
-    <string name="achievs">Logros</string>
     <string name="level">nivel</string>
     <string name="honor">Honor</string>
     <string name="reputation">Reputación</string>
     <string name="rate_my_app">¡Califica mi aplicación!</string>
-    <string name="rate_it">¡Aquí!</string>
     <string name="select_a_language">Selecciona un idioma</string>
     <string name="logout">CERRAR SESIÓN</string>
     <string name="world_of_warcraft">World of Warcraft</string>
@@ -53,12 +45,8 @@
     <string name="starcraft_2">Starcraft 2</string>
     <string name="overwatch">Overwatch</string>
     <string name="search_character">Carácter de búsqueda</string>
-    <string name="search_user">Buscar usuario</string>
     <string name="honorable_kills">Muertes honorables</string>
     <string name="favorites">Favoritos</string>
-    <string name="d3_favorites">Favoritos de D3</string>
-    <string name="wow_favorites">Favoritos de WoW</string>
-    <string name="ow_favorites">Favoritos de OW</string>
     <string name="achievements">Logros</string>
     <string name="download_achievements_n_wi_fi_recommended">Descargar logros\n(Se recomienda Wi-Fi)</string>
     <string name="categories">Categorías</string>
@@ -108,4 +96,5 @@
     <string name="guild_not_found_message">No se pudo encontrar el gremio con la información ingresada</string>
     <string name="hascompleted">" ha completado "</string>
     <string name="recent_activity">Actividad reciente</string>
+    <string name="search_profile">Search Profile</string>
 </resources>

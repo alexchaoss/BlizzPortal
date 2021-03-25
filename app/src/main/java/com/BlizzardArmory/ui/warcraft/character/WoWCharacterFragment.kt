@@ -96,8 +96,10 @@ class WoWCharacterFragment : Fragment() {
 
         activateCloseButton()
 
-        val layoutParamsName = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val layoutParamsStats = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val layoutParamsName =
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val layoutParamsStats =
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParamsName.setMargins(20, 20, 20, -5)
         nameView?.layoutParams = layoutParamsName
         layoutParamsStats.setMargins(20, 0, 20, 0)
@@ -122,7 +124,8 @@ class WoWCharacterFragment : Fragment() {
         gearImageView["MAIN_HAND"] = binding.mainHand
         gearImageView["OFF_HAND"] = binding.offHand
         setObservers()
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
     }
 
     fun setObservers() {
@@ -178,7 +181,9 @@ class WoWCharacterFragment : Fragment() {
 
         viewModel.getMedia().observe(viewLifecycleOwner, { media ->
             if (media != null) {
-                Glide.with(this).load(media.assets?.first { it.key == "main" }?.value).placeholder(R.color.colorPrimaryDark).override(1080, 1440).centerCrop().into(binding.background)
+                Glide.with(this).load(media.assets?.first { it.key == "main" }?.value)
+                    .placeholder(R.color.colorPrimaryDark).override(1080, 1440).centerCrop()
+                    .into(binding.background)
             } else {
                 viewModel.downloadBackground()
             }
@@ -199,9 +204,12 @@ class WoWCharacterFragment : Fragment() {
         viewModel.getIconURLs().observe(viewLifecycleOwner, {
             val equippedItems = viewModel.getEquipment().value!!.equippedItems
             binding.loadingCircle.visibility = View.GONE
-            val errorIcon = ResourcesCompat.getDrawable(resources, R.drawable.error_icon, context?.theme)
+            val errorIcon =
+                ResourcesCompat.getDrawable(resources, R.drawable.error_icon, context?.theme)
             for (item in equippedItems) {
-                Glide.with(this).load(it[item.slot.type]).placeholder(R.drawable.loading_placeholder).into(gearImageView[item.slot.type]!!)
+                Glide.with(this).load(it[item.slot.type])
+                    .placeholder(R.drawable.loading_placeholder)
+                    .into(gearImageView[item.slot.type]!!)
                 if (it[item.slot.type] == "empty") {
                     setIcon(item, errorIcon)
                 } else {
@@ -265,7 +273,8 @@ class WoWCharacterFragment : Fragment() {
 
     private fun setTopCharacterStrings(characterSummary: CharacterSummary) {
         binding.itemLvl.text = String.format("Item Level : %s", characterSummary.equippedItemLevel)
-        val levelRaceClassString = characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
+        val levelRaceClassString =
+            characterSummary.level.toString() + " " + characterSummary.race.name + " " + characterSummary.characterClass.name
         binding.levelRaceClass.text = levelRaceClassString
     }
 
@@ -275,7 +284,8 @@ class WoWCharacterFragment : Fragment() {
         val gson = GsonBuilder().create()
         val favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
-            favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
+            favoriteCharacters =
+                gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
             var indexOfCharacter = -1
             var indexTemp = 0
             for (favoriteCharacter in favoriteCharacters.characters) {
@@ -283,7 +293,8 @@ class WoWCharacterFragment : Fragment() {
                     indexOfCharacter = indexTemp
                     GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
                     GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
-                    favoriteCharacters.characters[indexOfCharacter] = FavoriteCharacter(characterSummary, viewModel.region)
+                    favoriteCharacters.characters[indexOfCharacter] =
+                        FavoriteCharacter(characterSummary, viewModel.region)
                     prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
                     break
                 } else {
@@ -310,7 +321,8 @@ class WoWCharacterFragment : Fragment() {
                 GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
                 favoriteCharacters.characters.removeAt(indexOfCharacter)
                 prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
-                Toast.makeText(requireActivity(), "Character removed from favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "Character removed from favorites", Toast.LENGTH_SHORT)
+                    .show()
                 addToFavorite(favoriteCharacters, characterSummary, gson, prefs)
 
             }
@@ -334,7 +346,8 @@ class WoWCharacterFragment : Fragment() {
                 GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
                 favoriteCharacters.characters.add(FavoriteCharacter(characterSummary, viewModel.region))
                 prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
-                Toast.makeText(requireActivity(), "Character added to favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "Character added to favorites", Toast.LENGTH_SHORT)
+                    .show()
                 deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, gson, prefs)
             }
         }
@@ -429,19 +442,25 @@ class WoWCharacterFragment : Fragment() {
                 nameView?.setTextColor(viewModel.getItemColor(equippedItem))
                 nameView?.textSize = 20f
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    statsView?.text = Html.fromHtml(viewModel.stats[equippedItem.slot.type], Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                        val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                        val drawable = ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
-                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                        drawable
-                    }, null)
+                    statsView?.text =
+                        Html.fromHtml(viewModel.stats[equippedItem.slot.type], Html.FROM_HTML_MODE_LEGACY, { source: String? ->
+                            val resourceId =
+                                resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                            val drawable =
+                                ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                            drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                            drawable
+                        }, null)
                 } else {
-                    statsView?.text = Html.fromHtml(viewModel.stats[equippedItem.slot.type], { source: String? ->
-                        val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                        val drawable = ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
-                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                        drawable
-                    }, null)
+                    statsView?.text =
+                        Html.fromHtml(viewModel.stats[equippedItem.slot.type], { source: String? ->
+                            val resourceId =
+                                resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                            val drawable =
+                                ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                            drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                            drawable
+                        }, null)
                 }
                 statsView?.setTextColor(Color.WHITE)
                 statsView?.textSize = 13f
@@ -503,7 +522,8 @@ class WoWCharacterFragment : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 try {
                     binding.talentRecycler.apply {
-                        adapter = TalentAdapter(talents.specializations[tab.position].talents, talentsIcons, context)
+                        adapter =
+                            TalentAdapter(talents.specializations[tab.position].talents, talentsIcons, context)
                         adapter!!.notifyDataSetChanged()
                     }
                     binding.noTalent.visibility = View.GONE
@@ -529,10 +549,14 @@ class WoWCharacterFragment : Fragment() {
         binding.agility.text = String.format("Agility: %s", statistic.agility.effective)
         binding.intellect.text = String.format("Intellect: %s", statistic.intellect.effective)
         binding.stamina.text = String.format("Stamina: %s", statistic.stamina.effective)
-        binding.crit.text = String.format(Locale.ENGLISH, "Critical Strike: %.2f%%", statistic.meleeCrit.value)
-        binding.haste.text = String.format(Locale.ENGLISH, "Haste: %.2f%%", statistic.meleeHaste.value.toDouble())
-        binding.mastery.text = String.format(Locale.ENGLISH, "Mastery: %.2f%%", statistic.mastery.value.toDouble())
-        binding.versatility.text = String.format(Locale.ENGLISH, "Versatility: %.2f%%", statistic.versatilityDamageDoneBonus.toDouble())
+        binding.crit.text =
+            String.format(Locale.ENGLISH, "Critical Strike: %.2f%%", statistic.meleeCrit.value)
+        binding.haste.text =
+            String.format(Locale.ENGLISH, "Haste: %.2f%%", statistic.meleeHaste.value.toDouble())
+        binding.mastery.text =
+            String.format(Locale.ENGLISH, "Mastery: %.2f%%", statistic.mastery.value.toDouble())
+        binding.versatility.text =
+            String.format(Locale.ENGLISH, "Versatility: %.2f%%", statistic.versatilityDamageDoneBonus.toDouble())
     }
 
     private fun getErrorMessage(responseCode: Int): String {
@@ -573,34 +597,40 @@ class WoWCharacterFragment : Fragment() {
                 dialog = DialogPrompt(requireActivity())
                 dialog!!.setCancellable(false)
                 dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
-                        .addMessage(getErrorMessage(responseCode), 18f, "message")
-                        .addSideBySideButtons(errorMessages.OK, 18f, errorMessages.BACK, 18f,
-                                {
-                                    dialog!!.dismiss()
-                                },
-                                {
-                                    dialog!!.dismiss()
-                                    EventBus.getDefault().post(NetworkEvent(true))
-                                },
-                                "retry", "back").show()
+                    .addMessage(getErrorMessage(responseCode), 18f, "message")
+                    .addButtons(
+                        dialog!!.CustomButton(errorMessages.OK, 18f, {
+                            dialog!!.dismiss()
+                        }, "retry"), dialog!!.CustomButton(
+                            errorMessages.BACK, 18f,
+
+                            {
+                                dialog!!.dismiss()
+                                EventBus.getDefault().post(NetworkEvent(true))
+                            },
+                            "back"
+                        )
+                    ).show()
             } else {
                 dialog = DialogPrompt(requireActivity())
                 dialog!!.setCancellable(false)
                 dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
-                        .addMessage(getErrorMessage(responseCode), 18f, "message")
-                        .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
-                                {
-                                    dialog!!.dismiss()
-                                    startDownloads()
-                                    EventBus.getDefault().post(RetryEvent(true))
-                                    binding.loadingCircle.visibility = View.VISIBLE
-                                    URLConstants.loading = true
-                                },
-                                {
-                                    dialog!!.dismiss()
-                                    EventBus.getDefault().post(NetworkEvent(true))
-                                },
-                                "retry", "back").show()
+                    .addMessage(getErrorMessage(responseCode), 18f, "message")
+                    .addButtons(
+                        dialog!!.CustomButton(errorMessages.RETRY, 18f, {
+                            dialog!!.dismiss()
+                            startDownloads()
+                            EventBus.getDefault().post(RetryEvent(true))
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            URLConstants.loading = true
+                        }, "retry"), dialog!!.CustomButton(errorMessages.BACK, 18f,
+
+                            {
+                                dialog!!.dismiss()
+                                EventBus.getDefault().post(NetworkEvent(true))
+                            }, "back"
+                        )
+                    ).show()
             }
         }
     }
