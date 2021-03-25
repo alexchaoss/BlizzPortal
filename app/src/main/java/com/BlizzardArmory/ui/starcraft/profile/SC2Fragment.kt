@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
@@ -453,8 +454,9 @@ class SC2Fragment : Fragment() {
                 Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
                     val resourceId =
                         resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable = resources.getDrawable(resourceId, requireActivity().theme)
-                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                    val drawable =
+                        ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                    drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
                     drawable
                 }, null)
         } else {
@@ -527,11 +529,11 @@ class SC2Fragment : Fragment() {
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
             .addMessage(getErrorMessage(responseCode), 18f, "message")
             .addButtons(
-                dialog.CustomButton(errorMessages.RETRY, 18f, {
+                dialog.Button(errorMessages.RETRY, 18f, {
                     dialog.dismiss()
                     viewModel.downloadAccountInformation()
                     binding.loadingCircle.visibility = View.VISIBLE
-                }, "retry"), dialog.CustomButton(
+                }, "retry"), dialog.Button(
                     errorMessages.BACK, 18f,
 
                     {

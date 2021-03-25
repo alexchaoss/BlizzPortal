@@ -485,12 +485,12 @@ class OWFragment : Fragment() {
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
             .addMessage(getErrorMessage(responseCode), 18f, "message")
             .addButtons(
-                dialog.CustomButton(errorMessages!!.RETRY, 18f, {
+                dialog.Button(errorMessages!!.RETRY, 18f, {
                     dialog.dismiss()
                     viewModel.downloadAccountInformation(username!!, platform!!)
                     binding.loadingCircle.visibility = View.VISIBLE
                     URLConstants.loading = true
-                }, "retry"), dialog.CustomButton(
+                }, "retry"), dialog.Button(
                     errorMessages!!.BACK, 18f,
 
                     {

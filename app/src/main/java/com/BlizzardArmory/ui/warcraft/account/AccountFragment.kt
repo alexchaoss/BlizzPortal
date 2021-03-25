@@ -22,10 +22,10 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.OauthFlowStarter
 import okhttp3.internal.toImmutableList
 
 class AccountFragment : Fragment() {
@@ -186,12 +186,12 @@ class AccountFragment : Fragment() {
             dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addButtons(
-                    dialog.CustomButton(errorMessages.RETRY, 18f, {
+                    dialog.Button(errorMessages.RETRY, 18f, {
                         dialog.dismiss()
                         viewModel.downloadWoWCharacters()
                         binding.loadingCircle.visibility = View.VISIBLE
                         URLConstants.loading = true
-                    }, "retry"), dialog.CustomButton(
+                    }, "retry"), dialog.Button(
                         errorMessages.BACK, 18f,
 
                         {

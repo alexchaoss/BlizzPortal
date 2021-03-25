@@ -240,12 +240,13 @@ class CharacterStatsFragment : Fragment() {
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
             .addMessage(getErrorMessage(responseCode), 18f, "message")
             .addButtons(
-                dialog.CustomButton(errorMessages.RETRY, 18f, {
+                dialog.Button(errorMessages.RETRY, 18f, {
                     dialog.dismiss()
                     viewModel.downloadCharacterInformation(battletag, id, selectedRegion)
                     EventBus.getDefault().post(RetryEvent(true))
                     binding.loadingCircle.visibility = View.VISIBLE
-                }, "retry"), dialog.CustomButton(errorMessages.BACK, 18f,
+                }, "retry"), dialog.Button(
+                    errorMessages.BACK, 18f,
 
                     {
                         dialog.dismiss()

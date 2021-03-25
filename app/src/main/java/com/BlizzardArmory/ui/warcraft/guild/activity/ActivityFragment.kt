@@ -177,9 +177,10 @@ class ActivityFragment : Fragment() {
                 dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                     .addMessage(getErrorMessage(responseCode), 18f, "message")
                     .addButtons(
-                        dialog.CustomButton(errorMessages.OK, 18f, {
+                        dialog.Button(errorMessages.OK, 18f, {
                             dialog.dismiss()
-                        }, "retry"), dialog.CustomButton(errorMessages.BACK, 18f,
+                        }, "retry"), dialog.Button(
+                            errorMessages.BACK, 18f,
 
                             {
                                 dialog.dismiss()
@@ -193,14 +194,15 @@ class ActivityFragment : Fragment() {
                 dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                     .addMessage(getErrorMessage(responseCode), 18f, "message")
                     .addButtons(
-                        dialog.CustomButton(errorMessages.RETRY, 18f, {
+                        dialog.Button(errorMessages.RETRY, 18f, {
                             dialog.dismiss()
                             viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
                             viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
                             EventBus.getDefault().post(RetryEvent(true))
                             binding.loadingCircle.visibility = View.VISIBLE
                             URLConstants.loading = true
-                        }, "retry"), dialog.CustomButton(errorMessages.BACK, 18f,
+                        }, "retry"), dialog.Button(
+                            errorMessages.BACK, 18f,
 
                             {
                                 dialog.dismiss()

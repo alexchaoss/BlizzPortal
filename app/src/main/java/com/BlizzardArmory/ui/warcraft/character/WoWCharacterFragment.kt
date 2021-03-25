@@ -599,9 +599,9 @@ class WoWCharacterFragment : Fragment() {
                 dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
                     .addMessage(getErrorMessage(responseCode), 18f, "message")
                     .addButtons(
-                        dialog!!.CustomButton(errorMessages.OK, 18f, {
+                        dialog!!.Button(errorMessages.OK, 18f, {
                             dialog!!.dismiss()
-                        }, "retry"), dialog!!.CustomButton(
+                        }, "retry"), dialog!!.Button(
                             errorMessages.BACK, 18f,
 
                             {
@@ -617,13 +617,14 @@ class WoWCharacterFragment : Fragment() {
                 dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
                     .addMessage(getErrorMessage(responseCode), 18f, "message")
                     .addButtons(
-                        dialog!!.CustomButton(errorMessages.RETRY, 18f, {
+                        dialog!!.Button(errorMessages.RETRY, 18f, {
                             dialog!!.dismiss()
                             startDownloads()
                             EventBus.getDefault().post(RetryEvent(true))
                             binding.loadingCircle.visibility = View.VISIBLE
                             URLConstants.loading = true
-                        }, "retry"), dialog!!.CustomButton(errorMessages.BACK, 18f,
+                        }, "retry"), dialog!!.Button(
+                            errorMessages.BACK, 18f,
 
                             {
                                 dialog!!.dismiss()

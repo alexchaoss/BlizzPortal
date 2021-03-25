@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="backgroundColor">#1b324d</color>
     <color name="transparent">#70000000</color>
     <color name="owBackgroundColor">#f2f1ed</color>
     <color name="owHeaderColor">#f79d19</color>

@@ -20,6 +20,7 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
@@ -36,7 +37,6 @@ import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.OauthFlowStarter
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.MenuItemClickEvent
@@ -356,8 +356,9 @@ class GamesActivity : LocalizationActivity(),
         dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
             .addMessage(getErrorMessage(responseCode), 18f, "message")
             .addButtons(
-                dialog.CustomButton(errorMessage.RETRY, 18f, { dialog.dismiss() }, "retry"),
-                dialog.CustomButton(errorMessage.BACK, 18f,
+                dialog.Button(errorMessage.RETRY, 18f, { dialog.dismiss() }, "retry"),
+                dialog.Button(
+                    errorMessage.BACK, 18f,
                     {
                         dialog.dismiss()
                         onBackPressed()
@@ -472,7 +473,7 @@ class GamesActivity : LocalizationActivity(),
                         searchDialog.addTitle("Enter a BattleTag", 18F, "battletag")
                             .addEditText("btag_field")
                             .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                            .addButtons(searchDialog.CustomButton("Search", 16F, { searchD3Profile(searchDialog) }, "search_button"))
+                            .addButtons(searchDialog.Button("Search", 16F, { searchD3Profile(searchDialog) }, "search_button"))
                             .show()
                     }
                 }
@@ -485,7 +486,7 @@ class GamesActivity : LocalizationActivity(),
                     .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
                         .map { it.name }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                    .addButtons(searchDialog.CustomButton("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button"))
+                    .addButtons(searchDialog.Button("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button"))
                     .show()
                 binding.overlappingPanel.closePanels()
             }
@@ -496,7 +497,7 @@ class GamesActivity : LocalizationActivity(),
                     .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
                         .map { it.name }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                    .addButtons(searchDialog.CustomButton("GO", 16F, { openSearchedWoWGuild(searchDialog) }, "search_button"))
+                    .addButtons(searchDialog.Button("GO", 16F, { openSearchedWoWGuild(searchDialog) }, "search_button"))
                     .show()
                 binding.overlappingPanel.closePanels()
             }

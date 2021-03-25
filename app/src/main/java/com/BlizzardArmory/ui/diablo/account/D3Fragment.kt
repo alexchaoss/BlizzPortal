@@ -21,13 +21,13 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.diablo.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.OauthFlowStarter
 import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -305,12 +305,13 @@ class D3Fragment : Fragment() {
             dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addButtons(
-                    dialog.CustomButton(errorMessages.RETRY, 18f, {
+                    dialog.Button(errorMessages.RETRY, 18f, {
                         dialog.dismiss()
                         viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
                         binding.loadingCircle.visibility = View.VISIBLE
                         URLConstants.loading = true
-                    }, "retry"), dialog.CustomButton(errorMessages.BACK, 18f,
+                    }, "retry"), dialog.Button(
+                        errorMessages.BACK, 18f,
 
                         {
                             dialog.dismiss()

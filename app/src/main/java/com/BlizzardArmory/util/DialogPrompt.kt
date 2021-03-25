@@ -24,9 +24,9 @@ class DialogPrompt(val context: Context) {
     private val container = LinearLayout(context)
     val tagMap = mutableMapOf<String, View>()
 
-    inner class CustomButton(val text: String, val size: Float, val onClick: () -> Unit, val tag: String = "", val color: Int = Color.WHITE, val bcontext: Context = context) {
+    inner class Button(val text: String, val size: Float, val onClick: () -> Unit, val tag: String = "", val color: Int = Color.WHITE, val bcontext: Context = context) {
 
-        fun button(): Button {
+        fun button(): android.widget.Button {
             val button = Button(context)
             button.text = text
             button.textSize = size
@@ -122,7 +122,7 @@ class DialogPrompt(val context: Context) {
         return this
     }
 
-    fun addButtons(vararg buttons: CustomButton): DialogPrompt {
+    fun addButtons(vararg buttons: Button): DialogPrompt {
         val linearLayout = LinearLayout(context)
         linearLayout.orientation = LinearLayout.HORIZONTAL
         linearLayout.gravity = Gravity.CENTER
@@ -137,43 +137,6 @@ class DialogPrompt(val context: Context) {
         }
         return this
     }
-
-    /*fun addSideBySideButtons(text1: String, size1: Float, text2: String, size2: Float, onClick1: () -> Unit, onClick2: () -> Unit, tag1: String = "", tag2: String = ""): DialogPrompt {
-        val button1 = Button(context)
-        button1.text = text1
-        button1.textSize = size1
-        button1.setTextColor(Color.WHITE)
-        button1.gravity = Gravity.CENTER
-        button1.layoutParams = buttonParams
-        button1.setPadding(10, 0, 10, 0)
-        button1.background = ContextCompat.getDrawable(context, R.drawable.buttonstyle)
-        button1.setOnClickListener { onClick1() }
-
-        val button2 = Button(context)
-        button2.text = text2
-        button2.textSize = size2
-        button2.setTextColor(Color.WHITE)
-        button2.gravity = Gravity.CENTER
-        button2.layoutParams = buttonParams
-        button2.setPadding(10, 0, 10, 0)
-        button2.background = ContextCompat.getDrawable(context, R.drawable.buttonstyle)
-        button2.setOnClickListener { onClick2() }
-
-        val linearLayout = LinearLayout(context)
-        linearLayout.addView(button1)
-        linearLayout.addView(button2)
-        linearLayout.orientation = LinearLayout.HORIZONTAL
-        linearLayout.gravity = Gravity.CENTER
-        container.addView(linearLayout)
-
-        if (tag1 != "") {
-            tagMap[tag1] = button1
-        }
-        if (tag2 != "") {
-            tagMap[tag2] = button2
-        }
-        return this
-    }*/
 
     fun addSpinner(spinnerList: Array<String>, tag: String = ""): DialogPrompt {
         val layoutParamsSpinner = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, MetricConversion.getDPMetric(40, context))

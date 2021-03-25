@@ -1,11 +1,9 @@
-package com.BlizzardArmory.util
+package com.BlizzardArmory.network.oauth
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.main.AuthorizationTokenActivity
 import com.BlizzardArmory.ui.navigation.GamesActivity
 

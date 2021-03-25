@@ -59,14 +59,14 @@ object OWPlatformChoiceDialog {
         val dialog = DialogPrompt(activity)
         dialog.addTitle(PLATFORM_CHOICE, 20f, "title")
             .addButtons(
-                dialog.CustomButton(PC, 16f, { pcButtonClicked(dialog) }, PC),
-                dialog.CustomButton(XBL, 16f, { xboxButtonClicked(dialog) }, XBL),
-                dialog.CustomButton(PSN, 16f, { psButtonClicked(dialog) }, PSN)
+                dialog.Button(PC, 16f, { pcButtonClicked(dialog) }, PC),
+                dialog.Button(XBL, 16f, { xboxButtonClicked(dialog) }, XBL),
+                dialog.Button(PSN, 16f, { psButtonClicked(dialog) }, PSN)
             )
             .addMessage(ENTER_BTAG, 18f, "message")
             .addEditText("username")
             .addButtons(
-                dialog.CustomButton(OK, 16f,
+                dialog.Button(OK, 16f,
                     {
                         if ((dialog.tagMap["username"] as EditText).text.isEmpty()) {
                             Toast.makeText(activity.applicationContext, "Please enter a username", Toast.LENGTH_SHORT)

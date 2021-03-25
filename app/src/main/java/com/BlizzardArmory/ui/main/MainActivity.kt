@@ -22,9 +22,9 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.MainActivityBinding
 import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.OauthFlowStarter
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
@@ -163,13 +163,14 @@ class MainActivity : LocalizationActivity() {
             dialog.addTitle("Internet connection unstable", 20F, "title")
                 .addMessage("Are you currently connected to a network?", 16F, "message")
                 .addButtons(
-                    dialog.CustomButton("Yes", 16F, { viewModel.openLoginToBattleNet() }, "positive"),
-                    dialog.CustomButton("No", 16F,
+                    dialog.Button("Yes", 16F, { viewModel.openLoginToBattleNet() }, "positive"),
+                    dialog.Button(
+                        "No", 16F,
                         {
                             dialog.dismiss()
                             val confirmDialog = DialogPrompt(this)
                             confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
-                                .addButtons(dialog.CustomButton("Ok", 16F, { confirmDialog.dismiss() }, "close"))
+                                .addButtons(dialog.Button("Ok", 16F, { confirmDialog.dismiss() }, "close"))
                                 .show()
                         }, "negative"
                     )
