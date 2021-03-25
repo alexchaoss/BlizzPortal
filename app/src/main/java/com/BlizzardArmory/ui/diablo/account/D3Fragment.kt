@@ -27,6 +27,7 @@ import com.BlizzardArmory.ui.diablo.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.OauthFlowStarter
 import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -253,6 +254,9 @@ class D3Fragment : Fragment() {
             404 -> {
                 errorMessages.LOGIN_TO_UPDATE
             }
+            401 -> {
+                errorMessages.RE_LOGIN_MESSAGE
+            }
             503, 403 -> {
                 errorMessages.UNEXPECTED
             }
@@ -270,6 +274,9 @@ class D3Fragment : Fragment() {
         return when (responseCode) {
             404 -> {
                 errorMessages.INFORMATION_OUTDATED
+            }
+            401 -> {
+                errorMessages.RE_LOGIN
             }
             503, 403 -> {
                 errorMessages.UNAVAILABLE
@@ -289,22 +296,31 @@ class D3Fragment : Fragment() {
 
         val dialog = DialogPrompt(requireActivity())
         dialog.setCancellable(false)
-        dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+
+        if (responseCode == 401) {
+            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = this.javaClass.simpleName
+            OauthFlowStarter.bundle = arguments
+            OauthFlowStarter.startOauthFlow(viewModel.getBnetParams().value!!, requireActivity(), View.GONE)
+        } else {
+            dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
-                .addSideBySideButtons(errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
-                        {
-                            dialog.dismiss()
-                            viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
-                            binding.loadingCircle.visibility = View.VISIBLE
-                            URLConstants.loading = true
-                        },
-                        {
-                            dialog.dismiss()
-                            GamesActivity.hideFavoriteButton()
-                            parentFragmentManager.popBackStack()
-                            NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
-                        },
-                        "retry", "back").show()
+                .addSideBySideButtons(
+                    errorMessages.RETRY, 18f, errorMessages.BACK, 18f,
+                    {
+                        dialog.dismiss()
+                        viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
+                        binding.loadingCircle.visibility = View.VISIBLE
+                        URLConstants.loading = true
+                    },
+                    {
+                        dialog.dismiss()
+                        GamesActivity.hideFavoriteButton()
+                        parentFragmentManager.popBackStack()
+                        NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                    },
+                    "retry", "back"
+                ).show()
+        }
     }
 
     companion object {

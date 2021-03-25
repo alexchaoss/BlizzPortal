@@ -32,15 +32,18 @@
         <activity
             android:name="com.BlizzardArmory.ui.main.AuthorizationTokenActivity"
             android:parentActivityName="com.BlizzardArmory.ui.main.MainActivity"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"
             android:launchMode="singleTop" />
         <activity
             android:name="com.BlizzardArmory.ui.navigation.GamesActivity"
             android:parentActivityName="com.BlizzardArmory.ui.main.MainActivity"
+            android:alwaysRetainTaskState="true"
             android:configChanges="orientation"
             android:screenOrientation="unspecified"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

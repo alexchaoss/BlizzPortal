@@ -22,11 +22,9 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.MainActivityBinding
 import com.BlizzardArmory.network.URLConstants
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.OauthFlowStarter
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
@@ -68,7 +66,7 @@ class MainActivity : LocalizationActivity() {
         binding.logout.setOnClickListener { clearCredentials() }
 
         viewModel.getBattlenetOAuth2Params().observe(this, {
-            startOauthFlow(it)
+            OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
         })
     }
 
@@ -201,14 +199,6 @@ class MainActivity : LocalizationActivity() {
                 ConnectionStatus.isDataNetworkConnected = false
             }
         })
-    }
-
-    private fun startOauthFlow(battlenetOAuth2Params: BattlenetOAuth2Params) {
-        val intent = Intent(this, AuthorizationTokenActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-        intent.putExtra(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
-        intent.putExtra(BattlenetConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity::class.java)
-        startActivity(intent)
     }
 
 

@@ -12,6 +12,12 @@ class ErrorMessages(resources: Resources) {
      */
     val NO_INTERNET = resources.getString(R.string.no_internet)
 
+    val RE_LOGIN = "Authentication Failed"
+
+    val RE_LOGIN_MESSAGE = "Current session has expired and needs relogin."
+
+    val AUTHENTICATE = " Authenticate "
+
     /**
      * The constant TURN_ON_CONNECTION_MESSAGE.
      */

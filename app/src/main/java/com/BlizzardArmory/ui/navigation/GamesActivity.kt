@@ -35,6 +35,7 @@ import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.OauthFlowStarter
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.MenuItemClickEvent
@@ -108,6 +109,18 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
             (binding.menu.adapter as MenuAdapter).hideSubMenu(menuList.find { it.title == resources.getString(R.string.diablo_3) }!!)
             (binding.menu.adapter as MenuAdapter).hideSubMenu(menuList.find { it.title == resources.getString(R.string.overwatch) }!!)
             (binding.menu.adapter as MenuAdapter).hideSubMenu(menuList.find { it.title == resources.getString(R.string.starcraft_2) }!!)
+        }
+
+        if (savedInstanceState == null) {
+            when (OauthFlowStarter.lastOpenedFragmentNeedingOAuth) {
+                "AccountFragment" -> {
+                    var fragment = AccountFragment()
+                    openWoWAccount(fragment)
+                }
+                "D3Fragment" -> {
+                    callD3Activity(OauthFlowStarter.bundle?.getString("battletag")!!, OauthFlowStarter.bundle?.getString("region")!!)
+                }
+            }
         }
     }
 
@@ -411,9 +424,7 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
                     resources.getString(R.string.world_of_warcraft) -> {
                         favorite!!.visibility = View.GONE
                         fragment = AccountFragment()
-                        resetBackStack()
-                        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "wowfragment").addToBackStack("wow_account").commit()
-                        supportFragmentManager.executePendingTransactions()
+                        openWoWAccount(fragment)
                     }
                     resources.getString(R.string.diablo_3) -> {
                         searchDialog.addTitle("Enter a BattleTag", 18F, "battletag")
@@ -530,6 +541,13 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         }
     }
 
+    private fun openWoWAccount(fragment: Fragment) {
+        resetBackStack()
+        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "wowfragment")
+            .addToBackStack("wow_account").commit()
+        supportFragmentManager.executePendingTransactions()
+    }
+
     private fun openSearchedWoWGuild(dialog: DialogPrompt) {
         when {
             (dialog.tagMap["guild_field"] as EditText).text.toString() == "" -> {
@@ -620,7 +638,6 @@ class GamesActivity : LocalizationActivity(), PanelsChildGestureRegionObserver.G
         val bundle = Bundle()
         bundle.putString("battletag", battletag)
         bundle.putString("region", region)
-        bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, viewModel.getBnetParams().value)
         fragment.arguments = bundle
         resetBackStack()
         supportFragmentManager.beginTransaction()

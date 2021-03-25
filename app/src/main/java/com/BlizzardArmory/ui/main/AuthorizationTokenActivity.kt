@@ -20,9 +20,10 @@ import kotlinx.coroutines.launch
 
 class AuthorizationTokenActivity : AppCompatActivity() {
 
-    private lateinit var webview: WebView
     private var redirectActivity: Class<*>? = null
     private lateinit var authorizationTokenActivity: AuthorizationTokenActivity
+
+    private var visibility: Int = 0
 
     private var prefs: SharedPreferences? = null
 
@@ -32,11 +33,15 @@ class AuthorizationTokenActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TokenActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        visibility = this.intent?.extras?.getInt("visisble")!!
+        if (visibility != 8) {
+            setContentView(binding.root)
+        }
         Log.i(BattlenetConstants.TAG, "Starting task to retrieve request token")
         setOberservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        viewModel.getBnetParams().value = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value =
+            this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         val bundle = this.intent.extras!!
         authorizationTokenActivity = this
         // Receiving redirection activity class
@@ -44,29 +49,29 @@ class AuthorizationTokenActivity : AppCompatActivity() {
     }
 
     private fun initWebView() {
-        webview = WebView(applicationContext)
-        webview.settings.javaScriptEnabled = true
-        webview.visibility = View.VISIBLE
+        binding.webview.settings.javaScriptEnabled = true
         val authorizationUrl = viewModel.battlenetOAuth2Helper!!.authorizationUrl
         Log.i(BattlenetConstants.TAG, "Using authorizationUrl = $authorizationUrl")
-        webview.webViewClient = object : WebViewClient() {
+        binding.webview.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 Log.d(BattlenetConstants.TAG, "onPageFinished : $url handled = ${viewModel.isHandled()}")
                 if (url.startsWith(viewModel.getBnetParams().value!!.rederictUri)) {
-                    webview.visibility = View.INVISIBLE
-                    setContentView(binding.root)
+                    binding.webview.visibility = View.INVISIBLE
+                    if (visibility != 8) {
+                        setContentView(binding.root)
+                    }
                     if (!viewModel.isHandled()) {
                         lifecycleScope.launch {
                             viewModel.processToken(url)
                         }
                     }
                 } else {
-                    webview.visibility = View.VISIBLE
+                    setContentView(binding.root)
+                    binding.webview.visibility = View.VISIBLE
                 }
             }
         }
-        webview.loadUrl(authorizationUrl)
-        setContentView(webview)
+        binding.webview.loadUrl(authorizationUrl)
     }
 
     private fun setOberservers() {
