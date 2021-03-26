@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.warcraft.guild.navigation
+package com.BlizzardArmory.ui.warcraft.character.navigation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.BlizzardArmory.databinding.WowGuildNavbarFragmentBinding
+import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
-import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
+import com.BlizzardArmory.ui.warcraft.account.AccountFragment
+import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
-import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayout
@@ -20,29 +20,47 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-class GuildNavFragment : Fragment() {
+private const val CHARACTER = "character"
+private const val REALM = "realm"
+private const val MEDIA = "media"
+private const val REGION = "region"
 
-    private var guildName: String? = null
+
+class WoWNavFragment : Fragment() {
+
+    private var character: String? = null
     private var realm: String? = null
+    private var media: String? = null
     private var region: String? = null
 
-    private var _binding: WowGuildNavbarFragmentBinding? = null
+    private var _binding: WowNavbarFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            character = it.getString(CHARACTER)
+            realm = it.getString(REALM)
+            media = it.getString(MEDIA)
+            region = it.getString(REGION)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = WowGuildNavbarFragmentBinding.inflate(layoutInflater)
+        _binding = WowNavbarFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bundle = requireArguments()
-        binding.wowPager.offscreenPageLimit = 2
+        val bundle = Bundle()
+        bundle.putString("character", character)
+        bundle.putString("realm", realm)
+        bundle.putString("media", media)
+        bundle.putString("region", region)
+
+        binding.wowPager.offscreenPageLimit = 5
         val adapter = NavAdapter(childFragmentManager, binding.navBar.tabCount, bundle)
         binding.wowPager.adapter = adapter
         binding.wowPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.navBar))
@@ -81,25 +99,37 @@ class GuildNavFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
+            GamesActivity.hideFavoriteButton()
             when {
-                requireActivity().supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
-                    WoWCharacterFragment.addOnBackPressCallback(activity as GamesActivity)
-                    GamesActivity.favorite?.visibility = View.VISIBLE
-                    requireActivity().supportFragmentManager.popBackStack()
-                }
-                requireActivity().supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {
-                    MRaidLeaderboardsFragment.addOnBackPressCallback(activity as GamesActivity)
-                    requireActivity().supportFragmentManager.popBackStack()
-                }
-                requireActivity().supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                activity?.supportFragmentManager?.findFragmentByTag("guild_nav_fragment") != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as GamesActivity)
-                    requireActivity().supportFragmentManager.popBackStack()
+                }
+                activity?.supportFragmentManager?.findFragmentByTag("wowfragment") != null -> {
+                    AccountFragment.addOnBackPressCallback(activity as GamesActivity)
+                    activity?.supportFragmentManager?.popBackStack()
+                }
+                activity?.supportFragmentManager?.findFragmentByTag("wowfavorites") != null -> {
+                    WoWFavoritesFragment.addOnBackPressCallback(activity as GamesActivity)
+                    activity?.supportFragmentManager?.popBackStack()
                 }
                 else -> {
                     NewsListFragment.addOnBackPressCallback(activity as GamesActivity)
-                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
             }
         }
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(character: String, realm: String, media: String?, region: String) =
+            WoWNavFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CHARACTER, character)
+                    putString(REALM, realm)
+                    putString(MEDIA, media)
+                    putString(REGION, region)
+                }
+            }
     }
 }

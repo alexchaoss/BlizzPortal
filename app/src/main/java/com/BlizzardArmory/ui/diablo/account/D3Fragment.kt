@@ -22,9 +22,9 @@ import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
+import com.BlizzardArmory.ui.diablo.characterfragments.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
-import com.BlizzardArmory.ui.diablo.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt

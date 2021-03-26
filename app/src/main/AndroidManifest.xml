@@ -18,7 +18,7 @@
         android:largeHeap="true"
         android:fullBackupContent="@xml/backup_descriptor">
         <activity
-            android:name="com.BlizzardArmory.ui.SplashScreenActivity"
+            android:name="com.BlizzardArmory.ui.main.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,7 @@
             android:configChanges="orientation"
             android:screenOrientation="unspecified" />
         <activity
-            android:name="com.BlizzardArmory.ui.main.AuthorizationTokenActivity"
+            android:name="com.BlizzardArmory.ui.auth.AuthorizationTokenActivity"
             android:parentActivityName="com.BlizzardArmory.ui.main.MainActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation"

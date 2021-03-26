@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
 import com.BlizzardArmory.ui.navigation.GamesActivity
-import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
+import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import java.util.*
 
 class RosterAdapter(private val activities: List<Members>, private val context: Context, private val region: String) :

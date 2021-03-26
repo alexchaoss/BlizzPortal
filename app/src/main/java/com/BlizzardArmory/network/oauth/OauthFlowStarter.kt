@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.BlizzardArmory.ui.main.AuthorizationTokenActivity
+import com.BlizzardArmory.ui.auth.AuthorizationTokenActivity
 import com.BlizzardArmory.ui.navigation.GamesActivity
 
 object OauthFlowStarter {

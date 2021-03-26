@@ -49,9 +49,9 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 context.supportFragmentManager.executePendingTransactions()
             } else {
                 val dialog = DialogPrompt(context)
-                dialog.addTitle(ErrorMessages(context.resources).ERROR, 15F, "title")
-                    .addMessage(ErrorMessages(context.resources).CHINESE_MESSAGE, 15F, "message")
-                    .addButtons(dialog.Button("Close", 20F, { dialog.dismiss() }, "button"))
+                dialog.addTitle(ErrorMessages(context.resources).ERROR, 20F, "title")
+                    .addMessage(ErrorMessages(context.resources).CHINESE_MESSAGE, 16F, "message")
+                    .addButtons(dialog.Button("Close", 16F, { dialog.dismiss() }, "button"))
                     .show()
             }
         }

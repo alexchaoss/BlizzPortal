@@ -20,7 +20,7 @@ import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
-import com.BlizzardArmory.ui.warcraft.character.WoWCharacterFragment
+import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FactionEvent

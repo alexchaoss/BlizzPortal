@@ -32,10 +32,10 @@ import com.BlizzardArmory.ui.settings.SettingsFragment
 import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
+import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
-import com.BlizzardArmory.ui.warcraft.navigation.WoWNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
