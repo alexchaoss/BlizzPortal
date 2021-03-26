@@ -137,9 +137,6 @@ class AccountFragment : Fragment() {
             404 -> {
                 errorMessages.LOGIN_TO_UPDATE
             }
-            401 -> {
-                errorMessages.RE_LOGIN_MESSAGE
-            }
             503, 403 -> {
                 errorMessages.UNEXPECTED
             }
@@ -157,9 +154,6 @@ class AccountFragment : Fragment() {
         return when (responseCode) {
             404 -> {
                 errorMessages.INFORMATION_OUTDATED
-            }
-            401 -> {
-                errorMessages.RE_LOGIN
             }
             503, 403 -> {
                 errorMessages.UNAVAILABLE

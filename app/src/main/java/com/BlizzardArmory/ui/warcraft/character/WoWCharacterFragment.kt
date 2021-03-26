@@ -543,20 +543,25 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun setCharacterInformationTextviews(statistic: Statistic) {
-        binding.health.text = String.format("Health: %s", statistic.health)
+        binding.health.text =
+            String.format("%s: %s", resources.getString(R.string.health), statistic.health)
         binding.power.text = String.format("%s: %s", statistic.powerType.name, statistic.power)
-        binding.strength.text = String.format("Strength: %s", statistic.strength.effective)
-        binding.agility.text = String.format("Agility: %s", statistic.agility.effective)
-        binding.intellect.text = String.format("Intellect: %s", statistic.intellect.effective)
-        binding.stamina.text = String.format("Stamina: %s", statistic.stamina.effective)
+        binding.strength.text =
+            String.format("%s %s", resources.getString(R.string.strength), statistic.strength.effective)
+        binding.agility.text =
+            String.format("%s: %s", resources.getString(R.string.agility), statistic.agility.effective)
+        binding.intellect.text =
+            String.format("%s: %s", resources.getString(R.string.intellect), statistic.intellect.effective)
+        binding.stamina.text =
+            String.format("%s: %s", resources.getString(R.string.stamina), statistic.stamina.effective)
         binding.crit.text =
-            String.format(Locale.ENGLISH, "Critical Strike: %.2f%%", statistic.meleeCrit.value)
+            String.format(Locale.ENGLISH, "%s: %.2f%%", resources.getString(R.string.crit), statistic.meleeCrit.value)
         binding.haste.text =
-            String.format(Locale.ENGLISH, "Haste: %.2f%%", statistic.meleeHaste.value.toDouble())
+            String.format(Locale.ENGLISH, "%s: %.2f%%", resources.getString(R.string.haste), statistic.meleeHaste.value.toDouble())
         binding.mastery.text =
-            String.format(Locale.ENGLISH, "Mastery: %.2f%%", statistic.mastery.value.toDouble())
+            String.format(Locale.ENGLISH, "%s: %.2f%%", resources.getString(R.string.mastery), statistic.mastery.value.toDouble())
         binding.versatility.text =
-            String.format(Locale.ENGLISH, "Versatility: %.2f%%", statistic.versatilityDamageDoneBonus.toDouble())
+            String.format(Locale.ENGLISH, "%s: %.2f%%", resources.getString(R.string.vers), statistic.versatilityDamageDoneBonus.toDouble())
     }
 
     private fun getErrorMessage(responseCode: Int): String {

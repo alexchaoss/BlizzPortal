@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.model.warcraft.guild.activity.Activities
 
-class ActivitiesAdapter(private val activities: List<Activities>/*, private val roster: Roster*/, private val context: Context) :
+class ActivitiesAdapter(private val activities: List<Activities>, private val context: Context) :
     RecyclerView.Adapter<ActivitiesViewHolder>() {
 
 
@@ -23,7 +23,7 @@ class ActivitiesAdapter(private val activities: List<Activities>/*, private val 
             holder.itemView.setBackgroundColor(Color.parseColor("#00000000"))
         }
         val activity = activities[position]
-        holder.bind(activity/*, roster*/)
+        holder.bind(activity)
     }
 
     override fun getItemCount(): Int = activities.size

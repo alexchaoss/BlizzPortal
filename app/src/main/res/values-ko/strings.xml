@@ -90,11 +90,22 @@
     <string name="search">검색</string>
     <string name="covenant">성약의</string>
     <string name="account">계정</string>
-    <string name="raid_leaderboards">Raid Leaderboards</string>
+    <string name="raid_leaderboards">레이드 리더 보드</string>
     <string name="search_guild">검색 길드</string>
     <string name="guild_not_found">길드를 찾을 수 없습니다.</string>
     <string name="guild_not_found_message">길드는 입력된 정보로 찾을 수 없습니다.</string>
     <string name="hascompleted">완료되었습니다.</string>
     <string name="recent_activity">최근 활동</string>
-    <string name="search_profile">Search Profile</string>
+    <string name="search_profile">프로필 검색</string>
+    <string name="error">오류</string>
+    <string name="cn_message">중국 지역은 지원되지 않습니다. 불편을 드려 죄송합니다.</string>
+    <string name="defeated">패배했다</string>
+    <string name="health">건강</string>
+    <string name="agility">민첩</string>
+    <string name="intellect">지력</string>
+    <string name="stamina">내구력</string>
+    <string name="crit">치명타</string>
+    <string name="haste">서두름</string>
+    <string name="mastery">지배</string>
+    <string name="vers">다재</string>
 </resources>

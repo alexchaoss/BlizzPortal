@@ -2,13 +2,13 @@ package com.BlizzardArmory.ui.warcraft.mythicraidleaderboard
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.mythicraid.Entries
+import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
@@ -49,8 +49,8 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 context.supportFragmentManager.executePendingTransactions()
             } else {
                 val dialog = DialogPrompt(context)
-                dialog.addMessage("Chinese region is not supported yet.", 15F, "message1")
-                    .addMessage("Sorry for any inconvenience this may cause.", 15F, "message2")
+                dialog.addTitle(ErrorMessages(context.resources).ERROR, 15F, "title")
+                    .addMessage(ErrorMessages(context.resources).CHINESE_MESSAGE, 15F, "message")
                     .addButtons(dialog.Button("Close", 20F, { dialog.dismiss() }, "button"))
                     .show()
             }
@@ -60,7 +60,6 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
     override fun getItemCount(): Int = fullLeaderboardList.size
 
     fun filter(constraint: String) {
-        Log.i("Filter", constraint)
         fullLeaderboardList.clear()
         if (constraint.toLowerCase(Locale.ROOT).isEmpty()) {
             fullLeaderboardList.addAll(list)
@@ -91,6 +90,5 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 fullLeaderboardList.add(entry)
             }
         }
-        Log.i("TEST", fullLeaderboardList.size.toString())
     }
 }

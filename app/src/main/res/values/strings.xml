@@ -165,6 +165,17 @@
     <string name="hascompleted">" has completed "</string>
     <string name="recent_activity">Recent Activity</string>
     <string name="search_profile">Search Profile</string>
+    <string name="error">Error</string>
+    <string name="cn_message">Chinese region is not supported. Sorry for any inconvenience this may cause.</string>
+    <string name="defeated">" was defeated on "</string>
+    <string name="health">Health</string>
+    <string name="agility">Agility</string>
+    <string name="intellect">Intellect</string>
+    <string name="stamina">Stamina</string>
+    <string name="crit">Critical Strike</string>
+    <string name="haste">Haste</string>
+    <string name="mastery">Mastery</string>
+    <string name="vers">Versatility</string>
 
     <string-array name="regions">
         <item>Select Region</item>
