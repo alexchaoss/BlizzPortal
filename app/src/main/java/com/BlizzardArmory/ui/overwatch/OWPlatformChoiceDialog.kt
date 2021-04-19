@@ -82,7 +82,7 @@ object OWPlatformChoiceDialog {
         (dialog.tagMap[PSN] as Button).setTextColor(Color.BLACK)
     }
 
-    fun pcButtonClicked(dialog: DialogPrompt) {
+    private fun pcButtonClicked(dialog: DialogPrompt) {
         (dialog.tagMap[XBL] as Button).setTextColor(Color.BLACK)
         (dialog.tagMap[PC] as Button).setTextColor(Color.WHITE)
         (dialog.tagMap[PSN] as Button).setTextColor(Color.BLACK)
@@ -90,7 +90,7 @@ object OWPlatformChoiceDialog {
         platform = "pc"
     }
 
-    fun xboxButtonClicked(dialog: DialogPrompt) {
+    private fun xboxButtonClicked(dialog: DialogPrompt) {
         (dialog.tagMap[XBL] as Button).setTextColor(Color.WHITE)
         (dialog.tagMap[PC] as Button).setTextColor(Color.BLACK)
         (dialog.tagMap[PSN] as Button).setTextColor(Color.BLACK)
@@ -98,7 +98,7 @@ object OWPlatformChoiceDialog {
         platform = "xbl"
     }
 
-    fun psButtonClicked(dialog: DialogPrompt) {
+    private fun psButtonClicked(dialog: DialogPrompt) {
         (dialog.tagMap[XBL] as Button).setTextColor(Color.BLACK)
         (dialog.tagMap[PC] as Button).setTextColor(Color.BLACK)
         (dialog.tagMap[PSN] as Button).setTextColor(Color.WHITE)

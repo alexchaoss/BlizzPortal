@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.stfalcon.imageviewer.StfalconImageViewer
+import com.stfalcon.imageviewer.loader.ImageLoader
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -91,14 +93,18 @@ class HTMLtoViewsConverter(val context: Context) {
                     )
                     val relativeLayout = RelativeLayout(context)
                     relativeLayout.layoutParams = params
-                    val imageView = ImageView(context)
-                    imageView.adjustViewBounds = true
-                    relativeLayout.addView(imageView, params)
-                    val p =
-                        Pattern.compile("https?.+?\\.png|https?.+?\\.jpg|https?.+?\\.jpeg|https?.+?\\.gif|https?.+?\\.svg|https?.+?\\.webp|https?.+?\\.ico|https?.+?\\.bmp")
+                    val newImageView = ImageView(context)
+                    newImageView.adjustViewBounds = true
+                    relativeLayout.addView(newImageView, params)
+                    val p = Pattern.compile("https?.+?\\.png|https?.+?\\.jpg|https?.+?\\.jpeg|https?.+?\\.gif|https?.+?\\.svg|https?.+?\\.webp|https?.+?\\.ico|https?.+?\\.bmp")
                     val m: Matcher = p.matcher(component.info!!)
                     if (m.find()) {
-                        Glide.with(context).load(m.group()).into(imageView)
+                        Glide.with(context).load(m.group()).into(newImageView)
+                        newImageView.setOnClickListener {
+                            StfalconImageViewer.Builder(context, listOf(m.group())) { imageView, _ ->
+                                Glide.with(context).load(m.group()).into(imageView)
+                            }.withTransitionFrom(newImageView).show()
+                        }
                     }
                     linearLayout.addView(relativeLayout)
                 }

@@ -177,4 +177,8 @@ object URLConstants {
         return "https://blizzard-armory-server.herokuapp.com/reputations/$locale"
     }
 
+    fun getOverwatchLeagueData(year: String): String{
+        return "https://public-archived-data.s3.us-east-2.amazonaws.com/standings/archived+standings+$year.json"
+    }
+
 }

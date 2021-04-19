@@ -119,7 +119,7 @@ class GamesActivity : LocalizationActivity(),
                     openWoWAccount(fragment)
                 }
                 "D3Fragment" -> {
-                    callD3Activity(OauthFlowStarter.bundle?.getString("battletag")!!, OauthFlowStarter.bundle?.getString("region")!!)
+                    callD3Fragment(OauthFlowStarter.bundle?.getString("battletag")!!, OauthFlowStarter.bundle?.getString("region")!!)
                 }
             }
         }
@@ -438,7 +438,7 @@ class GamesActivity : LocalizationActivity(),
                         openWoWAccount(fragment)
                     }
                     resources.getString(R.string.diablo_3) -> {
-                        callD3Activity(userInformation?.battleTag!!, URLConstants.region)
+                        callD3Fragment(userInformation?.battleTag!!, URLConstants.region)
                     }
                     resources.getString(R.string.overwatch) -> {
                         val bundle = Bundle()
@@ -486,7 +486,7 @@ class GamesActivity : LocalizationActivity(),
                     .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
                         .map { it.name }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                    .addButtons(searchDialog.Button("GO", 16F, { openSearchedWoWCharacter(searchDialog) }, "search_button"))
+                    .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWChracterFields(searchDialog) }, "search_button"))
                     .show()
                 binding.overlappingPanel.closePanels()
             }
@@ -497,7 +497,7 @@ class GamesActivity : LocalizationActivity(),
                     .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
                         .map { it.name }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                    .addButtons(searchDialog.Button("GO", 16F, { openSearchedWoWGuild(searchDialog) }, "search_button"))
+                    .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWGuildFields(searchDialog) }, "search_button"))
                     .show()
                 binding.overlappingPanel.closePanels()
             }
@@ -584,42 +584,6 @@ class GamesActivity : LocalizationActivity(),
         supportFragmentManager.executePendingTransactions()
     }
 
-    private fun openSearchedWoWGuild(dialog: DialogPrompt) {
-        when {
-            (dialog.tagMap["guild_field"] as EditText).text.toString() == "" -> {
-                Toast.makeText(this, "Please enter the guild name", Toast.LENGTH_SHORT).show()
-            }
-            (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() == "" -> {
-                Toast.makeText(this, "Please enter the realm", Toast.LENGTH_SHORT).show()
-            }
-            (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                .equals("Select Region", ignoreCase = true) -> {
-                Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
-            }
-            else -> {
-                val guildName = (dialog.tagMap["guild_field"] as EditText).text.toString()
-                    .toLowerCase(Locale.ROOT)
-                val guildRealm =
-                    viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
-                val selectedRegion =
-                    (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                val fragment = GuildNavFragment()
-                val bundle = Bundle()
-                bundle.putString("guildName", guildName)
-                bundle.putString("region", selectedRegion)
-                bundle.putString("realm", guildRealm)
-                fragment.arguments = bundle
-                resetBackStack()
-                supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                    .add(R.id.fragment, fragment, "guild_nav_fragment")
-                    .addToBackStack("wow_guild").commit()
-                supportFragmentManager.executePendingTransactions()
-                dialog.dismiss()
-            }
-        }
-    }
-
     private fun resetBackStack() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         if (supportFragmentManager.findFragmentById(R.id.fragment) != null) {
@@ -643,7 +607,7 @@ class GamesActivity : LocalizationActivity(),
             }
             else -> {
                 dialog.dismiss()
-                callD3Activity(
+                callD3Fragment(
                     (dialog.tagMap["btag_field"] as EditText).text.toString().replace("#", "-"),
                     (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 )
@@ -651,32 +615,72 @@ class GamesActivity : LocalizationActivity(),
         }
     }
 
-    private fun openSearchedWoWCharacter(dialog: DialogPrompt) {
+    private fun validSearchedWoWChracterFields(dialog: DialogPrompt) {
         when {
             (dialog.tagMap["character_field"] as EditText).text.toString() == "" -> {
                 Toast.makeText(this, "Please enter the character name", Toast.LENGTH_SHORT).show()
-            }
-            (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() == "" -> {
-                Toast.makeText(this, "Please enter the realm", Toast.LENGTH_SHORT).show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 .equals("Select Region", ignoreCase = true) -> {
                 Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString()
-                    .toLowerCase(Locale.ROOT).replace(" ", "-")
-                characterRealm =
-                    viewModel.getWowRealms().value!![(dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
-                selectedRegion =
-                    (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
-                dialog.dismiss()
+                characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString().toLowerCase(Locale.ROOT).replace(" ", "-")
+                selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+
+                if(viewModel.getWowRealms().value!![selectedRegion]!!.realms.any { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                    characterRealm = viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                    viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
+                    dialog.dismiss()
+                }else{
+                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
-    private fun callD3Activity(battletag: String, region: String) {
+    private fun validSearchedWoWGuildFields(dialog: DialogPrompt) {
+        when {
+            (dialog.tagMap["guild_field"] as EditText).text.toString() == "" -> {
+                Toast.makeText(this, "Please enter the guild name", Toast.LENGTH_SHORT).show()
+            }
+            (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                .equals("Select Region", ignoreCase = true) -> {
+                Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                val guildName = (dialog.tagMap["guild_field"] as EditText).text.toString().toLowerCase(Locale.ROOT)
+                val selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                var guildRealm = ""
+                if(viewModel.getWowRealms().value!![selectedRegion]!!.realms.any { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                    guildRealm = viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                    callWoWGuildFragment(guildName, selectedRegion, guildRealm, dialog)
+                    dialog.dismiss()
+                }else{
+                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+    }
+
+    private fun callWoWGuildFragment(guildName: String, selectedRegion: String, guildRealm: String, dialog: DialogPrompt) {
+        val fragment = GuildNavFragment()
+        val bundle = Bundle()
+        bundle.putString("guildName", guildName)
+        bundle.putString("region", selectedRegion)
+        bundle.putString("realm", guildRealm)
+        fragment.arguments = bundle
+        resetBackStack()
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
+            .add(R.id.fragment, fragment, "guild_nav_fragment")
+            .addToBackStack("wow_guild").commit()
+        supportFragmentManager.executePendingTransactions()
+        dialog.dismiss()
+    }
+
+    private fun callD3Fragment(battletag: String, region: String) {
         val fragment: Fragment = D3Fragment()
         val bundle = Bundle()
         bundle.putString("battletag", battletag)
