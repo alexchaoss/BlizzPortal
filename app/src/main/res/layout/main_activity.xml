@@ -50,20 +50,6 @@
             app:layout_constraintStart_toEndOf="@+id/linearLayout"
             tools:layout_editor_absoluteY="436dp" />
 
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/buttonstyle"
-            android:text="@string/logout"
-            android:textColor="#FFFFFF"
-            android:textSize="23sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout"
-            tools:layout_editor_absoluteY="436dp" />
-
     </LinearLayout>
 
     <ImageView

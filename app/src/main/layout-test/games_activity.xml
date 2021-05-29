@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -11,26 +11,25 @@
         android:id="@+id/top_bar"
         layout="@layout/games_activity_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content" />
 
-    <com.discord.panels.OverlappingPanelsLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/overlapping_panel"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_bar">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
             android:background="@drawable/rounded_layout_left"
             app:itemIconSize="50dp"
-            app:itemTextAppearance="@style/menu_text_style">
+            app:itemTextAppearance="@style/menu_text_style"
+            app:layout_constraintEnd_toStartOf="@id/fragment"
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/menu"
@@ -44,16 +43,20 @@
 
         <FrameLayout
             android:id="@+id/fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toStartOf="@id/right_panel"
+            app:layout_constraintStart_toEndOf="@id/nav_view" />
 
         <FrameLayout
             android:id="@+id/right_panel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:background="@color/colorPrimary"
-            app:itemTextAppearance="@style/menu_text_style">
+            app:itemTextAppearance="@style/menu_text_style"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/fragment">
 
             <include
                 android:id="@+id/right_panel_games"
@@ -72,23 +75,6 @@
 
         </FrameLayout>
 
-    </com.discord.panels.OverlappingPanelsLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <RelativeLayout
-        android:id="@+id/loadingCircle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#50000000"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/loading"
-            style="@style/SpinKitView.Large.Circle"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
-            android:layout_centerInParent="true"
-            app:SpinKit_Color="#fff" />
-    </RelativeLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -5,6 +5,8 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -48,6 +50,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -125,6 +128,20 @@ class GamesActivity : LocalizationActivity(),
         }
     }
 
+    private fun clearCredentials() {
+        val webview = WebView(this)
+        webview.settings.javaScriptEnabled = true
+        webview.visibility = View.GONE
+        webview.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                binding.loadingCircle.visibility = View.GONE
+                Toast.makeText(this@GamesActivity, "Logout Successful", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
+        webview.loadUrl(URLConstants.LOGOUT_URL)
+    }
+
     private fun createMenuList() {
         menuList.add(MenuItem(true, "", resources.getString(R.string.home), R.drawable.ic_baseline_home_24, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.world_of_warcraft), R.drawable.wow_icon, false))
@@ -146,6 +163,7 @@ class GamesActivity : LocalizationActivity(),
         menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.search_profile), R.drawable.rep_search, false))
         menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.settingsTitle), R.drawable.settings, false))
+        menuList.add(MenuItem(true, "", resources.getString(R.string.logout), R.drawable.logout_icon, false))
     }
 
     private fun setNavigation() {
@@ -378,6 +396,10 @@ class GamesActivity : LocalizationActivity(),
                 favorite!!.visibility = View.GONE
                 binding.overlappingPanel.closePanels()
             }
+            resources.getString(R.string.logout) -> {
+                binding.loadingCircle.visibility = View.VISIBLE
+                clearCredentials()
+            }
             resources.getString(R.string.diablo_3) -> {
                 if (menuItem.menuItem.toggle) {
                     menuList.find { it.title == resources.getString(R.string.diablo_3) }?.icon =
@@ -480,6 +502,7 @@ class GamesActivity : LocalizationActivity(),
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.search_character) -> {
+                binding.loadingCircle.visibility = View.VISIBLE
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                     .addEditText("character_field")
                     .addMessage("Realm", 18F, "realm_label")
@@ -707,6 +730,7 @@ class GamesActivity : LocalizationActivity(),
             .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
             .addToBackStack("wow_nav").commit()
         supportFragmentManager.executePendingTransactions()
+        binding.loadingCircle.visibility = View.GONE
     }
 
 

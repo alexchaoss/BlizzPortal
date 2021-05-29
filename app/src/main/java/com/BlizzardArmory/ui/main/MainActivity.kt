@@ -13,15 +13,12 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.MainActivityBinding
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt
@@ -30,7 +27,6 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import java.util.*
 
 
 class MainActivity : LocalizationActivity() {
@@ -63,7 +59,6 @@ class MainActivity : LocalizationActivity() {
         spinnerSelector(binding.spinner)
 
         setLoginButtonToBattlenet()
-        binding.logout.setOnClickListener { clearCredentials() }
 
         viewModel.getBattlenetOAuth2Params().observe(this, {
             OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
@@ -130,18 +125,6 @@ class MainActivity : LocalizationActivity() {
                 (parent.getChildAt(0) as TextView).setTextColor(0)
             }
         }
-    }
-
-    private fun clearCredentials() {
-        val webview = WebView(this)
-        webview.settings.javaScriptEnabled = true
-        webview.visibility = View.GONE
-        webview.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView, url: String) {
-                Toast.makeText(this@MainActivity, "Logout Successful", Toast.LENGTH_SHORT).show()
-            }
-        }
-        webview.loadUrl(URLConstants.LOGOUT_URL)
     }
 
     private fun setLoginButtonToBattlenet() {
