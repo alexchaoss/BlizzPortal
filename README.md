@@ -20,7 +20,3 @@ Google Play link: <https://play.google.com/store/apps/details?id=com.BlizzardArm
 ## Support
 
 If you need assistance with anything, please contact me at contact@astpierre.dev
-
-## Other information
-
-This is my first application, I've learnt a lot building it and a lot of it might not be optimal. If you have any suggestion about the code or for new features, feel free to contact me.
