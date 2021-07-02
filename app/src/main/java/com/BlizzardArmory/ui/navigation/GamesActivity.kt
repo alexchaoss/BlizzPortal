@@ -508,6 +508,7 @@ class GamesActivity : LocalizationActivity(),
                     .addMessage("Realm", 18F, "realm_label")
                     .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
                         .map { it.name }.distinct())
+                    //.addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.results}.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                     .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWChracterFields(searchDialog) }, "search_button"))
                     .show()
@@ -519,6 +520,7 @@ class GamesActivity : LocalizationActivity(),
                     .addMessage("Realm", 18F, "realm_label")
                     .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
                         .map { it.name }.distinct())
+                    //.addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.results}.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                     .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWGuildFields(searchDialog) }, "search_button"))
                     .show()
@@ -650,9 +652,13 @@ class GamesActivity : LocalizationActivity(),
             else -> {
                 characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString().toLowerCase(Locale.ROOT).replace(" ", "-")
                 selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-
                 if(viewModel.getWowRealms().value!![selectedRegion]!!.realms.any { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
-                    characterRealm = viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                    characterRealm =
+                        viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                    /*if(viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
+                            .any { it  == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                        characterRealm = viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
+                            .find{ it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }!!.replace(" ", "-").replace("'", "").toLowerCase(Locale.ROOT)*/
                     viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
                     dialog.dismiss()
                 }else{
@@ -676,7 +682,12 @@ class GamesActivity : LocalizationActivity(),
                 val selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 var guildRealm = ""
                 if(viewModel.getWowRealms().value!![selectedRegion]!!.realms.any { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
-                    guildRealm = viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                    guildRealm =
+                        viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
+                    /*if(viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
+                            .any { it  == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                        guildRealm = viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
+                            .find{ it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }!!.replace("'", "").toLowerCase(Locale.ROOT)*/
                     callWoWGuildFragment(guildName, selectedRegion, guildRealm, dialog)
                     dialog.dismiss()
                 }else{

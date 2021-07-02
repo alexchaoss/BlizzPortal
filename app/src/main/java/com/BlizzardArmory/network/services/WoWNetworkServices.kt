@@ -21,6 +21,7 @@ import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.model.warcraft.realm.Realms
+import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
@@ -41,6 +42,13 @@ interface WoWNetworkServices {
         @Query("locale") locale: String,
         @Query("token") accessToken: String
     ): Response<Realms>
+
+    @GET("/data/wow/search/connected-realm")
+    suspend fun getConnectedRealms(
+        @Query("region") region: String,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String
+    ): Response<ConnectedRealms>
 
     @GET("/profile/wow/character/{realm}/{character}/character-media")
     suspend fun getMedia(

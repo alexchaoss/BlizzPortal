@@ -77,6 +77,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun addRaidsToList() {
         raidList.add("Raid")
+        raidList.add("Sanctum of Domination")
         raidList.add("Castle Nathria")
         raidList.add("Ny'alotha The Waking City")
         raidList.add("The Eternal Palace")

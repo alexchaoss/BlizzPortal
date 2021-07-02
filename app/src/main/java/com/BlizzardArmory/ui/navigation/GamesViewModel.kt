@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.realm.Realms
+import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
@@ -19,6 +20,8 @@ import java.util.*
 
 class GamesViewModel : BaseViewModel() {
 
+    private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
+        MutableLiveData()
     private var wowRealms: MutableLiveData<MutableMap<String, Realms>> = MutableLiveData()
     private var userInformation: MutableLiveData<UserInformation> = MutableLiveData()
     private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
@@ -64,6 +67,10 @@ class GamesViewModel : BaseViewModel() {
         return wowRealms
     }
 
+    fun getWowConnectedRealms(): LiveData<MutableMap<String, ConnectedRealms>> {
+        return wowConnectedRealms
+    }
+
     fun downloadUserInfo() {
         val job = coroutineScope.launch {
             val response = RetroClient.getGeneralClient().getUserInfo(
@@ -90,6 +97,69 @@ class GamesViewModel : BaseViewModel() {
             }
         }
         jobs.add(job)
+    }
+
+    fun getConnectedRealms() {
+        val jobUS = coroutineScope.launch {
+            val response = RetroClient.getWoWClient().getConnectedRealms(
+                "us",
+                "dynamic-us",
+                URLConstants.locale
+            )
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    wowConnectedRealms.value?.set("US", response.body()!!)
+                } else {
+                    Log.e("Error", response.message())
+                }
+            }
+        }
+        jobs.add(jobUS)
+        val jobEU = coroutineScope.launch {
+            val response = RetroClient.getWoWClient().getConnectedRealms(
+                "eu",
+                "dynamic-eu",
+                URLConstants.locale
+            )
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    wowConnectedRealms.value?.set("EU", response.body()!!)
+                } else {
+                    Log.e("Error", response.message())
+                }
+            }
+        }
+        jobs.add(jobEU)
+        val jobKR = coroutineScope.launch {
+            val response = RetroClient.getWoWClient().getConnectedRealms(
+                "kr",
+                "dynamic-kr",
+                URLConstants.locale
+            )
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    wowConnectedRealms.value?.set("KR", response.body()!!)
+                } else {
+                    Log.e("Error", response.message())
+                }
+            }
+        }
+        jobs.add(jobKR)
+        val jobTW = coroutineScope.launch {
+            val response = RetroClient.getWoWClient().getConnectedRealms(
+                "tw",
+                "dynamic-tw",
+                URLConstants.locale
+            )
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    wowConnectedRealms.value?.set("TW", response.body()!!)
+                } else {
+                    Log.e("Error", response.message())
+                }
+            }
+        }
+        jobs.add(jobTW)
     }
 
     fun getRealms() {
