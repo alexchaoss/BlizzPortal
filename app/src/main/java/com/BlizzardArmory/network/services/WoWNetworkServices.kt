@@ -28,10 +28,7 @@ import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.Url
+import retrofit2.http.*
 
 interface WoWNetworkServices {
 
@@ -43,11 +40,12 @@ interface WoWNetworkServices {
         @Query("token") accessToken: String
     ): Response<Realms>
 
-    @GET("/data/wow/search/connected-realm")
+    @POST("/data/wow/search/connected-realms")
     suspend fun getConnectedRealms(
         @Query("region") region: String,
         @Query("namespace") namespace: String,
-        @Query("locale") locale: String
+        @Query("locale") locale: String,
+        @Body query: com.BlizzardArmory.model.warcraft.realm.connected.Query
     ): Response<ConnectedRealms>
 
     @GET("/profile/wow/character/{realm}/{character}/character-media")

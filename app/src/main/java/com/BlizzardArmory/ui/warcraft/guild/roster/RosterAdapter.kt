@@ -51,7 +51,7 @@ class RosterAdapter(private val activities: List<Members>, private val context: 
     fun filter(constraint: String) {
         Log.i("Filter", constraint)
         fullActivitiesList.clear()
-        if (constraint.toLowerCase(Locale.ROOT).isEmpty()) {
+        if (constraint.lowercase(Locale.getDefault()).isEmpty()) {
             fullActivitiesList.addAll(activities)
         } else {
             searchWithConstraint(constraint) { data, const ->

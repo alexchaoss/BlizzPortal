@@ -163,7 +163,7 @@ class WoWCharacterFragment : Fragment() {
                     val bundle = Bundle()
                     bundle.putString("realm", it.realm.slug)
                     bundle.putString("guildName", it.guild.name)
-                    bundle.putString("region", viewModel.region.toLowerCase(Locale.ROOT))
+                    bundle.putString("region", viewModel.region.lowercase(Locale.getDefault()))
                     fragment.arguments = bundle
                     requireActivity().supportFragmentManager.beginTransaction()
                         .add(R.id.fragment, fragment, "guild_nav_fragment")
@@ -173,7 +173,7 @@ class WoWCharacterFragment : Fragment() {
                 }
             }
             manageFavorite(it)
-            EventBus.getDefault().post(FactionEvent(it.faction.type.toLowerCase(Locale.ROOT)))
+            EventBus.getDefault().post(FactionEvent(it.faction.type.lowercase(Locale.getDefault())))
             EventBus.getDefault().post(ClassEvent(it.characterClass.id))
             setTopCharacterStrings(it)
             viewModel.downloadEquipment()

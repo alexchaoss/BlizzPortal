@@ -84,10 +84,10 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
         CoroutineScope(Dispatchers.IO).launch {
             val response = RetroClient.getWoWClient().getMedia(
-                character?.characterSummary?.name?.toLowerCase(Locale.ROOT)!!,
+                character?.characterSummary?.name?.lowercase(Locale.getDefault())!!,
                 character?.characterSummary?.realm?.slug!!,
                 URLConstants.locale,
-                character?.region?.toLowerCase(Locale.ROOT)!!,
+                character?.region?.lowercase(Locale.getDefault())!!,
                 bnOAuth2Helper.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -117,7 +117,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {
         characterLayout?.setOnClickListener {
-            val woWNavFragment = WoWNavFragment.newInstance(character?.characterSummary?.name?.toLowerCase(Locale.ROOT)!!, character?.characterSummary?.realm?.slug!!, media, character?.region!!)
+            val woWNavFragment =
+                WoWNavFragment.newInstance(character?.characterSummary?.name?.lowercase(Locale.getDefault())!!, character?.characterSummary?.realm?.slug!!, media, character?.region!!)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
             fragmentTransaction.replace(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")

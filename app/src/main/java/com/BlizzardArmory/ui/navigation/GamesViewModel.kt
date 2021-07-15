@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.warcraft.media.Media
-import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
+import com.BlizzardArmory.model.warcraft.realm.connected.Query
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
@@ -22,7 +22,6 @@ class GamesViewModel : BaseViewModel() {
 
     private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
         MutableLiveData()
-    private var wowRealms: MutableLiveData<MutableMap<String, Realms>> = MutableLiveData()
     private var userInformation: MutableLiveData<UserInformation> = MutableLiveData()
     private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
 
@@ -40,7 +39,7 @@ class GamesViewModel : BaseViewModel() {
             )
 
     init {
-        wowRealms.value = mutableMapOf()
+        wowConnectedRealms.value = mutableMapOf()
     }
 
     fun observeViewState(): Observable<ViewState> = viewStateSubject
@@ -63,9 +62,6 @@ class GamesViewModel : BaseViewModel() {
         return wowMediaCharacter
     }
 
-    fun getWowRealms(): LiveData<MutableMap<String, Realms>> {
-        return wowRealms
-    }
 
     fun getWowConnectedRealms(): LiveData<MutableMap<String, ConnectedRealms>> {
         return wowConnectedRealms
@@ -100,11 +96,13 @@ class GamesViewModel : BaseViewModel() {
     }
 
     fun getConnectedRealms() {
+        val query = Query()
         val jobUS = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "us",
                 "dynamic-us",
-                URLConstants.locale
+                URLConstants.locale,
+                query
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -119,7 +117,8 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "eu",
                 "dynamic-eu",
-                URLConstants.locale
+                URLConstants.locale,
+                query
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -134,7 +133,8 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "kr",
                 "dynamic-kr",
-                URLConstants.locale
+                URLConstants.locale,
+                query
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -149,7 +149,8 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "tw",
                 "dynamic-tw",
-                URLConstants.locale
+                URLConstants.locale,
+                query
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -162,80 +163,13 @@ class GamesViewModel : BaseViewModel() {
         jobs.add(jobTW)
     }
 
-    fun getRealms() {
-        val jobUS = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getRealmIndex(
-                "us",
-                "dynamic-us",
-                URLConstants.locale,
-                battlenetOAuth2Helper!!.accessToken
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowRealms.value?.set("US", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobUS)
-        val jobEU = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getRealmIndex(
-                "eu",
-                "dynamic-eu",
-                URLConstants.locale,
-                battlenetOAuth2Helper!!.accessToken
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowRealms.value?.set("EU", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobEU)
-        val jobKR = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getRealmIndex(
-                "kr",
-                "dynamic-kr",
-                URLConstants.locale,
-                battlenetOAuth2Helper!!.accessToken
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowRealms.value?.set("KR", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobKR)
-        val jobTW = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getRealmIndex(
-                "tw",
-                "dynamic-tw",
-                URLConstants.locale,
-                battlenetOAuth2Helper!!.accessToken
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowRealms.value?.set("TW", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobTW)
-    }
-
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getMedia(
-                characterClicked.toLowerCase(Locale.ROOT),
-                characterRealm.toLowerCase(Locale.ROOT),
+                characterClicked.lowercase(Locale.getDefault()),
+                characterRealm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                selectedRegion.toLowerCase(Locale.ROOT),
+                selectedRegion.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {

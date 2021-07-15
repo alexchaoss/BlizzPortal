@@ -87,7 +87,7 @@ object URLConstants {
         get() = if (URLConstants.region.equals("cn", ignoreCase = true)) {
             BASE_URL_CN_USER_INFO
         } else {
-            BASE_URL_USER_INFO.replace("zone", URLConstants.region.toLowerCase())
+            BASE_URL_USER_INFO.replace("zone", URLConstants.region.lowercase(Locale.getDefault()))
         }
 
     /**
@@ -96,7 +96,7 @@ object URLConstants {
      * @return the region
      */
     val region: String
-        get() = MainActivity.selectedRegion.toLowerCase(Locale.ROOT)
+        get() = MainActivity.selectedRegion.lowercase(Locale.getDefault())
 
     val locale: String
         get() = MainActivity.locale
@@ -118,7 +118,7 @@ object URLConstants {
                 if (URLConstants.region.equals("cn", ignoreCase = true) || URLConstants.region.equals("tw", ignoreCase = true)) {
                     url.replace(":region", "asia")
                 } else {
-                    url.replace(":region", URLConstants.region.toLowerCase())
+                    url.replace(":region", URLConstants.region.lowercase(Locale.getDefault()))
                 }
         } else {
             url = OW_PROFILE.replace(":battletag", username)

@@ -32,7 +32,7 @@ class D3ViewModel : BaseViewModel() {
             val response = RetroClient.getD3Client().getD3Profile(
                 battleTag,
                 URLConstants.locale,
-                selectedRegion.toLowerCase(Locale.ROOT),
+                selectedRegion.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {

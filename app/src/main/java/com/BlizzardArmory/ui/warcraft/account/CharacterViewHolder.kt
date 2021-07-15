@@ -54,7 +54,7 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         characterLayout = itemView.findViewById(R.id.character_layout)
         gson = GsonBuilder().create()
         EventBus.getDefault().register(this)
-        job = GlobalScope.launch {
+        job = CoroutineScope(Dispatchers.Default).launch {
             do {
                 delay(3000)
                 if (!downloaded) {
@@ -83,7 +83,7 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
         CoroutineScope(Dispatchers.IO).launch {
             val response = RetroClient.getWoWClient().getMedia(
-                character?.name?.toLowerCase(Locale.ROOT)!!,
+                character?.name?.lowercase(Locale.getDefault())!!,
                 character?.realm?.slug!!,
                 URLConstants.locale,
                 URLConstants.region,
@@ -117,7 +117,7 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {
         characterLayout?.setOnClickListener {
             val woWNavFragment =
-                WoWNavFragment.newInstance(character.name.toLowerCase(Locale.ROOT), character.realm.slug, media, URLConstants.region)
+                WoWNavFragment.newInstance(character.name.lowercase(Locale.getDefault()), character.realm.slug, media, URLConstants.region)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
             fragmentTransaction.add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")

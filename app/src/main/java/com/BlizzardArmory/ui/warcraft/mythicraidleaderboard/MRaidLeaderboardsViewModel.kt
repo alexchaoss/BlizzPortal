@@ -32,7 +32,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
                     URLConstants.region
                 )
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful && !response.body()?.entries.isNullOrEmpty()) {
                         val list = response.body()?.entries?.toMutableList()!!
                         tempEntries.addAll(list)
                     } else {
@@ -51,7 +51,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
                     URLConstants.region
                 )
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful && !response.body()?.entries.isNullOrEmpty()) {
                         val list = response.body()?.entries?.toMutableList()!!
                         tempEntries.addAll(list)
                     } else {
@@ -74,7 +74,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
     fun downloadLeaderboard(raid: String, faction: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
-                parseRaidName(raid), faction.toLowerCase(Locale.ROOT),
+                parseRaidName(raid), faction.lowercase(Locale.getDefault()),
                 "dynamic-" + URLConstants.region, URLConstants.locale,
                 URLConstants.region
             )
@@ -92,7 +92,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
     }
 
     fun parseRaidName(name: String): String {
-        return name.replace("'", "").replace(" ", "-").toLowerCase(Locale.ROOT)
+        return name.replace("'", "").replace(" ", "-").lowercase(Locale.getDefault())
     }
 
     @Subscribe

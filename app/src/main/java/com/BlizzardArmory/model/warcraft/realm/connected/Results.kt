@@ -1,6 +1,5 @@
 package com.BlizzardArmory.model.warcraft.realm.connected
 
-import com.BlizzardArmory.model.common.Key
 import com.google.gson.annotations.SerializedName
 
 

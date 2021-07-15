@@ -61,7 +61,7 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
 
     fun filter(constraint: String) {
         fullLeaderboardList.clear()
-        if (constraint.toLowerCase(Locale.ROOT).isEmpty()) {
+        if (constraint.lowercase(Locale.getDefault()).isEmpty()) {
             fullLeaderboardList.addAll(list)
         } else {
             if (constraint.toIntOrNull() != null && constraint.toInt() <= list.size) {

@@ -74,10 +74,10 @@ class WoWCharacterViewModel : BaseViewModel() {
     fun downloadCharacterSummary() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getCharacter(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -98,10 +98,10 @@ class WoWCharacterViewModel : BaseViewModel() {
     fun downloadTalents() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getSpecs(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -137,10 +137,10 @@ class WoWCharacterViewModel : BaseViewModel() {
     fun downloadStats() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getStats(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -157,10 +157,10 @@ class WoWCharacterViewModel : BaseViewModel() {
     fun downloadEquipment() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getEquippedItems(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -177,10 +177,10 @@ class WoWCharacterViewModel : BaseViewModel() {
     fun downloadBackground() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getMedia(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -200,13 +200,17 @@ class WoWCharacterViewModel : BaseViewModel() {
         }
         var url = equippedItem.media.key.href
         if (url.contains("static")) {
-            url = url.replace(("static-[0-9].[0-9].[0-9]_[0-9]*-" + region.toLowerCase(Locale.ROOT).toRegex()).toRegex(), "static-" + region.toLowerCase(Locale.ROOT))
+            url = url.replace(
+                ("static-[0-9].[0-9].[0-9]_[0-9]*-" + region.lowercase(Locale.getDefault())
+                    .toRegex()).toRegex(), "static-" + region.lowercase(Locale.getDefault())
+            )
         }
-        url = url.replace("https://${region.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+        url =
+            url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
 
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicEquipmentMedia(url, URLConstants.locale, region.toLowerCase(Locale.ROOT))
+                .getDynamicEquipmentMedia(url, URLConstants.locale, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val mediaItem = response.body()!!

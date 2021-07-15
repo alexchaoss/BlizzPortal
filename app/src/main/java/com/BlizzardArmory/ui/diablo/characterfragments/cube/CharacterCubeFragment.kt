@@ -52,12 +52,13 @@ class CharacterCubeFragment : Fragment() {
         })
 
         viewModel.getItem().observe(viewLifecycleOwner, { item ->
-            cubeMap[item.icon.toLowerCase(Locale.ROOT)]?.setOnClickListener {
+            cubeMap[item.icon.lowercase(Locale.getDefault())]?.setOnClickListener {
                 for (attributes in item.attributes.secondary) {
                     if (attributes.textHtml.contains("d3-color-ffff8000")) {
                         cubeText = "<big>" + item.name + "</big><br>" + attributes.textHtml
-                                .replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#").replace("<span class=\"d3-color-magic\">".toRegex(), "<font color=\"#7979d4\">")
-                                .replace("span".toRegex(), "font")
+                            .replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#")
+                            .replace("<span class=\"d3-color-magic\">".toRegex(), "<font color=\"#7979d4\">")
+                            .replace("span".toRegex(), "font")
                     }
                 }
                 binding.cubeText.visibility = View.VISIBLE
@@ -94,16 +95,22 @@ class CharacterCubeFragment : Fragment() {
                 for (power in characterInformation!!.legendaryPowers) {
                     when {
                         armorArray.any { s: String? -> power.icon.contains(s!!) } -> {
-                            cubeURL["armor"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
-                            cubeMap[power.icon.toLowerCase(Locale.ROOT)] = binding.cubeArmorItem
+                            cubeURL["armor"] =
+                                URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
+                            cubeMap[power.icon.lowercase(Locale.getDefault())] =
+                                binding.cubeArmorItem
                         }
                         ringArray.any { s: String? -> power.icon.contains(s!!) } -> {
-                            cubeURL["ring"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
-                            cubeMap[power.icon.toLowerCase(Locale.ROOT)] = binding.cubeRingItem
+                            cubeURL["ring"] =
+                                URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
+                            cubeMap[power.icon.lowercase(Locale.getDefault())] =
+                                binding.cubeRingItem
                         }
                         else -> {
-                            cubeURL["sword"] = URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
-                            cubeMap[power.icon.toLowerCase(Locale.ROOT)] = binding.cubeSwordItem
+                            cubeURL["sword"] =
+                                URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
+                            cubeMap[power.icon.lowercase(Locale.getDefault())] =
+                                binding.cubeSwordItem
                         }
                     }
                 }

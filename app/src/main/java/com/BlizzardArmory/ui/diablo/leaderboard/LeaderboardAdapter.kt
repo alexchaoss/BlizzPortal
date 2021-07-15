@@ -32,7 +32,7 @@ class LeaderboardAdapter(private val list: List<Row>, private val region: String
     fun filter(constraint: String) {
         Log.i("Filter", constraint)
         fullLeaderboardList.clear()
-        if (constraint.toLowerCase(Locale.ROOT).isEmpty()) {
+        if (constraint.lowercase(Locale.getDefault()).isEmpty()) {
             fullLeaderboardList.addAll(list)
         } else {
             if (constraint.toIntOrNull() != null && constraint.toInt() <= list.size) {

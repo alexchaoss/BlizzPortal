@@ -27,7 +27,7 @@ object RetroClient {
             .cache(
                 Cache(
                     directory = BlizzardArmory.instance?.cacheDir!!,
-                    maxSize = 60 * 1024 * 1024
+                    maxSize = (60 * 1024 * 1024)
                 )
             )
             .addInterceptor { chain ->
@@ -37,7 +37,7 @@ object RetroClient {
                 } else {
                     request.newBuilder().header(
                         "Cache-Control",
-                        "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7
+                        "public, only-if-cached, max-stale=${60 * 60 * 24 * 7}"
                     ).build()
                 }
                 chain.proceed(request)

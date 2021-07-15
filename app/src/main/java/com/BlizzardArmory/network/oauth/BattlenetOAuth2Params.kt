@@ -37,7 +37,7 @@ open class BattlenetOAuth2Params : Parcelable {
 
         // Create SCOPES with required pattern (Scope+Scope+...)
         val sb = StringBuilder()
-        if (null != scopes && scopes.isNotEmpty()) {
+        if (!scopes.isNullOrEmpty()) {
             for (scope in scopes) {
                 sb.append(scope).append("+")
             }

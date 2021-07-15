@@ -36,7 +36,7 @@ class CharacterStatsViewModel : BaseViewModel() {
                 battletag,
                 id,
                 URLConstants.locale,
-                selectedRegion.toLowerCase(Locale.ROOT),
+                selectedRegion.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {

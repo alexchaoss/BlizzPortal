@@ -143,7 +143,8 @@ class ProgressFragment : Fragment() {
     private fun populateRecyclerView() {
         binding.raidRecycler.apply {
             val expansion = viewModel.getEncounters().value?.expansions?.findLast { it.expansion.name == binding.progSpinner.selectedItem }
-            adapter = EncounterAdapter(expansion?.instances!!, viewModel.getRaidLevel(expansion), context)
+            adapter =
+                EncounterAdapter(expansion?.instances!!.reversed(), viewModel.getRaidLevel(expansion), context)
             adapter!!.notifyDataSetChanged()
         }
     }

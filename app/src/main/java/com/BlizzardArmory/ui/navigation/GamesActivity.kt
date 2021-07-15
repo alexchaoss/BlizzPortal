@@ -248,7 +248,7 @@ class GamesActivity : LocalizationActivity(),
     private fun setOberservers() {
         viewModel.getBnetParams().observe(this, {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-            viewModel.getRealms()
+            viewModel.getConnectedRealms()
             viewModel.downloadUserInfo()
         })
 
@@ -269,7 +269,6 @@ class GamesActivity : LocalizationActivity(),
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
         if (!localeSelectedEvent.locale.contains((getCurrentLanguage().language + "_" + getCurrentLanguage().country))) {
-            viewModel.getRealms()
             when (localeSelectedEvent.locale) {
                 "en_US" -> setLanguage("en")
                 "es_ES" -> setLanguage("es")
@@ -506,9 +505,9 @@ class GamesActivity : LocalizationActivity(),
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                     .addEditText("character_field")
                     .addMessage("Realm", 18F, "realm_label")
-                    .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
-                        .map { it.name }.distinct())
-                    //.addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.results}.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }.distinct())
+                    .addAutoCompleteEditText("realm_field", viewModel.getWowConnectedRealms().value!!.values.flatMap { it.results }
+                        .flatMap { data -> data.connectedRealm.realms }.map { it.name }
+                        .flatMap { it.getAllNames() }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                     .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWChracterFields(searchDialog) }, "search_button"))
                     .show()
@@ -518,9 +517,9 @@ class GamesActivity : LocalizationActivity(),
                 searchDialog.addTitle("Guild Name", 18F, "guild_label")
                     .addEditText("guild_field")
                     .addMessage("Realm", 18F, "realm_label")
-                    .addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.realms }
-                        .map { it.name }.distinct())
-                    //.addAutoCompleteEditText("realm_field", viewModel.getWowRealms().value!!.values.flatMap { it.results}.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }.distinct())
+                    .addAutoCompleteEditText("realm_field", viewModel.getWowConnectedRealms().value!!.values.flatMap { it.results }
+                        .flatMap { data -> data.connectedRealm.realms }.map { it.name }
+                        .flatMap { it.getAllNames() }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                     .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWGuildFields(searchDialog) }, "search_button"))
                     .show()
@@ -650,19 +649,24 @@ class GamesActivity : LocalizationActivity(),
                 Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString().toLowerCase(Locale.ROOT).replace(" ", "-")
-                selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                if(viewModel.getWowRealms().value!![selectedRegion]!!.realms.any { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString()
+                    .lowercase(Locale.getDefault()).replace(" ", "-")
+                selectedRegion =
+                    (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                if (viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
+                        .map { it.name }.flatMap { it.getAllNames() }
+                        .any { it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
                     characterRealm =
-                        viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
-                    /*if(viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
-                            .any { it  == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
-                        characterRealm = viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
-                            .find{ it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }!!.replace(" ", "-").replace("'", "").toLowerCase(Locale.ROOT)*/
+                        viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
+                            .find {
+                                it.name.getAllNames()
+                                    .contains((dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString())
+                            }?.slug!!
                     viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
                     dialog.dismiss()
-                }else{
-                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -678,20 +682,25 @@ class GamesActivity : LocalizationActivity(),
                 Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                val guildName = (dialog.tagMap["guild_field"] as EditText).text.toString().toLowerCase(Locale.ROOT)
-                val selectedRegion = (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                var guildRealm = ""
-                if(viewModel.getWowRealms().value!![selectedRegion]!!.realms.any { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                val guildName = (dialog.tagMap["guild_field"] as EditText).text.toString()
+                    .lowercase(Locale.getDefault())
+                val selectedRegion =
+                    (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                var guildRealm: String
+                if (viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
+                        .map { it.name }.flatMap { it.getAllNames() }
+                        .any { it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
                     guildRealm =
-                        viewModel.getWowRealms().value!![selectedRegion]!!.realms.find { it.name == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }?.slug!!
-                    /*if(viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
-                            .any { it  == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
-                        guildRealm = viewModel.getWowRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }.map { it.name }.flatMap { it.getAllNames() }
-                            .find{ it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }!!.replace("'", "").toLowerCase(Locale.ROOT)*/
+                        viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
+                            .find {
+                                it.name.getAllNames()
+                                    .contains((dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString())
+                            }?.slug!!
                     callWoWGuildFragment(guildName, selectedRegion, guildRealm, dialog)
                     dialog.dismiss()
-                }else{
-                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
             }

@@ -19,6 +19,6 @@ data class Name(
     @SerializedName("de_DE") val de_DE: String
 ) {
     fun getAllNames(): List<String> {
-        return listOf(it_IT, ru_RU, en_GB, zh_CN, zh_TW, ko_KR, en_US, es_ES, pt_BR, fr_FR, de_DE, es_MX)
+        return listOf(it_IT, ru_RU, en_GB, zh_TW, ko_KR, en_US, es_MX, pt_BR, es_ES, zh_CN, fr_FR, de_DE)
     }
 }

@@ -65,7 +65,7 @@ class AuthorizationTokenViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getGeneralClient().getAccessToken(
                 authorizationCode,
-                getBnetParams().value!!.zone.toLowerCase(Locale.ROOT),
+                getBnetParams().value!!.zone.lowercase(Locale.getDefault()),
                 getBnetParams().value!!.rederictUri
             )
             withContext(Dispatchers.Main) {

@@ -69,13 +69,15 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
 
     private fun downloadIcon(hero: TopHero) {
 
-        Glide.with(itemView).load(URLConstants.getOWIconImage(hero.javaClass.simpleName.toLowerCase(Locale.ROOT))).into(object : CustomTarget<Drawable>() {
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                icon?.background = resource
-            }
+        Glide.with(itemView)
+            .load(URLConstants.getOWIconImage(hero.javaClass.simpleName.lowercase(Locale.getDefault())))
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    icon?.background = resource
+                }
 
-            override fun onLoadCleared(placeholder: Drawable?) {}
-        })
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
     }
 
     private fun chooseCategory(sortedBy: String, hero: TopHero, topHero: TopHero) {

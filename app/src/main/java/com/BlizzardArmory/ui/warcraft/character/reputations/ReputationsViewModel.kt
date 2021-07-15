@@ -62,10 +62,10 @@ class ReputationsViewModel : BaseViewModel() {
     private fun downloadReputations() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getReputations(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {

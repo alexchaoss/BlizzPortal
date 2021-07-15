@@ -56,17 +56,18 @@ class PvPViewModel : BaseViewModel() {
     fun downloadRBGInfo() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getPvPBrackets(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 "rbg",
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     pvpRBG = response.body()!!
-                    val url = pvpRBG.tier.key.href.replace("https://${region.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                    val url =
+                        pvpRBG.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
                     downloadBracket(url, "rbg")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -80,17 +81,18 @@ class PvPViewModel : BaseViewModel() {
     fun download3v3Info() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getPvPBrackets(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 "3v3",
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     pvp3v3 = response.body()!!
-                    val url = pvp3v3.tier.key.href.replace("https://${region.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                    val url =
+                        pvp3v3.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
                     downloadBracket(url, "3v3")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -104,17 +106,18 @@ class PvPViewModel : BaseViewModel() {
     fun download2v2Info() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getPvPBrackets(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 "2v2",
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     pvp2v2 = response.body()!!
-                    val url = pvp2v2.tier.key.href.replace("https://${region.toLowerCase(Locale.ROOT)}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                    val url =
+                        pvp2v2.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
                     downloadBracket(url, "2v2")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -128,7 +131,7 @@ class PvPViewModel : BaseViewModel() {
     private fun downloadBracket(url: String, bracket: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicTier(url, region.toLowerCase(Locale.ROOT), URLConstants.locale)
+                .getDynamicTier(url, region.lowercase(Locale.getDefault()), URLConstants.locale)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     when (bracket) {
@@ -148,10 +151,10 @@ class PvPViewModel : BaseViewModel() {
     fun downloadPvPSummary() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getPvPSummary(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {

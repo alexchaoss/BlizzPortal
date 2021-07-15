@@ -362,7 +362,7 @@ class OWFragment : Fragment() {
     }
 
     private fun setTopCharacterImage(topCharacterName: String) {
-        Glide.with(this).load(getOWPortraitImage(topCharacterName.toLowerCase(Locale.ROOT)))
+        Glide.with(this).load(getOWPortraitImage(topCharacterName.lowercase(Locale.getDefault())))
             .into(binding.topCharacter)
     }
 

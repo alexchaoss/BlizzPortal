@@ -58,10 +58,10 @@ class CovenantViewModel : BaseViewModel() {
     fun downloadCharacterSoulbinds() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getSoulbinds(
-                character.toLowerCase(Locale.ROOT),
-                realm.toLowerCase(Locale.ROOT),
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
                 URLConstants.locale,
-                region.toLowerCase(Locale.ROOT),
+                region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -78,7 +78,7 @@ class CovenantViewModel : BaseViewModel() {
     fun downloadTechTree(id: Int, soulbindId: Int) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getTechTree(id, URLConstants.locale, region.toLowerCase(Locale.ROOT))
+                .getTechTree(id, URLConstants.locale, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     treeMap[soulbindId] = response.body()!!

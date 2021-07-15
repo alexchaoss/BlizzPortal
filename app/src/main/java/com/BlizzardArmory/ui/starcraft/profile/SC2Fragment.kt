@@ -288,7 +288,7 @@ class SC2Fragment : Fragment() {
         if (viewModel.getProfile().value!!.career.best1v1Finish.leagueName != null) {
             setSnapshotIcons(viewModel.getProfile().value!!.career.best1v1Finish.leagueName, 500, binding.bestOneIcon)
             var temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(1)
-                .toLowerCase(Locale.ROOT)
+                .lowercase(Locale.getDefault())
             temp =
                 viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(0, 1) + temp
             binding.bestOne.text = temp
@@ -298,7 +298,7 @@ class SC2Fragment : Fragment() {
         if (viewModel.getProfile().value!!.career.bestTeamFinish.leagueName != null) {
             setSnapshotIcons(viewModel.getProfile().value!!.career.bestTeamFinish.leagueName, 500, binding.bestTeamIcon)
             var temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(1)
-                .toLowerCase(Locale.ROOT)
+                .lowercase(Locale.getDefault())
             temp =
                 viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(0, 1) + temp
             binding.bestTeam.text = temp
@@ -464,8 +464,9 @@ class SC2Fragment : Fragment() {
                 Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, { source: String? ->
                     val resourceId =
                         resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable = resources.getDrawable(resourceId, requireActivity().theme)
-                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                    val drawable =
+                        ResourcesCompat.getDrawable(resources, resourceId, requireActivity().theme)
+                    drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
                     drawable
                 }, null)
         }
