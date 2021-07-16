@@ -92,6 +92,7 @@ class NewsListFragment : Fragment() {
 
     private fun setSwipeGestureToRefreshData() {
         binding.swipe.setOnRefreshListener {
+            viewModel.pageNumber = 1
             viewModel.getDownloaded().value = false
         }
     }

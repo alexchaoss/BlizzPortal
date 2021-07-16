@@ -26,7 +26,7 @@ class NewsListViewModel : BaseViewModel() {
     private var newsList: MutableLiveData<MutableList<NewsMetaData>> = MutableLiveData()
     private var tempList: ArrayList<NewsMetaData> = arrayListOf()
 
-    private var pageNumber: Int = 1
+    var pageNumber: Int = 1
 
     init {
         newsList.value = arrayListOf()
@@ -53,7 +53,7 @@ class NewsListViewModel : BaseViewModel() {
     fun downloadNews() {
         val job = coroutineScope.launch {
             WebNewsScrapper.parseNewsList("https://news.blizzard.com/${URLConstants.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
-            Log.i("NEWS", WebNewsScrapper.newsList.toString())
+            Log.i("Page $pageNumber", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 downloaded.value = true
             }
@@ -123,9 +123,13 @@ class NewsListViewModel : BaseViewModel() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun showMoreEventClicked(moreNewsClickEvent: MoreNewsClickEvent) {
         pageNumber++
+        downloadMore(pageNumber)
+    }
+
+    private fun downloadMore(pageNumber: Int) {
         val job = coroutineScope.launch {
             WebNewsScrapper.parseMoreNews("https://news.blizzard.com/${URLConstants.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
-            Log.i("TEST", WebNewsScrapper.newsList.toString())
+            Log.i("Page $pageNumber", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 showMore.value = true
                 EventBus.getDefault().post(LoadNewsEvent())
