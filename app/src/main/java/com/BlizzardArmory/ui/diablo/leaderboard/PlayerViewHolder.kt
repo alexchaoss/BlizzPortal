@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.diablo.data.common.Player
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
@@ -45,7 +45,7 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         btag?.text = playerName
         btag?.setTextColor(getColorByClass(player.data.find { it.id == "HeroClass" }?.string))
 
-        Glide.with(context).load(URLConstants.getD3Asset(getGender(player.data.find { it.id == "HeroClass" }?.string!!, player.data.find { it.id == "HeroGender" }?.string!!))).into(icon!!)
+        Glide.with(context).load(NetworkUtils.getD3Asset(getGender(player.data.find { it.id == "HeroClass" }?.string!!, player.data.find { it.id == "HeroGender" }?.string!!))).into(icon!!)
 
         val battlenetOAuth2Params: BattlenetOAuth2Params? = (context as GamesActivity).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         if (playerName != "unavailable") {

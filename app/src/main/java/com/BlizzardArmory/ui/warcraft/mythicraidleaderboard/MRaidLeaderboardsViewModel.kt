@@ -3,8 +3,8 @@ package com.BlizzardArmory.ui.warcraft.mythicraidleaderboard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.mythicraid.Entries
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -28,15 +28,15 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
             val job1 = coroutineScope.launch {
                 val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                     parseRaidName(raid), "horde",
-                    "dynamic-" + URLConstants.region, URLConstants.locale,
-                    URLConstants.region
+                    "dynamic-" + NetworkUtils.region, NetworkUtils.locale,
+                    NetworkUtils.region
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && !response.body()?.entries.isNullOrEmpty()) {
                         val list = response.body()?.entries?.toMutableList()!!
                         tempEntries.addAll(list)
                     } else {
-                        URLConstants.loading = false
+                        NetworkUtils.loading = false
                         errorCode.value = response.code()
                     }
                 }
@@ -47,15 +47,15 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
             val job2 = coroutineScope.launch {
                 val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                     parseRaidName(raid), "alliance",
-                    "dynamic-" + URLConstants.region, URLConstants.locale,
-                    URLConstants.region
+                    "dynamic-" + NetworkUtils.region, NetworkUtils.locale,
+                    NetworkUtils.region
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && !response.body()?.entries.isNullOrEmpty()) {
                         val list = response.body()?.entries?.toMutableList()!!
                         tempEntries.addAll(list)
                     } else {
-                        URLConstants.loading = false
+                        NetworkUtils.loading = false
                         errorCode.value = response.code()
                     }
                 }
@@ -66,7 +66,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
                 tempEntries.sortBy { it.timestamp }
                 entries.value = tempEntries
             }
-            URLConstants.loading = false
+            NetworkUtils.loading = false
         }
         jobs.add(job)
     }
@@ -75,15 +75,15 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                 parseRaidName(raid), faction.lowercase(Locale.getDefault()),
-                "dynamic-" + URLConstants.region, URLConstants.locale,
-                URLConstants.region
+                "dynamic-" + NetworkUtils.region, NetworkUtils.locale,
+                NetworkUtils.region
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     entries.value = response.body()?.entries
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }

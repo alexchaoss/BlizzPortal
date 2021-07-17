@@ -26,7 +26,7 @@ import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacters
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.GamesActivity
@@ -68,7 +68,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         errorMessages = ErrorMessages(this.resources)
         val bundle = requireArguments()
         viewModel.realm = bundle.getString("realm")!!
@@ -594,9 +594,9 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun callErrorAlertDialog(responseCode: Int) {
-        if (URLConstants.loading) {
+        if (NetworkUtils.loading) {
             binding.loadingCircle.visibility = View.GONE
-            URLConstants.loading = false
+            NetworkUtils.loading = false
 
             if (responseCode == 404) {
                 dialog = DialogPrompt(requireActivity())
@@ -627,7 +627,7 @@ class WoWCharacterFragment : Fragment() {
                             startDownloads()
                             EventBus.getDefault().post(RetryEvent(true))
                             binding.loadingCircle.visibility = View.VISIBLE
-                            URLConstants.loading = true
+                            NetworkUtils.loading = true
                         }, "retry"), dialog!!.Button(
                             errorMessages.BACK, 18f,
 
@@ -646,7 +646,7 @@ class WoWCharacterFragment : Fragment() {
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 GamesActivity.hideFavoriteButton()
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     when {
                         activity.supportFragmentManager.findFragmentByTag("wowfragment") != null -> {
                             AccountFragment.addOnBackPressCallback(activity)

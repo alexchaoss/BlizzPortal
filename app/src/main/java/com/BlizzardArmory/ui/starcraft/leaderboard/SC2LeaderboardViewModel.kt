@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.starcraft.CurrentSeason
 import com.BlizzardArmory.model.starcraft.leaderboard.LadderMembers
 import com.BlizzardArmory.model.starcraft.league.League
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -45,9 +45,9 @@ class SC2LeaderboardViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     val board = response.body()
                     leaderboard.value = board!!.ladderMembers.groupBy { Triple(it.joinTimestamp, it.wins, it.losses) }.map { it.value }
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
@@ -63,7 +63,7 @@ class SC2LeaderboardViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     league.value = response.body()
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
@@ -79,7 +79,7 @@ class SC2LeaderboardViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     season.value = response.body()
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }

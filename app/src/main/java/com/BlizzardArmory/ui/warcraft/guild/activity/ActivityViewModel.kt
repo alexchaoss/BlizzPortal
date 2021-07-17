@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.guild.Guild
 import com.BlizzardArmory.model.warcraft.guild.activity.ActivitiesInformation
 import com.BlizzardArmory.model.warcraft.guild.media.Media
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +41,7 @@ class ActivityViewModel : BaseViewModel() {
     fun downloadGuildSummary(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildSummary(
-                realm, name, "profile-$region", URLConstants.locale,
+                realm, name, "profile-$region", NetworkUtils.locale,
                 region, battlenetOAuth2Helper?.accessToken!!
             )
             withContext(Dispatchers.Main) {
@@ -93,7 +93,7 @@ class ActivityViewModel : BaseViewModel() {
     fun downloadGuildActivity(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildActivity(
-                realm, name, "profile-$region", URLConstants.locale,
+                realm, name, "profile-$region", NetworkUtils.locale,
                 region, battlenetOAuth2Helper?.accessToken!!
             )
             withContext(Dispatchers.Main) {

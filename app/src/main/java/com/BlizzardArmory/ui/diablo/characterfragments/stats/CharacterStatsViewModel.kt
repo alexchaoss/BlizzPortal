@@ -3,8 +3,8 @@ package com.BlizzardArmory.ui.diablo.characterfragments.stats
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -30,22 +30,22 @@ class CharacterStatsViewModel : BaseViewModel() {
         this.battletag = battletag
         this.id = id
         this.selectedRegion = selectedRegion
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client().getD3Hero(
                 battletag,
                 id,
-                URLConstants.locale,
+                NetworkUtils.locale,
                 selectedRegion.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     characterInformation.value = response.body()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 } else {
                     errorCode.value = response.code()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 }
                 if (!EventBus.getDefault().isRegistered(this@CharacterStatsViewModel)) {
                     EventBus.getDefault().register(this@CharacterStatsViewModel)

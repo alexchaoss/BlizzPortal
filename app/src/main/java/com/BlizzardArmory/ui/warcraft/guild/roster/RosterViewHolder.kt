@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.util.WoWClassColor
 import com.bumptech.glide.Glide
 
@@ -41,7 +41,7 @@ class RosterViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     private fun getCharacterClassIcon(id: Int) {
-        Glide.with(itemView).load(URLConstants.getWoWAsset("class/$id")).circleCrop()
+        Glide.with(itemView).load(NetworkUtils.getWoWAsset("class/$id")).circleCrop()
             .into(characterClass!!)
     }
 }

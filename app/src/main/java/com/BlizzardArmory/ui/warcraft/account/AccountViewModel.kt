@@ -3,8 +3,8 @@ package com.BlizzardArmory.ui.warcraft.account
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.account.Account
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.google.common.eventbus.Subscribe
@@ -23,17 +23,17 @@ class AccountViewModel : BaseViewModel() {
     }
 
     fun downloadWoWCharacters() {
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getAccount(
-                URLConstants.locale,
-                URLConstants.region,
+                NetworkUtils.locale,
+                NetworkUtils.region,
                 battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     characters.value = response.body()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 } else {
                     errorCode.value = response.code()
                 }

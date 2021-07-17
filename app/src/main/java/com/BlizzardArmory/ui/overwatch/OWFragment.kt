@@ -22,8 +22,8 @@ import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfiles
 import com.BlizzardArmory.model.overwatch.heroes.Hero
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
-import com.BlizzardArmory.network.URLConstants.getOWPortraitImage
+import com.BlizzardArmory.network.NetworkUtils
+import com.BlizzardArmory.network.NetworkUtils.getOWPortraitImage
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
@@ -93,7 +93,7 @@ class OWFragment : Fragment() {
             binding.gamesWon.text = privateProfile
             binding.gamesWon.textSize = 18f
             binding.loadingCircle.visibility = View.GONE
-            URLConstants.loading = false
+            NetworkUtils.loading = false
             GamesActivity.favorite!!.setOnClickListener {
                 Toast.makeText(requireActivity(), "Can't add private profile to favorites", Toast.LENGTH_SHORT)
                     .show()
@@ -477,7 +477,7 @@ class OWFragment : Fragment() {
 
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
-        URLConstants.loading = false
+        NetworkUtils.loading = false
 
         val dialog = DialogPrompt(requireActivity())
         dialog.setCancellable(false)
@@ -489,7 +489,7 @@ class OWFragment : Fragment() {
                     dialog.dismiss()
                     viewModel.downloadAccountInformation(username!!, platform!!)
                     binding.loadingCircle.visibility = View.VISIBLE
-                    URLConstants.loading = true
+                    NetworkUtils.loading = true
                 }, "retry"), dialog.Button(
                     errorMessages!!.BACK, 18f,
 
@@ -506,7 +506,7 @@ class OWFragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     GamesActivity.hideFavoriteButton()
                     if (activity.supportFragmentManager.findFragmentByTag("owfavorites") != null) {
                         OWFavoritesFragment.addOnBackPressCallback(activity)

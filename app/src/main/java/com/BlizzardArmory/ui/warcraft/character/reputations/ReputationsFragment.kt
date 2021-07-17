@@ -17,7 +17,7 @@ import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowRepFragmentBinding
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
@@ -226,7 +226,7 @@ class ReputationsFragment : Fragment() {
                 bgName = "warrior_bg"
             }
         }
-        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(binding.backgroundRep)
+        Glide.with(this).load(NetworkUtils.getWoWAsset(bgName)).into(binding.backgroundRep)
         EventBus.getDefault().unregister(this)
     }
 }

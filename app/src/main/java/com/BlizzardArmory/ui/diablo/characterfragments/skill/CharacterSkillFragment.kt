@@ -25,7 +25,7 @@ import com.BlizzardArmory.databinding.D3SkillFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.character.skills.Active
 import com.BlizzardArmory.model.diablo.character.skills.Skill
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
@@ -143,7 +143,7 @@ class CharacterSkillFragment : Fragment() {
                     }, null)
                 }
             }
-            Glide.with(this).load(URLConstants.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
+            Glide.with(this).load(NetworkUtils.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
                     .placeholder(R.drawable.loading_placeholder).into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                             skillList[skillIcons[key]!!.first].setImageDrawable(resource)
@@ -221,7 +221,7 @@ class CharacterSkillFragment : Fragment() {
             passiveIcons[characterInformation?.skills?.passive?.get(i)?.skill?.name!!] = tempPair
         }
         for (key in passiveIcons.keys) {
-            Glide.with(this).load(URLConstants.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))
+            Glide.with(this).load(NetworkUtils.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))
                     .placeholder(R.drawable.loading_placeholder).into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                             passiveList[passiveIcons[key]!!.first].setImageDrawable(resource)

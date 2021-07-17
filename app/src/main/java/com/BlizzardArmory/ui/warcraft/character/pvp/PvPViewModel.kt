@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +59,7 @@ class PvPViewModel : BaseViewModel() {
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 "rbg",
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -67,7 +67,7 @@ class PvPViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     pvpRBG = response.body()!!
                     val url =
-                        pvpRBG.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                        pvpRBG.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
                     downloadBracket(url, "rbg")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -84,7 +84,7 @@ class PvPViewModel : BaseViewModel() {
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 "3v3",
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -92,7 +92,7 @@ class PvPViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     pvp3v3 = response.body()!!
                     val url =
-                        pvp3v3.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                        pvp3v3.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
                     downloadBracket(url, "3v3")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -109,7 +109,7 @@ class PvPViewModel : BaseViewModel() {
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 "2v2",
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -117,7 +117,7 @@ class PvPViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     pvp2v2 = response.body()!!
                     val url =
-                        pvp2v2.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+                        pvp2v2.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
                     downloadBracket(url, "2v2")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -131,7 +131,7 @@ class PvPViewModel : BaseViewModel() {
     private fun downloadBracket(url: String, bracket: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicTier(url, region.lowercase(Locale.getDefault()), URLConstants.locale)
+                .getDynamicTier(url, region.lowercase(Locale.getDefault()), NetworkUtils.locale)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     when (bracket) {
@@ -153,7 +153,7 @@ class PvPViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getPvPSummary(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )

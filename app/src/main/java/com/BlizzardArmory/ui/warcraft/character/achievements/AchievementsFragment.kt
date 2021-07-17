@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
@@ -112,7 +112,7 @@ class AchievementsFragment : Fragment() {
         viewModel.getAllAchievements().observe(viewLifecycleOwner, {
             val savedAchievs = Pair(System.currentTimeMillis(), it)
             prefs!!.edit()
-                .putString("detailed_achievements_${URLConstants.locale}", gson?.toJson(savedAchievs))
+                .putString("detailed_achievements_${NetworkUtils.locale}", gson?.toJson(savedAchievs))
                 .apply()
             needToUpdate = false
             viewModel.downloadCharacterAchievements()
@@ -125,7 +125,7 @@ class AchievementsFragment : Fragment() {
         viewModel.getCategories().observe(viewLifecycleOwner, {
             val savedCategories = Pair(System.currentTimeMillis(), it)
             prefs!!.edit()
-                .putString("achievement_categories_${URLConstants.locale}", gson!!.toJson(savedCategories))
+                .putString("achievement_categories_${NetworkUtils.locale}", gson!!.toJson(savedCategories))
                 .apply()
             needToUpdate = false
         })
@@ -170,7 +170,7 @@ class AchievementsFragment : Fragment() {
                     it.parentCategoryId == null
                 }.sortedBy {
                     it.displayOrder
-                }, URLConstants.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
+                }, NetworkUtils.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
                 adapter!!.notifyDataSetChanged()
             }
         } catch (e: Exception) {
@@ -199,7 +199,7 @@ class AchievementsFragment : Fragment() {
                 it.parentCategoryId == id
             }.sortedBy {
                 it.displayOrder
-            }, URLConstants.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
+            }, NetworkUtils.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getCharacterAchievements().value?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
         if (viewModel.getMappedAchievements().value!![currentCategory]?.size != 0) {
@@ -298,7 +298,7 @@ class AchievementsFragment : Fragment() {
                 bgName = "warrior_bg"
             }
         }
-        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(binding.backgroundAchieves)
+        Glide.with(this).load(NetworkUtils.getWoWAsset(bgName)).into(binding.backgroundAchieves)
     }
 
     companion object {

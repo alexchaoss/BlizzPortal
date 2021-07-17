@@ -20,7 +20,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3CharacterFragmentBinding
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
@@ -233,7 +233,7 @@ class CharacterStatsFragment : Fragment() {
 
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
-        URLConstants.loading = false
+        NetworkUtils.loading = false
 
         val dialog = DialogPrompt(requireActivity())
         dialog.setCancellable(false)
@@ -272,7 +272,7 @@ class CharacterStatsFragment : Fragment() {
         private var spellPanelShown = false
         fun addOnBackPressCallback(activity : GamesActivity){
             activity.onBackPressedDispatcher.addCallback {
-                if(!URLConstants.loading) {
+                if(!NetworkUtils.loading) {
                     if (!itemPanelShown && !spellPanelShown) {
                         D3Fragment.addOnBackPressCallback(activity)
                         activity.supportFragmentManager.popBackStack()

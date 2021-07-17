@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.news.NewsMetaData
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.util.WebNewsScrapper
@@ -52,7 +52,7 @@ class NewsListViewModel : BaseViewModel() {
 
     fun downloadNews() {
         val job = coroutineScope.launch {
-            WebNewsScrapper.parseNewsList("https://news.blizzard.com/${URLConstants.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
+            WebNewsScrapper.parseNewsList("https://news.blizzard.com/${NetworkUtils.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
             Log.i("Page $pageNumber", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 downloaded.value = true
@@ -128,7 +128,7 @@ class NewsListViewModel : BaseViewModel() {
 
     private fun downloadMore(pageNumber: Int) {
         val job = coroutineScope.launch {
-            WebNewsScrapper.parseMoreNews("https://news.blizzard.com/${URLConstants.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
+            WebNewsScrapper.parseMoreNews("https://news.blizzard.com/${NetworkUtils.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
             Log.i("Page $pageNumber", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 showMore.value = true

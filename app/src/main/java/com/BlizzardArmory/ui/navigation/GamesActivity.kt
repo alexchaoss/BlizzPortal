@@ -19,7 +19,7 @@ import com.BlizzardArmory.model.MenuItem
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
@@ -139,7 +139,7 @@ class GamesActivity : LocalizationActivity(),
                 finish()
             }
         }
-        webview.loadUrl(URLConstants.LOGOUT_URL)
+        webview.loadUrl(NetworkUtils.LOGOUT_URL)
     }
 
     private fun createMenuList() {
@@ -459,7 +459,7 @@ class GamesActivity : LocalizationActivity(),
                         openWoWAccount(fragment)
                     }
                     resources.getString(R.string.diablo_3) -> {
-                        callD3Fragment(userInformation?.battleTag!!, URLConstants.region)
+                        callD3Fragment(userInformation?.battleTag!!, NetworkUtils.region)
                     }
                     resources.getString(R.string.overwatch) -> {
                         val bundle = Bundle()

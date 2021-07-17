@@ -25,7 +25,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.Sc2FragmentBinding
 import com.BlizzardArmory.model.starcraft.Player
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.GamesActivity
@@ -195,7 +195,7 @@ class SC2Fragment : Fragment() {
     }
 
     private fun getRaceImage(imageView: ImageView, name: String) {
-        Glide.with(this).load(URLConstants.getSC2Asset(name))
+        Glide.with(this).load(NetworkUtils.getSC2Asset(name))
             .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     imageView.background = resource
@@ -478,7 +478,7 @@ class SC2Fragment : Fragment() {
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     binding.avatar.background = resource
                     binding.loadingCircle.visibility = View.GONE
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {}
@@ -522,7 +522,7 @@ class SC2Fragment : Fragment() {
 
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
-        URLConstants.loading = false
+        NetworkUtils.loading = false
 
         val dialog = DialogPrompt(requireActivity())
         dialog.setCancellable(false)
@@ -551,7 +551,7 @@ class SC2Fragment : Fragment() {
         fun addOnBackPressCallback(activity: GamesActivity) {
 
             activity.onBackPressedDispatcher.addCallback {
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
                     activity.supportFragmentManager.popBackStack()
                 }

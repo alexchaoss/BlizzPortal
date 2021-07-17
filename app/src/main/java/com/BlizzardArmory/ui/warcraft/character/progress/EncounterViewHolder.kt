@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.encounters.Instances
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.bumptech.glide.Glide
 
 class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -28,7 +28,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     fun bind(instances: Instances, level: String) {
-        Glide.with(itemView.context).load(URLConstants.getWoWAsset(findBanner(instances))).into(banner!!)
+        Glide.with(itemView.context).load(NetworkUtils.getWoWAsset(findBanner(instances))).into(banner!!)
         raidName?.text = instances.instance.name
         raidLevel?.text = level
         recyclerView?.apply {

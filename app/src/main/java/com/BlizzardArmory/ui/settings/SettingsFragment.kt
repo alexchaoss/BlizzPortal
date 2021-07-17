@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.SettingsBinding
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
@@ -139,7 +139,7 @@ class SettingsFragment : Fragment() {
         OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title))
         binding.licenses.setOnClickListener { startActivity(Intent(activity, OssLicensesMenuActivity::class.java)) }
         binding.rate.setOnClickListener { openAppStoreForReview() }
-        binding.donation.setOnClickListener { binding.webview.loadUrl(URLConstants.PAYPAL_URL) }
+        binding.donation.setOnClickListener { binding.webview.loadUrl(NetworkUtils.PAYPAL_URL) }
     }
 
     private fun openAppStoreForReview() {

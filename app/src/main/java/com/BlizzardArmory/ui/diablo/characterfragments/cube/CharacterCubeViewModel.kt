@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.model.diablo.item.SingleItem
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -33,14 +33,14 @@ class CharacterCubeViewModel : BaseViewModel() {
             val job = coroutineScope.launch {
                 val response = RetroClient.getD3Client().getItem(
                     endpoint,
-                    URLConstants.region,
-                    URLConstants.locale
+                    NetworkUtils.region,
+                    NetworkUtils.locale
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         singleItem.value = response.body()!!
                         if (i == characterInformation.legendaryPowers.size - 1) {
-                            URLConstants.loading = false
+                            NetworkUtils.loading = false
                             if (!EventBus.getDefault().isRegistered(this@CharacterCubeViewModel)) {
                                 EventBus.getDefault().register(this@CharacterCubeViewModel)
                             }

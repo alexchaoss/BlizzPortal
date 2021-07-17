@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.diablo.account.FallenHero
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,7 +29,7 @@ class D3DeadCharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(fallenHero: FallenHero) {
-        Glide.with(itemView).load(URLConstants.getD3Asset(getFallenHeroFrame(fallenHero))).into(frame!!)
+        Glide.with(itemView).load(NetworkUtils.getD3Asset(getFallenHeroFrame(fallenHero))).into(frame!!)
 
         val format = SimpleDateFormat("MM/dd/yy", Locale.getDefault())
         val dateFormatted = Date(fallenHero.death.time.toLong() * 1000L)

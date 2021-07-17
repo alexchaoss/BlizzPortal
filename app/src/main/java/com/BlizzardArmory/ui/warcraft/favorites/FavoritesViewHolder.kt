@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
 import com.BlizzardArmory.model.warcraft.media.Media
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
@@ -86,7 +86,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val response = RetroClient.getWoWClient().getMedia(
                 character?.characterSummary?.name?.lowercase(Locale.getDefault())!!,
                 character?.characterSummary?.realm?.slug!!,
-                URLConstants.locale,
+                NetworkUtils.locale,
                 character?.region?.lowercase(Locale.getDefault())!!,
                 bnOAuth2Helper.accessToken
             )
@@ -109,7 +109,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         } else {
             media.assets?.first { it.key == "avatar" }?.value
         }
-        val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
+        val fullURL = mediaUrl + NetworkUtils.NOT_FOUND_URL_AVATAR + character?.characterSummary?.characterClass?.id + "-" + (if (character?.characterSummary?.gender?.type == "MALE") 1 else 0) + ".jpg"
         Glide.with(context).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
         downloaded = true
         job?.cancel()

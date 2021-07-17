@@ -18,7 +18,7 @@ import com.BlizzardArmory.databinding.WowPvpFragmentBinding
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
@@ -245,7 +245,7 @@ class PvPFragment : Fragment(){
                 bgName = "warrior_bg"
             }
         }
-        Glide.with(this).load(URLConstants.getWoWAsset(bgName)).into(binding.backgroundPvp)
+        Glide.with(this).load(NetworkUtils.getWoWAsset(bgName)).into(binding.backgroundPvp)
         EventBus.getDefault().unregister(this)
     }
 

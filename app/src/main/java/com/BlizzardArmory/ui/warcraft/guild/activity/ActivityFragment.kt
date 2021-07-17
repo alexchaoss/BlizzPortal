@@ -15,7 +15,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowGuildActivityBinding
 import com.BlizzardArmory.model.warcraft.guild.Guild
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.GamesActivity
@@ -56,7 +56,7 @@ class ActivityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         errorMessages = ErrorMessages(this.resources)
-        URLConstants.loading = true
+        NetworkUtils.loading = true
 
         val bundle = requireArguments()
         realm = bundle.getString("realm")
@@ -87,7 +87,7 @@ class ActivityFragment : Fragment() {
         })
 
         viewModel.getGuildActivity().observe(viewLifecycleOwner, {
-            URLConstants.loading = false
+            NetworkUtils.loading = false
             if (!it.activities.isNullOrEmpty()) {
                 binding.activityRecycler.apply {
                     adapter = ActivitiesAdapter(it.activities, requireContext())
@@ -168,9 +168,9 @@ class ActivityFragment : Fragment() {
 
     private fun callErrorAlertDialog(responseCode: Int) {
         var dialog = DialogPrompt(requireActivity())
-        if (URLConstants.loading) {
+        if (NetworkUtils.loading) {
             binding.loadingCircle.visibility = View.GONE
-            URLConstants.loading = false
+            NetworkUtils.loading = false
 
             if (responseCode == 404) {
                 dialog.setCancellable(false)
@@ -200,7 +200,7 @@ class ActivityFragment : Fragment() {
                             viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
                             EventBus.getDefault().post(RetryEvent(true))
                             binding.loadingCircle.visibility = View.VISIBLE
-                            URLConstants.loading = true
+                            NetworkUtils.loading = true
                         }, "retry"), dialog.Button(
                             errorMessages.BACK, 18f,
 
@@ -217,7 +217,7 @@ class ActivityFragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     when {
                         activity.supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
                             WoWCharacterFragment.addOnBackPressCallback(activity)

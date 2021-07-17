@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.items.Item
 import com.BlizzardArmory.model.diablo.items.Items
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +61,7 @@ class CharacterGearViewModel : BaseViewModel() {
             val response = RetroClient.getD3Client().getHeroItems(
                 battletag,
                 id,
-                URLConstants.locale,
+                NetworkUtils.locale,
                 selectedRegion.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )

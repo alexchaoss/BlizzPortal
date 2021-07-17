@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.databinding.D3CubeFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.util.events.WoWCharacterEvent
@@ -96,19 +96,19 @@ class CharacterCubeFragment : Fragment() {
                     when {
                         armorArray.any { s: String? -> power.icon.contains(s!!) } -> {
                             cubeURL["armor"] =
-                                URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
+                                NetworkUtils.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
                             cubeMap[power.icon.lowercase(Locale.getDefault())] =
                                 binding.cubeArmorItem
                         }
                         ringArray.any { s: String? -> power.icon.contains(s!!) } -> {
                             cubeURL["ring"] =
-                                URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
+                                NetworkUtils.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
                             cubeMap[power.icon.lowercase(Locale.getDefault())] =
                                 binding.cubeRingItem
                         }
                         else -> {
                             cubeURL["sword"] =
-                                URLConstants.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
+                                NetworkUtils.D3_ICON_ITEMS.replace("icon.png", power.icon + ".png")
                             cubeMap[power.icon.lowercase(Locale.getDefault())] =
                                 binding.cubeSwordItem
                         }

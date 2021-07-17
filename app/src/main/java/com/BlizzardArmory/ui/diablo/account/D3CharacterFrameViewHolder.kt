@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.diablo.account.Hero
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
@@ -47,7 +47,7 @@ class D3CharacterFrameViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
             season?.visibility = View.VISIBLE
         }
 
-        Glide.with(itemView).load(URLConstants.getD3Asset(getGender(hero))).into(portrait!!)
+        Glide.with(itemView).load(NetworkUtils.getD3Asset(getGender(hero))).into(portrait!!)
 
         name?.text = hero.name
         eliteKills?.text = "${hero.kills.elites} Elite Kills"

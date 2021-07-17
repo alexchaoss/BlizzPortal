@@ -20,7 +20,7 @@ import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3GearFragmentBinding
 import com.BlizzardArmory.model.diablo.items.Item
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.util.events.D3ClosePanelEvent
@@ -83,7 +83,7 @@ class CharacterGearFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         addImageViewItemsToList()
         setObservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
@@ -561,7 +561,7 @@ class CharacterGearFragment : Fragment() {
 
     private fun getItemIconURL(item: Item) {
         try {
-            itemIconURL[item.slots!!] = URLConstants.D3_ICON_ITEMS.replace("icon.png", item.icon.toString()) + ".png"
+            itemIconURL[item.slots!!] = NetworkUtils.D3_ICON_ITEMS.replace("icon.png", item.icon.toString()) + ".png"
         } catch (e: Exception) {
             Log.e("Error", e.toString())
             itemIconURL["empty"] = null

@@ -19,7 +19,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowAccountFragmentBinding
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
@@ -169,7 +169,7 @@ class AccountFragment : Fragment() {
 
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
-        URLConstants.loading = false
+        NetworkUtils.loading = false
 
         val dialog = DialogPrompt(requireActivity())
         dialog.setCancellable(false)
@@ -184,7 +184,7 @@ class AccountFragment : Fragment() {
                         dialog.dismiss()
                         viewModel.downloadWoWCharacters()
                         binding.loadingCircle.visibility = View.VISIBLE
-                        URLConstants.loading = true
+                        NetworkUtils.loading = true
                     }, "retry"), dialog.Button(
                         errorMessages.BACK, 18f,
 
@@ -202,7 +202,7 @@ class AccountFragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
                     activity.supportFragmentManager.popBackStack()
                 }

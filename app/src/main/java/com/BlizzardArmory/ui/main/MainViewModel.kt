@@ -3,7 +3,7 @@ package com.BlizzardArmory.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 
@@ -18,8 +18,8 @@ class MainViewModel : ViewModel() {
 
     fun openLoginToBattleNet() {
         battlenetOAuth2Params.value = BattlenetOAuth2Params(
-            clientID!!, URLConstants.region,
-            URLConstants.CALLBACK_URL, "BlizzPortal", BattlenetConstants.SCOPE_WOW, BattlenetConstants.SCOPE_SC2
+            clientID!!, NetworkUtils.region,
+            NetworkUtils.CALLBACK_URL, "BlizzPortal", BattlenetConstants.SCOPE_WOW, BattlenetConstants.SCOPE_SC2
         )
     }
 }

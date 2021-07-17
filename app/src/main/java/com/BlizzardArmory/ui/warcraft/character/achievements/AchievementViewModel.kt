@@ -7,8 +7,8 @@ import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -46,8 +46,7 @@ class AchievementViewModel : BaseViewModel() {
 
     fun downloadAchievementInformation() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
-                .getAllAchievements(URLConstants.selectAchievementsURLFromLocale(URLConstants.locale))
+            val response = RetroClient.getAPIClient().getAllAchievements()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     allAchievements.value = response.body()
@@ -64,7 +63,7 @@ class AchievementViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getCharacterAchievements(
                 character,
                 realm,
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region,
                 battlenetOAuth2Helper?.accessToken!!
             )
@@ -81,9 +80,7 @@ class AchievementViewModel : BaseViewModel() {
 
     fun downloadCategories() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getAchievementCategories(
-                URLConstants.selectAchievementCategoriesURLFromLocale(URLConstants.locale)
-            )
+            val response = RetroClient.getAPIClient().getAchievementCategories()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     categories.value = response.body()

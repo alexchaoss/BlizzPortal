@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.account.Character
 import com.BlizzardArmory.model.warcraft.media.Media
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
@@ -85,8 +85,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val response = RetroClient.getWoWClient().getMedia(
                 character?.name?.lowercase(Locale.getDefault())!!,
                 character?.realm?.slug!!,
-                URLConstants.locale,
-                URLConstants.region,
+                NetworkUtils.locale,
+                NetworkUtils.region,
                 bnOAuth2Helper.accessToken
             )
             withContext(Dispatchers.Main) {
@@ -107,7 +107,7 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         } else {
             media.assets?.first { it.key == "avatar" }?.value
         }
-        val fullURL = mediaUrl + URLConstants.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
+        val fullURL = mediaUrl + NetworkUtils.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
         Glide.with(context.applicationContext).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
         downloaded = true
@@ -117,7 +117,7 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private fun onClickCharacter(character: Character, media: String, fragmentManager: FragmentManager) {
         characterLayout?.setOnClickListener {
             val woWNavFragment =
-                WoWNavFragment.newInstance(character.name.lowercase(Locale.getDefault()), character.realm.slug, media, URLConstants.region)
+                WoWNavFragment.newInstance(character.name.lowercase(Locale.getDefault()), character.realm.slug, media, NetworkUtils.region)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
             fragmentTransaction.add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")

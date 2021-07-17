@@ -6,13 +6,14 @@ import java.util.*
 /**
  * The type Url constants.
  */
-object URLConstants {
+object NetworkUtils {
     /**
      * The constant loading.
      */
     @JvmField
     var loading = false
-    var HEROKU_AUTHENTICATE = "https://blizzardgamesprofiles.herokuapp.com/"
+    var HEROKU_PROXY_BASE_URL = "https://blizzardgamesprofiles.herokuapp.com/"
+    var HEROKU_API_BASE_URL = "https://blizzard-armory-server.herokuapp.com/"
 
     /**
      * The constant paypalURL.
@@ -84,10 +85,10 @@ object URLConstants {
      */
     @JvmStatic
     val baseURLforUserInformation: String
-        get() = if (URLConstants.region.equals("cn", ignoreCase = true)) {
+        get() = if (NetworkUtils.region.equals("cn", ignoreCase = true)) {
             BASE_URL_CN_USER_INFO
         } else {
-            BASE_URL_USER_INFO.replace("zone", URLConstants.region.lowercase(Locale.getDefault()))
+            BASE_URL_USER_INFO.replace("zone", NetworkUtils.region.lowercase(Locale.getDefault()))
         }
 
     /**
@@ -115,10 +116,10 @@ object URLConstants {
             url = OW_PROFILE.replace(":battletag", username.replace("#", "-"))
             url = url.replace(":platform", "pc")
             url =
-                if (URLConstants.region.equals("cn", ignoreCase = true) || URLConstants.region.equals("tw", ignoreCase = true)) {
+                if (NetworkUtils.region.equals("cn", ignoreCase = true) || NetworkUtils.region.equals("tw", ignoreCase = true)) {
                     url.replace(":region", "asia")
                 } else {
-                    url.replace(":region", URLConstants.region.lowercase(Locale.getDefault()))
+                    url.replace(":region", NetworkUtils.region.lowercase(Locale.getDefault()))
                 }
         } else {
             url = OW_PROFILE.replace(":battletag", username)
@@ -149,11 +150,11 @@ object URLConstants {
         return WOW_ASSETS.replace("image", name)
     }
 
-    fun selectAchievementsURLFromLocale(locale: String): String {
+    fun getAchievements(locale: String): String {
         return "https://blizzard-armory-server.herokuapp.com/achievements/$locale"
     }
 
-    fun selectAchievementCategoriesURLFromLocale(locale: String): String {
+    fun getAchievementCategories(locale: String): String {
         return "https://blizzard-armory-server.herokuapp.com/categories/$locale"
     }
 
@@ -175,6 +176,10 @@ object URLConstants {
 
     fun getReputations(locale: String): String {
         return "https://blizzard-armory-server.herokuapp.com/reputations/$locale"
+    }
+
+    fun getInstances(locale: String): String {
+        return "https://blizzard-armory-server.herokuapp.com/instances/$locale"
     }
 
     fun getOverwatchLeagueData(year: String): String{

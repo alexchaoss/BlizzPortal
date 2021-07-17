@@ -7,8 +7,8 @@ import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByE
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
 import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -45,8 +45,7 @@ class ReputationsViewModel : BaseViewModel() {
 
     fun downloadReputationsPlusParentInfo() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
-                .getReputationPlusParentInfo(URLConstants.getReputations(URLConstants.locale))
+            val response = RetroClient.getAPIClient().getReputationPlusParentInfo()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     reputationsWithParentInfo.value = response.body()
@@ -64,7 +63,7 @@ class ReputationsViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getReputations(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )

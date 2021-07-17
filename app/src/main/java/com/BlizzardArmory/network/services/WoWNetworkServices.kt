@@ -1,13 +1,9 @@
 package com.BlizzardArmory.network.services
 
 import com.BlizzardArmory.model.warcraft.account.Account
-import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
-import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.SoulbindInformation
-import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
-import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
 import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.model.warcraft.equipment.Equipment
@@ -16,6 +12,11 @@ import com.BlizzardArmory.model.warcraft.guild.achievements.AchievementsInformat
 import com.BlizzardArmory.model.warcraft.guild.activity.ActivitiesInformation
 import com.BlizzardArmory.model.warcraft.guild.roster.Roster
 import com.BlizzardArmory.model.warcraft.media.Media
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.index.LeaderboardsIndex
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Leaderboard
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.Season
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.index.SeasonsIndex
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.period.Period
 import com.BlizzardArmory.model.warcraft.mythicraid.MythicRaidLeaderboard
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
@@ -23,15 +24,13 @@ import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
-import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
-import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import retrofit2.Response
 import retrofit2.http.*
 
 interface WoWNetworkServices {
-
+    //Game Data
     @GET("/data/wow/realm/index")
     suspend fun getRealmIndex(
         @Query("region") region: String,
@@ -48,15 +47,6 @@ interface WoWNetworkServices {
         @Body query: com.BlizzardArmory.model.warcraft.realm.connected.Query
     ): Response<ConnectedRealms>
 
-    @GET("/profile/wow/character/{realm}/{character}/character-media")
-    suspend fun getMedia(
-        @Path("character", encoded = true) character: String,
-        @Path("realm", encoded = true) realm: String,
-        @Query("locale") locale: String,
-        @Query("region") region: String,
-        @Query("token") accessToken: String
-    ): Response<Media>
-
     @GET
     suspend fun getDynamicEquipmentMedia(
         @Url url: String,
@@ -65,22 +55,129 @@ interface WoWNetworkServices {
     ): Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>
 
     @GET
-    suspend fun getAchievementCategories(@Url url: String): Response<Categories>
+    suspend fun getDynamicTier(
+        @Url url: String,
+        @Query("region") region: String,
+        @Query("locale") locale: String
+    ): Response<Tier>
 
-    @GET
-    suspend fun getAllAchievements(@Url url: String): Response<DetailedAchievements>
+    @GET("/data/wow/tech-talent-tree/{id}")
+    suspend fun getTechTree(
+        @Path("id") id: Int,
+        @Query("locale") locale: String,
+        @Query("region") region: String
+    ): Response<TechTalentTree>
 
-    @GET
-    suspend fun getTalentsWithIcon(@Url url: String): Response<List<TalentsIcons>>
+    @GET("/data/wow/leaderboard/hall-of-fame/{raid}/{faction}")
+    suspend fun getMythicRaidLeaderboards(
+        @Path("raid") raid: String,
+        @Path("faction") faction: String,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String
+    ): Response<MythicRaidLeaderboard>
 
-    @GET
-    suspend fun getTechTalentsWithIcon(@Url url: String): Response<List<TechTalentWithIcon>>
+    @GET("/data/wow/guild/{realmSlug}/{nameSlug}")
+    suspend fun getGuildSummary(
+        @Path("realmSlug") realmSlug: String,
+        @Path("nameSlug") nameSlug: String,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+        @Query("token") accessToken: String
+    ): Response<Guild>
 
-    @GET
-    suspend fun getCovenantSpells(@Url url: String): Response<List<CovenantSpells>>
+    @GET("/data/wow/guild/{realmSlug}/{nameSlug}/activity")
+    suspend fun getGuildActivity(
+        @Path("realmSlug") realmSlug: String,
+        @Path("nameSlug") nameSlug: String,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+        @Query("token") accessToken: String
+    ): Response<ActivitiesInformation>
 
-    @GET
-    suspend fun getReputationPlusParentInfo(@Url url: String): Response<List<ReputationPlusParentInfo>>
+    @GET("/data/wow/guild/{realmSlug}/{nameSlug}/roster")
+    suspend fun getGuildRoster(
+        @Path("realmSlug") realmSlug: String,
+        @Path("nameSlug") nameSlug: String,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+        @Query("token") accessToken: String
+    ): Response<Roster>
+
+    @GET("/data/wow/guild/{realmSlug}/{nameSlug}/achievements")
+    suspend fun getGuildAchievements(
+        @Path("realmSlug") realmSlug: String,
+        @Path("nameSlug") nameSlug: String,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+        @Query("token") accessToken: String
+    ): Response<AchievementsInformation>
+
+    @GET("/data/wow/media/guild-crest/border/{id}")
+    suspend fun getGuildCrestBorder(
+        @Path("id") id: Int
+    ): Response<com.BlizzardArmory.model.warcraft.guild.media.Media>
+
+    @GET("/data/wow/media/guild-crest/emblem/{id}")
+    suspend fun getGuildCrestEmblem(
+        @Path("id") id: Int
+    ): Response<com.BlizzardArmory.model.warcraft.guild.media.Media>
+
+    @GET("/data/wow/mythic-keystone/season/index")
+    suspend fun getMythicKeystoneSeasonsIndex(
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+    ): Response<SeasonsIndex>
+
+    @GET("/data/wow/mythic-keystone/season/{seasonId}")
+    suspend fun getMythicKeystoneSeason(
+        @Path("seasonId") seasonId: Int,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+    ): Response<Season>
+
+    @GET("/data/wow/mythic-keystone/period/{periodId}")
+    suspend fun getMythicKeystonePeriod(
+        @Path("periodId") periodId: Int,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+    ): Response<Period>
+
+    @GET("/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/index")
+    suspend fun getMythicKeystoneLeaderboardsIndex(
+        @Path("connectedRealmId") connectedRealmId: Int,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+    ): Response<LeaderboardsIndex>
+
+    @GET("/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/{dungeonId}/period/{period}")
+    suspend fun getMythicKeystoneLeaderboard(
+        @Path("connectedRealmId") connectedRealmId: Int,
+        @Path("dungeonId") dungeonId: Int,
+        @Path("period") period: Int,
+        @Query("namespace") namespace: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+    ): Response<Leaderboard>
+
+    //Profile
+
+    @GET("/profile/wow/character/{realm}/{character}/character-media")
+    suspend fun getMedia(
+        @Path("character", encoded = true) character: String,
+        @Path("realm", encoded = true) realm: String,
+        @Query("locale") locale: String,
+        @Query("region") region: String,
+        @Query("token") accessToken: String
+    ): Response<Media>
 
     @GET("/profile/wow/character/{realm}/{character}/achievements")
     suspend fun getCharacterAchievements(
@@ -163,13 +260,6 @@ interface WoWNetworkServices {
         @Query("token") accessToken: String
     ): Response<BracketStatistics>
 
-    @GET
-    suspend fun getDynamicTier(
-        @Url url: String,
-        @Query("region") region: String,
-        @Query("locale") locale: String
-    ): Response<Tier>
-
     @GET("profile/wow/character/{realm}/{character}/reputations")
     suspend fun getReputations(
         @Path("character", encoded = true) character: String,
@@ -187,70 +277,4 @@ interface WoWNetworkServices {
         @Query("region") region: String,
         @Query("token") accessToken: String
     ): Response<SoulbindInformation>
-
-    @GET("/data/wow/tech-talent-tree/{id}")
-    suspend fun getTechTree(
-        @Path("id") id: Int,
-        @Query("locale") locale: String,
-        @Query("region") region: String
-    ): Response<TechTalentTree>
-
-    @GET("/data/wow/leaderboard/hall-of-fame/{raid}/{faction}")
-    suspend fun getMythicRaidLeaderboards(
-        @Path("raid") raid: String,
-        @Path("faction") faction: String,
-        @Query("namespace") namespace: String,
-        @Query("locale") locale: String,
-        @Query("region") region: String
-    ): Response<MythicRaidLeaderboard>
-
-    @GET("/data/wow/guild/{realmSlug}/{nameSlug}")
-    suspend fun getGuildSummary(
-        @Path("realmSlug") realmSlug: String,
-        @Path("nameSlug") nameSlug: String,
-        @Query("namespace") namespace: String,
-        @Query("locale") locale: String,
-        @Query("region") region: String,
-        @Query("token") accessToken: String
-    ): Response<Guild>
-
-    @GET("/data/wow/guild/{realmSlug}/{nameSlug}/activity")
-    suspend fun getGuildActivity(
-        @Path("realmSlug") realmSlug: String,
-        @Path("nameSlug") nameSlug: String,
-        @Query("namespace") namespace: String,
-        @Query("locale") locale: String,
-        @Query("region") region: String,
-        @Query("token") accessToken: String
-    ): Response<ActivitiesInformation>
-
-    @GET("/data/wow/guild/{realmSlug}/{nameSlug}/roster")
-    suspend fun getGuildRoster(
-        @Path("realmSlug") realmSlug: String,
-        @Path("nameSlug") nameSlug: String,
-        @Query("namespace") namespace: String,
-        @Query("locale") locale: String,
-        @Query("region") region: String,
-        @Query("token") accessToken: String
-    ): Response<Roster>
-
-    @GET("/data/wow/guild/{realmSlug}/{nameSlug}/achievements")
-    suspend fun getGuildAchievements(
-        @Path("realmSlug") realmSlug: String,
-        @Path("nameSlug") nameSlug: String,
-        @Query("namespace") namespace: String,
-        @Query("locale") locale: String,
-        @Query("region") region: String,
-        @Query("token") accessToken: String
-    ): Response<AchievementsInformation>
-
-    @GET("/data/wow/media/guild-crest/border/{id}")
-    suspend fun getGuildCrestBorder(
-        @Path("id") id: Int
-    ): Response<com.BlizzardArmory.model.warcraft.guild.media.Media>
-
-    @GET("/data/wow/media/guild-crest/emblem/{id}")
-    suspend fun getGuildCrestEmblem(
-        @Path("id") id: Int
-    ): Response<com.BlizzardArmory.model.warcraft.guild.media.Media>
 }

@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -70,7 +70,7 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
     private fun downloadIcon(hero: TopHero) {
 
         Glide.with(itemView)
-            .load(URLConstants.getOWIconImage(hero.javaClass.simpleName.lowercase(Locale.getDefault())))
+            .load(NetworkUtils.getOWIconImage(hero.javaClass.simpleName.lowercase(Locale.getDefault())))
             .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     icon?.background = resource

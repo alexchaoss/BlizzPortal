@@ -7,8 +7,8 @@ import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.model.warcraft.realm.connected.Query
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.discord.panels.PanelState
 import io.reactivex.rxjava3.core.Observable
@@ -71,7 +71,7 @@ class GamesViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getGeneralClient().getUserInfo(
                 battlenetOAuth2Helper?.accessToken,
-                URLConstants.region
+                NetworkUtils.region
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -87,7 +87,7 @@ class GamesViewModel : BaseViewModel() {
 
     fun initWoWServer() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getGeneralClient().initWoWServer(URLConstants.WOW_SERVER)
+            val response = RetroClient.getGeneralClient().initWoWServer(NetworkUtils.WOW_SERVER)
             withContext(Dispatchers.Main) {
                 Log.i("init wow server", response.message())
             }
@@ -101,7 +101,7 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "us",
                 "dynamic-us",
-                URLConstants.locale,
+                NetworkUtils.locale,
                 query
             )
             withContext(Dispatchers.Main) {
@@ -117,7 +117,7 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "eu",
                 "dynamic-eu",
-                URLConstants.locale,
+                NetworkUtils.locale,
                 query
             )
             withContext(Dispatchers.Main) {
@@ -133,7 +133,7 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "kr",
                 "dynamic-kr",
-                URLConstants.locale,
+                NetworkUtils.locale,
                 query
             )
             withContext(Dispatchers.Main) {
@@ -149,7 +149,7 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getConnectedRealms(
                 "tw",
                 "dynamic-tw",
-                URLConstants.locale,
+                NetworkUtils.locale,
                 query
             )
             withContext(Dispatchers.Main) {
@@ -168,7 +168,7 @@ class GamesViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getMedia(
                 characterClicked.lowercase(Locale.getDefault()),
                 characterRealm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 selectedRegion.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )

@@ -18,7 +18,7 @@ import com.BlizzardArmory.model.diablo.account.AccountInformation
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
@@ -203,29 +203,29 @@ class D3Fragment : Fragment() {
 
     private fun setProgression() {
         if (viewModel.getProfile().value!!.progression.act1) {
-            Glide.with(this).load(URLConstants.getD3Asset("act1_done")).into(binding.progAct1)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act1_done")).into(binding.progAct1)
         } else {
-            Glide.with(this).load(URLConstants.getD3Asset("act1_not_done")).into(binding.progAct1)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act1_not_done")).into(binding.progAct1)
         }
         if (viewModel.getProfile().value!!.progression.act2) {
-            Glide.with(this).load(URLConstants.getD3Asset("act2_done")).into(binding.progAct2)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act2_done")).into(binding.progAct2)
         } else {
-            Glide.with(this).load(URLConstants.getD3Asset("act2_not_done")).into(binding.progAct2)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act2_not_done")).into(binding.progAct2)
         }
         if (viewModel.getProfile().value!!.progression.act3) {
-            Glide.with(this).load(URLConstants.getD3Asset("act3_done")).into(binding.progAct3)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act3_done")).into(binding.progAct3)
         } else {
-            Glide.with(this).load(URLConstants.getD3Asset("act3_not_done")).into(binding.progAct3)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act3_not_done")).into(binding.progAct3)
         }
         if (viewModel.getProfile().value!!.progression.act4) {
-            Glide.with(this).load(URLConstants.getD3Asset("act4_done")).into(binding.progAct4)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act4_done")).into(binding.progAct4)
         } else {
-            Glide.with(this).load(URLConstants.getD3Asset("act4_not_done")).into(binding.progAct4)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act4_not_done")).into(binding.progAct4)
         }
         if (viewModel.getProfile().value!!.progression.act5) {
-            Glide.with(this).load(URLConstants.getD3Asset("act5_done")).into(binding.progAct5)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act5_done")).into(binding.progAct5)
         } else {
-            Glide.with(this).load(URLConstants.getD3Asset("act5_not_done")).into(binding.progAct5)
+            Glide.with(this).load(NetworkUtils.getD3Asset("act5_not_done")).into(binding.progAct5)
         }
     }
 
@@ -286,7 +286,7 @@ class D3Fragment : Fragment() {
 
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
-        URLConstants.loading = false
+        NetworkUtils.loading = false
 
         val dialog = DialogPrompt(requireActivity())
         dialog.setCancellable(false)
@@ -303,7 +303,7 @@ class D3Fragment : Fragment() {
                         dialog.dismiss()
                         viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
                         binding.loadingCircle.visibility = View.VISIBLE
-                        URLConstants.loading = true
+                        NetworkUtils.loading = true
                     }, "retry"), dialog.Button(
                         errorMessages.BACK, 18f,
 
@@ -321,7 +321,7 @@ class D3Fragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     GamesActivity.hideFavoriteButton()
                     when {
                         activity.supportFragmentManager.findFragmentByTag("d3leaderboard") != null -> {

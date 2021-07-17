@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.util.events.FactionEvent
@@ -145,7 +145,7 @@ class AchievementsFragment : Fragment() {
                     it.parentCategoryId == null
                 }.sortedBy {
                     it.displayOrder
-                }, URLConstants.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getGuildAchievements().value?.achievements!!)
+                }, NetworkUtils.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getGuildAchievements().value?.achievements!!)
                 adapter!!.notifyDataSetChanged()
             }
         } catch (e: Exception) {
@@ -175,7 +175,7 @@ class AchievementsFragment : Fragment() {
                 it.parentCategoryId == id
             }.sortedBy {
                 it.displayOrder
-            }, URLConstants.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getGuildAchievements().value?.achievements!!)
+            }, NetworkUtils.locale, faction!!, viewModel.getMappedAchievements().value!!, viewModel.getGuildAchievements().value?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
         if (viewModel.getMappedAchievements().value!![currentCategory]?.size != 0) {

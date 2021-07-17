@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.MythicRaidLeaderboardsFragmentBinding
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 
@@ -50,7 +50,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
 
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
         viewModel.downloadBothLeaderboard(raidList[1])
 
@@ -142,7 +142,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     companion object {
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
                     activity.supportFragmentManager.popBackStack()
                 }

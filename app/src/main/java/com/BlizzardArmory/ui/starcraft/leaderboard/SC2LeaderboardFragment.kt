@@ -15,7 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.Sc2LeaderboardsFragmentBinding
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
@@ -26,7 +26,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private var leagueList = arrayListOf("Select League", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster")
 
     private var regionId: Int = 1
-    private var region: String = URLConstants.region
+    private var region: String = NetworkUtils.region
 
     private var v1Toggle = true
     private var v2Toggle = false
@@ -93,7 +93,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         textView.setHintTextColor(Color.parseColor("#ffffff"))
 
 
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
         setObservers()
         viewModel.downloadCurrentSeason(1, region)
@@ -281,7 +281,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                 }
                 currentDivision = 0
                 currentTier = 0
-                URLConstants.loading = true
+                NetworkUtils.loading = true
                 binding.nextPage.visibility = View.VISIBLE
                 binding.loadingCircle.visibility = View.VISIBLE
                 binding.leaderboardRecycler.apply {
@@ -351,7 +351,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     companion object {
         fun addOnBackPressCallback(activity: GamesActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!URLConstants.loading) {
+                if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
                     activity.supportFragmentManager.popBackStack()
                 }

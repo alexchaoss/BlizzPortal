@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.data.common.Leaderboard
 import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
 import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -48,16 +48,16 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadSeasonIndex() {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getSeasonIndex(URLConstants.locale, URLConstants.region)
+                .getSeasonIndex(NetworkUtils.locale, NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     seasonIndex.value = response.body()
                     seasonIndex.value?.season?.forEachIndexed { index, season ->
                         seasonIndexList.add((index + 1).toString())
                     }
-                    downloadSeason(seasonIndexList.last(), "rift-barbarian", URLConstants.region)
+                    downloadSeason(seasonIndexList.last(), "rift-barbarian", NetworkUtils.region)
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
@@ -68,13 +68,13 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadSeason(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getSeasonLeaderboard(id.toInt(), leaderboardString, URLConstants.locale, region)
+                .getSeasonLeaderboard(id.toInt(), leaderboardString, NetworkUtils.locale, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     leaderboard.value = response.body()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
                 if (!EventBus.getDefault().isRegistered(this@D3LeaderboardViewModel)) {
@@ -88,7 +88,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadEraIndex() {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getEraIndex(URLConstants.locale, URLConstants.region)
+                .getEraIndex(NetworkUtils.locale, NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     eraIndex.value = response.body()
@@ -96,7 +96,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
                         eraIndexList.add((index + 1).toString())
                     }
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
@@ -107,13 +107,13 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadEra(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getEraLeaderboard(id.toInt(), leaderboardString, URLConstants.locale, region)
+                .getEraLeaderboard(id.toInt(), leaderboardString, NetworkUtils.locale, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     leaderboard.value = response.body()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 } else {
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }

@@ -13,8 +13,8 @@ import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.model.warcraft.talents.Talents
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +76,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getCharacter(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -100,7 +100,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getSpecs(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -117,12 +117,7 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadTalentIconsInfo() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getTalentsWithIcon(
-                URLConstants.getTalentsIcons(
-                    characterSummary.value!!.characterClass.id,
-                    URLConstants.locale
-                )
-            )
+            val response = RetroClient.getAPIClient().getTalentsWithIcon(characterSummary.value!!.characterClass.id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     talentsIcons.value = response.body()!!
@@ -139,7 +134,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getStats(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -159,7 +154,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getEquippedItems(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -179,7 +174,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getMedia(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                URLConstants.locale,
+                NetworkUtils.locale,
                 region.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -206,11 +201,11 @@ class WoWCharacterViewModel : BaseViewModel() {
             )
         }
         url =
-            url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", URLConstants.HEROKU_AUTHENTICATE)
+            url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
 
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicEquipmentMedia(url, URLConstants.locale, region.lowercase(Locale.getDefault()))
+                .getDynamicEquipmentMedia(url, NetworkUtils.locale, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val mediaItem = response.body()!!
@@ -225,7 +220,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             }
         }
         jobs.add(job)
-        URLConstants.loading = false
+        NetworkUtils.loading = false
     }
 
     fun getItemColor(item: EquippedItem): Int {

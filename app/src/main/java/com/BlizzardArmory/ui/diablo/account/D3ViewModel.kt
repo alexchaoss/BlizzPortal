@@ -3,8 +3,8 @@ package com.BlizzardArmory.ui.diablo.account
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.account.AccountInformation
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
@@ -27,11 +27,11 @@ class D3ViewModel : BaseViewModel() {
     fun downloadAccountInformation(battleTag: String, selectedRegion: String) {
         this.battleTag = battleTag
         this.selectedRegion = selectedRegion
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client().getD3Profile(
                 battleTag,
-                URLConstants.locale,
+                NetworkUtils.locale,
                 selectedRegion.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken
             )
@@ -39,10 +39,10 @@ class D3ViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     profile.value = response.body()
                     sortHeroes()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 } else {
                     errorCode.value = response.code()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                 }
             }
             if (!EventBus.getDefault().isRegistered(this@D3ViewModel)) {

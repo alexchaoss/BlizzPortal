@@ -15,7 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3LeaderboardsFragmentBinding
-import com.BlizzardArmory.network.URLConstants
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.GamesActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
@@ -84,7 +84,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
 
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
         setObservers()
         viewModel.downloadEraIndex()
@@ -157,7 +157,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                 } else {
                     viewModel.downloadEra(GamesActivity.binding.rightPanelD3.spinnerId.selectedItem.toString(), leaderboard, region)
                 }
-                URLConstants.loading = true
+                NetworkUtils.loading = true
                 binding.loadingCircle.visibility = View.VISIBLE
                 binding.leaderboardRecycler.apply {
                     adapter = LeaderboardAdapter(listOf(), "US", requireContext())
@@ -226,7 +226,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     companion object{
         fun addOnBackPressCallback(activity: GamesActivity){
             activity.onBackPressedDispatcher.addCallback {
-                if(!URLConstants.loading) {
+                if(!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
                     activity.supportFragmentManager.popBackStack()
                 }

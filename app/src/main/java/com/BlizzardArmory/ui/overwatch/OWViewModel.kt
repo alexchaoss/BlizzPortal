@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.overwatch.Profile
 import com.BlizzardArmory.model.overwatch.heroes.Hero
 import com.BlizzardArmory.model.overwatch.topheroes.TopHero
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.URLConstants
 import com.BlizzardArmory.ui.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,14 +75,14 @@ class OWViewModel : BaseViewModel() {
     }
 
     fun downloadAccountInformation(username: String, platform: String) {
-        URLConstants.loading = true
+        NetworkUtils.loading = true
         val job = coroutineScope.launch {
             val response = RetroClient.getOWClient()
-                .getOWProfile(URLConstants.getOWProfile(username, platform))
+                .getOWProfile(NetworkUtils.getOWProfile(username, platform))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     profile.value = response.body()
-                    URLConstants.loading = false
+                    NetworkUtils.loading = false
                     setTopHeroesLists()
                     setCareerLists()
                     setSpinnerCareerList(careerQuickPlay.value!!)
