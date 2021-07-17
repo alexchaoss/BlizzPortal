@@ -150,39 +150,10 @@ object NetworkUtils {
         return WOW_ASSETS.replace("image", name)
     }
 
-    fun getAchievements(locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/achievements/$locale"
-    }
-
-    fun getAchievementCategories(locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/categories/$locale"
-    }
-
-    fun getTalentsIcons(playableClassId: Int, locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/talents/$playableClassId/$locale"
-    }
-
-    fun getCovenantClassSpells(playableClassId: Int, locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/covenant/class/$playableClassId/$locale"
-    }
-
-    fun getCovenantSpells(covenantId: Int, locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/covenant/$covenantId/$locale"
-    }
-
-    fun getTechTalents(soulbindId: Int, locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/tech_talents/$soulbindId/$locale"
-    }
-
-    fun getReputations(locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/reputations/$locale"
-    }
-
-    fun getInstances(locale: String): String {
-        return "https://blizzard-armory-server.herokuapp.com/instances/$locale"
-    }
-
-    fun getOverwatchLeagueData(year: String): String{
+    /*
+    TO BE CHANGED
+     */
+    fun getOverwatchLeagueData(year: String): String {
         return "https://public-archived-data.s3.us-east-2.amazonaws.com/standings/archived+standings+$year.json"
     }
 
