@@ -76,9 +76,8 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getCharacter(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -100,9 +99,8 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getSpecs(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -134,9 +132,8 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getStats(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -154,9 +151,8 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getEquippedItems(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -174,9 +170,8 @@ class WoWCharacterViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getMedia(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -205,7 +200,7 @@ class WoWCharacterViewModel : BaseViewModel() {
 
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicEquipmentMedia(url, NetworkUtils.locale, region.lowercase(Locale.getDefault()))
+                .getDynamicEquipmentMedia(url, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val mediaItem = response.body()!!

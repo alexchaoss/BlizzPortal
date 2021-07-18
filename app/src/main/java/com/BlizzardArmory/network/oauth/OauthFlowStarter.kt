@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.BlizzardArmory.ui.auth.AuthorizationTokenActivity
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 
 object OauthFlowStarter {
 
@@ -19,7 +19,7 @@ object OauthFlowStarter {
         intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         intent.putExtra("visisble", visible)
         intent.putExtra(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
-        intent.putExtra(BattlenetConstants.BUNDLE_REDIRECT_ACTIVITY, GamesActivity::class.java)
+        intent.putExtra(BattlenetConstants.BUNDLE_REDIRECT_ACTIVITY, NavigationActivity::class.java)
         context.startActivity(intent)
     }
 }

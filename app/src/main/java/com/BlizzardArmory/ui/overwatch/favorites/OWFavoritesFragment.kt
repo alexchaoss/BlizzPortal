@@ -10,7 +10,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.databinding.WowFavoritesBinding
 import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfiles
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.google.gson.GsonBuilder
 
@@ -20,7 +20,7 @@ class OWFavoritesFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = WowFavoritesBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -45,7 +45,7 @@ class OWFavoritesFragment : Fragment() {
     }
 
     companion object{
-        fun addOnBackPressCallback(activity: GamesActivity){
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 NewsPageFragment.addOnBackPressCallback(activity)
                 activity.supportFragmentManager.popBackStack()

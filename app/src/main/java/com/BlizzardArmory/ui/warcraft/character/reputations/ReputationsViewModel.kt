@@ -7,7 +7,6 @@ import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByE
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
 import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
-import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -63,9 +62,8 @@ class ReputationsViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getReputations(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

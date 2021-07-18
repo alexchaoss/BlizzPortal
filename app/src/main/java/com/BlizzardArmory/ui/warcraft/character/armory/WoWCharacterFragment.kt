@@ -29,7 +29,7 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
@@ -62,7 +62,7 @@ class WoWCharacterFragment : Fragment() {
     private val viewModel: WoWCharacterViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = WowCharacterFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -90,9 +90,9 @@ class WoWCharacterFragment : Fragment() {
         linearLayoutItemStats.addView(nameView)
         linearLayoutItemStats.addView(statsView)
 
-        GamesActivity.favorite!!.visibility = View.VISIBLE
-        GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-        GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
+        NavigationActivity.favorite!!.visibility = View.VISIBLE
+        NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+        NavigationActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
 
         activateCloseButton()
 
@@ -158,7 +158,7 @@ class WoWCharacterFragment : Fragment() {
                 val guild = "&lt;<u>${it.guild.name}</u>&gt;"
                 binding.guild.text = HtmlCompat.fromHtml(guild, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 binding.guild.setOnClickListener { view ->
-                    GamesActivity.favorite?.visibility = View.GONE
+                    NavigationActivity.favorite?.visibility = View.GONE
                     val fragment: Fragment = GuildNavFragment()
                     val bundle = Bundle()
                     bundle.putString("realm", it.realm.slug)
@@ -291,8 +291,8 @@ class WoWCharacterFragment : Fragment() {
             for (favoriteCharacter in favoriteCharacters.characters) {
                 if (hasCharacter(favoriteCharacter, characterSummary)) {
                     indexOfCharacter = indexTemp
-                    GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
-                    GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                    NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
+                    NavigationActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
                     favoriteCharacters.characters[indexOfCharacter] =
                         FavoriteCharacter(characterSummary, viewModel.region)
                     prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
@@ -315,10 +315,10 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun deleteFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, indexOfCharacter: Int, gson: Gson, prefs: SharedPreferences) {
-        if (GamesActivity.favorite!!.tag == R.drawable.ic_star_black_24dp && indexOfCharacter != -1) {
-            GamesActivity.favorite!!.setOnClickListener {
-                GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-                GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
+        if (NavigationActivity.favorite!!.tag == R.drawable.ic_star_black_24dp && indexOfCharacter != -1) {
+            NavigationActivity.favorite!!.setOnClickListener {
+                NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+                NavigationActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
                 favoriteCharacters.characters.removeAt(indexOfCharacter)
                 prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
                 Toast.makeText(requireActivity(), "Character removed from favorites", Toast.LENGTH_SHORT)
@@ -330,7 +330,7 @@ class WoWCharacterFragment : Fragment() {
     }
 
     private fun addToFavorite(favoriteCharacters: FavoriteCharacters, characterSummary: CharacterSummary, gson: Gson, prefs: SharedPreferences) {
-        GamesActivity.favorite!!.setOnClickListener {
+        NavigationActivity.favorite!!.setOnClickListener {
             var containsCharacter = false
             var indexOfCharacter = 0
             for (characters in favoriteCharacters.characters) {
@@ -342,8 +342,8 @@ class WoWCharacterFragment : Fragment() {
             }
 
             if (!containsCharacter) {
-                GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
-                GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
+                NavigationActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
                 favoriteCharacters.characters.add(FavoriteCharacter(characterSummary, viewModel.region))
                 prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
                 Toast.makeText(requireActivity(), "Character added to favorites", Toast.LENGTH_SHORT)
@@ -643,9 +643,9 @@ class WoWCharacterFragment : Fragment() {
 
     companion object {
         var faction: String? = null
-        fun addOnBackPressCallback(activity: GamesActivity) {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                GamesActivity.hideFavoriteButton()
+                NavigationActivity.hideFavoriteButton()
                 if (!NetworkUtils.loading) {
                     when {
                         activity.supportFragmentManager.findFragmentByTag("wowfragment") != null -> {

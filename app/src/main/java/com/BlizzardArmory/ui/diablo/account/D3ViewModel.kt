@@ -31,9 +31,8 @@ class D3ViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client().getD3Profile(
                 battleTag,
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 selectedRegion.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

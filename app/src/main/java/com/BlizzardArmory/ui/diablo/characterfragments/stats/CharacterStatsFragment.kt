@@ -24,7 +24,7 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.*
 import org.greenrobot.eventbus.EventBus
@@ -47,7 +47,7 @@ class CharacterStatsFragment : Fragment() {
     private val viewModel: CharacterStatsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = D3CharacterFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -270,9 +270,9 @@ class CharacterStatsFragment : Fragment() {
     companion object{
         private var itemPanelShown = false
         private var spellPanelShown = false
-        fun addOnBackPressCallback(activity : GamesActivity){
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if(!NetworkUtils.loading) {
+                if (!NetworkUtils.loading) {
                     if (!itemPanelShown && !spellPanelShown) {
                         D3Fragment.addOnBackPressCallback(activity)
                         activity.supportFragmentManager.popBackStack()

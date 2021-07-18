@@ -16,7 +16,7 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.bumptech.glide.Glide
 
 
@@ -47,7 +47,7 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
 
         Glide.with(context).load(NetworkUtils.getD3Asset(getGender(player.data.find { it.id == "HeroClass" }?.string!!, player.data.find { it.id == "HeroGender" }?.string!!))).into(icon!!)
 
-        val battlenetOAuth2Params: BattlenetOAuth2Params? = (context as GamesActivity).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        val battlenetOAuth2Params: BattlenetOAuth2Params? = (context as NavigationActivity).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         if (playerName != "unavailable") {
             onClickCharacter(player, region, battlenetOAuth2Params!!)
         }
@@ -74,7 +74,8 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
             bundle.putString("region", region)
             bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
             fragment.arguments = bundle
-            (context as GamesActivity).supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "d3fragment").addToBackStack("d3fragment").commit()
+            (context as NavigationActivity).supportFragmentManager.beginTransaction()
+                .add(R.id.fragment, fragment, "d3fragment").addToBackStack("d3fragment").commit()
             context.supportFragmentManager.executePendingTransactions()
         }
     }

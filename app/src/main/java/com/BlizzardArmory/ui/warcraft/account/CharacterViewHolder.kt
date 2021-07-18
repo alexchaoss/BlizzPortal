@@ -85,8 +85,6 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val response = RetroClient.getWoWClient().getMedia(
                 character?.name?.lowercase(Locale.getDefault())!!,
                 character?.realm?.slug!!,
-                NetworkUtils.locale,
-                NetworkUtils.region,
                 bnOAuth2Helper.accessToken
             )
             withContext(Dispatchers.Main) {

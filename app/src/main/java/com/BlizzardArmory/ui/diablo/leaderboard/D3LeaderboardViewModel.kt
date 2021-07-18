@@ -47,8 +47,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
 
     fun downloadSeasonIndex() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client()
-                .getSeasonIndex(NetworkUtils.locale, NetworkUtils.region)
+            val response = RetroClient.getD3Client().getSeasonIndex()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     seasonIndex.value = response.body()
@@ -68,7 +67,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadSeason(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getSeasonLeaderboard(id.toInt(), leaderboardString, NetworkUtils.locale, region)
+                .getSeasonLeaderboard(id.toInt(), leaderboardString, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     leaderboard.value = response.body()
@@ -88,7 +87,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadEraIndex() {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getEraIndex(NetworkUtils.locale, NetworkUtils.region)
+                .getEraIndex()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     eraIndex.value = response.body()
@@ -107,7 +106,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
     fun downloadEra(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getD3Client()
-                .getEraLeaderboard(id.toInt(), leaderboardString, NetworkUtils.locale, region)
+                .getEraLeaderboard(id.toInt(), leaderboardString, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     leaderboard.value = response.body()

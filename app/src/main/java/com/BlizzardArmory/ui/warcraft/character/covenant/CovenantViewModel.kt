@@ -7,7 +7,6 @@ import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.SoulbindInf
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
 import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
-import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import kotlinx.coroutines.Dispatchers
@@ -60,9 +59,8 @@ class CovenantViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getSoulbinds(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -78,7 +76,7 @@ class CovenantViewModel : BaseViewModel() {
     fun downloadTechTree(id: Int, soulbindId: Int) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getTechTree(id, NetworkUtils.locale, region.lowercase(Locale.getDefault()))
+                .getTechTree(id, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     treeMap[soulbindId] = response.body()!!

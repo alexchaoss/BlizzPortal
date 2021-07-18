@@ -7,7 +7,6 @@ import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.guild.achievements.AchievementsInformation
-import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -44,10 +43,8 @@ class AchievementViewModel : BaseViewModel() {
     fun downloadGuildAchivements(realm: String, name: String, region: String) {
         Log.i("TEST", "GUILD ACHIEVS")
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getGuildAchievements(
-                realm, name, "profile-$region", NetworkUtils.locale,
-                region, battlenetOAuth2Helper?.accessToken!!
-            )
+            val response = RetroClient.getWoWClient().getGuildAchievements(realm, name,
+                "profile-$region", battlenetOAuth2Helper?.accessToken!!, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildAchievements.value = response.body()

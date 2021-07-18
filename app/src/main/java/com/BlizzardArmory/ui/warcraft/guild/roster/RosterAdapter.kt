@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import java.util.*
 
@@ -38,7 +38,7 @@ class RosterAdapter(private val activities: List<Members>, private val context: 
         holder.itemView.setOnClickListener {
             val woWNavFragment =
                 WoWNavFragment.newInstance(member.character.name, member.character.realm.slug, "null", region)
-            (context as GamesActivity).supportFragmentManager.beginTransaction()
+            (context as NavigationActivity).supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
                 .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
                 .addToBackStack("wow_nav").commit()

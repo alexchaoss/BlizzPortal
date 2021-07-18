@@ -16,7 +16,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.Sc2LeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 
@@ -49,23 +49,23 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private val viewModel: SC2LeaderboardViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = Sc2LeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        GamesActivity.binding.rightPanelGames.root.visibility = View.VISIBLE
-        GamesActivity.binding.rightPanelD3.root.visibility = View.GONE
-        GamesActivity.binding.rightPanelSc2.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelGames.root.visibility = View.VISIBLE
+        NavigationActivity.binding.rightPanelD3.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelSc2.root.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        GamesActivity.binding.rightPanelGames.root.visibility = View.GONE
-        GamesActivity.binding.rightPanelD3.root.visibility = View.GONE
-        GamesActivity.binding.rightPanelSc2.root.visibility = View.VISIBLE
+        NavigationActivity.binding.rightPanelGames.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelD3.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelSc2.root.visibility = View.VISIBLE
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         if (!prefs?.contains("leaderboard_pulled_sc2")!!) {
@@ -80,8 +80,9 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
         setPageNavButtons()
 
-        setAdapter(leagueList, GamesActivity.binding.rightPanelSc2.league)
-        setAdapter(resources.getStringArray(R.array.regions).asList(), GamesActivity.binding.rightPanelSc2.region)
+        setAdapter(leagueList, NavigationActivity.binding.rightPanelSc2.league)
+        setAdapter(resources.getStringArray(R.array.regions)
+            .asList(), NavigationActivity.binding.rightPanelSc2.region)
         setQueueIdButtons()
         setTeamTypeButtons()
         setSearchButton()
@@ -148,66 +149,66 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun setTeamTypeButtons() {
-        GamesActivity.binding.rightPanelSc2.arranged.setOnClickListener {
-            GamesActivity.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            GamesActivity.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        NavigationActivity.binding.rightPanelSc2.arranged.setOnClickListener {
+            NavigationActivity.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            NavigationActivity.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.d3_leaderboards_button)
             randomToggle = false
         }
 
-        GamesActivity.binding.rightPanelSc2.random.setOnClickListener {
-            GamesActivity.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            GamesActivity.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        NavigationActivity.binding.rightPanelSc2.random.setOnClickListener {
+            NavigationActivity.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            NavigationActivity.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.d3_leaderboards_button)
             randomToggle = true
         }
     }
 
     private fun setQueueIdButtons() {
-        GamesActivity.binding.rightPanelSc2.v1.setOnClickListener {
-            GamesActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            GamesActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        NavigationActivity.binding.rightPanelSc2.v1.setOnClickListener {
+            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
             v1Toggle = true
             v2Toggle = false
             v3Toggle = false
             v4Toggle = false
-            viewModel.queueId = GamesActivity.binding.rightPanelSc2.v1.text.toString()
+            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v1.text.toString()
         }
 
-        GamesActivity.binding.rightPanelSc2.v2.setOnClickListener {
-            GamesActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            GamesActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        NavigationActivity.binding.rightPanelSc2.v2.setOnClickListener {
+            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
             v1Toggle = false
             v2Toggle = true
             v3Toggle = false
             v4Toggle = false
-            viewModel.queueId = GamesActivity.binding.rightPanelSc2.v2.text.toString()
+            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v2.text.toString()
         }
 
-        GamesActivity.binding.rightPanelSc2.v3.setOnClickListener {
-            GamesActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            GamesActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        NavigationActivity.binding.rightPanelSc2.v3.setOnClickListener {
+            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
             v1Toggle = false
             v2Toggle = false
             v3Toggle = true
             v4Toggle = false
-            viewModel.queueId = GamesActivity.binding.rightPanelSc2.v3.text.toString()
+            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v3.text.toString()
         }
 
-        GamesActivity.binding.rightPanelSc2.v4.setOnClickListener {
-            GamesActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            GamesActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+        NavigationActivity.binding.rightPanelSc2.v4.setOnClickListener {
+            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
+            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
             v1Toggle = false
             v2Toggle = false
             v3Toggle = false
             v4Toggle = true
-            viewModel.queueId = GamesActivity.binding.rightPanelSc2.v4.text.toString()
+            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v4.text.toString()
         }
     }
 
@@ -217,14 +218,14 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
             for (i in 28..it.seasonId) {
                 seasonList.add(i.toString())
             }
-            setAdapter(seasonList, GamesActivity.binding.rightPanelSc2.season)
+            setAdapter(seasonList, NavigationActivity.binding.rightPanelSc2.season)
             viewModel.queueId = "1v1"
             viewModel.leagueString = leagueList.last()
             viewModel.seasonId = it.seasonId
             viewModel.downloadLeague(region)
         })
         viewModel.getLeague().observe(viewLifecycleOwner, {
-            if (it.tier.size == 1 && it.tier[0].division.size == 1) {
+            if (it.tier.size == 1 && !it.tier[0].division.isNullOrEmpty() && it.tier[0].division.size == 1) {
                 binding.nextPage.visibility = View.INVISIBLE
             }
             prevCount = 0
@@ -255,25 +256,27 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun setSearchButton() {
-        GamesActivity.binding.rightPanelSc2.search.setOnClickListener {
-            if (GamesActivity.binding.rightPanelSc2.season.selectedItemPosition == 0) {
+        NavigationActivity.binding.rightPanelSc2.search.setOnClickListener {
+            if (NavigationActivity.binding.rightPanelSc2.season.selectedItemPosition == 0) {
                 Toast.makeText(activity, "Please select a season", Toast.LENGTH_SHORT).show()
-            } else if (GamesActivity.binding.rightPanelSc2.region.selectedItemPosition == 0) {
+            } else if (NavigationActivity.binding.rightPanelSc2.region.selectedItemPosition == 0) {
                 Toast.makeText(activity, "Please select a region", Toast.LENGTH_SHORT).show()
-            } else if (GamesActivity.binding.rightPanelSc2.league.selectedItemPosition == 0) {
+            } else if (NavigationActivity.binding.rightPanelSc2.league.selectedItemPosition == 0) {
                 Toast.makeText(activity, "Please select a league", Toast.LENGTH_SHORT).show()
-            } else if (GamesActivity.binding.rightPanelSc2.league.selectedItem == "Grandmaster" && !v1Toggle) {
-                Toast.makeText(activity, "Grandmaster league can only be 1v1", Toast.LENGTH_SHORT).show()
+            } else if (NavigationActivity.binding.rightPanelSc2.league.selectedItem == "Grandmaster" && !v1Toggle) {
+                Toast.makeText(activity, "Grandmaster league can only be 1v1", Toast.LENGTH_SHORT)
+                    .show()
             } else {
-                viewModel.seasonId = GamesActivity.binding.rightPanelSc2.season.selectedItem.toString().toInt()
-                viewModel.leagueString = GamesActivity.binding.rightPanelSc2.league.selectedItem.toString()
-                when (GamesActivity.binding.rightPanelSc2.region.selectedItem) {
+                viewModel.seasonId = NavigationActivity.binding.rightPanelSc2.season.selectedItem.toString()
+                    .toInt()
+                viewModel.leagueString = NavigationActivity.binding.rightPanelSc2.league.selectedItem.toString()
+                when (NavigationActivity.binding.rightPanelSc2.region.selectedItem) {
                     "US" -> regionId = 1
                     "EU" -> regionId = 2
                     "KR",
                     "TW" -> regionId = 3
                 }
-                region = GamesActivity.binding.rightPanelSc2.region.selectedItem.toString()
+                region = NavigationActivity.binding.rightPanelSc2.region.selectedItem.toString()
                 if (randomToggle) {
                     viewModel.teamType = 1
                 } else {
@@ -288,7 +291,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                     adapter = LeaderboardAdapter(listOf(), requireContext(), currentPlayerCountRank)
                 }
                 viewModel.downloadLeague(region)
-                GamesActivity.binding.overlappingPanel.closePanels()
+                NavigationActivity.binding.overlappingPanel.closePanels()
             }
         }
     }
@@ -349,7 +352,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
 
     companion object {
-        fun addOnBackPressCallback(activity: GamesActivity) {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)

@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.guild.Guild
 import com.BlizzardArmory.model.warcraft.guild.activity.ActivitiesInformation
 import com.BlizzardArmory.model.warcraft.guild.media.Media
-import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -41,9 +40,7 @@ class ActivityViewModel : BaseViewModel() {
     fun downloadGuildSummary(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildSummary(
-                realm, name, "profile-$region", NetworkUtils.locale,
-                region, battlenetOAuth2Helper?.accessToken!!
-            )
+                realm, name, "profile-$region", battlenetOAuth2Helper?.accessToken!!, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildSummary.value = response.body()
@@ -93,9 +90,7 @@ class ActivityViewModel : BaseViewModel() {
     fun downloadGuildActivity(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildActivity(
-                realm, name, "profile-$region", NetworkUtils.locale,
-                region, battlenetOAuth2Helper?.accessToken!!
-            )
+                realm, name, "profile-$region", battlenetOAuth2Helper?.accessToken!!, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildActivity.value = response.body()

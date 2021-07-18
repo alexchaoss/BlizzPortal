@@ -8,7 +8,7 @@ import com.BlizzardArmory.model.starcraft.profile.Profile
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,12 +39,8 @@ class SC2ViewModel : BaseViewModel() {
     fun downloadAccountInformation() {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client().getSc2Player(
-                GamesActivity.userInformation!!.userID,
-                NetworkUtils.locale,
-                NetworkUtils.region,
-                battlenetOAuth2Helper!!.accessToken
-            )
+            val response = RetroClient.getSc2Client()
+                .getSc2Player(NavigationActivity.userInformation!!.userID, battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     accountInformation.value = response.body()
@@ -62,14 +58,8 @@ class SC2ViewModel : BaseViewModel() {
     fun downloadProfile(regionId: Int, realmId: Int, profileId: String) {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client().getSc2Profile(
-                parseRegionId(regionId),
-                realmId,
-                profileId,
-                NetworkUtils.locale,
-                NetworkUtils.region,
-                battlenetOAuth2Helper!!.accessToken
-            )
+            val response = RetroClient.getSc2Client()
+                .getSc2Profile(parseRegionId(regionId), realmId, profileId, battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     profile.value = response.body()

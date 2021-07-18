@@ -18,7 +18,7 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
@@ -48,7 +48,7 @@ class ActivityFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = WowGuildActivityBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -215,13 +215,13 @@ class ActivityFragment : Fragment() {
     }
 
     companion object {
-        fun addOnBackPressCallback(activity: GamesActivity) {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
                     when {
                         activity.supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
                             WoWCharacterFragment.addOnBackPressCallback(activity)
-                            GamesActivity.favorite?.visibility = View.VISIBLE
+                            NavigationActivity.favorite?.visibility = View.VISIBLE
                             activity.supportFragmentManager.popBackStack()
                         }
                         activity.supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {

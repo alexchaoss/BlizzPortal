@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
@@ -99,21 +99,21 @@ class WoWNavFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
-            GamesActivity.hideFavoriteButton()
+            NavigationActivity.hideFavoriteButton()
             when {
                 activity?.supportFragmentManager?.findFragmentByTag("guild_nav_fragment") != null -> {
-                    ActivityFragment.addOnBackPressCallback(activity as GamesActivity)
+                    ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                 }
                 activity?.supportFragmentManager?.findFragmentByTag("wowfragment") != null -> {
-                    AccountFragment.addOnBackPressCallback(activity as GamesActivity)
+                    AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
                 activity?.supportFragmentManager?.findFragmentByTag("wowfavorites") != null -> {
-                    WoWFavoritesFragment.addOnBackPressCallback(activity as GamesActivity)
+                    WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
                 else -> {
-                    NewsListFragment.addOnBackPressCallback(activity as GamesActivity)
+                    NewsListFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
             }

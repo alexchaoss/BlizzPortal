@@ -2,7 +2,6 @@ package com.BlizzardArmory.ui.warcraft.guild.roster
 
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.guild.roster.Roster
-import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -22,9 +21,7 @@ class RosterViewModel : BaseViewModel() {
     fun downloadGuildRoster(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getGuildRoster(
-                realm, name, "profile-$region", NetworkUtils.locale,
-                region, battlenetOAuth2Helper?.accessToken!!
-            )
+                realm, name, "profile-$region", battlenetOAuth2Helper?.accessToken!!, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildRoster.value = response.body()

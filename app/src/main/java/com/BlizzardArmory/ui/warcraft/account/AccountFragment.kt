@@ -23,7 +23,7 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import okhttp3.internal.toImmutableList
@@ -45,7 +45,7 @@ class AccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         errorMessages = ErrorMessages(this.resources)
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         binding.loadingCircle.visibility = View.VISIBLE
         setObservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
@@ -190,9 +190,9 @@ class AccountFragment : Fragment() {
 
                         {
                             dialog.dismiss()
-                            GamesActivity.hideFavoriteButton()
+                            NavigationActivity.hideFavoriteButton()
                             parentFragmentManager.popBackStack()
-                            NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                         }, "back"
                     )
                 ).show()
@@ -200,7 +200,7 @@ class AccountFragment : Fragment() {
     }
 
     companion object {
-        fun addOnBackPressCallback(activity: GamesActivity) {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)

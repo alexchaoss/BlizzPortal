@@ -116,10 +116,10 @@ object NetworkUtils {
             url = OW_PROFILE.replace(":battletag", username.replace("#", "-"))
             url = url.replace(":platform", "pc")
             url =
-                if (NetworkUtils.region.equals("cn", ignoreCase = true) || NetworkUtils.region.equals("tw", ignoreCase = true)) {
+                if (region.equals("cn", ignoreCase = true) || region.equals("tw", ignoreCase = true)) {
                     url.replace(":region", "asia")
                 } else {
-                    url.replace(":region", NetworkUtils.region.lowercase(Locale.getDefault()))
+                    url.replace(":region", region.lowercase(Locale.getDefault()))
                 }
         } else {
             url = OW_PROFILE.replace(":battletag", username)

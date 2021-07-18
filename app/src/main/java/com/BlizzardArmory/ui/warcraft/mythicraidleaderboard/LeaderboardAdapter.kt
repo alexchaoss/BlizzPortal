@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.mythicraid.Entries
 import com.BlizzardArmory.network.ErrorMessages
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import java.util.*
@@ -31,10 +31,10 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
     override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
         val guild: Entries = fullLeaderboardList[position]
         holder.bind(guild, list.indexOfFirst { it.guild.id == guild.guild.id } + 1)
-        setOnLickListener(holder, guild, context as GamesActivity)
+        setOnLickListener(holder, guild, context as NavigationActivity)
     }
 
-    private fun setOnLickListener(holder: LeaderboardViewHolder, guild: Entries, context: GamesActivity) {
+    private fun setOnLickListener(holder: LeaderboardViewHolder, guild: Entries, context: NavigationActivity) {
         holder.itemView.setOnClickListener {
             if (guild.region != "cn") {
                 val fragment: Fragment = GuildNavFragment()

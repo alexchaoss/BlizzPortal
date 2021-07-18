@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class GamesViewModel : BaseViewModel() {
+class NavigationViewModel : BaseViewModel() {
 
     private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
         MutableLiveData()
@@ -26,8 +26,8 @@ class GamesViewModel : BaseViewModel() {
     private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
 
     data class ViewState(
-            val startPanelState: PanelState,
-            val endPanelState: PanelState
+        val startPanelState: PanelState,
+        val endPanelState: PanelState
     )
 
     private val viewStateSubject: BehaviorSubject<ViewState> =
@@ -99,10 +99,9 @@ class GamesViewModel : BaseViewModel() {
         val query = Query()
         val jobUS = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getConnectedRealms(
-                "us",
                 "dynamic-us",
-                NetworkUtils.locale,
-                query
+                query,
+                "us"
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -115,11 +114,11 @@ class GamesViewModel : BaseViewModel() {
         jobs.add(jobUS)
         val jobEU = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getConnectedRealms(
-                "eu",
                 "dynamic-eu",
-                NetworkUtils.locale,
-                query
-            )
+                query,
+                "eu",
+
+                )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     wowConnectedRealms.value?.set("EU", response.body()!!)
@@ -131,10 +130,9 @@ class GamesViewModel : BaseViewModel() {
         jobs.add(jobEU)
         val jobKR = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getConnectedRealms(
-                "kr",
                 "dynamic-kr",
-                NetworkUtils.locale,
-                query
+                query,
+                "kr"
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -147,10 +145,10 @@ class GamesViewModel : BaseViewModel() {
         jobs.add(jobKR)
         val jobTW = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getConnectedRealms(
-                "tw",
                 "dynamic-tw",
-                NetworkUtils.locale,
-                query
+                query,
+                "tw"
+
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -166,11 +164,8 @@ class GamesViewModel : BaseViewModel() {
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getMedia(
-                characterClicked.lowercase(Locale.getDefault()),
-                characterRealm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
-                selectedRegion.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
+                characterClicked.lowercase(Locale.getDefault()), characterRealm.lowercase(Locale.getDefault()),
+                battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

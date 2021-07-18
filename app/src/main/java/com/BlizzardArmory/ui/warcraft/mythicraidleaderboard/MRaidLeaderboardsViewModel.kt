@@ -28,9 +28,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
             val job1 = coroutineScope.launch {
                 val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                     parseRaidName(raid), "horde",
-                    "dynamic-" + NetworkUtils.region, NetworkUtils.locale,
-                    NetworkUtils.region
-                )
+                    "dynamic-" + NetworkUtils.region)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && !response.body()?.entries.isNullOrEmpty()) {
                         val list = response.body()?.entries?.toMutableList()!!
@@ -47,9 +45,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
             val job2 = coroutineScope.launch {
                 val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                     parseRaidName(raid), "alliance",
-                    "dynamic-" + NetworkUtils.region, NetworkUtils.locale,
-                    NetworkUtils.region
-                )
+                    "dynamic-" + NetworkUtils.region)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && !response.body()?.entries.isNullOrEmpty()) {
                         val list = response.body()?.entries?.toMutableList()!!
@@ -75,9 +71,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
                 parseRaidName(raid), faction.lowercase(Locale.getDefault()),
-                "dynamic-" + NetworkUtils.region, NetworkUtils.locale,
-                NetworkUtils.region
-            )
+                "dynamic-" + NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     entries.value = response.body()?.entries

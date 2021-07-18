@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.databinding.WowGuildNavbarFragmentBinding
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
@@ -83,20 +83,20 @@ class GuildNavFragment : Fragment() {
         if (networkEvent.data) {
             when {
                 requireActivity().supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
-                    WoWCharacterFragment.addOnBackPressCallback(activity as GamesActivity)
-                    GamesActivity.favorite?.visibility = View.VISIBLE
+                    WoWCharacterFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    NavigationActivity.favorite?.visibility = View.VISIBLE
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 requireActivity().supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {
-                    MRaidLeaderboardsFragment.addOnBackPressCallback(activity as GamesActivity)
+                    MRaidLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 requireActivity().supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
-                    ActivityFragment.addOnBackPressCallback(activity as GamesActivity)
+                    ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 else -> {
-                    NewsListFragment.addOnBackPressCallback(activity as GamesActivity)
+                    NewsListFragment.addOnBackPressCallback(activity as NavigationActivity)
                     requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
             }

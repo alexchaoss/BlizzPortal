@@ -12,7 +12,7 @@ import com.BlizzardArmory.databinding.D3FavoritesBinding
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.google.gson.GsonBuilder
 
@@ -22,7 +22,7 @@ class D3FavoriteFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = D3FavoritesBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -49,7 +49,7 @@ class D3FavoriteFragment : Fragment() {
     }
 
     companion object{
-        fun addOnBackPressCallback(activity: GamesActivity){
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 NewsPageFragment.addOnBackPressCallback(activity)
                 activity.supportFragmentManager.popBackStack()

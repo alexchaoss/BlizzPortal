@@ -59,9 +59,8 @@ class PvPViewModel : BaseViewModel() {
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 "rbg",
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -84,9 +83,8 @@ class PvPViewModel : BaseViewModel() {
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 "3v3",
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -109,9 +107,8 @@ class PvPViewModel : BaseViewModel() {
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 "2v2",
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -131,7 +128,7 @@ class PvPViewModel : BaseViewModel() {
     private fun downloadBracket(url: String, bracket: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getDynamicTier(url, region.lowercase(Locale.getDefault()), NetworkUtils.locale)
+                .getDynamicTier(url, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     when (bracket) {
@@ -153,9 +150,8 @@ class PvPViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getPvPSummary(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

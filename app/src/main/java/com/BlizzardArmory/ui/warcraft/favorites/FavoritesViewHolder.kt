@@ -86,9 +86,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             val response = RetroClient.getWoWClient().getMedia(
                 character?.characterSummary?.name?.lowercase(Locale.getDefault())!!,
                 character?.characterSummary?.realm?.slug!!,
-                NetworkUtils.locale,
+                bnOAuth2Helper.accessToken,
                 character?.region?.lowercase(Locale.getDefault())!!,
-                bnOAuth2Helper.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

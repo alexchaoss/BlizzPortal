@@ -38,7 +38,8 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadSeasonIndex() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getMythicKeystoneSeasonsIndex("dynamic-" + NetworkUtils.region, NetworkUtils.locale, NetworkUtils.region)
+            val response = RetroClient.getWoWClient()
+                .getMythicKeystoneSeasonsIndex("dynamic-" + NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     seasonIndex.value = response.body()
@@ -54,7 +55,8 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadSeason(seasonId: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getMythicKeystoneSeason(seasonId, "dynamic-" + NetworkUtils.region, NetworkUtils.locale, NetworkUtils.region)
+            val response = RetroClient.getWoWClient()
+                .getMythicKeystoneSeason(seasonId, "dynamic-" + NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     season.value = response.body()
@@ -70,7 +72,8 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadMythicKeystoneLeaderboard(connectedRealm: Int, dungeonId: Int, period: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getMythicKeystoneLeaderboard(connectedRealm, dungeonId, period, "dynamic-" + NetworkUtils.region, NetworkUtils.locale, NetworkUtils.region)
+            val response = RetroClient.getWoWClient()
+                .getMythicKeystoneLeaderboard(connectedRealm, dungeonId, period, "dynamic-" + NetworkUtils.region, NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     mythicKeystoneLeaderboard.value = response.body()

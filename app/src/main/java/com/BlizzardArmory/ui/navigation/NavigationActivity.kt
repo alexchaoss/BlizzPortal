@@ -56,7 +56,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
-class GamesActivity : LocalizationActivity(),
+class NavigationActivity : LocalizationActivity(),
     PanelsChildGestureRegionObserver.GestureRegionsListener {
 
     private var prefs: SharedPreferences? = null
@@ -69,7 +69,7 @@ class GamesActivity : LocalizationActivity(),
     private lateinit var errorMessage: ErrorMessages
 
     private lateinit var barBinding: GamesActivityBarBinding
-    private val viewModel: GamesViewModel by viewModels()
+    private val viewModel: NavigationViewModel by viewModels()
     private var viewStateDisposable: Disposable? = null
 
     private val menuList = arrayListOf<MenuItem>()
@@ -135,7 +135,8 @@ class GamesActivity : LocalizationActivity(),
         webview.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 binding.loadingCircle.visibility = View.GONE
-                Toast.makeText(this@GamesActivity, "Logout Successful", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@NavigationActivity, "Logout Successful", Toast.LENGTH_SHORT)
+                    .show()
                 finish()
             }
         }
@@ -790,7 +791,7 @@ class GamesActivity : LocalizationActivity(),
     }
 
 
-    private fun handleViewState(viewState: GamesViewModel.ViewState) {
+    private fun handleViewState(viewState: NavigationViewModel.ViewState) {
         binding.overlappingPanel.handleStartPanelState(viewState.startPanelState)
         binding.overlappingPanel.handleEndPanelState(viewState.endPanelState)
     }

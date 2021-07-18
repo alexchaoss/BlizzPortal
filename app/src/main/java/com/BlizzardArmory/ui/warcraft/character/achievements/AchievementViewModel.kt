@@ -7,7 +7,6 @@ import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
-import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -63,9 +62,8 @@ class AchievementViewModel : BaseViewModel() {
             val response = RetroClient.getWoWClient().getCharacterAchievements(
                 character,
                 realm,
-                NetworkUtils.locale,
+                battlenetOAuth2Helper?.accessToken!!,
                 region,
-                battlenetOAuth2Helper?.accessToken!!
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

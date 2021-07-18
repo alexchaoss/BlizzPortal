@@ -18,7 +18,7 @@ import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.MythicRaidLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 
 class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -31,7 +31,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     private val viewModel: MRaidLeaderboardsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = MythicRaidLeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -140,7 +140,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     companion object {
-        fun addOnBackPressCallback(activity: GamesActivity) {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)

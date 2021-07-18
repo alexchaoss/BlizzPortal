@@ -37,7 +37,7 @@
             android:screenOrientation="unspecified"
             android:launchMode="singleTop" />
         <activity
-            android:name="com.BlizzardArmory.ui.navigation.GamesActivity"
+            android:name="com.BlizzardArmory.ui.navigation.NavigationActivity"
             android:parentActivityName="com.BlizzardArmory.ui.main.MainActivity"
             android:alwaysRetainTaskState="true"
             android:configChanges="orientation"

@@ -8,7 +8,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.databinding.NewsFragmentBinding
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.util.HTMLtoViewsConverter
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.bumptech.glide.Glide
@@ -24,7 +24,7 @@ class NewsPageFragment : Fragment() {
     private val viewModel: NewsPageViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         binding = NewsFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -62,7 +62,7 @@ class NewsPageFragment : Fragment() {
     }
 
     companion object{
-        fun addOnBackPressCallback(activity: GamesActivity){
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 NewsListFragment.addOnBackPressCallback(activity)
                 activity.supportFragmentManager.popBackStack()

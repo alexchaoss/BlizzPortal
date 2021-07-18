@@ -26,7 +26,7 @@ import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragm
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.main.MainActivity.Companion.locale
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.OWFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
@@ -51,20 +51,20 @@ class SettingsFragment : Fragment() {
         activity?.onBackPressedDispatcher?.addCallback {
             if(requireActivity().supportFragmentManager.backStackEntryCount > 1) {
                 when (requireActivity().supportFragmentManager.fragments[requireActivity().supportFragmentManager.backStackEntryCount - 2].tag) {
-                    "wowfavorites" -> WoWFavoritesFragment.addOnBackPressCallback(activity as GamesActivity)
-                    "d3favorites" -> D3FavoriteFragment.addOnBackPressCallback(activity as GamesActivity)
-                    "owfavorites" -> OWFavoritesFragment.addOnBackPressCallback(activity as GamesActivity)
-                    "d3nav" -> CharacterStatsFragment.addOnBackPressCallback(activity as GamesActivity)
-                    "d3fragment" -> D3Fragment.addOnBackPressCallback(activity as GamesActivity)
-                    "d3_leaderboard" -> D3LeaderboardFragment.addOnBackPressCallback(activity as GamesActivity)
-                    "NAV_FRAGMENT" -> WoWCharacterFragment.addOnBackPressCallback(activity as GamesActivity)
-                    "wowfragment" -> AccountFragment.addOnBackPressCallback(activity as GamesActivity)
-                    "sc2fragment" -> SC2Fragment.addOnBackPressCallback(activity as GamesActivity)
-                    "overwatchfragment" -> OWFragment.addOnBackPressCallback(activity as GamesActivity)
-                    else -> NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                    "wowfavorites" -> WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "d3favorites" -> D3FavoriteFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "owfavorites" -> OWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "d3nav" -> CharacterStatsFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "d3fragment" -> D3Fragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "d3_leaderboard" -> D3LeaderboardFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "NAV_FRAGMENT" -> WoWCharacterFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "wowfragment" -> AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "sc2fragment" -> SC2Fragment.addOnBackPressCallback(activity as NavigationActivity)
+                    "overwatchfragment" -> OWFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    else -> NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                 }
             }else{
-                NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
             }
             activity?.supportFragmentManager?.popBackStack()
         }

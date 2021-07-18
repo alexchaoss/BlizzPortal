@@ -16,7 +16,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3LeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 
@@ -34,23 +34,23 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private val viewModel: D3LeaderboardViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = D3LeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        GamesActivity.binding.rightPanelGames.root.visibility = View.VISIBLE
-        GamesActivity.binding.rightPanelD3.root.visibility = View.GONE
-        GamesActivity.binding.rightPanelSc2.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelGames.root.visibility = View.VISIBLE
+        NavigationActivity.binding.rightPanelD3.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelSc2.root.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        GamesActivity.binding.rightPanelGames.root.visibility = View.GONE
-        GamesActivity.binding.rightPanelSc2.root.visibility = View.GONE
-        GamesActivity.binding.rightPanelD3.root.visibility = View.VISIBLE
+        NavigationActivity.binding.rightPanelGames.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelSc2.root.visibility = View.GONE
+        NavigationActivity.binding.rightPanelD3.root.visibility = View.VISIBLE
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         if (!prefs?.contains("leaderboard_pulled")!!) {
@@ -61,20 +61,21 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
             prefs.edit()?.putString("leaderboard_pulled", "done")?.apply()
         }
 
-        GamesActivity.binding.rightPanelD3.softcore.setOnClickListener {
-            GamesActivity.binding.rightPanelD3.softcore.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
-            GamesActivity.binding.rightPanelD3.hardcore.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        NavigationActivity.binding.rightPanelD3.softcore.setOnClickListener {
+            NavigationActivity.binding.rightPanelD3.softcore.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+            NavigationActivity.binding.rightPanelD3.hardcore.setBackgroundResource(R.drawable.d3_leaderboards_button)
             hardcoreToggle = false
         }
 
-        GamesActivity.binding.rightPanelD3.hardcore.setOnClickListener {
-            GamesActivity.binding.rightPanelD3.hardcore.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
-            GamesActivity.binding.rightPanelD3.softcore.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        NavigationActivity.binding.rightPanelD3.hardcore.setOnClickListener {
+            NavigationActivity.binding.rightPanelD3.hardcore.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+            NavigationActivity.binding.rightPanelD3.softcore.setBackgroundResource(R.drawable.d3_leaderboards_button)
             hardcoreToggle = true
         }
 
-        setAdapter(leaderboardList, GamesActivity.binding.rightPanelD3.leaderboard)
-        setAdapter(resources.getStringArray(R.array.regions).asList(), GamesActivity.binding.rightPanelD3.region)
+        setAdapter(leaderboardList, NavigationActivity.binding.rightPanelD3.leaderboard)
+        setAdapter(resources.getStringArray(R.array.regions)
+            .asList(), NavigationActivity.binding.rightPanelD3.region)
 
         setSearchButton()
 
@@ -97,27 +98,27 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
         })
 
         viewModel.getEraIndex().observe(viewLifecycleOwner, {
-            GamesActivity.binding.rightPanelD3.eraButton.setOnClickListener {
+            NavigationActivity.binding.rightPanelD3.eraButton.setOnClickListener {
                 seasonToggle = false
-                setAdapter(viewModel.getEraIndexList(), GamesActivity.binding.rightPanelD3.spinnerId)
-                GamesActivity.binding.rightPanelD3.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
-                GamesActivity.binding.rightPanelD3.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
+                setAdapter(viewModel.getEraIndexList(), NavigationActivity.binding.rightPanelD3.spinnerId)
+                NavigationActivity.binding.rightPanelD3.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+                NavigationActivity.binding.rightPanelD3.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
             }
         })
 
         viewModel.getSeasonIndex().observe(viewLifecycleOwner, {
-            GamesActivity.binding.rightPanelD3.seasonButton.setOnClickListener {
+            NavigationActivity.binding.rightPanelD3.seasonButton.setOnClickListener {
                 seasonToggle = true
-                setAdapter(viewModel.getSeasonIndexList(), GamesActivity.binding.rightPanelD3.spinnerId)
-                GamesActivity.binding.rightPanelD3.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
-                GamesActivity.binding.rightPanelD3.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
+                setAdapter(viewModel.getSeasonIndexList(), NavigationActivity.binding.rightPanelD3.spinnerId)
+                NavigationActivity.binding.rightPanelD3.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+                NavigationActivity.binding.rightPanelD3.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button)
             }
         })
 
         viewModel.getLeaderboard().observe(viewLifecycleOwner, {
             if (!updatedSpinners) {
                 updatedSpinners = true
-                setAdapter(viewModel.getSeasonIndexList(), GamesActivity.binding.rightPanelD3.spinnerId)
+                setAdapter(viewModel.getSeasonIndexList(), NavigationActivity.binding.rightPanelD3.spinnerId)
             }
             binding.leaderboardRecycler.apply {
                 adapter = LeaderboardAdapter(viewModel.getLeaderboard().value?.row!!, region, requireActivity())
@@ -127,18 +128,18 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun setSearchButton() {
-        GamesActivity.binding.rightPanelD3.search.setOnClickListener {
+        NavigationActivity.binding.rightPanelD3.search.setOnClickListener {
             var leaderboard = ""
-            if (seasonToggle && GamesActivity.binding.rightPanelD3.spinnerId.selectedItem == "Season") {
+            if (seasonToggle && NavigationActivity.binding.rightPanelD3.spinnerId.selectedItem == "Season") {
                 Toast.makeText(activity, "Please select a season", Toast.LENGTH_SHORT).show()
-            } else if (!seasonToggle && GamesActivity.binding.rightPanelD3.spinnerId.selectedItem == "Era") {
+            } else if (!seasonToggle && NavigationActivity.binding.rightPanelD3.spinnerId.selectedItem == "Era") {
                 Toast.makeText(activity, "Please select an era", Toast.LENGTH_SHORT).show()
-            } else if (GamesActivity.binding.rightPanelD3.region.selectedItem == "Region") {
+            } else if (NavigationActivity.binding.rightPanelD3.region.selectedItem == "Region") {
                 Toast.makeText(activity, "Please select a region", Toast.LENGTH_SHORT).show()
-            } else if (GamesActivity.binding.rightPanelD3.leaderboard.selectedItem == "Category") {
+            } else if (NavigationActivity.binding.rightPanelD3.leaderboard.selectedItem == "Category") {
                 Toast.makeText(activity, "Please select a category", Toast.LENGTH_SHORT).show()
             } else {
-                leaderboard = when (GamesActivity.binding.rightPanelD3.leaderboard.selectedItem) {
+                leaderboard = when (NavigationActivity.binding.rightPanelD3.leaderboard.selectedItem) {
                     "Barbarian" -> if (hardcoreToggle) "rift-hardcore-barbarian" else "rift-barbarian"
                     "Crusader" -> if (hardcoreToggle) "rift-hardcore-crusader" else "rift-crusader"
                     "Demon Hunter" -> if (hardcoreToggle) "rift-hardcore-dh" else "rift-dh"
@@ -151,18 +152,18 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                     "4 Player" -> if (hardcoreToggle) "rift-hardcore-team-4" else "rift-team-4"
                     else -> "rift-barbarian"
                 }
-                region = GamesActivity.binding.rightPanelD3.region.selectedItem.toString()
+                region = NavigationActivity.binding.rightPanelD3.region.selectedItem.toString()
                 if (seasonToggle) {
-                    viewModel.downloadSeason(GamesActivity.binding.rightPanelD3.spinnerId.selectedItem.toString(), leaderboard, region)
+                    viewModel.downloadSeason(NavigationActivity.binding.rightPanelD3.spinnerId.selectedItem.toString(), leaderboard, region)
                 } else {
-                    viewModel.downloadEra(GamesActivity.binding.rightPanelD3.spinnerId.selectedItem.toString(), leaderboard, region)
+                    viewModel.downloadEra(NavigationActivity.binding.rightPanelD3.spinnerId.selectedItem.toString(), leaderboard, region)
                 }
                 NetworkUtils.loading = true
                 binding.loadingCircle.visibility = View.VISIBLE
                 binding.leaderboardRecycler.apply {
                     adapter = LeaderboardAdapter(listOf(), "US", requireContext())
                 }
-                GamesActivity.binding.overlappingPanel.closePanels()
+                NavigationActivity.binding.overlappingPanel.closePanels()
             }
         }
     }
@@ -224,9 +225,9 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
 
     companion object{
-        fun addOnBackPressCallback(activity: GamesActivity){
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if(!NetworkUtils.loading) {
+                if (!NetworkUtils.loading) {
                     NewsPageFragment.addOnBackPressCallback(activity)
                     activity.supportFragmentManager.popBackStack()
                 }

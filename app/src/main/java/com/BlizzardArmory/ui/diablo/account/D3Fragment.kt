@@ -25,7 +25,7 @@ import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.diablo.characterfragments.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.D3CharacterEvent
@@ -47,7 +47,7 @@ class D3Fragment : Fragment() {
     private val viewModel: D3ViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = D3FragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -74,9 +74,9 @@ class D3Fragment : Fragment() {
         selectedRegion = arguments?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-        GamesActivity.favorite!!.visibility = View.VISIBLE
-        GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-        GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
+        NavigationActivity.favorite!!.visibility = View.VISIBLE
+        NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+        NavigationActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
         setObservers()
     }
 
@@ -135,8 +135,8 @@ class D3Fragment : Fragment() {
             for (profile in favoriteProfiles.profiles) {
                 if (hasCharacter(profile)) {
                     indexOfProfile = indexTemp
-                    GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
-                    GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                    NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
+                    NavigationActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
                     favoriteProfiles.profiles[indexOfProfile] = D3FavoriteProfile(accountInformation, selectedRegion!!, battleTag!!)
                     prefs.edit().putString("d3-favorites", gson.toJson(favoriteProfiles)).apply()
                     break
@@ -156,20 +156,21 @@ class D3Fragment : Fragment() {
     }
 
     private fun deleteFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, indexOfProfile: Int, gson: Gson, prefs: SharedPreferences) {
-        if (GamesActivity.favorite!!.tag == R.drawable.ic_star_black_24dp && indexOfProfile != -1) {
-            GamesActivity.favorite!!.setOnClickListener {
-                GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-                GamesActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
+        if (NavigationActivity.favorite!!.tag == R.drawable.ic_star_black_24dp && indexOfProfile != -1) {
+            NavigationActivity.favorite!!.setOnClickListener {
+                NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+                NavigationActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
                 profiles.profiles.removeAt(indexOfProfile)
                 prefs.edit().putString("d3-favorites", gson.toJson(profiles)).apply()
-                Toast.makeText(requireActivity(), "Profile removed from favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "Profile removed from favorites", Toast.LENGTH_SHORT)
+                    .show()
                 addToFavorite(profiles, accountInformation, gson, prefs)
             }
         }
     }
 
     private fun addToFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, gson: Gson, prefs: SharedPreferences) {
-        GamesActivity.favorite!!.setOnClickListener {
+        NavigationActivity.favorite!!.setOnClickListener {
             var containsProfile = false
             var indexOfProfile = 0
             for (profile in profiles.profiles) {
@@ -180,11 +181,12 @@ class D3Fragment : Fragment() {
                 indexOfProfile++
             }
             if (!containsProfile) {
-                GamesActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
-                GamesActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
+                NavigationActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
                 profiles.profiles.add(D3FavoriteProfile(accountInformation, selectedRegion!!, battleTag!!))
                 prefs.edit().putString("d3-favorites", gson.toJson(profiles)).apply()
-                Toast.makeText(requireActivity(), "Profile added to favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "Profile added to favorites", Toast.LENGTH_SHORT)
+                    .show()
                 deleteFavorite(profiles, accountInformation, indexOfProfile, gson, prefs)
             }
         }
@@ -309,9 +311,9 @@ class D3Fragment : Fragment() {
 
                         {
                             dialog.dismiss()
-                            GamesActivity.hideFavoriteButton()
+                            NavigationActivity.hideFavoriteButton()
                             parentFragmentManager.popBackStack()
-                            NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                         }, "back"
                     )
                 ).show()
@@ -319,10 +321,10 @@ class D3Fragment : Fragment() {
     }
 
     companion object {
-        fun addOnBackPressCallback(activity: GamesActivity) {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
-                    GamesActivity.hideFavoriteButton()
+                    NavigationActivity.hideFavoriteButton()
                     when {
                         activity.supportFragmentManager.findFragmentByTag("d3leaderboard") != null -> {
                             D3LeaderboardFragment.addOnBackPressCallback(activity)

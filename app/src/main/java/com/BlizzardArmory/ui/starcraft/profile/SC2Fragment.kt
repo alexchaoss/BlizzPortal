@@ -28,7 +28,7 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.bumptech.glide.Glide
@@ -49,7 +49,7 @@ class SC2Fragment : Fragment() {
     private val viewModel: SC2ViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        addOnBackPressCallback(activity as GamesActivity)
+        addOnBackPressCallback(activity as NavigationActivity)
         _binding = Sc2FragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -539,7 +539,7 @@ class SC2Fragment : Fragment() {
 
                     {
                         dialog.dismiss()
-                        NewsPageFragment.addOnBackPressCallback(activity as GamesActivity)
+                        NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                         parentFragmentManager.popBackStack()
                     },
                     "back"
@@ -548,7 +548,7 @@ class SC2Fragment : Fragment() {
     }
 
     companion object {
-        fun addOnBackPressCallback(activity: GamesActivity) {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
 
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {

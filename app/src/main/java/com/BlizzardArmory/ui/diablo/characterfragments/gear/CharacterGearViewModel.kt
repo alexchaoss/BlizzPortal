@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.items.Item
 import com.BlizzardArmory.model.diablo.items.Items
-import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -58,13 +57,9 @@ class CharacterGearViewModel : BaseViewModel() {
         this.id = id
         this.selectedRegion = selectedRegion
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client().getHeroItems(
-                battletag,
-                id,
-                NetworkUtils.locale,
-                selectedRegion.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
-            )
+            val response = RetroClient.getD3Client()
+                .getHeroItems(battletag, id, battlenetOAuth2Helper!!.accessToken,
+                    selectedRegion.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     itemsInformation.value = response.body()
@@ -137,9 +132,11 @@ class CharacterGearViewModel : BaseViewModel() {
                     gemAttributes.append("<font color=\"#ff8000\"> ")
                 }
                 for (k in item.gems!![j].attributes.indices) {
-                    gemAttributes.append(" <img src=\"").append(item.gems!![j].item.icon).append("\">")
+                    gemAttributes.append(" <img src=\"").append(item.gems!![j].item.icon)
+                        .append("\">")
                     gemAttributes.append(" <img src=\"primary\"> ")
-                    gemAttributes.append(item.gems!![j].attributes[k].replace("\\n".toRegex(), "<br>")).append("<br>")
+                    gemAttributes.append(item.gems!![j].attributes[k].replace("\\n".toRegex(), "<br>"))
+                        .append("<br>")
                 }
                 gemAttributes.append("</font>")
                 gem.append(gemAttributes)

@@ -35,9 +35,8 @@ class CharacterStatsViewModel : BaseViewModel() {
             val response = RetroClient.getD3Client().getD3Hero(
                 battletag,
                 id,
-                NetworkUtils.locale,
+                battlenetOAuth2Helper!!.accessToken,
                 selectedRegion.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

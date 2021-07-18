@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.starcraft.leaderboard.Character
 import com.BlizzardArmory.model.starcraft.leaderboard.LadderMembers
-import com.BlizzardArmory.ui.navigation.GamesActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 
 
@@ -41,7 +41,8 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
             bundle.putInt("realmId", player.realm)
             bundle.putString("profileId", player.id.toString())
             fragment.arguments = bundle
-            (context as GamesActivity).supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "sc2fragment").addToBackStack("sc2").commit()
+            (context as NavigationActivity).supportFragmentManager.beginTransaction()
+                .add(R.id.fragment, fragment, "sc2fragment").addToBackStack("sc2").commit()
             context.supportFragmentManager.executePendingTransactions()
         }
     }
