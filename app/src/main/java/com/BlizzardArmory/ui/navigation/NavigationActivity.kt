@@ -18,6 +18,7 @@ import com.BlizzardArmory.databinding.NavigationActivityBinding
 import com.BlizzardArmory.model.MenuItem
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
+import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
@@ -37,6 +38,7 @@ import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
+import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MPlusLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
@@ -153,6 +155,7 @@ class NavigationActivity : LocalizationActivity(),
         menuList.add(MenuItem(true, "", resources.getString(R.string.world_of_warcraft), R.drawable.wow_icon, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.raid_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.mplus_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_character), R.drawable.rep_search, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_guild), R.drawable.rep_search, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
@@ -305,6 +308,10 @@ class NavigationActivity : LocalizationActivity(),
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             viewModel.getConnectedRealms()
             viewModel.downloadUserInfo()
+        })
+
+        viewModel.getWowConnectedRealms().observe(this, {
+            realms = it
         })
 
         viewModel.getUserInformation().observe(this, {
@@ -611,6 +618,16 @@ class NavigationActivity : LocalizationActivity(),
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
             }
+            resources.getString(R.string.mplus_leaderboards) -> {
+                toggleFavoriteButton(FavoriteState.Hidden)
+                fragment = MPlusLeaderboardsFragment()
+                resetBackStack()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment, fragment, "mplusleaderboard")
+                    .addToBackStack("mplus_leaderboard").commit()
+                supportFragmentManager.executePendingTransactions()
+                binding.overlappingPanel.closePanels()
+            }
             resources.getString(R.string.settingsTitle) -> {
                 toggleFavoriteButton(FavoriteState.Hidden)
                 fragment = SettingsFragment()
@@ -805,6 +822,7 @@ class NavigationActivity : LocalizationActivity(),
 
     companion object {
         var userInformation: UserInformation? = null
+        lateinit var realms: MutableMap<String, ConnectedRealms>
         var userNews: UserNews? = null
     }
 }

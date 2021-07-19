@@ -162,7 +162,7 @@ interface WoWNetworkServices {
     @GET("/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/{dungeonId}/period/{period}")
     suspend fun getMythicKeystoneLeaderboard(
         @Path("connectedRealmId") connectedRealmId: Int,
-        @Path("dungeonId") dungeonId: Int,
+        @Path("dungeonId") dungeonId: Long,
         @Path("period") period: Int,
         @Query("namespace") namespace: String,
         @Query("region") region: String = NetworkUtils.region,

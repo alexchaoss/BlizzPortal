@@ -10,44 +10,22 @@
     android:paddingEnd="20dp"
     android:paddingBottom="40dp">
 
-    <LinearLayout
-        android:id="@+id/season_era"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/season_button"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:weightSum="2"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/wow_mplus_leaderboards_button_selected"
+        android:gravity="center"
+        android:text="@string/season"
+        android:textAlignment="center"
+        android:textColor="#FFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/spinner_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/season_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/wow_mplus_leaderboards_button_selected"
-            android:gravity="center"
-            android:text="@string/season"
-            android:textAlignment="center"
-            android:textColor="#FFF"
-            android:textSize="20sp" />
-
-        <Button
-            android:id="@+id/era_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/leaderboards_button"
-            android:gravity="center"
-            android:text="@string/era"
-            android:textAlignment="center"
-            android:textColor="#FFF"
-            android:textSize="20sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinner_id"
@@ -59,7 +37,7 @@
         app:layout_constraintBottom_toTopOf="@id/difficulty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/season_era" />
+        app:layout_constraintTop_toBottomOf="@id/season_button" />
 
     <LinearLayout
         android:id="@+id/difficulty"

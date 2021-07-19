@@ -15,7 +15,7 @@ import retrofit2.http.Path
 interface APINetworkServices {
 
     @GET("/instances/{locale}")
-    suspend fun getInstances(@Path("locale") locale: String = NetworkUtils.locale): Response<Instances>
+    suspend fun getInstances(@Path("locale") locale: String = NetworkUtils.locale): Response<List<Instances>>
 
     @GET("/categories/{locale}")
     suspend fun getAchievementCategories(@Path("locale") locale: String = NetworkUtils.locale): Response<Categories>

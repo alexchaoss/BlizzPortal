@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.mythicplusleaderboards
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.instances.Instances
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Leaderboard
@@ -19,7 +20,19 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
     private var seasonIndex: MutableLiveData<SeasonsIndex> = MutableLiveData()
     private var season: MutableLiveData<Season> = MutableLiveData()
     private var mythicKeystoneLeaderboard: MutableLiveData<Leaderboard> = MutableLiveData()
-    private var instances: MutableLiveData<Instances> = MutableLiveData()
+    private var instances: MutableLiveData<List<Instances>> = MutableLiveData()
+
+    fun getInstances(): LiveData<List<Instances>> {
+        return instances
+    }
+
+    fun getSeasonIndex(): LiveData<SeasonsIndex> {
+        return seasonIndex
+    }
+
+    fun getSeason(): LiveData<Season> {
+        return season
+    }
 
     fun downloadInstances() {
         val job = coroutineScope.launch {
@@ -70,7 +83,7 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
         jobs.add(job)
     }
 
-    fun downloadMythicKeystoneLeaderboard(connectedRealm: Int, dungeonId: Int, period: Int) {
+    fun downloadMythicKeystoneLeaderboard(connectedRealm: Int, dungeonId: Long, period: Int) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
                 .getMythicKeystoneLeaderboard(connectedRealm, dungeonId, period, "dynamic-" + NetworkUtils.region, NetworkUtils.region)

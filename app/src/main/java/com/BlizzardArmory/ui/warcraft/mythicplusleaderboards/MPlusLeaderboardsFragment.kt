@@ -55,7 +55,7 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
         NetworkUtils.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
-
+        viewModel.downloadInstances()
     }
 
     override fun onDestroy() {
@@ -67,6 +67,20 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
 
     private fun setObservers() {
+
+        viewModel.getInstances().observe(viewLifecycleOwner, {
+            viewModel.downloadSeasonIndex()
+        })
+
+        viewModel.getSeasonIndex().observe(viewLifecycleOwner, {
+            viewModel.downloadSeason(it.seasons.last().id)
+        })
+
+        viewModel.getSeason().observe(viewLifecycleOwner, {
+            Log.i("Realms", NavigationActivity.realms["US"]!!.results[0].connectedRealm.realms.toString())
+            viewModel.downloadMythicKeystoneLeaderboard(11, viewModel.getInstances().value!!.last().id, it.periods.last().id)
+        })
+
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             binding.loadingCircle.visibility = View.GONE
         })

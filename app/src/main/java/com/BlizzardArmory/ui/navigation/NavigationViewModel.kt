@@ -20,8 +20,7 @@ import java.util.*
 
 class NavigationViewModel : BaseViewModel() {
 
-    private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
-        MutableLiveData()
+    private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> = MutableLiveData()
     private var userInformation: MutableLiveData<UserInformation> = MutableLiveData()
     private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
 
@@ -117,7 +116,6 @@ class NavigationViewModel : BaseViewModel() {
                 "dynamic-eu",
                 query,
                 "eu",
-
                 )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

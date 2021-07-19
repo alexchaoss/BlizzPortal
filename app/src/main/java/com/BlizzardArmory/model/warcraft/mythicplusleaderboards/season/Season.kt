@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Season (
 
-	@SerializedName("_links") val links : Links,
-	@SerializedName("id") val id : Int,
-	@SerializedName("start_timestamp") val start_timestamp : Int,
-	@SerializedName("end_timestamp") val end_timestamp : Int,
-	@SerializedName("periods") val periods : List<Periods>
+    @SerializedName("_links") val links: Links,
+    @SerializedName("id") val id: Int,
+    @SerializedName("start_timestamp") val start_timestamp: Long,
+    @SerializedName("end_timestamp") val end_timestamp: Long,
+    @SerializedName("periods") val periods: List<Periods>
 )

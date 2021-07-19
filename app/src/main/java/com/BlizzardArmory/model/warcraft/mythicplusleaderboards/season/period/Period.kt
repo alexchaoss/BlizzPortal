@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 data class Period (
 
-	@SerializedName("_links") val _links : Links,
-	@SerializedName("id") val id : Int,
-	@SerializedName("start_timestamp") val start_timestamp : Int,
-	@SerializedName("end_timestamp") val end_timestamp : Int
+    @SerializedName("_links") val _links: Links,
+    @SerializedName("id") val id: Int,
+    @SerializedName("start_timestamp") val start_timestamp: Long,
+    @SerializedName("end_timestamp") val end_timestamp: Long
 )
