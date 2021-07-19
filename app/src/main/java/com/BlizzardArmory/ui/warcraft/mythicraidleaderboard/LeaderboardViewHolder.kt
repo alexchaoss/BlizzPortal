@@ -11,7 +11,7 @@ import com.BlizzardArmory.model.warcraft.mythicraid.Entries
 
 
 class LeaderboardViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-    RecyclerView.ViewHolder(inflater.inflate(R.layout.mythic_raid_leaderboard_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_mythic_raid_leaderboard_list, parent, false)) {
 
     var rank: TextView? = null
     var guild: TextView? = null

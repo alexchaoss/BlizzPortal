@@ -221,7 +221,6 @@ class ActivityFragment : Fragment() {
                     when {
                         activity.supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
                             WoWCharacterFragment.addOnBackPressCallback(activity)
-                            NavigationActivity.favorite?.visibility = View.VISIBLE
                             activity.supportFragmentManager.popBackStack()
                         }
                         activity.supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {

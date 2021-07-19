@@ -99,7 +99,6 @@ class WoWNavFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
-            NavigationActivity.hideFavoriteButton()
             when {
                 activity?.supportFragmentManager?.findFragmentByTag("guild_nav_fragment") != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)

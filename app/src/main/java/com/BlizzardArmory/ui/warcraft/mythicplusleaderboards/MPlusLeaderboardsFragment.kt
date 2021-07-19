@@ -14,29 +14,38 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
-import com.BlizzardArmory.databinding.MythicPlusLeaderboardsFragmentBinding
+import com.BlizzardArmory.databinding.WowMythicPlusLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsViewModel
+import com.BlizzardArmory.util.state.RightPanelState
 
-class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
+class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
+    FragmentManager.OnBackStackChangedListener {
 
-    private var _binding: MythicPlusLeaderboardsFragmentBinding? = null
+    private var _binding: WowMythicPlusLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MPlusLeaderboardsViewModel by viewModels()
 
+    private lateinit var rightPanel: NavigationActivity
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
-        _binding = MythicPlusLeaderboardsFragmentBinding.inflate(layoutInflater)
+        _binding = WowMythicPlusLeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setObservers()
+
+        rightPanel = (requireActivity() as NavigationActivity)
+        rightPanel.selectRightPanel(RightPanelState.WoWMPlusLeaderboard)
+        this.parentFragmentManager.addOnBackStackChangedListener(this)
 
         binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
@@ -52,6 +61,8 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        rightPanel.selectRightPanel(RightPanelState.NewsSelection)
+        this.parentFragmentManager.removeOnBackStackChangedListener(this)
     }
 
 
@@ -102,17 +113,6 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
         }
     }
 
-    companion object {
-        fun addOnBackPressCallback(activity: NavigationActivity) {
-            activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack()
-                }
-            }
-        }
-    }
-
     override fun onQueryTextSubmit(query: String?): Boolean {
         return false
     }
@@ -125,4 +125,24 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
         }
         return false
     }
+
+    override fun onBackStackChanged() {
+        if (requireActivity().supportFragmentManager.fragments.last().tag == this.tag) {
+            rightPanel.selectRightPanel(RightPanelState.WoWMPlusLeaderboard)
+        } else {
+            rightPanel.selectRightPanel(RightPanelState.NewsSelection)
+        }
+    }
+
+    companion object {
+        fun addOnBackPressCallback(activity: NavigationActivity) {
+            activity.onBackPressedDispatcher.addCallback {
+                if (!NetworkUtils.loading) {
+                    NewsPageFragment.addOnBackPressCallback(activity)
+                    activity.supportFragmentManager.popBackStack()
+                }
+            }
+        }
+    }
+
 }

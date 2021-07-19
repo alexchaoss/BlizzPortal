@@ -16,7 +16,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
-import com.BlizzardArmory.databinding.MythicRaidLeaderboardsFragmentBinding
+import com.BlizzardArmory.databinding.WowMythicRaidLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
@@ -26,13 +26,13 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     private val raidList = arrayListOf<String>()
     private val factionList = arrayListOf("Faction", "Horde & Alliance", "Horde", "Alliance")
 
-    private var _binding: MythicRaidLeaderboardsFragmentBinding? = null
+    private var _binding: WowMythicRaidLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MRaidLeaderboardsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
-        _binding = MythicRaidLeaderboardsFragmentBinding.inflate(layoutInflater)
+        _binding = WowMythicRaidLeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
 

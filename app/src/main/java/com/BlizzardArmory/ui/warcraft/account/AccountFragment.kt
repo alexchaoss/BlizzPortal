@@ -190,7 +190,6 @@ class AccountFragment : Fragment() {
 
                         {
                             dialog.dismiss()
-                            NavigationActivity.hideFavoriteButton()
                             parentFragmentManager.popBackStack()
                             NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                         }, "back"

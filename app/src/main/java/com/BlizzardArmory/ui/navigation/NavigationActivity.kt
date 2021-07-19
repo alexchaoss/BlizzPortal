@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
-import com.BlizzardArmory.databinding.GamesActivityBarBinding
-import com.BlizzardArmory.databinding.GamesActivityBinding
+import com.BlizzardArmory.databinding.NavigationActivityBarBinding
+import com.BlizzardArmory.databinding.NavigationActivityBinding
 import com.BlizzardArmory.model.MenuItem
 import com.BlizzardArmory.model.UserInformation
 import com.BlizzardArmory.model.news.UserNews
@@ -42,6 +42,8 @@ import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.MenuItemClickEvent
+import com.BlizzardArmory.util.state.FavoriteState
+import com.BlizzardArmory.util.state.RightPanelState
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.discord.panels.OverlappingPanelsLayout
 import com.discord.panels.PanelState
@@ -68,7 +70,10 @@ class NavigationActivity : LocalizationActivity(),
 
     private lateinit var errorMessage: ErrorMessages
 
-    private lateinit var barBinding: GamesActivityBarBinding
+    var favorite: ImageView? = null
+
+    lateinit var barBinding: NavigationActivityBarBinding
+    lateinit var binding: NavigationActivityBinding
     private val viewModel: NavigationViewModel by viewModels()
     private var viewStateDisposable: Disposable? = null
 
@@ -79,8 +84,8 @@ class NavigationActivity : LocalizationActivity(),
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             handleUncaughtException(thread, throwable)
         }
-        barBinding = GamesActivityBarBinding.inflate(layoutInflater)
-        binding = GamesActivityBinding.inflate(layoutInflater)
+        barBinding = NavigationActivityBarBinding.inflate(layoutInflater)
+        binding = NavigationActivityBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
@@ -109,10 +114,10 @@ class NavigationActivity : LocalizationActivity(),
 
         binding.menu.apply {
             adapter = MenuAdapter(menuList, context)
-            (binding.menu.adapter as MenuAdapter).hideSubMenu(menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }!!)
-            (binding.menu.adapter as MenuAdapter).hideSubMenu(menuList.find { it.title == resources.getString(R.string.diablo_3) }!!)
-            (binding.menu.adapter as MenuAdapter).hideSubMenu(menuList.find { it.title == resources.getString(R.string.overwatch) }!!)
-            (binding.menu.adapter as MenuAdapter).hideSubMenu(menuList.find { it.title == resources.getString(R.string.starcraft_2) }!!)
+            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }!!)
+            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.diablo_3) }!!)
+            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.overwatch) }!!)
+            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.starcraft_2) }!!)
         }
 
         if (savedInstanceState == null) {
@@ -244,6 +249,55 @@ class NavigationActivity : LocalizationActivity(),
         super.onDestroy()
         Log.i("REMOVED GESTURE", "REMOVED")
         PanelsChildGestureRegionObserver.Provider.get().remove(binding.fragment.id)
+    }
+
+    fun toggleFavoriteButton(state: FavoriteState) {
+        when (state) {
+            FavoriteState.Hidden -> {
+                favorite!!.visibility = View.GONE
+                favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favorite!!.tag = R.drawable.ic_star_border_black_24dp
+            }
+            FavoriteState.Shown -> {
+                favorite!!.visibility = View.VISIBLE
+                favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favorite!!.tag = R.drawable.ic_star_border_black_24dp
+            }
+            FavoriteState.Full -> {
+                favorite!!.visibility = View.VISIBLE
+                favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
+                favorite!!.tag = R.drawable.ic_star_black_24dp
+            }
+        }
+    }
+
+    fun selectRightPanel(state: RightPanelState) {
+        when (state) {
+            RightPanelState.NewsSelection -> {
+                binding.rightPanelGames.root.visibility = View.VISIBLE
+                binding.rightPanelSc2.root.visibility = View.GONE
+                binding.rightPanelD3.root.visibility = View.GONE
+                binding.rightPanelWowMplus.root.visibility = View.GONE
+            }
+            RightPanelState.D3Leaderboard -> {
+                binding.rightPanelGames.root.visibility = View.GONE
+                binding.rightPanelSc2.root.visibility = View.GONE
+                binding.rightPanelD3.root.visibility = View.VISIBLE
+                binding.rightPanelWowMplus.root.visibility = View.GONE
+            }
+            RightPanelState.Sc2Leaderboard -> {
+                binding.rightPanelGames.root.visibility = View.GONE
+                binding.rightPanelSc2.root.visibility = View.VISIBLE
+                binding.rightPanelD3.root.visibility = View.GONE
+                binding.rightPanelWowMplus.root.visibility = View.GONE
+            }
+            RightPanelState.WoWMPlusLeaderboard -> {
+                binding.rightPanelGames.root.visibility = View.GONE
+                binding.rightPanelSc2.root.visibility = View.GONE
+                binding.rightPanelD3.root.visibility = View.GONE
+                binding.rightPanelWowMplus.root.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun setOberservers() {
@@ -391,71 +445,35 @@ class NavigationActivity : LocalizationActivity(),
         val searchDialog = DialogPrompt(this)
         when (menuItem.menuItem.title) {
             this.resources.getString(R.string.home) -> {
-                hideFavoriteButton()
+                toggleFavoriteButton(FavoriteState.Hidden)
                 resetBackStack()
-                favorite!!.visibility = View.GONE
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.logout) -> {
+
                 binding.loadingCircle.visibility = View.VISIBLE
                 clearCredentials()
             }
             resources.getString(R.string.diablo_3) -> {
-                if (menuItem.menuItem.toggle) {
-                    menuList.find { it.title == resources.getString(R.string.diablo_3) }?.icon =
-                        R.drawable.diablo3_icon
-                    (binding.menu.adapter as MenuAdapter).hideSubMenu(menuItem.menuItem)
-                } else {
-                    menuList.find { it.title == resources.getString(R.string.diablo_3) }?.icon =
-                        R.drawable.diablo3_icon_glow
-                    (binding.menu.adapter as MenuAdapter).showSubMenu(menuItem.menuItem)
-                }
-                menuList.find { it.title == resources.getString(R.string.diablo_3) }?.toggle =
-                    !menuItem.menuItem.toggle
+                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
+                menuList.find { it.title == resources.getString(R.string.diablo_3) }?.toggle = !menuItem.menuItem.toggle
             }
             resources.getString(R.string.overwatch) -> {
-                if (menuItem.menuItem.toggle) {
-                    menuList.find { it.title == resources.getString(R.string.overwatch) }?.icon =
-                        R.drawable.overwatch_icon
-                    (binding.menu.adapter as MenuAdapter).hideSubMenu(menuItem.menuItem)
-                } else {
-                    menuList.find { it.title == resources.getString(R.string.overwatch) }?.icon =
-                        R.drawable.overwatch_icon_glow
-                    (binding.menu.adapter as MenuAdapter).showSubMenu(menuItem.menuItem)
-                }
-                menuList.find { it.title == resources.getString(R.string.overwatch) }?.toggle =
-                    !menuItem.menuItem.toggle
+                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
+                menuList.find { it.title == resources.getString(R.string.overwatch) }?.toggle = !menuItem.menuItem.toggle
             }
             resources.getString(R.string.world_of_warcraft) -> {
-                if (menuItem.menuItem.toggle) {
-                    menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.icon =
-                        R.drawable.wow_icon
-                    (binding.menu.adapter as MenuAdapter).hideSubMenu(menuItem.menuItem)
-                } else {
-                    menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.icon =
-                        R.drawable.wow_icon_glow
-                    (binding.menu.adapter as MenuAdapter).showSubMenu(menuItem.menuItem)
-                }
-                menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.toggle =
-                    !menuItem.menuItem.toggle
+                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
+                menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.toggle = !menuItem.menuItem.toggle
             }
             resources.getString(R.string.starcraft_2) -> {
-                if (menuItem.menuItem.toggle) {
-                    menuList.find { it.title == resources.getString(R.string.starcraft_2) }?.icon =
-                        R.drawable.sc2_icon
-                    (binding.menu.adapter as MenuAdapter).hideSubMenu(menuItem.menuItem)
-                } else {
-                    menuList.find { it.title == resources.getString(R.string.starcraft_2) }?.icon =
-                        R.drawable.sc2_icon_glow
-                    (binding.menu.adapter as MenuAdapter).showSubMenu(menuItem.menuItem)
-                }
-                menuList.find { it.title == resources.getString(R.string.starcraft_2) }?.toggle =
-                    !menuItem.menuItem.toggle
+                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
+                menuList.find { it.title == resources.getString(R.string.starcraft_2) }?.toggle = !menuItem.menuItem.toggle
             }
             resources.getString(R.string.account) -> {
+                toggleFavoriteButton(FavoriteState.Hidden)
                 when (menuItem.menuItem.parent) {
                     resources.getString(R.string.world_of_warcraft) -> {
-                        favorite!!.visibility = View.GONE
                         fragment = AccountFragment()
                         openWoWAccount(fragment)
                     }
@@ -475,7 +493,6 @@ class NavigationActivity : LocalizationActivity(),
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.starcraft_2) -> {
-                        favorite!!.visibility = View.GONE
                         fragment = SC2Fragment()
                         resetBackStack()
                         supportFragmentManager.beginTransaction()
@@ -511,6 +528,9 @@ class NavigationActivity : LocalizationActivity(),
                         .flatMap { it.getAllNames() }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                     .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWChracterFields(searchDialog) }, "search_button"))
+                    .setOnCancelListener {
+                        binding.loadingCircle.visibility = View.GONE
+                    }
                     .show()
                 binding.overlappingPanel.closePanels()
             }
@@ -523,14 +543,18 @@ class NavigationActivity : LocalizationActivity(),
                         .flatMap { it.getAllNames() }.distinct())
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
                     .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWGuildFields(searchDialog) }, "search_button"))
+                    .setOnCancelListener {
+                        binding.loadingCircle.visibility = View.GONE
+                    }
                     .show()
+
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.favorites) -> {
                 resetBackStack()
+                toggleFavoriteButton(FavoriteState.Hidden)
                 when (menuItem.menuItem.parent) {
                     resources.getString(R.string.world_of_warcraft) -> {
-                        favorite!!.visibility = View.GONE
                         fragment = WoWFavoritesFragment()
                         supportFragmentManager.beginTransaction()
                             .add(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav")
@@ -538,7 +562,6 @@ class NavigationActivity : LocalizationActivity(),
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.diablo_3) -> {
-                        favorite!!.visibility = View.GONE
                         fragment = D3FavoriteFragment()
                         supportFragmentManager.beginTransaction()
                             .add(R.id.fragment, fragment, "d3favorites").addToBackStack("d3_fav")
@@ -546,7 +569,6 @@ class NavigationActivity : LocalizationActivity(),
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.overwatch) -> {
-                        favorite!!.visibility = View.GONE
                         fragment = OWFavoritesFragment()
                         supportFragmentManager.beginTransaction()
                             .add(R.id.fragment, fragment, "owfavorites").addToBackStack("ow_fav")
@@ -558,9 +580,9 @@ class NavigationActivity : LocalizationActivity(),
             }
             resources.getString(R.string.leaderboards) -> {
                 resetBackStack()
+                toggleFavoriteButton(FavoriteState.Hidden)
                 when (menuItem.menuItem.parent) {
                     resources.getString(R.string.diablo_3) -> {
-                        favorite!!.visibility = View.GONE
                         fragment = D3LeaderboardFragment()
                         resetBackStack()
                         supportFragmentManager.beginTransaction()
@@ -569,7 +591,6 @@ class NavigationActivity : LocalizationActivity(),
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.starcraft_2) -> {
-                        favorite!!.visibility = View.GONE
                         fragment = SC2LeaderboardFragment()
                         resetBackStack()
                         supportFragmentManager.beginTransaction()
@@ -581,7 +602,7 @@ class NavigationActivity : LocalizationActivity(),
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.raid_leaderboards) -> {
-                favorite!!.visibility = View.GONE
+                toggleFavoriteButton(FavoriteState.Hidden)
                 fragment = MRaidLeaderboardsFragment()
                 resetBackStack()
                 supportFragmentManager.beginTransaction()
@@ -591,7 +612,7 @@ class NavigationActivity : LocalizationActivity(),
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.settingsTitle) -> {
-                favorite!!.visibility = View.GONE
+                toggleFavoriteButton(FavoriteState.Hidden)
                 fragment = SettingsFragment()
                 supportFragmentManager.beginTransaction()
                     .add(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings")
@@ -755,19 +776,6 @@ class NavigationActivity : LocalizationActivity(),
     }
 
 
-    companion object {
-        var userInformation: UserInformation? = null
-        var userNews: UserNews? = null
-        var favorite: ImageView? = null
-        lateinit var binding: GamesActivityBinding
-
-        fun hideFavoriteButton() {
-            favorite!!.visibility = View.GONE
-            favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-            favorite!!.tag = R.drawable.ic_star_border_black_24dp
-        }
-    }
-
     override fun onGestureRegionsUpdate(gestureRegions: List<Rect>) {
         when (supportFragmentManager.fragments.last().tag) {
             "NAV_FRAGMENT",
@@ -790,9 +798,13 @@ class NavigationActivity : LocalizationActivity(),
         binding.overlappingPanel.setChildGestureRegions(gestureRegions)
     }
 
-
     private fun handleViewState(viewState: NavigationViewModel.ViewState) {
         binding.overlappingPanel.handleStartPanelState(viewState.startPanelState)
         binding.overlappingPanel.handleEndPanelState(viewState.endPanelState)
+    }
+
+    companion object {
+        var userInformation: UserInformation? = null
+        var userNews: UserNews? = null
     }
 }

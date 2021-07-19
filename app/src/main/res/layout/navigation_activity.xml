@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/top_bar"
-        layout="@layout/games_activity_bar"
+        layout="@layout/navigation_activity_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +57,7 @@
 
             <include
                 android:id="@+id/right_panel_games"
-                layout="@layout/games_activity_right_panel"
+                layout="@layout/navigation_activity_right_panel"
                 android:visibility="visible" />
 
             <include
@@ -68,6 +68,11 @@
             <include
                 android:id="@+id/right_panel_sc2"
                 layout="@layout/sc2_leaderboard_right_panel"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/right_panel_wow_mplus"
+                layout="@layout/wow_mplus_leaderboard_right_panel"
                 android:visibility="gone" />
 
         </FrameLayout>

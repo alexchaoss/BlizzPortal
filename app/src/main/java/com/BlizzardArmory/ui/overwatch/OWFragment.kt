@@ -28,6 +28,7 @@ import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.state.FavoriteState
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -50,20 +51,26 @@ class OWFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: OWViewModel by viewModels()
 
+    private lateinit var navigationActivity: NavigationActivity
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = OwFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        navigationActivity.toggleFavoriteButton(FavoriteState.Hidden)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        navigationActivity = (requireActivity() as NavigationActivity)
         errorMessages = ErrorMessages(this.resources)
         setObservers()
         binding.loadingCircle.visibility = View.VISIBLE
-        NavigationActivity.favorite!!.visibility = View.VISIBLE
-        NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-        NavigationActivity.favorite!!.tag = R.drawable.ic_star_border_black_24dp
+        navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
         val switchCompQuickBorder = GradientDrawable()
         switchCompQuickBorder.cornerRadius = 5f
         switchCompQuickBorder.setStroke(3, Color.parseColor("#FFFFFF"))
@@ -94,7 +101,7 @@ class OWFragment : Fragment() {
             binding.gamesWon.textSize = 18f
             binding.loadingCircle.visibility = View.GONE
             NetworkUtils.loading = false
-            NavigationActivity.favorite!!.setOnClickListener {
+            navigationActivity.favorite!!.setOnClickListener {
                 Toast.makeText(requireActivity(), "Can't add private profile to favorites", Toast.LENGTH_SHORT)
                     .show()
             }
@@ -152,8 +159,7 @@ class OWFragment : Fragment() {
             profiles = gson.fromJson(favorites, FavoriteProfiles::class.java)
             for (profile in profiles.profiles) {
                 if (profile.username == username && profile.platform == platform) {
-                    NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
-                    NavigationActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                    navigationActivity.toggleFavoriteButton(FavoriteState.Full)
                     index = indexTemp
                     profiles.profiles[index] =
                         FavoriteProfile(platform!!, username!!, viewModel.getProfile().value!!)
@@ -170,10 +176,9 @@ class OWFragment : Fragment() {
     }
 
     private fun removeFavorite(profiles: FavoriteProfiles, prefs: SharedPreferences, gson: Gson, index: Int) {
-        if (NavigationActivity.favorite!!.tag as Int == R.drawable.ic_star_black_24dp && index != -1) {
-            NavigationActivity.favorite!!.setOnClickListener {
-                NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-                NavigationActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+        if (navigationActivity.favorite!!.tag as Int == R.drawable.ic_star_black_24dp && index != -1) {
+            navigationActivity.favorite!!.setOnClickListener {
+                navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
                 profiles.profiles.removeAt(index)
                 prefs.edit().putString("ow-favorites", gson.toJson(profiles)).apply()
                 addToFavorites(profiles, prefs, gson, index)
@@ -185,7 +190,7 @@ class OWFragment : Fragment() {
 
     private fun addToFavorites(profiles: FavoriteProfiles, prefs: SharedPreferences, gson: Gson, index: Int) {
         val containsProfiles = AtomicBoolean(false)
-        NavigationActivity.favorite!!.setOnClickListener {
+        navigationActivity.favorite!!.setOnClickListener {
             for (profile in profiles.profiles) {
                 if (profile.username == username && profile.platform == platform) {
                     containsProfiles.set(true)
@@ -193,8 +198,7 @@ class OWFragment : Fragment() {
                 }
             }
             if (!containsProfiles.get()) {
-                NavigationActivity.favorite!!.setImageResource(R.drawable.ic_star_black_24dp)
-                NavigationActivity.favorite!!.tag = R.drawable.ic_star_black_24dp
+                navigationActivity.toggleFavoriteButton(FavoriteState.Full)
                 profiles.profiles.add(FavoriteProfile(platform!!, username!!, viewModel.getProfile().value!!))
                 prefs.edit().putString("ow-favorites", gson.toJson(profiles)).apply()
                 Toast.makeText(requireActivity(), "Profile added to favorites", Toast.LENGTH_SHORT)
@@ -495,7 +499,6 @@ class OWFragment : Fragment() {
 
                     {
                         dialog.dismiss()
-                        NavigationActivity.hideFavoriteButton()
                         parentFragmentManager.beginTransaction().remove(this).commit()
                         NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                     }, "back"
@@ -507,7 +510,6 @@ class OWFragment : Fragment() {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
-                    NavigationActivity.hideFavoriteButton()
                     if (activity.supportFragmentManager.findFragmentByTag("owfavorites") != null) {
                         OWFavoritesFragment.addOnBackPressCallback(activity)
                         activity.supportFragmentManager.popBackStack()

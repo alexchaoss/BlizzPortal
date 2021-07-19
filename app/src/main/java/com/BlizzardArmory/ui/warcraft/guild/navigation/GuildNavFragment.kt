@@ -84,7 +84,6 @@ class GuildNavFragment : Fragment() {
             when {
                 requireActivity().supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
                     WoWCharacterFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    NavigationActivity.favorite?.visibility = View.VISIBLE
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 requireActivity().supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {

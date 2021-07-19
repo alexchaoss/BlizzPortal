@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
@@ -19,8 +20,10 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.state.RightPanelState
 
-class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
+class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
+    FragmentManager.OnBackStackChangedListener {
 
     private var seasonList = arrayListOf<String>()
     private var leagueList = arrayListOf("Select League", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster")
@@ -48,6 +51,8 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     private val binding get() = _binding!!
     private val viewModel: SC2LeaderboardViewModel by viewModels()
 
+    private lateinit var rightPanel: NavigationActivity
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = Sc2LeaderboardsFragmentBinding.inflate(layoutInflater)
@@ -56,16 +61,16 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        NavigationActivity.binding.rightPanelGames.root.visibility = View.VISIBLE
-        NavigationActivity.binding.rightPanelD3.root.visibility = View.GONE
-        NavigationActivity.binding.rightPanelSc2.root.visibility = View.GONE
+        _binding = null
+        rightPanel.selectRightPanel(RightPanelState.NewsSelection)
+        this.parentFragmentManager.removeOnBackStackChangedListener(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        NavigationActivity.binding.rightPanelGames.root.visibility = View.GONE
-        NavigationActivity.binding.rightPanelD3.root.visibility = View.GONE
-        NavigationActivity.binding.rightPanelSc2.root.visibility = View.VISIBLE
+        rightPanel = (requireActivity() as NavigationActivity)
+        rightPanel.selectRightPanel(RightPanelState.Sc2Leaderboard)
+        this.parentFragmentManager.addOnBackStackChangedListener(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         if (!prefs?.contains("leaderboard_pulled_sc2")!!) {
@@ -80,9 +85,9 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
 
         setPageNavButtons()
 
-        setAdapter(leagueList, NavigationActivity.binding.rightPanelSc2.league)
+        setAdapter(leagueList, rightPanel.binding.rightPanelSc2.league)
         setAdapter(resources.getStringArray(R.array.regions)
-            .asList(), NavigationActivity.binding.rightPanelSc2.region)
+            .asList(), rightPanel.binding.rightPanelSc2.region)
         setQueueIdButtons()
         setTeamTypeButtons()
         setSearchButton()
@@ -149,66 +154,66 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun setTeamTypeButtons() {
-        NavigationActivity.binding.rightPanelSc2.arranged.setOnClickListener {
-            NavigationActivity.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            NavigationActivity.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        rightPanel.binding.rightPanelSc2.arranged.setOnClickListener {
+            rightPanel.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            rightPanel.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.leaderboards_button)
             randomToggle = false
         }
 
-        NavigationActivity.binding.rightPanelSc2.random.setOnClickListener {
-            NavigationActivity.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            NavigationActivity.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        rightPanel.binding.rightPanelSc2.random.setOnClickListener {
+            rightPanel.binding.rightPanelSc2.random.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            rightPanel.binding.rightPanelSc2.arranged.setBackgroundResource(R.drawable.leaderboards_button)
             randomToggle = true
         }
     }
 
     private fun setQueueIdButtons() {
-        NavigationActivity.binding.rightPanelSc2.v1.setOnClickListener {
-            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        rightPanel.binding.rightPanelSc2.v1.setOnClickListener {
+            rightPanel.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            rightPanel.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.leaderboards_button)
             v1Toggle = true
             v2Toggle = false
             v3Toggle = false
             v4Toggle = false
-            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v1.text.toString()
+            viewModel.queueId = rightPanel.binding.rightPanelSc2.v1.text.toString()
         }
 
-        NavigationActivity.binding.rightPanelSc2.v2.setOnClickListener {
-            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        rightPanel.binding.rightPanelSc2.v2.setOnClickListener {
+            rightPanel.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            rightPanel.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.leaderboards_button)
             v1Toggle = false
             v2Toggle = true
             v3Toggle = false
             v4Toggle = false
-            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v2.text.toString()
+            viewModel.queueId = rightPanel.binding.rightPanelSc2.v2.text.toString()
         }
 
-        NavigationActivity.binding.rightPanelSc2.v3.setOnClickListener {
-            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
-            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.d3_leaderboards_button)
+        rightPanel.binding.rightPanelSc2.v3.setOnClickListener {
+            rightPanel.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            rightPanel.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.leaderboards_button)
             v1Toggle = false
             v2Toggle = false
             v3Toggle = true
             v4Toggle = false
-            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v3.text.toString()
+            viewModel.queueId = rightPanel.binding.rightPanelSc2.v3.text.toString()
         }
 
-        NavigationActivity.binding.rightPanelSc2.v4.setOnClickListener {
-            NavigationActivity.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.d3_leaderboards_button)
-            NavigationActivity.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+        rightPanel.binding.rightPanelSc2.v4.setOnClickListener {
+            rightPanel.binding.rightPanelSc2.v1.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v2.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v3.setBackgroundResource(R.drawable.leaderboards_button)
+            rightPanel.binding.rightPanelSc2.v4.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
             v1Toggle = false
             v2Toggle = false
             v3Toggle = false
             v4Toggle = true
-            viewModel.queueId = NavigationActivity.binding.rightPanelSc2.v4.text.toString()
+            viewModel.queueId = rightPanel.binding.rightPanelSc2.v4.text.toString()
         }
     }
 
@@ -218,7 +223,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
             for (i in 28..it.seasonId) {
                 seasonList.add(i.toString())
             }
-            setAdapter(seasonList, NavigationActivity.binding.rightPanelSc2.season)
+            setAdapter(seasonList, rightPanel.binding.rightPanelSc2.season)
             viewModel.queueId = "1v1"
             viewModel.leagueString = leagueList.last()
             viewModel.seasonId = it.seasonId
@@ -256,27 +261,27 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun setSearchButton() {
-        NavigationActivity.binding.rightPanelSc2.search.setOnClickListener {
-            if (NavigationActivity.binding.rightPanelSc2.season.selectedItemPosition == 0) {
+        rightPanel.binding.rightPanelSc2.search.setOnClickListener {
+            if (rightPanel.binding.rightPanelSc2.season.selectedItemPosition == 0) {
                 Toast.makeText(activity, "Please select a season", Toast.LENGTH_SHORT).show()
-            } else if (NavigationActivity.binding.rightPanelSc2.region.selectedItemPosition == 0) {
+            } else if (rightPanel.binding.rightPanelSc2.region.selectedItemPosition == 0) {
                 Toast.makeText(activity, "Please select a region", Toast.LENGTH_SHORT).show()
-            } else if (NavigationActivity.binding.rightPanelSc2.league.selectedItemPosition == 0) {
+            } else if (rightPanel.binding.rightPanelSc2.league.selectedItemPosition == 0) {
                 Toast.makeText(activity, "Please select a league", Toast.LENGTH_SHORT).show()
-            } else if (NavigationActivity.binding.rightPanelSc2.league.selectedItem == "Grandmaster" && !v1Toggle) {
+            } else if (rightPanel.binding.rightPanelSc2.league.selectedItem == "Grandmaster" && !v1Toggle) {
                 Toast.makeText(activity, "Grandmaster league can only be 1v1", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                viewModel.seasonId = NavigationActivity.binding.rightPanelSc2.season.selectedItem.toString()
+                viewModel.seasonId = rightPanel.binding.rightPanelSc2.season.selectedItem.toString()
                     .toInt()
-                viewModel.leagueString = NavigationActivity.binding.rightPanelSc2.league.selectedItem.toString()
-                when (NavigationActivity.binding.rightPanelSc2.region.selectedItem) {
+                viewModel.leagueString = rightPanel.binding.rightPanelSc2.league.selectedItem.toString()
+                when (rightPanel.binding.rightPanelSc2.region.selectedItem) {
                     "US" -> regionId = 1
                     "EU" -> regionId = 2
                     "KR",
                     "TW" -> regionId = 3
                 }
-                region = NavigationActivity.binding.rightPanelSc2.region.selectedItem.toString()
+                region = rightPanel.binding.rightPanelSc2.region.selectedItem.toString()
                 if (randomToggle) {
                     viewModel.teamType = 1
                 } else {
@@ -291,7 +296,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
                     adapter = LeaderboardAdapter(listOf(), requireContext(), currentPlayerCountRank)
                 }
                 viewModel.downloadLeague(region)
-                NavigationActivity.binding.overlappingPanel.closePanels()
+                rightPanel.binding.overlappingPanel.closePanels()
             }
         }
     }
@@ -348,6 +353,14 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener {
             Log.e("Error", "Couldn't filter leaderboards", e)
         }
         return false
+    }
+
+    override fun onBackStackChanged() {
+        if (requireActivity().supportFragmentManager.fragments.last().tag == this.tag) {
+            rightPanel.selectRightPanel(RightPanelState.Sc2Leaderboard)
+        } else {
+            rightPanel.selectRightPanel(RightPanelState.NewsSelection)
+        }
     }
 
 

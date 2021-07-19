@@ -39,29 +39,29 @@ class MenuAdapter(private val list: ArrayList<MenuItem>, private val context: Co
 
     override fun getItemCount(): Int = list.size
 
-    fun hideSubMenu(item: MenuItem) {
-        val first = list.indexOfFirst { it.parent == item.title }
-        val itemCount = list.filter { it.parent == item.title }.size
-        if (list.any { it.parent == item.title }) {
-            list.removeAll {
-                val contains = it.parent == item.title
-                if (contains) {
-                    hiddenItems.add(it)
-                }
-                contains
+    fun toggleSubMenu(toggle: Boolean, item: MenuItem) {
+        if (toggle) {
+            list.addAll(list.indexOf(list.find { it.title == item.title }) + 1, hiddenItems.filter { it.parent == item.title })
+            hiddenItems.removeAll {
+                it.parent == item.title
             }
-            notifyItemRangeRemoved(first, itemCount)
+            val first = list.indexOfFirst { it.parent == item.title }
+            val itemCount = list.filter { it.parent == item.title }.size
+            notifyItemRangeInserted(first, itemCount)
+        } else {
+            val first = list.indexOfFirst { it.parent == item.title }
+            val itemCount = list.filter { it.parent == item.title }.size
+            if (list.any { it.parent == item.title }) {
+                list.removeAll {
+                    val contains = it.parent == item.title
+                    if (contains) {
+                        hiddenItems.add(it)
+                    }
+                    contains
+                }
+                notifyItemRangeRemoved(first, itemCount)
+            }
         }
-    }
 
-    fun showSubMenu(item: MenuItem) {
-        list.addAll(list.indexOf(list.find { it.title == item.title }) + 1, hiddenItems.filter { it.parent == item.title })
-        hiddenItems.removeAll {
-            it.parent == item.title
-        }
-        val first = list.indexOfFirst { it.parent == item.title }
-        val itemCount = list.filter { it.parent == item.title }.size
-        notifyItemRangeInserted(first, itemCount)
     }
-
 }
