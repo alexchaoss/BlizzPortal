@@ -36,7 +36,7 @@ class AffixesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
 
     fun downloadSpecializations(id: Int) {
         CoroutineScope(Dispatchers.Default).launch {
-            val response = RetroClient.getWoWClient()
+            val response = RetroClient.getWoWClient(context)
                 .getMythicKeystoneAffixMedia(id, "static-${NetworkUtils.region}")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

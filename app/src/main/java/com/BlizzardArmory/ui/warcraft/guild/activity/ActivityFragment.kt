@@ -16,12 +16,10 @@ import com.BlizzardArmory.databinding.WowGuildActivityBinding
 import com.BlizzardArmory.model.warcraft.guild.Guild
 import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
-import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
+import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -66,18 +64,12 @@ class ActivityFragment : Fragment() {
         binding.loadingCircle.visibility = View.VISIBLE
 
         setObservers()
-        viewModel.getBnetParams().value =
-            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
+        viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
 
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-            viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
-            viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
-        })
-
         viewModel.getGuildSummary().observe(viewLifecycleOwner, {
             binding.name.text = it.name
             binding.realm.text = it.realm.name

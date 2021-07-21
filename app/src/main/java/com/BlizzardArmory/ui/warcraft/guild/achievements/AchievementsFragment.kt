@@ -12,8 +12,6 @@ import androidx.fragment.app.viewModels
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.ParentCategoryEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -84,16 +82,10 @@ class AchievementsFragment : Fragment() {
         }
 
         setObservers()
-        viewModel.getBnetParams().value =
-            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-        })
-
         viewModel.getAllAchievements().observe(viewLifecycleOwner, {
             viewModel.downloadGuildAchivements(realm!!, guildName!!, region!!)
         })

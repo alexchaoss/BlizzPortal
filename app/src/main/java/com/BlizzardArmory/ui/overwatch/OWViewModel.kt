@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.overwatch
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
-class OWViewModel : BaseViewModel() {
+class OWViewModel(application: Application) : BaseViewModel(application) {
 
     private val TIME_PLAYED = "Time Played"
     private val GAMES_WON = "Games Won"
@@ -77,7 +78,7 @@ class OWViewModel : BaseViewModel() {
     fun downloadAccountInformation(username: String, platform: String) {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getOWClient()
+            val response = RetroClient.getOWClient(getApplication())
                 .getOWProfile(NetworkUtils.getOWProfile(username, platform))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

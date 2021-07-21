@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.reputations
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +18,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class ReputationsViewModel : BaseViewModel() {
+class ReputationsViewModel(application: Application) : BaseViewModel(application) {
 
     lateinit var character: String
     lateinit var realm: String
@@ -44,7 +45,7 @@ class ReputationsViewModel : BaseViewModel() {
 
     fun downloadReputationsPlusParentInfo() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getReputationPlusParentInfo()
+            val response = RetroClient.getAPIClient(getApplication()).getReputationPlusParentInfo()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     reputationsWithParentInfo.value = response.body()
@@ -59,10 +60,9 @@ class ReputationsViewModel : BaseViewModel() {
 
     private fun downloadReputations() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getReputations(
+            val response = RetroClient.getWoWClient(getApplication()).getReputations(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {

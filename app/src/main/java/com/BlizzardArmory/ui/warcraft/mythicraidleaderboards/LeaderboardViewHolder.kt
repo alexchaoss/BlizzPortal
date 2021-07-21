@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.warcraft.mythicraidleaderboard
+package com.BlizzardArmory.ui.warcraft.mythicraidleaderboards
 
 import android.content.Context
 import android.graphics.Color

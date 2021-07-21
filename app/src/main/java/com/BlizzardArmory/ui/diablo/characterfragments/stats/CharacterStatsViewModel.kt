@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.diablo.characterfragments.stats
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
@@ -14,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class CharacterStatsViewModel : BaseViewModel() {
+class CharacterStatsViewModel(application: Application) : BaseViewModel(application) {
 
     private var characterInformation: MutableLiveData<CharacterInformation> = MutableLiveData()
 
@@ -32,7 +33,7 @@ class CharacterStatsViewModel : BaseViewModel() {
         this.selectedRegion = selectedRegion
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client().getD3Hero(
+            val response = RetroClient.getD3Client(getApplication()).getD3Hero(
                 battletag,
                 id,
                 battlenetOAuth2Helper!!.accessToken,

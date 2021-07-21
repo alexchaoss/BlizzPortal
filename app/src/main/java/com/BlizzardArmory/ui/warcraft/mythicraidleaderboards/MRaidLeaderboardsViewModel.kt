@@ -1,5 +1,6 @@
-package com.BlizzardArmory.ui.warcraft.mythicraidleaderboard
+package com.BlizzardArmory.ui.warcraft.mythicraidleaderboards
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.mythicraid.Entries
@@ -13,7 +14,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class MRaidLeaderboardsViewModel : BaseViewModel() {
+class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(application) {
 
     private var entries: MutableLiveData<List<Entries>> = MutableLiveData()
     private var tempEntries: MutableList<Entries> = mutableListOf()
@@ -26,7 +27,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
         tempEntries.clear()
         val job = coroutineScope.launch {
             val job1 = coroutineScope.launch {
-                val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
+                val response = RetroClient.getWoWClient(getApplication()).getMythicRaidLeaderboards(
                     parseRaidName(raid), "horde",
                     "dynamic-" + NetworkUtils.region)
                 withContext(Dispatchers.Main) {
@@ -43,7 +44,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
             job1.join()
 
             val job2 = coroutineScope.launch {
-                val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
+                val response = RetroClient.getWoWClient(getApplication()).getMythicRaidLeaderboards(
                     parseRaidName(raid), "alliance",
                     "dynamic-" + NetworkUtils.region)
                 withContext(Dispatchers.Main) {
@@ -69,7 +70,7 @@ class MRaidLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadLeaderboard(raid: String, faction: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getMythicRaidLeaderboards(
+            val response = RetroClient.getWoWClient(getApplication()).getMythicRaidLeaderboards(
                 parseRaidName(raid), faction.lowercase(Locale.getDefault()),
                 "dynamic-" + NetworkUtils.region)
             withContext(Dispatchers.Main) {

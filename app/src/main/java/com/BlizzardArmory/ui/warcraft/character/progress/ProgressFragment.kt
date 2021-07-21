@@ -17,8 +17,6 @@ import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowProgressFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -75,16 +73,11 @@ class ProgressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObservers()
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.downloadEncounterInformation()
     }
 
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-            viewModel.downloadEncounterInformation()
-        })
-
         viewModel.getEncounters().observe(viewLifecycleOwner, { encounters ->
             if (encounters.expansions != null) {
                 setAdapter(encounters.expansions.map { it.expansion.name }

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.progress
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +16,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class ProgressViewModel : BaseViewModel() {
+class ProgressViewModel(application: Application) : BaseViewModel(application) {
 
     lateinit var character: String
     lateinit var realm: String
@@ -29,10 +30,9 @@ class ProgressViewModel : BaseViewModel() {
 
     fun downloadEncounterInformation() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getEncounters(
+            val response = RetroClient.getWoWClient(getApplication()).getEncounters(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {

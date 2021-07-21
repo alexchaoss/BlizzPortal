@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.diablo.characterfragments.gear
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.items.Item
@@ -14,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class CharacterGearViewModel : BaseViewModel() {
+class CharacterGearViewModel(application: Application) : BaseViewModel(application) {
 
     private var itemsInformation: MutableLiveData<Items> = MutableLiveData()
     private var itemsInfoSetup: MutableLiveData<Boolean> = MutableLiveData()
@@ -57,7 +58,7 @@ class CharacterGearViewModel : BaseViewModel() {
         this.id = id
         this.selectedRegion = selectedRegion
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client()
+            val response = RetroClient.getD3Client(getApplication())
                 .getHeroItems(battletag, id, battlenetOAuth2Helper!!.accessToken,
                     selectedRegion.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {

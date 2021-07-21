@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.account
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.account.Account
@@ -14,7 +15,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
-class AccountViewModel : BaseViewModel() {
+class AccountViewModel(application: Application) : BaseViewModel(application) {
 
     private var characters: MutableLiveData<Account> = MutableLiveData()
 
@@ -25,7 +26,7 @@ class AccountViewModel : BaseViewModel() {
     fun downloadWoWCharacters() {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
+            val response = RetroClient.getWoWClient(getApplication())
                 .getAccount(battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

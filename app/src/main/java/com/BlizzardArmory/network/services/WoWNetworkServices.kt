@@ -19,6 +19,7 @@ import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.index.Sea
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.period.Period
 import com.BlizzardArmory.model.warcraft.mythicraid.MythicRaidLeaderboard
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
+import com.BlizzardArmory.model.warcraft.pvp.leaderboards.season.SeasonIndex
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.model.warcraft.realm.Realms
@@ -35,7 +36,6 @@ interface WoWNetworkServices {
     @GET("/data/wow/realm/index")
     suspend fun getRealmIndex(
         @Query("namespace") namespace: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Realms>
@@ -83,7 +83,6 @@ interface WoWNetworkServices {
         @Path("realmSlug") realmSlug: String,
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Guild>
@@ -93,7 +92,6 @@ interface WoWNetworkServices {
         @Path("realmSlug") realmSlug: String,
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<ActivitiesInformation>
@@ -103,7 +101,6 @@ interface WoWNetworkServices {
         @Path("realmSlug") realmSlug: String,
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Roster>
@@ -113,7 +110,6 @@ interface WoWNetworkServices {
         @Path("realmSlug") realmSlug: String,
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<AchievementsInformation>
@@ -177,13 +173,28 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<com.BlizzardArmory.model.warcraft.mythicplusleaderboards.affixes.Media>
 
+    @GET("/data/wow/pvp-season/index")
+    suspend fun getPvPSeasonIndex(
+        @Query("namespace") namespace: String,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<SeasonIndex>
+
+    @GET("/data/wow/pvp-season/{pvpSeasonId}/pvp-leaderboard/{pvpBracket}")
+    suspend fun getPvPLeaderboard(
+        @Path("pvpSeasonId") pvpSeasonId: Int,
+        @Path("pvpBracket") pvpBracket: String,
+        @Query("namespace") namespace: String,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<com.BlizzardArmory.model.warcraft.pvp.leaderboards.Leaderboard>
+
     //Profile
 
     @GET("/profile/wow/character/{realm}/{character}/character-media")
     suspend fun getMedia(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Media>
@@ -192,7 +203,6 @@ interface WoWNetworkServices {
     suspend fun getCharacterAchievements(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Achievements>
@@ -201,7 +211,6 @@ interface WoWNetworkServices {
     suspend fun getEncounters(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<EncountersInformation>
@@ -210,7 +219,6 @@ interface WoWNetworkServices {
     suspend fun getEquippedItems(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Equipment>
@@ -219,7 +227,6 @@ interface WoWNetworkServices {
     suspend fun getStats(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Statistic>
@@ -228,7 +235,6 @@ interface WoWNetworkServices {
     suspend fun getSpecs(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Talents>
@@ -238,7 +244,6 @@ interface WoWNetworkServices {
     suspend fun getCharacter(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<CharacterSummary>
@@ -254,7 +259,6 @@ interface WoWNetworkServices {
     suspend fun getPvPSummary(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<PvPSummary>
@@ -264,7 +268,6 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Path("BRACKET") bracket: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<BracketStatistics>
@@ -273,7 +276,6 @@ interface WoWNetworkServices {
     suspend fun getReputations(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Reputation>
@@ -282,7 +284,6 @@ interface WoWNetworkServices {
     suspend fun getSoulbinds(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<SoulbindInformation>

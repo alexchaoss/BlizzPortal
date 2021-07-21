@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.starcraft.leaderboard
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.starcraft.CurrentSeason
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 
-class SC2LeaderboardViewModel : BaseViewModel() {
+class SC2LeaderboardViewModel(application: Application) : BaseViewModel(application) {
 
     private var league: MutableLiveData<League> = MutableLiveData()
     private var season: MutableLiveData<CurrentSeason> = MutableLiveData()
@@ -39,7 +40,7 @@ class SC2LeaderboardViewModel : BaseViewModel() {
 
     fun downloadLeaderboard(regionId: Int, ladderId: Int, region: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client()
+            val response = RetroClient.getSc2Client(getApplication())
                 .getSc2LadderLeaderboard(parseRegionId(regionId), ladderId, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -58,7 +59,7 @@ class SC2LeaderboardViewModel : BaseViewModel() {
 
     fun downloadLeague(region: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client()
+            val response = RetroClient.getSc2Client(getApplication())
                 .getSc2League(seasonId, getQueueAsInt(), teamType, getLeagueAsInt(), region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -75,7 +76,8 @@ class SC2LeaderboardViewModel : BaseViewModel() {
     fun downloadCurrentSeason(regionId: Int, region: String) {
         val job = coroutineScope.launch {
             val response =
-                RetroClient.getSc2Client().getSc2CurrentSeason(parseRegionId(regionId), region)
+                RetroClient.getSc2Client(getApplication())
+                    .getSc2CurrentSeason(parseRegionId(regionId), region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     season.value = response.body()

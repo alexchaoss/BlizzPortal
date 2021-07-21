@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.warcraft.guild.activity
 
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.guild.Guild
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 
-class ActivityViewModel : BaseViewModel() {
+class ActivityViewModel(application: Application) : BaseViewModel(application) {
 
     private val guildSummary: MutableLiveData<Guild> = MutableLiveData()
     private val guildActivity: MutableLiveData<ActivitiesInformation> = MutableLiveData()
@@ -39,8 +40,8 @@ class ActivityViewModel : BaseViewModel() {
 
     fun downloadGuildSummary(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getGuildSummary(
-                realm, name, "profile-$region", battlenetOAuth2Helper?.accessToken!!, region)
+            val response = RetroClient.getWoWClient(getApplication()).getGuildSummary(
+                realm, name, "profile-$region", region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildSummary.value = response.body()
@@ -57,7 +58,7 @@ class ActivityViewModel : BaseViewModel() {
 
         val job1 = coroutineScope.launch {
             try {
-                val response = RetroClient.getWoWClient()
+                val response = RetroClient.getWoWClient(getApplication())
                     .getGuildCrestBorder(guildSummary.value?.crest?.border?.id!!)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
@@ -71,7 +72,7 @@ class ActivityViewModel : BaseViewModel() {
         jobs.add(job1)
         val job2 = coroutineScope.launch {
             try {
-                val response = RetroClient.getWoWClient()
+                val response = RetroClient.getWoWClient(getApplication())
                     .getGuildCrestEmblem(guildSummary.value?.crest?.emblem?.id!!)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
@@ -89,8 +90,8 @@ class ActivityViewModel : BaseViewModel() {
 
     fun downloadGuildActivity(realm: String, name: String, region: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getGuildActivity(
-                realm, name, "profile-$region", battlenetOAuth2Helper?.accessToken!!, region)
+            val response = RetroClient.getWoWClient(getApplication()).getGuildActivity(
+                realm, name, "profile-$region", region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildActivity.value = response.body()

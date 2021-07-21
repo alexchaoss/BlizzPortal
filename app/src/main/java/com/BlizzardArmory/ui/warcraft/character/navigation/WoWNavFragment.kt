@@ -115,6 +115,10 @@ class WoWNavFragment : Fragment() {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
+                activity?.supportFragmentManager?.findFragmentByTag("pvpleaderboard") != null -> {
+                    ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    activity?.supportFragmentManager?.popBackStack()
+                }
                 else -> {
                     NewsListFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)

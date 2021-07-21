@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.news
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,7 +20,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NewsListViewModel : BaseViewModel() {
+class NewsListViewModel(application: Application) : BaseViewModel(application) {
 
     private var downloaded: MutableLiveData<Boolean> = MutableLiveData()
     private var showMore: MutableLiveData<Boolean> = MutableLiveData()

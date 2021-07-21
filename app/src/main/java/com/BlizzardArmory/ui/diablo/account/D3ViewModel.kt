@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.diablo.account
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.account.AccountInformation
@@ -14,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class D3ViewModel : BaseViewModel() {
+class D3ViewModel(application: Application) : BaseViewModel(application) {
 
     private var profile: MutableLiveData<AccountInformation> = MutableLiveData()
     private lateinit var battleTag: String
@@ -29,7 +30,7 @@ class D3ViewModel : BaseViewModel() {
         this.selectedRegion = selectedRegion
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client().getD3Profile(
+            val response = RetroClient.getD3Client(getApplication()).getD3Profile(
                 battleTag,
                 battlenetOAuth2Helper!!.accessToken,
                 selectedRegion.lowercase(Locale.getDefault()),

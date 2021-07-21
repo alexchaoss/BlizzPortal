@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.starcraft.profile
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +18,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class SC2ViewModel : BaseViewModel() {
+class SC2ViewModel(application: Application) : BaseViewModel(application) {
 
     private var accountInformation: MutableLiveData<List<Player>> = MutableLiveData()
     private var profile: MutableLiveData<Profile> = MutableLiveData()
@@ -39,7 +40,7 @@ class SC2ViewModel : BaseViewModel() {
     fun downloadAccountInformation() {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client()
+            val response = RetroClient.getSc2Client(getApplication())
                 .getSc2Player(NavigationActivity.userInformation!!.userID, battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -58,7 +59,7 @@ class SC2ViewModel : BaseViewModel() {
     fun downloadProfile(regionId: Int, realmId: Int, profileId: String) {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client()
+            val response = RetroClient.getSc2Client(getApplication())
                 .getSc2Profile(parseRegionId(regionId), realmId, profileId, battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

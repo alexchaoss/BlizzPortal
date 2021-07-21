@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.auth
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +14,7 @@ import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.util.*
 
-class AuthorizationTokenViewModel : BaseViewModel() {
+class AuthorizationTokenViewModel(application: Application) : BaseViewModel(application) {
 
     private var handled = false
     private var hasLoggedIn: MutableLiveData<Boolean> = MutableLiveData()
@@ -63,7 +64,7 @@ class AuthorizationTokenViewModel : BaseViewModel() {
         Log.i(BattlenetConstants.TAG, "retrieveAndStoreAccessToken for code $authorizationCode")
         val token = TokenResponse()
         val job = coroutineScope.launch {
-            val response = RetroClient.getGeneralClient().getAccessToken(
+            val response = RetroClient.getGeneralClient(getApplication()).getAccessToken(
                 authorizationCode,
                 getBnetParams().value!!.zone.lowercase(Locale.getDefault()),
                 getBnetParams().value!!.rederictUri

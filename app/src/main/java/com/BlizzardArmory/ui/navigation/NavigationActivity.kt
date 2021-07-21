@@ -42,7 +42,8 @@ import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFragment
-import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
+import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
+import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -102,8 +103,7 @@ class NavigationActivity : LocalizationActivity(),
 
         errorMessage = ErrorMessages(this.resources)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        viewModel.getBnetParams().value =
-            this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         getUserNewsPreferences()
         setUserNews()
@@ -156,10 +156,11 @@ class NavigationActivity : LocalizationActivity(),
         menuList.add(MenuItem(true, "", resources.getString(R.string.home), R.drawable.ic_baseline_home_24, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.world_of_warcraft), R.drawable.wow_icon, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.raid_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.mplus_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_character), R.drawable.rep_search, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_guild), R.drawable.rep_search, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.raid_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.mplus_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.pvp_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.diablo_3), R.drawable.diablo3_icon, false))
         menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
@@ -283,24 +284,35 @@ class NavigationActivity : LocalizationActivity(),
                 binding.rightPanelSc2.root.visibility = View.GONE
                 binding.rightPanelD3.root.visibility = View.GONE
                 binding.rightPanelWowMplus.root.visibility = View.GONE
+                binding.rightPanelWowPvp.root.visibility = View.GONE
             }
             RightPanelState.D3Leaderboard -> {
                 binding.rightPanelGames.root.visibility = View.GONE
                 binding.rightPanelSc2.root.visibility = View.GONE
                 binding.rightPanelD3.root.visibility = View.VISIBLE
                 binding.rightPanelWowMplus.root.visibility = View.GONE
+                binding.rightPanelWowPvp.root.visibility = View.GONE
             }
             RightPanelState.Sc2Leaderboard -> {
                 binding.rightPanelGames.root.visibility = View.GONE
                 binding.rightPanelSc2.root.visibility = View.VISIBLE
                 binding.rightPanelD3.root.visibility = View.GONE
                 binding.rightPanelWowMplus.root.visibility = View.GONE
+                binding.rightPanelWowPvp.root.visibility = View.GONE
             }
             RightPanelState.WoWMPlusLeaderboard -> {
                 binding.rightPanelGames.root.visibility = View.GONE
                 binding.rightPanelSc2.root.visibility = View.GONE
                 binding.rightPanelD3.root.visibility = View.GONE
                 binding.rightPanelWowMplus.root.visibility = View.VISIBLE
+                binding.rightPanelWowPvp.root.visibility = View.GONE
+            }
+            RightPanelState.WoWPvPLeaderboard -> {
+                binding.rightPanelGames.root.visibility = View.GONE
+                binding.rightPanelSc2.root.visibility = View.GONE
+                binding.rightPanelD3.root.visibility = View.GONE
+                binding.rightPanelWowMplus.root.visibility = View.GONE
+                binding.rightPanelWowPvp.root.visibility = View.VISIBLE
             }
         }
     }
@@ -627,6 +639,16 @@ class NavigationActivity : LocalizationActivity(),
                 supportFragmentManager.beginTransaction()
                     .add(R.id.fragment, fragment, "mplusleaderboard")
                     .addToBackStack("mplus_leaderboard").commit()
+                supportFragmentManager.executePendingTransactions()
+                binding.overlappingPanel.closePanels()
+            }
+            resources.getString(R.string.pvp_leaderboards) -> {
+                toggleFavoriteButton(FavoriteState.Hidden)
+                fragment = PvpLeaderboardsFragment()
+                resetBackStack()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment, fragment, "pvpleaderboard")
+                    .addToBackStack("pvp_leaderboard").commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
             }

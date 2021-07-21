@@ -82,11 +82,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     private fun downloadMedia() {
         val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
         CoroutineScope(Dispatchers.IO).launch {
-            val response = RetroClient.getWoWClient().getMedia(
-                character?.name?.lowercase(Locale.getDefault())!!,
-                character?.realm?.slug!!,
-                bnOAuth2Helper.accessToken
-            )
+            val response = RetroClient.getWoWClient(context)
+                .getMedia(character?.name?.lowercase(Locale.getDefault())!!, character?.realm?.slug!!)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val media = response.body()!!

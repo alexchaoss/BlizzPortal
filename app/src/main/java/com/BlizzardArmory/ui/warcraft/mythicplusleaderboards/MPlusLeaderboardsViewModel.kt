@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.mythicplusleaderboards
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.expansion.Expansion
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 
-class MPlusLeaderboardsViewModel : BaseViewModel() {
+class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(application) {
 
     private var seasonIndex: MutableLiveData<SeasonsIndex> = MutableLiveData()
     private var season: MutableLiveData<Season> = MutableLiveData()
@@ -49,7 +50,8 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadSpecializations() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getAllPlayableSpecializations()
+            val response = RetroClient.getAPIClient(getApplication())
+                .getAllPlayableSpecializations()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     specs.value = response.body()!!
@@ -65,7 +67,7 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
         val expansions = mutableListOf<Expansion>()
         for (expansionId in 6..8) {
             val job = coroutineScope.launch {
-                val response = RetroClient.getAPIClient()
+                val response = RetroClient.getAPIClient(getApplication())
                     .getExpansion(NetworkUtils.getExpansionFromRIO(expansionId))
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
@@ -84,7 +86,7 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadSeasonIndex() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
+            val response = RetroClient.getWoWClient(getApplication())
                 .getMythicKeystoneSeasonsIndex("dynamic-" + NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -100,7 +102,7 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadSeason(seasonId: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
+            val response = RetroClient.getWoWClient(getApplication())
                 .getMythicKeystoneSeason(seasonId, "dynamic-" + NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -116,7 +118,7 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     fun downloadMythicKeystoneLeaderboardIndex(connectedRealm: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
+            val response = RetroClient.getWoWClient(getApplication())
                 .getMythicKeystoneLeaderboardsIndex(connectedRealm, "dynamic-" + NetworkUtils.region, NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -134,7 +136,7 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
         val tempLeaderboards = mutableListOf<Leaderboard>()
         for (period in periods) {
             val job = coroutineScope.launch {
-                val response = RetroClient.getWoWClient()
+                val response = RetroClient.getWoWClient(getApplication())
                     .getMythicKeystoneLeaderboard(connectedRealm, dungeonId, period.id, "dynamic-${region.lowercase()}", region.lowercase())
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {

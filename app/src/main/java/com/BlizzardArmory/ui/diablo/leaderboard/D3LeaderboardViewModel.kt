@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.diablo.leaderboard
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.data.common.Leaderboard
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class D3LeaderboardViewModel : BaseViewModel() {
+class D3LeaderboardViewModel(application: Application) : BaseViewModel(application) {
 
     private var eraIndex: MutableLiveData<EraIndex> = MutableLiveData()
     private var seasonIndex: MutableLiveData<SeasonIndex> = MutableLiveData()
@@ -47,7 +48,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
 
     fun downloadSeasonIndex() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client().getSeasonIndex()
+            val response = RetroClient.getD3Client(getApplication()).getSeasonIndex()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     seasonIndex.value = response.body()
@@ -66,7 +67,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
 
     fun downloadSeason(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client()
+            val response = RetroClient.getD3Client(getApplication())
                 .getSeasonLeaderboard(id.toInt(), leaderboardString, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -86,7 +87,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
 
     fun downloadEraIndex() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client()
+            val response = RetroClient.getD3Client(getApplication())
                 .getEraIndex()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -105,7 +106,7 @@ class D3LeaderboardViewModel : BaseViewModel() {
 
     fun downloadEra(id: String, leaderboardString: String, region: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client()
+            val response = RetroClient.getD3Client(getApplication())
                 .getEraLeaderboard(id.toInt(), leaderboardString, region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

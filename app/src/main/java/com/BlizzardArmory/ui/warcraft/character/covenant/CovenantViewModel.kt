@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.covenant
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
-class CovenantViewModel : BaseViewModel() {
+class CovenantViewModel(application: Application) : BaseViewModel(application) {
 
     lateinit var character: String
     lateinit var realm: String
@@ -56,10 +57,9 @@ class CovenantViewModel : BaseViewModel() {
 
     fun downloadCharacterSoulbinds() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getSoulbinds(
+            val response = RetroClient.getWoWClient(getApplication()).getSoulbinds(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
@@ -75,7 +75,7 @@ class CovenantViewModel : BaseViewModel() {
 
     fun downloadTechTree(id: Int, soulbindId: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
+            val response = RetroClient.getWoWClient(getApplication())
                 .getTechTree(id, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -94,7 +94,8 @@ class CovenantViewModel : BaseViewModel() {
 
     fun downloadCovenantClassSpell(characterClass: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getCovenantSpells(characterClass)
+            val response = RetroClient.getAPIClient(getApplication())
+                .getCovenantSpells(characterClass)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     covenantClassSpells.value = response.body()
@@ -108,7 +109,7 @@ class CovenantViewModel : BaseViewModel() {
 
     fun downloadCovenantSpell(covenantId: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient()
+            val response = RetroClient.getAPIClient(getApplication())
                 .getCovenantSpells(covenantId)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -123,7 +124,8 @@ class CovenantViewModel : BaseViewModel() {
 
     fun downloadTechTalents(soulbindId: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getTechTalentsWithIcon(soulbindId)
+            val response = RetroClient.getAPIClient(getApplication())
+                .getTechTalentsWithIcon(soulbindId)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     talentMap[soulbindId] = response.body()!!

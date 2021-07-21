@@ -1,9 +1,10 @@
 package com.BlizzardArmory.ui.diablo.characterfragments.skill
 
+import android.app.Application
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.BaseViewModel
 
-class CharacterSkillViewModel : BaseViewModel() {
+class CharacterSkillViewModel(application: Application) : BaseViewModel(application) {
 
     fun getSmallRuneIcon(type: String): String {
         when (type) {

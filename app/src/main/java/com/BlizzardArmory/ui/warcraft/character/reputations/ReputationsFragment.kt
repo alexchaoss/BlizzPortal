@@ -18,8 +18,6 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowRepFragmentBinding
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -79,15 +77,10 @@ class ReputationsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObservers()
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.downloadReputationsPlusParentInfo()
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-            viewModel.downloadReputationsPlusParentInfo()
-        })
-
         viewModel.getReputations().observe(viewLifecycleOwner, {
             val xpacs = viewModel.getReputationsWithParentInfo().value!!.filter { expansionsId.contains(it.id) }
                 .sortedBy { expansionsId.indexOf(it.id) }.map { it.name }

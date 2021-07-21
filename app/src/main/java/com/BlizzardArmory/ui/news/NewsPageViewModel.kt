@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.news
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.news.NewsPage
@@ -9,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class NewsPageViewModel : BaseViewModel() {
+class NewsPageViewModel(application: Application) : BaseViewModel(application) {
 
     private var newsPage: MutableLiveData<NewsPage> = MutableLiveData()
 

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.achievements
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class AchievementViewModel : BaseViewModel() {
+class AchievementViewModel(application: Application) : BaseViewModel(application) {
 
     lateinit var character: String
     lateinit var realm: String
@@ -45,7 +46,7 @@ class AchievementViewModel : BaseViewModel() {
 
     fun downloadAchievementInformation() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getAllAchievements()
+            val response = RetroClient.getAPIClient(getApplication()).getAllAchievements()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     allAchievements.value = response.body()
@@ -59,10 +60,9 @@ class AchievementViewModel : BaseViewModel() {
 
     fun downloadCharacterAchievements() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getCharacterAchievements(
+            val response = RetroClient.getWoWClient(getApplication()).getCharacterAchievements(
                 character,
                 realm,
-                battlenetOAuth2Helper?.accessToken!!,
                 region,
             )
             withContext(Dispatchers.Main) {
@@ -78,7 +78,7 @@ class AchievementViewModel : BaseViewModel() {
 
     fun downloadCategories() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getAchievementCategories()
+            val response = RetroClient.getAPIClient(getApplication()).getAchievementCategories()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     categories.value = response.body()

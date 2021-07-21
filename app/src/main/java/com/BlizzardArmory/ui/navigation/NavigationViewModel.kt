@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.navigation
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class NavigationViewModel : BaseViewModel() {
+class NavigationViewModel(application: Application) : BaseViewModel(application) {
 
     private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> = MutableLiveData()
     private var userInformation: MutableLiveData<UserInformation> = MutableLiveData()
@@ -68,7 +69,7 @@ class NavigationViewModel : BaseViewModel() {
 
     fun downloadUserInfo() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getGeneralClient().getUserInfo(
+            val response = RetroClient.getGeneralClient(getApplication()).getUserInfo(
                 battlenetOAuth2Helper?.accessToken,
                 NetworkUtils.region
             )
@@ -86,7 +87,8 @@ class NavigationViewModel : BaseViewModel() {
 
     fun initWoWServer() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getGeneralClient().initWoWServer(NetworkUtils.WOW_SERVER)
+            val response = RetroClient.getGeneralClient(getApplication())
+                .initWoWServer(NetworkUtils.WOW_SERVER)
             withContext(Dispatchers.Main) {
                 Log.i("init wow server", response.message())
             }
@@ -97,7 +99,7 @@ class NavigationViewModel : BaseViewModel() {
     fun getConnectedRealms() {
         val query = Query()
         val jobUS = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getConnectedRealms(
+            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
                 "dynamic-us",
                 query,
                 "us"
@@ -112,7 +114,7 @@ class NavigationViewModel : BaseViewModel() {
         }
         jobs.add(jobUS)
         val jobEU = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getConnectedRealms(
+            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
                 "dynamic-eu",
                 query,
                 "eu",
@@ -127,7 +129,7 @@ class NavigationViewModel : BaseViewModel() {
         }
         jobs.add(jobEU)
         val jobKR = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getConnectedRealms(
+            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
                 "dynamic-kr",
                 query,
                 "kr"
@@ -142,7 +144,7 @@ class NavigationViewModel : BaseViewModel() {
         }
         jobs.add(jobKR)
         val jobTW = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getConnectedRealms(
+            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
                 "dynamic-tw",
                 query,
                 "tw"
@@ -161,7 +163,7 @@ class NavigationViewModel : BaseViewModel() {
 
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getMedia(
+            val response = RetroClient.getWoWClient(getApplication()).getMedia(
                 characterClicked.lowercase(Locale.getDefault()), characterRealm.lowercase(Locale.getDefault()),
                 battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault()),
             )

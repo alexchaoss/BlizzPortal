@@ -27,8 +27,6 @@ import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
@@ -127,16 +125,10 @@ class WoWCharacterFragment : Fragment() {
         gearImageView["MAIN_HAND"] = binding.mainHand
         gearImageView["OFF_HAND"] = binding.offHand
         setObservers()
-        viewModel.getBnetParams().value =
-            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        startDownloads()
     }
 
     fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-            startDownloads()
-        })
-
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             callErrorAlertDialog(it)
         })
@@ -660,6 +652,10 @@ class WoWCharacterFragment : Fragment() {
                             activity.supportFragmentManager.popBackStack()
                         }
                         activity.supportFragmentManager.findFragmentByTag("mplusleaderboard") != null -> {
+                            ActivityFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        activity.supportFragmentManager.findFragmentByTag("pvpleaderboard") != null -> {
                             ActivityFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }

@@ -19,8 +19,6 @@ import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
@@ -80,19 +78,13 @@ class PvPFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setObservers()
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
-
+        viewModel.downloadPvPSummary()
+        viewModel.download2v2Info()
+        viewModel.download3v3Info()
+        viewModel.downloadRBGInfo()
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-            viewModel.downloadPvPSummary()
-            viewModel.download2v2Info()
-            viewModel.download3v3Info()
-            viewModel.downloadRBGInfo()
-        })
-
         viewModel.geterrorBracket().observe(viewLifecycleOwner, {
             when (it) {
                 "rbg" -> binding.layoutrbg.alpha = 0.4f

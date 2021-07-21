@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.guild.achievements
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class AchievementViewModel : BaseViewModel() {
+class AchievementViewModel(application: Application) : BaseViewModel(application) {
 
     private val guildAchievements: MutableLiveData<AchievementsInformation> = MutableLiveData()
     private var categories: MutableLiveData<Categories> = MutableLiveData()
@@ -43,8 +44,9 @@ class AchievementViewModel : BaseViewModel() {
     fun downloadGuildAchivements(realm: String, name: String, region: String) {
         Log.i("TEST", "GUILD ACHIEVS")
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getGuildAchievements(realm, name,
-                "profile-$region", battlenetOAuth2Helper?.accessToken!!, region)
+            val response = RetroClient.getWoWClient(getApplication())
+                .getGuildAchievements(realm, name,
+                    "profile-$region", region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildAchievements.value = response.body()
@@ -56,7 +58,7 @@ class AchievementViewModel : BaseViewModel() {
 
     fun downloadAchievementInformation() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getAllAchievements()
+            val response = RetroClient.getAPIClient(getApplication()).getAllAchievements()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     allAchievements.value = response.body()
@@ -70,7 +72,7 @@ class AchievementViewModel : BaseViewModel() {
 
     fun downloadCategories() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getAchievementCategories()
+            val response = RetroClient.getAPIClient(getApplication()).getAchievementCategories()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     categories.value = response.body()

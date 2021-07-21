@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.armory
 
+import android.app.Application
 import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -25,7 +26,7 @@ import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import kotlin.collections.HashMap
 
-class WoWCharacterViewModel : BaseViewModel() {
+class WoWCharacterViewModel(application: Application) : BaseViewModel(application) {
 
     lateinit var character: String
     lateinit var realm: String
@@ -73,10 +74,9 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadCharacterSummary() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getCharacter(
+            val response = RetroClient.getWoWClient(getApplication()).getCharacter(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
@@ -96,10 +96,9 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadTalents() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getSpecs(
+            val response = RetroClient.getWoWClient(getApplication()).getSpecs(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
@@ -115,7 +114,7 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadTalentIconsInfo() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient()
+            val response = RetroClient.getAPIClient(getApplication())
                 .getTalentsWithIcon(characterSummary.value!!.characterClass.id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -130,10 +129,9 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadStats() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getStats(
+            val response = RetroClient.getWoWClient(getApplication()).getStats(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
@@ -149,10 +147,9 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadEquipment() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getEquippedItems(
+            val response = RetroClient.getWoWClient(getApplication()).getEquippedItems(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
@@ -168,10 +165,9 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadBackground() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient().getMedia(
+            val response = RetroClient.getWoWClient(getApplication()).getMedia(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken,
                 region.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
@@ -200,7 +196,7 @@ class WoWCharacterViewModel : BaseViewModel() {
             url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
 
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient()
+            val response = RetroClient.getWoWClient(getApplication())
                 .getDynamicEquipmentMedia(url, region.lowercase(Locale.getDefault()))
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.diablo.characterfragments.cube
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +17,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class CharacterCubeViewModel : BaseViewModel() {
+class CharacterCubeViewModel(application: Application) : BaseViewModel(application) {
 
     private val singleItem: MutableLiveData<SingleItem> = MutableLiveData()
     private lateinit var characterInformation: CharacterInformation
@@ -31,7 +32,7 @@ class CharacterCubeViewModel : BaseViewModel() {
             Log.i("Cube", characterInformation.legendaryPowers[i].tooltipParams)
             val endpoint = characterInformation.legendaryPowers[i].tooltipParams.replace("/item/", "")
             val job = coroutineScope.launch {
-                val response = RetroClient.getD3Client().getItem(endpoint)
+                val response = RetroClient.getD3Client(getApplication()).getItem(endpoint)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         singleItem.value = response.body()!!

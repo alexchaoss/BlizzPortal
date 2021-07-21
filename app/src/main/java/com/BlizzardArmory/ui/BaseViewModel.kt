@@ -1,9 +1,10 @@
 package com.BlizzardArmory.ui
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -15,7 +16,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-open class BaseViewModel : ViewModel() {
+open class BaseViewModel(application: Application) : AndroidViewModel(application) {
     var jobs = arrayListOf<Job>()
 
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->

@@ -14,8 +14,6 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.oauth.BattlenetConstants
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.*
 import com.bumptech.glide.Glide
@@ -101,14 +99,9 @@ class AchievementsFragment : Fragment() {
             setAchievementInformation()
         }
         setObservers()
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-        })
-
         viewModel.getAllAchievements().observe(viewLifecycleOwner, {
             val savedAchievs = Pair(System.currentTimeMillis(), it)
             prefs!!.edit()

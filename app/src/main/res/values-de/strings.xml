@@ -110,4 +110,7 @@
     <string name="vers">Vielseitigkeit</string>
     <string name="mplus_leaderboards">Mythic+ Leaderboards</string>
     <string name="realm">Realm</string>
+    <string name="horde">Horde</string>
+    <string name="alliance">Alliance</string>
+    <string name="pvp_leaderboards">PvP Leaderboards</string>
 </resources>

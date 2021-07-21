@@ -75,6 +75,11 @@
                 layout="@layout/wow_mplus_leaderboard_right_panel"
                 android:visibility="gone" />
 
+            <include
+                android:id="@+id/right_panel_wow_pvp"
+                layout="@layout/wow_pvp_leaderboard_right_panel"
+                android:visibility="gone" />
+
         </FrameLayout>
 
     </com.discord.panels.OverlappingPanelsLayout>
