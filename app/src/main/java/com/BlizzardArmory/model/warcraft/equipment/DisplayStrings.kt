@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class DisplayStrings(
 
-        @SerializedName("header")
-        var header: String,
+    @SerializedName("header")
+    var header: String,
 
-        @SerializedName("gold")
-        var gold: String,
+    @SerializedName("gold")
+    var gold: String,
 
-        @SerializedName("silver")
-        var silver: String,
+    @SerializedName("silver")
+    var silver: String,
 
-        @SerializedName("copper")
-        var copper: String
+    @SerializedName("copper")
+    var copper: String
 
 )

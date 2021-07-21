@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class Equipment(
 
-        @SerializedName("_links")
-        var links: Links,
+    @SerializedName("_links")
+    var links: Links,
 
-        @SerializedName("character")
-        var character: Character,
+    @SerializedName("character")
+    var character: Character,
 
-        @SerializedName("equipped_items")
-        var equippedItems: List<EquippedItem>,
+    @SerializedName("equipped_items")
+    var equippedItems: List<EquippedItem>,
 
-        @SerializedName("equipped_item_sets")
-        var equippedItemSets: List<EquippedItemSet>
+    @SerializedName("equipped_item_sets")
+    var equippedItemSets: List<EquippedItemSet>
 
 )

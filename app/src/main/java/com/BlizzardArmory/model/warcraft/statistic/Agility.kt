@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Agility(
 
-        @SerializedName("base")
-        var base: Int,
+    @SerializedName("base")
+    var base: Int,
 
-        @SerializedName("effective")
-        var effective: Int
+    @SerializedName("effective")
+    var effective: Int
 
 )

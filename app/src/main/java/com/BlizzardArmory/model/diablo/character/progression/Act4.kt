@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 data class Act4(
 
-        @SerializedName("completed")
-        var completed: Boolean,
+    @SerializedName("completed")
+    var completed: Boolean,
 
-        @SerializedName("completedQuests")
-        var completedQuests: List<Any>
+    @SerializedName("completedQuests")
+    var completedQuests: List<Any>
 )

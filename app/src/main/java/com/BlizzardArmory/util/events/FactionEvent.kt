@@ -9,7 +9,7 @@ class FactionEvent
  *
  * @param data the data
  */(
-        /**
-         * The Data.
-         */
-        var data: String)
+    /**
+     * The Data.
+     */
+    var data: String)

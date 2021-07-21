@@ -3,7 +3,7 @@
     <item android:id="@android:id/progress">
         <clip
             android:clipOrientation="vertical"
-            android:gravity="bottom"
-            android:drawable="@drawable/d3_progress_necro"></clip>
+            android:drawable="@drawable/d3_progress_necro"
+            android:gravity="bottom"></clip>
     </item>
 </layer-list>

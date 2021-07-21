@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Attributes(
 
-        @SerializedName("primary")
-        var primary: List<String>,
+    @SerializedName("primary")
+    var primary: List<String>,
 
-        @SerializedName("secondary")
-        var secondary: List<String>
+    @SerializedName("secondary")
+    var secondary: List<String>
 
 )

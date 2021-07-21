@@ -13,44 +13,44 @@ import java.util.*
 
 data class Combat(
 
-        @SerializedName("barrierDamageDone")
-        var barrierDamageDone: Double,
+    @SerializedName("barrierDamageDone")
+    var barrierDamageDone: Double,
 
-        @SerializedName("damageDone")
-        var damageDone: Double,
+    @SerializedName("damageDone")
+    var damageDone: Double,
 
-        @SerializedName("deaths")
-        var deaths: Double,
+    @SerializedName("deaths")
+    var deaths: Double,
 
-        @SerializedName("eliminations")
-        var eliminations: Double,
+    @SerializedName("eliminations")
+    var eliminations: Double,
 
-        @SerializedName("environmentalKills")
-        var environmentalKills: Double,
+    @SerializedName("environmentalKills")
+    var environmentalKills: Double,
 
-        @SerializedName("finalBlows")
-        var finalBlows: Double,
+    @SerializedName("finalBlows")
+    var finalBlows: Double,
 
-        @SerializedName("heroDamageDone")
-        var heroDamageDone: Double,
+    @SerializedName("heroDamageDone")
+    var heroDamageDone: Double,
 
-        @SerializedName("meleeFinalBlows")
-        var meleeFinalBlows: Double,
+    @SerializedName("meleeFinalBlows")
+    var meleeFinalBlows: Double,
 
-        @SerializedName("multikills")
-        var multikills: Double,
+    @SerializedName("multikills")
+    var multikills: Double,
 
-        @SerializedName("objectiveKills")
-        var objectiveKills: Double,
+    @SerializedName("objectiveKills")
+    var objectiveKills: Double,
 
-        @SerializedName("objectiveTime")
-        var objectiveTime: String,
+    @SerializedName("objectiveTime")
+    var objectiveTime: String,
 
-        @SerializedName("soloKills")
-        var soloKills: Double,
+    @SerializedName("soloKills")
+    var soloKills: Double,
 
-        @SerializedName("timeSpentOnFire")
-        var timeSpentOnFire: String
+    @SerializedName("timeSpentOnFire")
+    var timeSpentOnFire: String
 ) {
     val combat: HashMap<String, String>
         get() {

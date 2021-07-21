@@ -30,6 +30,7 @@ import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.state.FavoriteState
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.util.*
@@ -102,7 +103,7 @@ class OWFragment : Fragment() {
             binding.loadingCircle.visibility = View.GONE
             NetworkUtils.loading = false
             navigationActivity.favorite!!.setOnClickListener {
-                Toast.makeText(requireActivity(), "Can't add private profile to favorites", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Can't add private profile to favorites", Snackbar.LENGTH_SHORT)
                     .show()
             }
             showNoConnectionMessage(it)
@@ -182,7 +183,7 @@ class OWFragment : Fragment() {
                 profiles.profiles.removeAt(index)
                 prefs.edit().putString("ow-favorites", gson.toJson(profiles)).apply()
                 addToFavorites(profiles, prefs, gson, index)
-                Toast.makeText(requireActivity(), "Profile removed from favorites", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Profile removed from favorites", Snackbar.LENGTH_SHORT)
                     .show()
             }
         }
@@ -201,7 +202,7 @@ class OWFragment : Fragment() {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Full)
                 profiles.profiles.add(FavoriteProfile(platform!!, username!!, viewModel.getProfile().value!!))
                 prefs.edit().putString("ow-favorites", gson.toJson(profiles)).apply()
-                Toast.makeText(requireActivity(), "Profile added to favorites", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Profile added to favorites", Snackbar.LENGTH_SHORT)
                     .show()
             }
             removeFavorite(profiles, prefs, gson, index)

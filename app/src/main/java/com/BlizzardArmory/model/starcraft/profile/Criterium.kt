@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Criterium(
 
-        @SerializedName("criterionId")
-        var criterionId: String,
+    @SerializedName("criterionId")
+    var criterionId: String,
 
-        @SerializedName("earned")
-        var earned: Earned
+    @SerializedName("earned")
+    var earned: Earned
 
 )

@@ -8,22 +8,22 @@ import com.google.gson.annotations.SerializedName
  */
 data class Rune(
 
-        @SerializedName("slug")
-        var slug: String,
+    @SerializedName("slug")
+    var slug: String,
 
-        @SerializedName("type")
-        var type: String,
+    @SerializedName("type")
+    var type: String,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("description")
-        var description: String,
+    @SerializedName("description")
+    var description: String,
 
-        @SerializedName("descriptionHtml")
-        var descriptionHtml: String
+    @SerializedName("descriptionHtml")
+    var descriptionHtml: String
 
 )

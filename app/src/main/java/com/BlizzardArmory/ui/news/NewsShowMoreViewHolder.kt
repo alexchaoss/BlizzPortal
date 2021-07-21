@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class NewsShowMoreViewHolder(inflater: LayoutInflater, parent: ViewGroup, val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.news_show_more_item, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.news_show_more_item, parent, false)) {
 
     private var showMore: Button? = null
     private var loading: SpinKitView? = null

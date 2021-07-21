@@ -3,7 +3,7 @@ package com.BlizzardArmory.model.common
 import com.google.gson.annotations.SerializedName
 
 
-data class Self (
+data class Self(
 
-	@SerializedName("href") val href : String
+    @SerializedName("href") val href: String
 )

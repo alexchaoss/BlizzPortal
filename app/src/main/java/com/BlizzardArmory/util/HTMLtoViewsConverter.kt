@@ -14,7 +14,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.stfalcon.imageviewer.StfalconImageViewer
-import com.stfalcon.imageviewer.loader.ImageLoader
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

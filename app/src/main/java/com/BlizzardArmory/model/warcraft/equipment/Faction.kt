@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Faction(
 
-        @SerializedName("value")
-        var value: Value,
+    @SerializedName("value")
+    var value: Value,
 
-        @SerializedName("display_string")
-        var displayString: String
+    @SerializedName("display_string")
+    var displayString: String
 
 )

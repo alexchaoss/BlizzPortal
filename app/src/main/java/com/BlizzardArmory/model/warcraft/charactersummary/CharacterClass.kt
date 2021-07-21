@@ -9,13 +9,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class CharacterClass(
 
-        @SerializedName("key")
-        var key: Key,
+    @SerializedName("key")
+    var key: Key,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("id")
-        var id: Int
+    @SerializedName("id")
+    var id: Int
 
 )

@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 data class Death(
 
-        @SerializedName("killer")
-        var killer: Int,
+    @SerializedName("killer")
+    var killer: Int,
 
-        @SerializedName("time")
-        var time: Int
+    @SerializedName("time")
+    var time: Int
 )

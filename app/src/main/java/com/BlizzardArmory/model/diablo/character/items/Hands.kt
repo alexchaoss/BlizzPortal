@@ -8,24 +8,24 @@ import com.google.gson.annotations.SerializedName
  */
 data class Hands(
 
-        @SerializedName("id")
-        var id: String,
+    @SerializedName("id")
+    var id: String,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("icon")
-        var icon: String,
+    @SerializedName("icon")
+    var icon: String,
 
-        @SerializedName("displayColor")
-        var displayColor: String,
+    @SerializedName("displayColor")
+    var displayColor: String,
 
-        @SerializedName("tooltipParams")
-        var tooltipParams: String,
+    @SerializedName("tooltipParams")
+    var tooltipParams: String,
 
-        @SerializedName("transmogItem")
-        var transmogItem: TransmogItem,
+    @SerializedName("transmogItem")
+    var transmogItem: TransmogItem,
 
-        @SerializedName("dyeColor")
-        var dyeColor: DyeColor? = null
+    @SerializedName("dyeColor")
+    var dyeColor: DyeColor? = null
 )

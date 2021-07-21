@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class SpellDescription(
 
-        @SerializedName("spell")
-        var spell: Spell,
+    @SerializedName("spell")
+    var spell: Spell,
 
-        @SerializedName("description")
-        var description: String,
+    @SerializedName("description")
+    var description: String,
 
-        @SerializedName("display_color")
-        var color: Color
+    @SerializedName("display_color")
+    var color: Color
 
 )

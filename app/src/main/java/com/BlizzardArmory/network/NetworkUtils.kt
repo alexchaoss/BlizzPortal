@@ -157,4 +157,8 @@ object NetworkUtils {
         return "https://public-archived-data.s3.us-east-2.amazonaws.com/standings/archived+standings+$year.json"
     }
 
+    fun getExpansionFromRIO(expansionId: Int): String {
+        return "https://raider.io/api/v1/mythic-plus/static-data?expansion_id=$expansionId"
+    }
+
 }

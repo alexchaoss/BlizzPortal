@@ -12,16 +12,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class CompetitiveStats(
 
-        @SerializedName("awards")
-        var awards: Awards,
+    @SerializedName("awards")
+    var awards: Awards,
 
-        @SerializedName("careerStats")
-        var careerStats: CareerStats,
+    @SerializedName("careerStats")
+    var careerStats: CareerStats,
 
-        @SerializedName("games")
-        var games: Games,
+    @SerializedName("games")
+    var games: Games,
 
-        @SerializedName("topHeroes")
-        var topHeroes: TopHeroes
+    @SerializedName("topHeroes")
+    var topHeroes: TopHeroes
 
 )

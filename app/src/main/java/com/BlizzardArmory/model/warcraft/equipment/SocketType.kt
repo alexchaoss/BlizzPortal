@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class SocketType(
 
-        @SerializedName("type")
-        var type: String,
+    @SerializedName("type")
+    var type: String,
 
-        @SerializedName("name")
-        var name: String
+    @SerializedName("name")
+    var name: String
 
 )

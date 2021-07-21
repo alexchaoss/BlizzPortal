@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Followers(
 
-        @SerializedName("templar")
-        var templar: Templar,
+    @SerializedName("templar")
+    var templar: Templar,
 
-        @SerializedName("scoundrel")
-        var scoundrel: Scoundrel,
+    @SerializedName("scoundrel")
+    var scoundrel: Scoundrel,
 
-        @SerializedName("enchantress")
-        var enchantress: Enchantress
+    @SerializedName("enchantress")
+    var enchantress: Enchantress
 
 )

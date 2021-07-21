@@ -3,9 +3,9 @@ package com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.le
 import com.BlizzardArmory.model.common.Realm
 import com.google.gson.annotations.SerializedName
 
-data class Profile (
+data class Profile(
 
-	@SerializedName("name") val name : String,
-	@SerializedName("id") val id : Int,
-	@SerializedName("realm") val realm : Realm
+    @SerializedName("name") val name: String,
+    @SerializedName("id") val id: Int,
+    @SerializedName("realm") val realm: Realm
 )

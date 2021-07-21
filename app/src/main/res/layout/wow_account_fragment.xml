@@ -6,23 +6,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#272931"
-    android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
+    android:orientation="vertical"
     tools:context=".ui.main.MainActivity">
 
     <Spinner
         android:id="@+id/realmSpinner"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@drawable/wow_spinner_border"
-        android:gravity="center"
-        android:padding="0dp"
-        android:textAlignment="center"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/wow_spinner_border"
+        android:gravity="center"
+        android:padding="0dp"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,8 +44,8 @@
         android:id="@+id/loadingCircle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:background="#50000000"
+        android:gravity="center"
         android:visibility="gone">
 
         <com.github.ybq.android.spinkit.SpinKitView

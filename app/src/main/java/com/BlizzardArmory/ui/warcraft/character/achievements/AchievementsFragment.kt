@@ -184,11 +184,11 @@ class AchievementsFragment : Fragment() {
         Log.i("achiev size", id.toString())
         binding.achievementsRecycler.apply {
             adapter = AchievementsAdapter(
-                    viewModel.getMappedAchievements().value!![id]!!.sortedWith(compareByDescending<DetailedAchievement> {
-                        viewModel.getCharacterAchievements().value?.achievements?.find { ac -> ac.id == it.id }?.completed_timestamp
-                    }.thenBy {
-                        it.display_order
-                    }), viewModel.getCharacterAchievements().value?.achievements!!)
+                viewModel.getMappedAchievements().value!![id]!!.sortedWith(compareByDescending<DetailedAchievement> {
+                    viewModel.getCharacterAchievements().value?.achievements?.find { ac -> ac.id == it.id }?.completed_timestamp
+                }.thenBy {
+                    it.display_order
+                }), viewModel.getCharacterAchievements().value?.achievements!!)
             adapter!!.notifyDataSetChanged()
         }
     }
@@ -304,13 +304,13 @@ class AchievementsFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(character: String, realm: String, media: String, region: String) =
-                WoWNavFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(CHARACTER, character)
-                        putString(REALM, realm)
-                        putString(MEDIA, media)
-                        putString(REGION, region)
-                    }
+            WoWNavFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CHARACTER, character)
+                    putString(REALM, realm)
+                    putString(MEDIA, media)
+                    putString(REGION, region)
                 }
+            }
     }
 }

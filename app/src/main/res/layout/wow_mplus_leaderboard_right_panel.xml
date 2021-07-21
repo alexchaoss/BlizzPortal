@@ -10,88 +10,37 @@
     android:paddingEnd="20dp"
     android:paddingBottom="40dp">
 
-    <Button
-        android:id="@+id/season_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
+    <AutoCompleteTextView
+        android:id="@+id/realm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/wow_mplus_leaderboards_button_selected"
         android:gravity="center"
-        android:text="@string/season"
+        android:hint="@string/realm"
         android:textAlignment="center"
-        android:textColor="#FFF"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/spinner_id"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@id/season"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <Spinner
-        android:id="@+id/spinner_id"
+        android:id="@+id/season"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/gradient_spinner"
-        app:layout_constraintBottom_toTopOf="@id/difficulty"
+        app:layout_constraintBottom_toTopOf="@id/dungeon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/season_button" />
-
-    <LinearLayout
-        android:id="@+id/difficulty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:weightSum="2"
-        app:layout_constraintBottom_toTopOf="@id/region"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner_id">
-
-        <Button
-            android:id="@+id/softcore"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/wow_mplus_leaderboards_button_selected"
-            android:gravity="center"
-            android:text="@string/softcore"
-            android:textAlignment="center"
-            android:textColor="#FFF"
-            android:textSize="17sp" />
-
-        <Button
-            android:id="@+id/hardcore"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/leaderboards_button"
-            android:gravity="center"
-            android:text="@string/hardcore"
-            android:textAlignment="center"
-            android:textColor="#FFF"
-            android:textSize="17sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/realm" />
 
     <Spinner
-        android:id="@+id/region"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/gradient_spinner"
-        app:layout_constraintBottom_toTopOf="@id/leaderboard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/difficulty" />
-
-    <Spinner
-        android:id="@+id/leaderboard"
+        android:id="@+id/dungeon"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -100,7 +49,7 @@
         app:layout_constraintBottom_toTopOf="@id/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/region" />
+        app:layout_constraintTop_toBottomOf="@id/season" />
 
     <Button
         android:id="@+id/search"
@@ -115,6 +64,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/leaderboard" />
+        app:layout_constraintTop_toBottomOf="@id/dungeon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

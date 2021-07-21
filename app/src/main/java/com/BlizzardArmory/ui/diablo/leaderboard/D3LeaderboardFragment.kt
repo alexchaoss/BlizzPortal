@@ -7,7 +7,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -21,6 +24,7 @@ import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.state.RightPanelState
+import com.google.android.material.snackbar.Snackbar
 
 class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     FragmentManager.OnBackStackChangedListener {
@@ -136,13 +140,14 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         rightPanel.binding.rightPanelD3.search.setOnClickListener {
             var leaderboard = ""
             if (seasonToggle && rightPanel.binding.rightPanelD3.spinnerId.selectedItem == "Season") {
-                Toast.makeText(activity, "Please select a season", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please select a season", Snackbar.LENGTH_SHORT).show()
             } else if (!seasonToggle && rightPanel.binding.rightPanelD3.spinnerId.selectedItem == "Era") {
-                Toast.makeText(activity, "Please select an era", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please select an era", Snackbar.LENGTH_SHORT).show()
             } else if (rightPanel.binding.rightPanelD3.region.selectedItem == "Region") {
-                Toast.makeText(activity, "Please select a region", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please select a region", Snackbar.LENGTH_SHORT).show()
             } else if (rightPanel.binding.rightPanelD3.leaderboard.selectedItem == "Category") {
-                Toast.makeText(activity, "Please select a category", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please select a category", Snackbar.LENGTH_SHORT)
+                    .show()
             } else {
                 leaderboard = when (rightPanel.binding.rightPanelD3.leaderboard.selectedItem) {
                     "Barbarian" -> if (hardcoreToggle) "rift-hardcore-barbarian" else "rift-barbarian"
@@ -174,7 +179,8 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     }
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
-        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
+        val arrayAdapter: ArrayAdapter<*> = object :
+            ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }

@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 data class TalentTier(
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("talents")
-        var talents: List<Talent>
+    @SerializedName("talents")
+    var talents: List<Talent>
 )

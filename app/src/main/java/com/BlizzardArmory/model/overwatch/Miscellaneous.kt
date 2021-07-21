@@ -13,11 +13,11 @@ import java.util.*
 
 data class Miscellaneous(
 
-        @SerializedName("teleporterPadsDestroyed")
-        var teleporterPadsDestroyed: Double,
+    @SerializedName("teleporterPadsDestroyed")
+    var teleporterPadsDestroyed: Double,
 
-        @SerializedName("turretsDestroyed")
-        var turretsDestroyed: Double
+    @SerializedName("turretsDestroyed")
+    var turretsDestroyed: Double
 ) {
     val misc: HashMap<String, String>
         get() {

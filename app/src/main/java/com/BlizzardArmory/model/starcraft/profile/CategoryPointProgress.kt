@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class CategoryPointProgress(
 
-        @SerializedName("categoryId")
-        var categoryId: String,
+    @SerializedName("categoryId")
+    var categoryId: String,
 
-        @SerializedName("pointsEarned")
-        var pointsEarned: Int
+    @SerializedName("pointsEarned")
+    var pointsEarned: Int
 
 )

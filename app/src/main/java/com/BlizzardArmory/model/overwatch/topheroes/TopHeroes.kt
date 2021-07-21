@@ -5,100 +5,100 @@ import com.google.gson.annotations.SerializedName
 
 class TopHeroes {
     @SerializedName("ana")
-        var ana: Ana? = null
+    var ana: Ana? = null
 
     @SerializedName("ashe")
-        var ashe: Ashe? = null
+    var ashe: Ashe? = null
 
     @SerializedName("baptiste")
-        var baptiste: Baptiste? = null
+    var baptiste: Baptiste? = null
 
     @SerializedName("bastion")
-        var bastion: Bastion? = null
+    var bastion: Bastion? = null
 
     @SerializedName("brigitte")
-        var brigitte: Brigitte? = null
+    var brigitte: Brigitte? = null
 
     @SerializedName("dVa")
-        var dVa: DVa? = null
+    var dVa: DVa? = null
 
     @SerializedName("echo")
-        var echo: Echo? = null
+    var echo: Echo? = null
 
     @SerializedName("doomfist")
-        var doomfist: Doomfist? = null
+    var doomfist: Doomfist? = null
 
     @SerializedName("genji")
-        var genji: Genji? = null
+    var genji: Genji? = null
 
     @SerializedName("hanzo")
-        var hanzo: Hanzo? = null
+    var hanzo: Hanzo? = null
 
     @SerializedName("junkrat")
-        var junkrat: Junkrat? = null
+    var junkrat: Junkrat? = null
 
     @SerializedName("lucio")
-        var lucio: Lúcio? = null
+    var lucio: Lúcio? = null
 
     @SerializedName("mccree")
-        var mccree: Mccree? = null
+    var mccree: Mccree? = null
 
     @SerializedName("mei")
-        var mei: Mei? = null
+    var mei: Mei? = null
 
     @SerializedName("mercy")
-        var mercy: Mercy? = null
+    var mercy: Mercy? = null
 
     @SerializedName("moira")
-        var moira: Moira? = null
+    var moira: Moira? = null
 
     @SerializedName("orisa")
-        var orisa: Orisa? = null
+    var orisa: Orisa? = null
 
     @SerializedName("pharah")
-        var pharah: Pharah? = null
+    var pharah: Pharah? = null
 
     @SerializedName("reaper")
-        var reaper: Reaper? = null
+    var reaper: Reaper? = null
 
     @SerializedName("reinhardt")
-        var reinhardt: Reinhardt? = null
+    var reinhardt: Reinhardt? = null
 
     @SerializedName("roadhog")
-        var roadhog: Roadhog? = null
+    var roadhog: Roadhog? = null
 
     @SerializedName("sigma")
-        var sigma: Sigma? = null
+    var sigma: Sigma? = null
 
     @SerializedName("soldier76")
-        var soldier76: Soldier76? = null
+    var soldier76: Soldier76? = null
 
     @SerializedName("sombra")
-        var sombra: Sombra? = null
+    var sombra: Sombra? = null
 
     @SerializedName("symmetra")
-        var symmetra: Symmetra? = null
+    var symmetra: Symmetra? = null
 
     @SerializedName("torbjorn")
-        var torbjorn: Torbjörn? = null
+    var torbjorn: Torbjörn? = null
 
     @SerializedName("tracer")
-        var tracer: Tracer? = null
+    var tracer: Tracer? = null
 
     @SerializedName("widowmaker")
-        var widowmaker: Widowmaker? = null
+    var widowmaker: Widowmaker? = null
 
     @SerializedName("winston")
-        var winston: Winston? = null
+    var winston: Winston? = null
 
     @SerializedName("wreckingBall")
-        var wreckingBall: WreckingBall? = null
+    var wreckingBall: WreckingBall? = null
 
     @SerializedName("zarya")
-        var zarya: Zarya? = null
+    var zarya: Zarya? = null
 
     @SerializedName("zenyatta")
-        var zenyatta: Zenyatta? = null
+    var zenyatta: Zenyatta? = null
 
     val heroList = ArrayList<TopHero>()
 

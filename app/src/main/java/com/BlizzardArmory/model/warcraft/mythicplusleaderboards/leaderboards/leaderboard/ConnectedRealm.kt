@@ -2,7 +2,7 @@ package com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.le
 
 import com.google.gson.annotations.SerializedName
 
-data class ConnectedRealm (
+data class ConnectedRealm(
 
-	@SerializedName("href") val href : String
+    @SerializedName("href") val href: String
 )

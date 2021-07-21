@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class ActiveTitle(
 
-        @SerializedName("key")
-        var key: Key,
+    @SerializedName("key")
+    var key: Key,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("id")
-        var id: Long,
+    @SerializedName("id")
+    var id: Long,
 
-        @SerializedName("display_string")
-        var displayString: String
+    @SerializedName("display_string")
+    var displayString: String
 
 )

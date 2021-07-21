@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Games(
 
-        @SerializedName("played")
-        var played: Int,
+    @SerializedName("played")
+    var played: Int,
 
-        @SerializedName("won")
-        var won: Int
+    @SerializedName("won")
+    var won: Int
 
 )

@@ -86,13 +86,13 @@ class D3CharacterNav : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(btag: String, id: Long, region: String) =
-                D3CharacterNav().apply {
-                    arguments = Bundle().apply {
-                        putString(BTAG, btag)
-                        putLong(ID, id)
-                        putString(REGION, region)
-                    }
+            D3CharacterNav().apply {
+                arguments = Bundle().apply {
+                    putString(BTAG, btag)
+                    putLong(ID, id)
+                    putString(REGION, region)
                 }
+            }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

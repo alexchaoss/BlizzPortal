@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class GenderDescription(
 
-        @SerializedName("male")
-        var male: String,
+    @SerializedName("male")
+    var male: String,
 
-        @SerializedName("female")
-        var female: String
+    @SerializedName("female")
+    var female: String
 
 )

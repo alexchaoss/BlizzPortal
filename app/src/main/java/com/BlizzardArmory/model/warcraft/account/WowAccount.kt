@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class WowAccount(
 
-        @SerializedName("id")
-        var id: Long,
+    @SerializedName("id")
+    var id: Long,
 
-        @SerializedName("characters")
-        var characters: List<Character>
+    @SerializedName("characters")
+    var characters: List<Character>
 
 )

@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Type(
 
-        @SerializedName("twoHanded")
-        var twoHanded: Boolean,
+    @SerializedName("twoHanded")
+    var twoHanded: Boolean,
 
-        @SerializedName("oneHanded")
-        var oneHanded: Boolean,
+    @SerializedName("oneHanded")
+    var oneHanded: Boolean,
 
-        @SerializedName("id")
-        var id: String
+    @SerializedName("id")
+    var id: String
 
 )

@@ -8,6 +8,6 @@ import com.google.gson.annotations.SerializedName
  */
 data class PvpSummary(
 
-        @SerializedName("href")
-        var href: String
+    @SerializedName("href")
+    var href: String
 )

@@ -10,7 +10,7 @@ import com.BlizzardArmory.model.starcraft.leaderboard.LadderMembers
 
 
 class LeaderboardViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.sc2_leaderboard_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.sc2_leaderboard_list, parent, false)) {
 
     var rank: TextView? = null
     var points: TextView? = null

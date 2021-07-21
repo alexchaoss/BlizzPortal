@@ -66,7 +66,7 @@ class CharacterGearFragment : Fragment() {
     private var _binding: D3GearFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CharacterGearViewModel by viewModels()
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -198,7 +198,8 @@ class CharacterGearFragment : Fragment() {
         get() {
             for (key in itemIconURL.keys) {
                 if (itemIconURL[key] != null) {
-                    Glide.with(this).load(itemIconURL[key]).placeholder(R.drawable.loading_placeholder).into(imageViewItem[key]!!)
+                    Glide.with(this).load(itemIconURL[key])
+                        .placeholder(R.drawable.loading_placeholder).into(imageViewItem[key]!!)
                 }
             }
         }
@@ -295,7 +296,8 @@ class CharacterGearFragment : Fragment() {
                 try {
                     if (item.minDamage!! > 0 && item.maxDamage!! > 0) {
                         val formatter: NumberFormat = DecimalFormat("#0.0")
-                        val dpsText = ((item.minDamage!! + item.maxDamage!!) / 2 * item.attacksPerSecond!! * 10 / 10).roundToInt().toDouble()
+                        val dpsText = ((item.minDamage!! + item.maxDamage!!) / 2 * item.attacksPerSecond!! * 10 / 10).roundToInt()
+                            .toDouble()
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                             dps?.text = Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
                                     + formatter.format(item.minDamage) + " - "
@@ -388,7 +390,8 @@ class CharacterGearFragment : Fragment() {
                     setText = firstPart + lastPart
                     setText = setText.replace("<span class=\"tooltip-icon-bullet\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"primary" + "\">")
                     setText = setText.replace("<span class=\"tooltip-icon-utility\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"utility\">")
-                    setText = setText.replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#").replace("</span>".toRegex(), "</font>")
+                    setText = setText.replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#")
+                        .replace("</span>".toRegex(), "</font>")
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         set!!.text = Html.fromHtml(setText, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
                             val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)

@@ -16,7 +16,8 @@ import java.util.*
 class BattlenetOAuth2Helper(private val oauth2Params: BattlenetOAuth2Params) {
     private val flow: AuthorizationCodeFlow
     val authorizationUrl: String
-        get() = flow.newAuthorizationUrl().setRedirectUri(oauth2Params.rederictUri).setScopes(convertScopesToString(oauth2Params.scope)).build()
+        get() = flow.newAuthorizationUrl().setRedirectUri(oauth2Params.rederictUri)
+            .setScopes(convertScopesToString(oauth2Params.scope)).build()
 
     fun storeAccessToken(token: TokenResponse) {
         flow.createAndStoreCredential(token, oauth2Params.userId)
@@ -43,7 +44,8 @@ class BattlenetOAuth2Helper(private val oauth2Params: BattlenetOAuth2Params) {
 
     init {
         flow = AuthorizationCodeFlow.Builder(oauth2Params.accessMethod, HTTP_TRANSPORT, JSON_FACTORY, GenericUrl(oauth2Params.tokenServerUrl),
-                null, oauth2Params.clientId, oauth2Params.authorizationServerEncodedUrl)
-                .setCredentialDataStore(StoredCredential.getDefaultDataStore(MemoryDataStoreFactory.getDefaultInstance())).build()
+            null, oauth2Params.clientId, oauth2Params.authorizationServerEncodedUrl)
+            .setCredentialDataStore(StoredCredential.getDefaultDataStore(MemoryDataStoreFactory.getDefaultInstance()))
+            .build()
     }
 }

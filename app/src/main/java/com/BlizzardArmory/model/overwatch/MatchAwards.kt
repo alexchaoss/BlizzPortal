@@ -12,20 +12,20 @@ import java.util.*
  */
 
 data class MatchAwards(
-        @SerializedName("cards")
-        var cards: Double,
+    @SerializedName("cards")
+    var cards: Double,
 
-        @SerializedName("medals")
-        var medals: Double,
+    @SerializedName("medals")
+    var medals: Double,
 
-        @SerializedName("medalsBronze")
-        var medalsBronze: Double,
+    @SerializedName("medalsBronze")
+    var medalsBronze: Double,
 
-        @SerializedName("medalsGold")
-        var medalsGold: Double,
+    @SerializedName("medalsGold")
+    var medalsGold: Double,
 
-        @SerializedName("medalsSilver")
-        var medalsSilver: Double
+    @SerializedName("medalsSilver")
+    var medalsSilver: Double
 ) {
     val match: HashMap<String, String>
         get() {

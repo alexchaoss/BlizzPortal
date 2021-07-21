@@ -8,37 +8,37 @@ import com.google.gson.annotations.SerializedName
  */
 data class Summary(
 
-        @SerializedName("id")
-        var id: String,
+    @SerializedName("id")
+    var id: String,
 
-        @SerializedName("realm")
-        var realm: Int,
+    @SerializedName("realm")
+    var realm: Int,
 
-        @SerializedName("displayName")
-        var displayName: String,
+    @SerializedName("displayName")
+    var displayName: String,
 
-        @SerializedName("clanName")
-        var clanName: String,
+    @SerializedName("clanName")
+    var clanName: String,
 
-        @SerializedName("clanTag")
-        var clanTag: String,
+    @SerializedName("clanTag")
+    var clanTag: String,
 
-        @SerializedName("portrait")
-        var portrait: String,
+    @SerializedName("portrait")
+    var portrait: String,
 
-        @SerializedName("decalTerran")
-        var decalTerran: String,
+    @SerializedName("decalTerran")
+    var decalTerran: String,
 
-        @SerializedName("decalProtoss")
-        var decalProtoss: String,
+    @SerializedName("decalProtoss")
+    var decalProtoss: String,
 
-        @SerializedName("decalZerg")
-        var decalZerg: String,
+    @SerializedName("decalZerg")
+    var decalZerg: String,
 
-        @SerializedName("totalSwarmLevel")
-        var totalSwarmLevel: Int,
+    @SerializedName("totalSwarmLevel")
+    var totalSwarmLevel: Int,
 
-        @SerializedName("totalAchievementPoints")
-        var totalAchievementPoints: Int
+    @SerializedName("totalAchievementPoints")
+    var totalAchievementPoints: Int
 
 )

@@ -169,6 +169,14 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Leaderboard>
 
+    @GET("data/wow/media/keystone-affix/{id}")
+    suspend fun getMythicKeystoneAffixMedia(
+        @Path("id") id: Int,
+        @Query("namespace") namespace: String,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<com.BlizzardArmory.model.warcraft.mythicplusleaderboards.affixes.Media>
+
     //Profile
 
     @GET("/profile/wow/character/{realm}/{character}/character-media")

@@ -8,22 +8,22 @@ import com.google.gson.annotations.SerializedName
  */
 data class Player(
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("profileUrl")
-        var profileUrl: String,
+    @SerializedName("profileUrl")
+    var profileUrl: String,
 
-        @SerializedName("avatarUrl")
-        var avatarUrl: String,
+    @SerializedName("avatarUrl")
+    var avatarUrl: String,
 
-        @SerializedName("profileId")
-        var profileId: String,
+    @SerializedName("profileId")
+    var profileId: String,
 
-        @SerializedName("regionId")
-        var regionId: Int,
+    @SerializedName("regionId")
+    var regionId: Int,
 
-        @SerializedName("realmId")
-        var realmId: Int
+    @SerializedName("realmId")
+    var realmId: Int
 
 )

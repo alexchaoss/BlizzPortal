@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Display(
 
-        @SerializedName("display_string")
-        var displayString: String,
+    @SerializedName("display_string")
+    var displayString: String,
 
-        @SerializedName("color")
-        var color: Color
+    @SerializedName("color")
+    var color: Color
 
 )

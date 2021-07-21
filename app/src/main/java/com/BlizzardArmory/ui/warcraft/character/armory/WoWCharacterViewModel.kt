@@ -115,7 +115,8 @@ class WoWCharacterViewModel : BaseViewModel() {
 
     fun downloadTalentIconsInfo() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getTalentsWithIcon(characterSummary.value!!.characterClass.id)
+            val response = RetroClient.getAPIClient()
+                .getTalentsWithIcon(characterSummary.value!!.characterClass.id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     talentsIcons.value = response.body()!!
@@ -259,7 +260,8 @@ class WoWCharacterViewModel : BaseViewModel() {
         var azeriteSpells = StringBuilder()
         val sellPrice = StringBuilder()
         try {
-            setInfo.append("<font color=#edc201>").append(equippedItem.set.displayString).append("</font><br>")
+            setInfo.append("<font color=#edc201>").append(equippedItem.set.displayString)
+                .append("</font><br>")
             setInfo.append(formatSetItemText(equippedItem.set))
         } catch (e: Exception) {
             setInfo.replace(0, setInfo.length, "")
@@ -267,13 +269,16 @@ class WoWCharacterViewModel : BaseViewModel() {
         try {
             sellPrice.append(equippedItem.sellPrice.displayStrings.header).append(" ")
             if (equippedItem.sellPrice.displayStrings.gold != "0") {
-                sellPrice.append(equippedItem.sellPrice.displayStrings.gold).append(" <img src=\"gold\">")
+                sellPrice.append(equippedItem.sellPrice.displayStrings.gold)
+                    .append(" <img src=\"gold\">")
             }
             if (equippedItem.sellPrice.displayStrings.silver != "0") {
-                sellPrice.append(equippedItem.sellPrice.displayStrings.silver).append(" <img src=\"silver\">")
+                sellPrice.append(equippedItem.sellPrice.displayStrings.silver)
+                    .append(" <img src=\"silver\">")
             }
             if (equippedItem.sellPrice.displayStrings.copper != "0") {
-                sellPrice.append(equippedItem.sellPrice.displayStrings.copper).append(" <img src=\"copper\">")
+                sellPrice.append(equippedItem.sellPrice.displayStrings.copper)
+                    .append(" <img src=\"copper\">")
             }
         } catch (e: Exception) {
         }
@@ -283,7 +288,8 @@ class WoWCharacterViewModel : BaseViewModel() {
         }
         try {
             for (enchantment in equippedItem.enchantments) {
-                enchant.append("<font color=#00ff00>").append(enchantment.displayString).append("</font><br>")
+                enchant.append("<font color=#00ff00>").append(enchantment.displayString)
+                    .append("</font><br>")
             }
         } catch (e: Exception) {
         }
@@ -344,14 +350,17 @@ class WoWCharacterViewModel : BaseViewModel() {
                 for (selectedEssence in equippedItem.azeriteDetails.selectedEssences) {
                     val essenceImage = "<img src=\"" + getEssenceImage(selectedEssence.slot) + "\"> "
                     val color = "<font color=#" + getEssenceRankColor(selectedEssence.rank) + ">"
-                    azeriteSpells.append(essenceImage).append(color).append(selectedEssence.essence.name).append("</font><br>")
+                    azeriteSpells.append(essenceImage).append(color)
+                        .append(selectedEssence.essence.name).append("</font><br>")
                 }
             } else {
                 azeriteSpells = StringBuilder("<br><font color=#edc201>" + equippedItem.azeriteDetails.selectedPowersString + "</font><br>")
                 for (selectedPower in equippedItem.azeriteDetails.selectedPowers) {
                     if (!selectedPower.isIsDisplayHidden) {
-                        azeriteSpells.append("- ").append(selectedPower.spellTooltip.spell.name).append("<br>")
-                        azeriteSpells.append("<font color=#00ff00>").append(selectedPower.spellTooltip.description).append("</font><br>")
+                        azeriteSpells.append("- ").append(selectedPower.spellTooltip.spell.name)
+                            .append("<br>")
+                        azeriteSpells.append("<font color=#00ff00>")
+                            .append(selectedPower.spellTooltip.description).append("</font><br>")
                     }
                 }
             }
@@ -360,10 +369,12 @@ class WoWCharacterViewModel : BaseViewModel() {
         try {
             for (currentSocket in equippedItem.sockets) {
                 if (currentSocket.displayString == null) {
-                    sockets.append("<img src=\"").append(getSocketColor(currentSocket)).append("\"> ")
+                    sockets.append("<img src=\"").append(getSocketColor(currentSocket))
+                        .append("\"> ")
                     sockets.append(currentSocket.socketType?.name).append("<br>")
                 } else {
-                    sockets.append("<img src=\"").append(getSocketColor(currentSocket)).append("\"> ")
+                    sockets.append("<img src=\"").append(getSocketColor(currentSocket))
+                        .append("\"> ")
                     sockets.append(currentSocket.displayString).append("<br>")
                 }
             }
@@ -389,17 +400,22 @@ class WoWCharacterViewModel : BaseViewModel() {
                 damageInfo.append("&nbsp;")
                 length++
             }
-            damageInfo.append(equippedItem.weapon.attackSpeed.displayString).append("<br>").append(equippedItem.weapon.dps.displayString).append("<br>")
+            damageInfo.append(equippedItem.weapon.attackSpeed.displayString).append("<br>")
+                .append(equippedItem.weapon.dps.displayString).append("<br>")
         }
         try {
             for (i in equippedItem.stats.indices) {
-                statsString.append("<font color=#" + rbgToHexHTML(equippedItem.stats[i].display.color) + ">").append(equippedItem.stats[i].display.displayString).append("</font>").append("<br>")
+                statsString.append("<font color=#" + rbgToHexHTML(equippedItem.stats[i].display.color) + ">")
+                    .append(equippedItem.stats[i].display.displayString).append("</font>")
+                    .append("<br>")
             }
         } catch (e: Exception) {
             var i = 0
             while (equippedItem.stats != null && i < equippedItem.stats.size) {
                 if (equippedItem.stats[i].isIsEquipBonus) {
-                    statsString.append("<font color=#00ff00>").append(equippedItem.stats[i].display_string).append("</font>").append("<br>")
+                    statsString.append("<font color=#00ff00>")
+                        .append(equippedItem.stats[i].display_string).append("</font>")
+                        .append("<br>")
                 } else {
                     statsString.append(equippedItem.stats[i].display_string).append("<br>")
                 }
@@ -450,18 +466,22 @@ class WoWCharacterViewModel : BaseViewModel() {
         }
         for (itemEquipped in set.items) {
             if (itemEquipped.isIsEquipped) {
-                setInfo.append("&nbsp;&nbsp;&nbsp;&nbsp;<font color=#ffff98>").append(itemEquipped.item.name).append("</font><br>")
+                setInfo.append("&nbsp;&nbsp;&nbsp;&nbsp;<font color=#ffff98>")
+                    .append(itemEquipped.item.name).append("</font><br>")
                 equippedSetItem++
             } else {
-                setInfo.append("&nbsp;&nbsp;&nbsp;&nbsp;<font color=#6e6e6e>").append(itemEquipped.item.name).append("</font><br>")
+                setInfo.append("&nbsp;&nbsp;&nbsp;&nbsp;<font color=#6e6e6e>")
+                    .append(itemEquipped.item.name).append("</font><br>")
             }
         }
         setInfo.append("<br>")
         for (i in itemRequiredForEffect.indices) {
             if (itemRequiredForEffect[i] <= equippedSetItem) {
-                setInfo.append("<font color=#ffff98>").append(set.effects[i].displayString).append("</font><br>")
+                setInfo.append("<font color=#ffff98>").append(set.effects[i].displayString)
+                    .append("</font><br>")
             } else {
-                setInfo.append("<font color=#6e6e6e>").append(set.effects[i].displayString).append("</font><br>")
+                setInfo.append("<font color=#6e6e6e>").append(set.effects[i].displayString)
+                    .append("</font><br>")
             }
         }
         return setInfo

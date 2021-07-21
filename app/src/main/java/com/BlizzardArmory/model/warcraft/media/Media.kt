@@ -7,12 +7,12 @@ import com.google.gson.annotations.SerializedName
 
 class Media {
     @SerializedName("_links")
-        var links: Links? = null
+    var links: Links? = null
 
     @SerializedName("character")
-        var character: Character? = null
+    var character: Character? = null
 
     @SerializedName("assets")
-        var assets: List<Asset>? = null
+    var assets: List<Asset>? = null
 
 }

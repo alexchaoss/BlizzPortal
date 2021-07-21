@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class PvpTalentSlot(
 
-        @SerializedName("selected")
-        var selected: Selected,
+    @SerializedName("selected")
+    var selected: Selected,
 
-        @SerializedName("slot_number")
-        var slotNumber: Int
+    @SerializedName("slot_number")
+    var slotNumber: Int
 
 )

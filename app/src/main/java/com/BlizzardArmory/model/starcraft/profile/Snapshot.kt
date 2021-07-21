@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Snapshot(
 
-        @SerializedName("seasonSnapshot")
-        var seasonSnapshot: SeasonSnapshot,
+    @SerializedName("seasonSnapshot")
+    var seasonSnapshot: SeasonSnapshot,
 
-        @SerializedName("totalRankedSeasonGamesPlayed")
-        var totalRankedSeasonGamesPlayed: Int
+    @SerializedName("totalRankedSeasonGamesPlayed")
+    var totalRankedSeasonGamesPlayed: Int
 
 )

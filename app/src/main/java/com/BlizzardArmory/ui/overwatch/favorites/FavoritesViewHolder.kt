@@ -27,7 +27,7 @@ import java.util.*
 
 
 class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.ow_favorite_profile, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.ow_favorite_profile, parent, false)) {
 
     private var avatar: ImageView? = null
     private var username: TextView? = null
@@ -71,7 +71,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             bundle.putString("username", profile.username)
             bundle.putString("platform", profile.platform)
             fragment.arguments = bundle
-            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "overwatchfragment").addToBackStack("ow_account").commit()
+            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "overwatchfragment")
+                .addToBackStack("ow_account").commit()
             fragmentManager.executePendingTransactions()
         }
     }

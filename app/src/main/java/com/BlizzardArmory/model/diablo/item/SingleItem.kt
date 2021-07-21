@@ -9,93 +9,93 @@ import com.google.gson.annotations.SerializedName
  */
 data class SingleItem(
 
-        @SerializedName("accountBound")
+    @SerializedName("accountBound")
 
-        val accountBound: Boolean,
+    val accountBound: Boolean,
 
-        @SerializedName("attributes")
+    @SerializedName("attributes")
 
-        val attributes: Attributes,
+    val attributes: Attributes,
 
-        @SerializedName("color")
+    @SerializedName("color")
 
-        val color: String,
+    val color: String,
 
-        @SerializedName("damage")
+    @SerializedName("damage")
 
-        val damage: String,
+    val damage: String,
 
-        @SerializedName("damageHtml")
+    @SerializedName("damageHtml")
 
-        val damageHtml: String,
+    val damageHtml: String,
 
-        @SerializedName("p")
+    @SerializedName("p")
 
-        val dps: String,
+    val dps: String,
 
-        @SerializedName("flavorText")
+    @SerializedName("flavorText")
 
-        val flavorText: String,
+    val flavorText: String,
 
-        @SerializedName("flavorTextHtml")
+    @SerializedName("flavorTextHtml")
 
-        val flavorTextHtml: String,
+    val flavorTextHtml: String,
 
-        @SerializedName("icon")
+    @SerializedName("icon")
 
-        val icon: String,
+    val icon: String,
 
-        @SerializedName("id")
+    @SerializedName("id")
 
-        val id: String,
+    val id: String,
 
-        @SerializedName("isSeasonRequiredToDrop")
+    @SerializedName("isSeasonRequiredToDrop")
 
-        val isSeasonRequiredToDrop: Boolean,
+    val isSeasonRequiredToDrop: Boolean,
 
-        @SerializedName("name")
+    @SerializedName("name")
 
-        val name: String,
+    val name: String,
 
-        @SerializedName("randomAffixes")
+    @SerializedName("randomAffixes")
 
-        val randomAffixes: List<RandomAffix>,
+    val randomAffixes: List<RandomAffix>,
 
-        @SerializedName("requiredLevel")
+    @SerializedName("requiredLevel")
 
-        val requiredLevel: Long,
+    val requiredLevel: Long,
 
-        @SerializedName("seasonRequiredToDrop")
+    @SerializedName("seasonRequiredToDrop")
 
-        val seasonRequiredToDrop: Long,
+    val seasonRequiredToDrop: Long,
 
-        @SerializedName("setItems")
+    @SerializedName("setItems")
 
-        val setItems: List<Any>,
+    val setItems: List<Any>,
 
-        @SerializedName("slots")
+    @SerializedName("slots")
 
-        val slots: List<String>,
+    val slots: List<String>,
 
-        @SerializedName("slug")
+    @SerializedName("slug")
 
-        val slug: String,
+    val slug: String,
 
-        @SerializedName("stackSizeMax")
+    @SerializedName("stackSizeMax")
 
-        val stackSizeMax: Long,
+    val stackSizeMax: Long,
 
-        @SerializedName("tooltipParams")
+    @SerializedName("tooltipParams")
 
-        val tooltipParams: String,
+    val tooltipParams: String,
 
 
-        @SerializedName("type")
+    @SerializedName("type")
 
-        val type: Type,
+    val type: Type,
 
-        @SerializedName("typeName")
+    @SerializedName("typeName")
 
-        val typeName: String
+    val typeName: String
 
 )

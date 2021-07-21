@@ -10,7 +10,8 @@ import com.BlizzardArmory.ui.diablo.characterfragments.skill.CharacterSkillFragm
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 
 
-class MyAdapter(fm: FragmentManager, private var totalTabs: Int, internal var bundle: Bundle) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MyAdapter(fm: FragmentManager, private var totalTabs: Int, internal var bundle: Bundle) :
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
         when (position) {

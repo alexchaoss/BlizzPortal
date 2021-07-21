@@ -17,11 +17,11 @@ object WebNewsScrapper {
     fun parseMoreNews(pageURL: String) {
         Jsoup.connect(pageURL).ignoreContentType(true).get().run {
             var html = this.select("body").html()
-                    .replace("\\&quot;", "")
-                    .replace("flush-top\"", "flush-top")
-                    .replace("articlelistitem-labelinner\\", "Articlelistitem-labelinner")
-                    .replace("""timestamp="[a-zA-Z]{3}"""".toRegex()) { it.value.substring(0, it.value.length - 1) }
-                    .replace("""timestamp="[a-zA-Z]{3}.+\\""".toRegex()) { it.value.substring(0, it.value.length - 1) }
+                .replace("\\&quot;", "")
+                .replace("flush-top\"", "flush-top")
+                .replace("articlelistitem-labelinner\\", "Articlelistitem-labelinner")
+                .replace("""timestamp="[a-zA-Z]{3}"""".toRegex()) { it.value.substring(0, it.value.length - 1) }
+                .replace("""timestamp="[a-zA-Z]{3}.+\\""".toRegex()) { it.value.substring(0, it.value.length - 1) }
             html = html.substring(10, html.length - 3)
             Jsoup.parse(html).run {
                 extractHtml()

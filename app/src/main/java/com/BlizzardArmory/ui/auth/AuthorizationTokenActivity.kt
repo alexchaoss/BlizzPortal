@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +15,7 @@ import com.BlizzardArmory.databinding.TokenActivityBinding
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.main.MainActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 
@@ -102,7 +102,8 @@ class AuthorizationTokenActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         } else {
-            Toast.makeText(this@AuthorizationTokenActivity, "Oops! There was an error, please try again!", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "Oops! There was an error, please try again!", Snackbar.LENGTH_SHORT)
+                .show()
             val intent = Intent(this@AuthorizationTokenActivity, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)

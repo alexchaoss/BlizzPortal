@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class Talents(
 
-        @SerializedName("_links")
-        var links: Links,
+    @SerializedName("_links")
+    var links: Links,
 
-        @SerializedName("specializations")
-        var specializations: List<Specialization>,
+    @SerializedName("specializations")
+    var specializations: List<Specialization>,
 
-        @SerializedName("active_specialization")
-        var activeSpecialization: ActiveSpecialization,
+    @SerializedName("active_specialization")
+    var activeSpecialization: ActiveSpecialization,
 
-        @SerializedName("character")
-        var character: Character
+    @SerializedName("character")
+    var character: Character
 
 )

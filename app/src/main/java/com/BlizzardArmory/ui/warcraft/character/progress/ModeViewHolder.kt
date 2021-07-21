@@ -11,7 +11,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.encounters.Modes
 
 class ModeViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_mode_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_mode_list, parent, false)) {
 
 
     private var progressBar: ProgressBar? = null

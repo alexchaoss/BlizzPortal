@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Dps(
 
-        @SerializedName("value")
-        var value: Float,
+    @SerializedName("value")
+    var value: Float,
 
-        @SerializedName("display_string")
-        var displayString: String
+    @SerializedName("display_string")
+    var displayString: String
 
 )

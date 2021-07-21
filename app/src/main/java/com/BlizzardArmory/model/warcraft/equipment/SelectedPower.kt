@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class SelectedPower(
 
-        @SerializedName("id")
-        var id: Long,
+    @SerializedName("id")
+    var id: Long,
 
-        @SerializedName("tier")
-        var tier: Int,
+    @SerializedName("tier")
+    var tier: Int,
 
-        @SerializedName("spell_tooltip")
-        var spellTooltip: SpellTooltip,
+    @SerializedName("spell_tooltip")
+    var spellTooltip: SpellTooltip,
 
-        @SerializedName("is_display_hidden")
-        var isIsDisplayHidden: Boolean
+    @SerializedName("is_display_hidden")
+    var isIsDisplayHidden: Boolean
 
 )

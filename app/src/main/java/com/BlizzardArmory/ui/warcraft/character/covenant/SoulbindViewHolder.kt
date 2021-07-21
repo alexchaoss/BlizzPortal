@@ -12,7 +12,7 @@ import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.Talents
 
 class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_conduit_row, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_conduit_row, parent, false)) {
 
     private var node1: ConstraintLayout? = null
     private var node2: ConstraintLayout? = null

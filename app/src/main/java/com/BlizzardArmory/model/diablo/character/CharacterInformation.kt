@@ -11,61 +11,61 @@ import com.google.gson.annotations.SerializedName
  */
 data class CharacterInformation(
 
-        @SerializedName("id")
-        var id: Long,
+    @SerializedName("id")
+    var id: Long,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("class")
-        var class_: String,
+    @SerializedName("class")
+    var class_: String,
 
-        @SerializedName("gender")
-        var gender: Int,
+    @SerializedName("gender")
+    var gender: Int,
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("paragonLevel")
-        var paragonLevel: Long,
+    @SerializedName("paragonLevel")
+    var paragonLevel: Long,
 
-        @SerializedName("kills")
-        var kills: Kills,
+    @SerializedName("kills")
+    var kills: Kills,
 
-        @SerializedName("hardcore")
-        var hardcore: Boolean,
+    @SerializedName("hardcore")
+    var hardcore: Boolean,
 
-        @SerializedName("seasonal")
-        var seasonal: Boolean,
+    @SerializedName("seasonal")
+    var seasonal: Boolean,
 
-        @SerializedName("seasonCreated")
-        var seasonCreated: Long,
+    @SerializedName("seasonCreated")
+    var seasonCreated: Long,
 
-        @SerializedName("skills")
-        var skills: Skills,
+    @SerializedName("skills")
+    var skills: Skills,
 
-        @SerializedName("itemsCharacter")
-        var itemsCharacter: ItemsCharacter,
+    @SerializedName("itemsCharacter")
+    var itemsCharacter: ItemsCharacter,
 
-        @SerializedName("followers")
-        var followers: Followers,
+    @SerializedName("followers")
+    var followers: Followers,
 
-        @SerializedName("legendaryPowers")
-        var legendaryPowers: List<LegendaryPower>,
+    @SerializedName("legendaryPowers")
+    var legendaryPowers: List<LegendaryPower>,
 
-        @SerializedName("progression")
-        var progression: Progression,
+    @SerializedName("progression")
+    var progression: Progression,
 
-        @SerializedName("alive")
-        var alive: Boolean,
+    @SerializedName("alive")
+    var alive: Boolean,
 
-        @SerializedName("lastUpdated")
-        var lastUpdated: Long,
+    @SerializedName("lastUpdated")
+    var lastUpdated: Long,
 
-        @SerializedName("highestSoloRiftCompleted")
-        var highestSoloRiftCompleted: Int,
+    @SerializedName("highestSoloRiftCompleted")
+    var highestSoloRiftCompleted: Int,
 
-        @SerializedName("stats")
-        var stats: Stats
+    @SerializedName("stats")
+    var stats: Stats
 
 )

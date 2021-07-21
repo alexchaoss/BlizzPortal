@@ -12,7 +12,8 @@ import com.BlizzardArmory.ui.warcraft.character.progress.ProgressFragment
 import com.BlizzardArmory.ui.warcraft.character.pvp.PvPFragment
 import com.BlizzardArmory.ui.warcraft.character.reputations.ReputationsFragment
 
-class NavAdapter(fm: FragmentManager, private var totalTabs: Int, internal var bundle: Bundle) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class NavAdapter(fm: FragmentManager, private var totalTabs: Int, internal var bundle: Bundle) :
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
         when (position) {

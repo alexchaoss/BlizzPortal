@@ -17,7 +17,7 @@ import com.BlizzardArmory.ui.diablo.account.D3Fragment
 
 
 class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_favorite_profile, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_favorite_profile, parent, false)) {
 
     private var btag: TextView? = null
     private var eliteKills: TextView? = null
@@ -53,7 +53,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             bundle.putString("region", profile.region)
             bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
             fragment.arguments = bundle
-            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "d3fragment").addToBackStack("d3_account").commit()
+            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "d3fragment")
+                .addToBackStack("d3_account").commit()
             fragmentManager.executePendingTransactions()
         }
     }

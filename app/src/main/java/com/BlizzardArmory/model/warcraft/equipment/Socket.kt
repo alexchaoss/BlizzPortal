@@ -10,21 +10,21 @@ import com.google.gson.annotations.SerializedName
 class Socket {
 
     @SerializedName("socket_type")
-        var socketType: SocketType? = null
+    var socketType: SocketType? = null
 
     @SerializedName("item")
-        var item: Item? = null
+    var item: Item? = null
 
     @SerializedName("context")
-        var context = 0
+    var context = 0
 
     @SerializedName("display_string")
-        var displayString: String? = null
+    var displayString: String? = null
 
     @SerializedName("media")
-        var media: Media? = null
+    var media: Media? = null
 
     @SerializedName("bonus_list")
-        var bonusList: List<Int>? = null
+    var bonusList: List<Int>? = null
 
 }

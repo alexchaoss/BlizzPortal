@@ -10,19 +10,19 @@ import com.google.gson.annotations.SerializedName
  */
 data class Scoundrel(
 
-        @SerializedName("slug")
-        var slug: String,
+    @SerializedName("slug")
+    var slug: String,
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("itemsCharacter")
-        var itemsCharacter: ItemsCharacter,
+    @SerializedName("itemsCharacter")
+    var itemsCharacter: ItemsCharacter,
 
-        @SerializedName("stats")
-        var stats: Stats,
+    @SerializedName("stats")
+    var stats: Stats,
 
-        @SerializedName("skills")
-        var skills: List<Any>
+    @SerializedName("skills")
+    var skills: List<Any>
 
 )

@@ -18,7 +18,7 @@ open class PlayerVPlayer {
      * @param rank the rank
      */
     @SerializedName("rank")
-        var rank = 0
+    var rank = 0
 
     /**
      * Gets league name.
@@ -31,7 +31,7 @@ open class PlayerVPlayer {
      * @param leagueName the league name
      */
     @SerializedName("leagueName")
-        var leagueName: String? = null
+    var leagueName: String? = null
 
     /**
      * Gets total games.
@@ -44,7 +44,7 @@ open class PlayerVPlayer {
      * @param totalGames the total games
      */
     @SerializedName("totalGames")
-        var totalGames = 0
+    var totalGames = 0
 
     /**
      * Gets total wins.
@@ -57,6 +57,6 @@ open class PlayerVPlayer {
      * @param totalWins the total wins
      */
     @SerializedName("totalWins")
-        var totalWins = 0
+    var totalWins = 0
 
 }

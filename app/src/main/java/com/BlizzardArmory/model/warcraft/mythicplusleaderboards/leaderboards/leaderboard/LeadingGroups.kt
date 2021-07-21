@@ -2,7 +2,7 @@ package com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.le
 
 import com.google.gson.annotations.SerializedName
 
-data class LeadingGroups (
+data class LeadingGroups(
 
     @SerializedName("ranking") val ranking: Int,
     @SerializedName("duration") val duration: Long,

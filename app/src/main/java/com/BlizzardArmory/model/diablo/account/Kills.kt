@@ -8,14 +8,14 @@ import com.google.gson.annotations.SerializedName
  */
 data class Kills(
 
-        @SerializedName("monsters")
-        var monsters: Int,
+    @SerializedName("monsters")
+    var monsters: Int,
 
-        @SerializedName("elites")
-        var elites: Int,
+    @SerializedName("elites")
+    var elites: Int,
 
 
-        @SerializedName("hardcoreMonsters")
-        var hardcoreMonsters: Int
+    @SerializedName("hardcoreMonsters")
+    var hardcoreMonsters: Int
 
 )

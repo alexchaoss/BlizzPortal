@@ -14,7 +14,7 @@ import com.BlizzardArmory.model.news.NewsMetaData
 import com.bumptech.glide.Glide
 
 class NewsViewHolder(inflater: LayoutInflater, parent: ViewGroup, val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.news_list_item, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.news_list_item, parent, false)) {
 
     private var image: ImageView? = null
     private var title: TextView? = null
@@ -44,9 +44,9 @@ class NewsViewHolder(inflater: LayoutInflater, parent: ViewGroup, val context: C
             fragment.arguments = bundle
             val fragmentManager = (context as AppCompatActivity).supportFragmentManager
             fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                    .add(R.id.fragment, fragment, "news_page_fragment")
-                    .addToBackStack("news_page").commit()
+                .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
+                .add(R.id.fragment, fragment, "news_page_fragment")
+                .addToBackStack("news_page").commit()
             fragmentManager.executePendingTransactions()
         }
     }

@@ -13,17 +13,17 @@ import java.util.*
 
 data class Assists(
 
-        @SerializedName("defensiveAssists")
-        var defensiveAssists: Double,
+    @SerializedName("defensiveAssists")
+    var defensiveAssists: Double,
 
-        @SerializedName("healingDone")
-        var healingDone: Double,
+    @SerializedName("healingDone")
+    var healingDone: Double,
 
-        @SerializedName("offensiveAssists")
-        var offensiveAssists: Double,
+    @SerializedName("offensiveAssists")
+    var offensiveAssists: Double,
 
-        @SerializedName("reconAssists")
-        var reconAssists: Double
+    @SerializedName("reconAssists")
+    var reconAssists: Double
 ) {
     val assists: HashMap<String, String>
         get() {

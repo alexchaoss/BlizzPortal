@@ -87,7 +87,8 @@ class ProgressFragment : Fragment() {
 
         viewModel.getEncounters().observe(viewLifecycleOwner, { encounters ->
             if (encounters.expansions != null) {
-                setAdapter(encounters.expansions.map { it.expansion.name }.toMutableList(), binding.progSpinner)
+                setAdapter(encounters.expansions.map { it.expansion.name }
+                    .toMutableList(), binding.progSpinner)
             }
         })
 
@@ -98,7 +99,8 @@ class ProgressFragment : Fragment() {
 
     private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {
         spinnerList.add(0, "Select Expansion")
-        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
+        val arrayAdapter: ArrayAdapter<*> = object :
+            ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
@@ -156,14 +158,14 @@ class ProgressFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(character: String, realm: String, media: String, region: String) =
-                WoWNavFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(CHARACTER, character)
-                        putString(REALM, realm)
-                        putString(MEDIA, media)
-                        putString(REGION, region)
-                    }
+            WoWNavFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CHARACTER, character)
+                    putString(REALM, realm)
+                    putString(MEDIA, media)
+                    putString(REGION, region)
                 }
+            }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

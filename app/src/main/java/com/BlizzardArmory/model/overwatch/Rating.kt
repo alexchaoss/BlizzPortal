@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class Rating(
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("role")
-        var role: String,
+    @SerializedName("role")
+    var role: String,
 
-        @SerializedName("roleIcon")
-        var roleIcon: String,
+    @SerializedName("roleIcon")
+    var roleIcon: String,
 
-        @SerializedName("rankIcon")
-        var rankIcon: String
+    @SerializedName("rankIcon")
+    var rankIcon: String
 
 )

@@ -9,7 +9,7 @@ class RetryEvent
  *
  * @param data the data
  */(
-        /**
-         * The Data.
-         */
-        var data: Boolean)
+    /**
+     * The Data.
+     */
+    var data: Boolean)

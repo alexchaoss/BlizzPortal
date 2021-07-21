@@ -49,7 +49,7 @@ class SettingsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.onBackPressedDispatcher?.addCallback {
-            if(requireActivity().supportFragmentManager.backStackEntryCount > 1) {
+            if (requireActivity().supportFragmentManager.backStackEntryCount > 1) {
                 when (requireActivity().supportFragmentManager.fragments[requireActivity().supportFragmentManager.backStackEntryCount - 2].tag) {
                     "wowfavorites" -> WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
                     "d3favorites" -> D3FavoriteFragment.addOnBackPressCallback(activity as NavigationActivity)
@@ -63,7 +63,7 @@ class SettingsFragment : Fragment() {
                     "overwatchfragment" -> OWFragment.addOnBackPressCallback(activity as NavigationActivity)
                     else -> NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                 }
-            }else{
+            } else {
                 NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
             }
             activity?.supportFragmentManager?.popBackStack()
@@ -91,7 +91,8 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setAdapater(list: Array<String>): ArrayAdapter<String> {
-        return object : ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, list) {
+        return object :
+            ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, list) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
@@ -152,7 +153,7 @@ class SettingsFragment : Fragment() {
             startActivity(goToMarket)
         } catch (e: ActivityNotFoundException) {
             startActivity(Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" + activity?.packageName)))
+                Uri.parse("http://play.google.com/store/apps/details?id=" + activity?.packageName)))
         }
     }
 

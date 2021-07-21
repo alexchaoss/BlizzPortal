@@ -11,8 +11,8 @@
             <shape>
                 <corners android:radius="5dp" />
                 <stroke
-                    android:color="#666"
-                    android:width="1dp" />
+                    android:width="1dp"
+                    android:color="#666" />
                 <solid android:color="#fff" />
             </shape>
         </clip>

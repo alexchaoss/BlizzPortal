@@ -15,7 +15,7 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 class AcheivementsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_achievement_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_achievement_list, parent, false)) {
 
     var icon: ImageView? = null
     var name: TextView? = null

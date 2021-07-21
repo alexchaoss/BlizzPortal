@@ -11,91 +11,91 @@ import com.google.gson.annotations.SerializedName
  */
 data class CharacterSummary(
 
-        @SerializedName("_links")
-        var links: Links,
+    @SerializedName("_links")
+    var links: Links,
 
-        @SerializedName("id")
-        var id: Long,
+    @SerializedName("id")
+    var id: Long,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("gender")
-        var gender: Gender,
+    @SerializedName("gender")
+    var gender: Gender,
 
-        @SerializedName("faction")
-        var faction: Faction,
+    @SerializedName("faction")
+    var faction: Faction,
 
-        @SerializedName("race")
-        var race: Race,
+    @SerializedName("race")
+    var race: Race,
 
-        @SerializedName("character_class")
-        var characterClass: CharacterClass,
+    @SerializedName("character_class")
+    var characterClass: CharacterClass,
 
-        @SerializedName("active_spec")
-        var activeSpec: ActiveSpec,
+    @SerializedName("active_spec")
+    var activeSpec: ActiveSpec,
 
-        @SerializedName("realm")
-        var realm: Realm,
+    @SerializedName("realm")
+    var realm: Realm,
 
-        @SerializedName("guild")
-        var guild: Guild,
+    @SerializedName("guild")
+    var guild: Guild,
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("experience")
-        var experience: Int,
+    @SerializedName("experience")
+    var experience: Int,
 
-        @SerializedName("achievement_points")
-        var achievementPoints: Int,
+    @SerializedName("achievement_points")
+    var achievementPoints: Int,
 
-        @SerializedName("achievements")
-        var achievements: Achievements,
+    @SerializedName("achievements")
+    var achievements: Achievements,
 
-        @SerializedName("titles")
-        var titles: Titles,
+    @SerializedName("titles")
+    var titles: Titles,
 
-        @SerializedName("pvp_summary")
-        var pvpSummary: PvpSummary,
+    @SerializedName("pvp_summary")
+    var pvpSummary: PvpSummary,
 
-        @SerializedName("raid_progression")
-        var raidProgression: RaidProgression,
+    @SerializedName("raid_progression")
+    var raidProgression: RaidProgression,
 
-        @SerializedName("media")
-        var media: Media,
+    @SerializedName("media")
+    var media: Media,
 
-        @SerializedName("last_login_timestamp")
-        var lastLoginTimestamp: Long,
+    @SerializedName("last_login_timestamp")
+    var lastLoginTimestamp: Long,
 
-        @SerializedName("average_item_level")
-        var averageItemLevel: Int,
+    @SerializedName("average_item_level")
+    var averageItemLevel: Int,
 
-        @SerializedName("equipped_item_level")
-        var equippedItemLevel: Int,
+    @SerializedName("equipped_item_level")
+    var equippedItemLevel: Int,
 
-        @SerializedName("specializations")
-        var specializations: Specializations,
+    @SerializedName("specializations")
+    var specializations: Specializations,
 
-        @SerializedName("statistics")
-        var statistics: Statistics,
+    @SerializedName("statistics")
+    var statistics: Statistics,
 
-        @SerializedName("mythic_keystone_profile")
-        var mythicKeystoneProfile: MythicKeystoneProfile,
+    @SerializedName("mythic_keystone_profile")
+    var mythicKeystoneProfile: MythicKeystoneProfile,
 
-        @SerializedName("equipment")
-        var equipment: Equipment,
+    @SerializedName("equipment")
+    var equipment: Equipment,
 
-        @SerializedName("appearance")
-        var appearance: Appearance,
+    @SerializedName("appearance")
+    var appearance: Appearance,
 
-        @SerializedName("collections")
-        var collections: Collections,
+    @SerializedName("collections")
+    var collections: Collections,
 
-        @SerializedName("active_title")
-        var activeTitle: ActiveTitle,
+    @SerializedName("active_title")
+    var activeTitle: ActiveTitle,
 
-        @SerializedName("reputations")
-        var reputations: Reputations
+    @SerializedName("reputations")
+    var reputations: Reputations
 
 )

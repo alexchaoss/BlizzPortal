@@ -30,7 +30,7 @@ import java.util.*
 
 
 class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_character_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_character_list, parent, false)) {
 
     private var avatar: ImageView? = null
     private var faction: ImageView? = null

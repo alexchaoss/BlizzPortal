@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#293347"
-    android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
+    android:orientation="vertical"
     tools:context=".ui.main.MainActivity">
 
     <ScrollView
@@ -325,8 +325,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/ow_spinner"
-                    android:paddingEnd="25dp"
                     android:hint="@string/time_played"
+                    android:paddingEnd="25dp"
                     android:spinnerMode="dialog"
                     android:textAlignment="viewStart"
                     android:textColorHint="#FFFFFF"
@@ -341,13 +341,13 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/top_hero_recycler"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginTop="5dp"
+                android:orientation="vertical"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/top_crystal" />
@@ -382,8 +382,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/ow_spinner"
-                    android:paddingEnd="25dp"
                     android:hint="@string/time_played"
+                    android:paddingEnd="25dp"
                     android:spinnerMode="dialog"
                     android:textAlignment="viewStart"
                     android:textColorHint="#FFFFFF"
@@ -400,9 +400,9 @@
                 android:id="@+id/career_lists"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:nestedScrollingEnabled="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:nestedScrollingEnabled="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -444,8 +444,8 @@
                             android:id="@+id/assist"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginBottom="5dp">
+                            android:layout_marginBottom="5dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -465,8 +465,8 @@
                             android:id="@+id/game"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginBottom="5dp">
+                            android:layout_marginBottom="5dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -487,8 +487,8 @@
                             android:id="@+id/average"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginBottom="5dp">
+                            android:layout_marginBottom="5dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -515,8 +515,8 @@
                             android:id="@+id/combat"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginBottom="5dp">
+                            android:layout_marginBottom="5dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -536,9 +536,9 @@
                             android:id="@+id/misc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
                             android:orientation="vertical"
-                            android:weightSum="1"
-                            android:layout_marginBottom="5dp">
+                            android:weightSum="1">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -558,9 +558,9 @@
                             android:id="@+id/match"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
                             android:orientation="vertical"
-                            android:weightSum="1"
-                            android:layout_marginBottom="5dp">
+                            android:weightSum="1">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -589,8 +589,8 @@
         android:id="@+id/loadingCircle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:background="#50000000"
+        android:gravity="center"
         android:visibility="gone">
 
         <com.github.ybq.android.spinkit.SpinKitView

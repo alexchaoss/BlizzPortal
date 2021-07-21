@@ -77,7 +77,9 @@ class CovenantFragment : Fragment() {
         })
 
         viewModel.getcovenantClassSpells().observe(viewLifecycleOwner, {
-            Glide.with(requireContext()).load(it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }?.icon).into(binding.covenantClassSpell)
+            Glide.with(requireContext())
+                .load(it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }?.icon)
+                .into(binding.covenantClassSpell)
             setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
 
         })
@@ -117,8 +119,9 @@ class CovenantFragment : Fragment() {
             val soulbinds = viewModel.getSoulbinds().value?.soulbinds
             val index = soulbinds!!.indexOf(soulbinds.find { sb -> sb.soulbind.id == map.key })
             val tree = viewModel.getTechTrees().value!![soulbinds[index].soulbind.id]!!.talents
-                    .sortedBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
-                    .groupBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }.map { it.value }
+                .sortedBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
+                .groupBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
+                .map { it.value }
             when (index) {
                 0 -> {
                     binding.avatar1.setOnClickListener {
@@ -213,16 +216,16 @@ class CovenantFragment : Fragment() {
             13 -> avatar.setImageResource(R.drawable.kleia)
             18 -> avatar.setImageResource(R.drawable.forgelite_prime_mikanikos)
         }
-        if(soulbinds.active){
+        if (soulbinds.active) {
             border.setImageResource(R.drawable.soulbinds_portrait_selected)
             val params = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(120, requireContext()), MetricConversion.getDPMetric(120, requireContext()))
             border.layoutParams = params
-        }else{
+        } else {
             setGreyShade(avatar, 0f)
         }
     }
 
-    private fun setGreyShade(avatar: ImageView , saturation: Float) {
+    private fun setGreyShade(avatar: ImageView, saturation: Float) {
         val matrix = ColorMatrix()
         matrix.setSaturation(saturation)
         avatar.colorFilter = ColorMatrixColorFilter(matrix)
@@ -264,12 +267,12 @@ class CovenantFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(character: String, realm: String, region: String) =
-                WoWNavFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(CHARACTER, character)
-                        putString(REALM, realm)
-                        putString(REGION, region)
-                    }
+            WoWNavFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CHARACTER, character)
+                    putString(REALM, realm)
+                    putString(REGION, region)
                 }
+            }
     }
 }

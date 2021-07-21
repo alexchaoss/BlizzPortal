@@ -10,33 +10,33 @@ import com.google.gson.annotations.SerializedName
 open class Hero {
 
     @SerializedName("assists")
-        var assists: Assists? = null
+    var assists: Assists? = null
 
     @SerializedName("average")
-        var average: Average? = null
+    var average: Average? = null
 
     @SerializedName("best")
-        var best: Best? = null
+    var best: Best? = null
 
     @SerializedName("combat")
-        var combat: Combat? = null
+    var combat: Combat? = null
 
     @SerializedName("deaths")
-        var deaths: Any? = null
+    var deaths: Any? = null
 
     @SerializedName("heroSpecific")
-        var heroSpecific: HeroSpecific? = null
+    var heroSpecific: HeroSpecific? = null
 
     @SerializedName("game")
-        var game: Game? = null
+    var game: Game? = null
 
     @SerializedName("matchAwards")
-        var matchAwards: MatchAwards? = null
+    var matchAwards: MatchAwards? = null
 
     @SerializedName("miscellaneous")
-        var miscellaneous: Miscellaneous? = null
+    var miscellaneous: Miscellaneous? = null
 
-    open fun getName(): String{
+    open fun getName(): String {
         return ""
     }
 

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class User(
 
-        @SerializedName("href")
-        var href: String
+    @SerializedName("href")
+    var href: String
 
 )

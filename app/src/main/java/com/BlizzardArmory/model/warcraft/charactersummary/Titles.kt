@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class Titles(
 
-        @SerializedName("href")
-        var href: String
+    @SerializedName("href")
+    var href: String
 
 )

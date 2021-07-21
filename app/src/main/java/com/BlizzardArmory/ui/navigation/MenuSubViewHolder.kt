@@ -10,7 +10,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.MenuItem
 
 class MenuSubViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.menu_item_sub, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.menu_item_sub, parent, false)) {
 
     private var icon: ImageView? = null
     private var title: TextView? = null

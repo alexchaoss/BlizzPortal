@@ -7,81 +7,81 @@ import com.google.gson.annotations.SerializedName
  * The type Account information.
  */
 data class AccountInformation(
-        @SerializedName("battleTag")
-        var battleTag: String,
+    @SerializedName("battleTag")
+    var battleTag: String,
 
-        @SerializedName("paragonLevel")
-        var paragonLevel: Int,
+    @SerializedName("paragonLevel")
+    var paragonLevel: Int,
 
-        @SerializedName("paragonLevelHardcore")
-        var paragonLevelHardcore: Int,
+    @SerializedName("paragonLevelHardcore")
+    var paragonLevelHardcore: Int,
 
-        @SerializedName("paragonLevelSeason")
-        var paragonLevelSeason: Int,
+    @SerializedName("paragonLevelSeason")
+    var paragonLevelSeason: Int,
 
-        @SerializedName("paragonLevelSeasonHardcore")
-        var paragonLevelSeasonHardcore: Int,
+    @SerializedName("paragonLevelSeasonHardcore")
+    var paragonLevelSeasonHardcore: Int,
 
-        @SerializedName("guildName")
-        var guildName: String,
+    @SerializedName("guildName")
+    var guildName: String,
 
-        @SerializedName("heroes")
-        var heroes: List<Hero>,
+    @SerializedName("heroes")
+    var heroes: List<Hero>,
 
-        @SerializedName("lastHeroPlayed")
-        var lastHeroPlayed: Long,
+    @SerializedName("lastHeroPlayed")
+    var lastHeroPlayed: Long,
 
-        @SerializedName("lastUpdated")
-        var lastUpdated: Long,
+    @SerializedName("lastUpdated")
+    var lastUpdated: Long,
 
-        @SerializedName("kills")
-        var kills: Kills,
+    @SerializedName("kills")
+    var kills: Kills,
 
-        @SerializedName("highestHardcoreLevel")
-        var highestHardcoreLevel: Int,
+    @SerializedName("highestHardcoreLevel")
+    var highestHardcoreLevel: Int,
 
-        @SerializedName("timePlayed")
-        var timePlayed: TimePlayed,
+    @SerializedName("timePlayed")
+    var timePlayed: TimePlayed,
 
-        @SerializedName("progression")
-        var progression: Progression,
+    @SerializedName("progression")
+    var progression: Progression,
 
-        @SerializedName("fallenHeroes")
-        var fallenHeroes: List<FallenHero>,
+    @SerializedName("fallenHeroes")
+    var fallenHeroes: List<FallenHero>,
 
-        @SerializedName("blacksmith")
-        var blacksmith: Blacksmith,
+    @SerializedName("blacksmith")
+    var blacksmith: Blacksmith,
 
-        @SerializedName("jeweler")
-        var jeweler: Jeweler,
+    @SerializedName("jeweler")
+    var jeweler: Jeweler,
 
-        @SerializedName("mystic")
-        var mystic: Mystic,
+    @SerializedName("mystic")
+    var mystic: Mystic,
 
-        @SerializedName("jewelerSeason")
-        var jewelerSeason: JewelerSeason,
+    @SerializedName("jewelerSeason")
+    var jewelerSeason: JewelerSeason,
 
-        @SerializedName("blacksmithSeason")
-        var blacksmithSeason: BlacksmithSeason,
+    @SerializedName("blacksmithSeason")
+    var blacksmithSeason: BlacksmithSeason,
 
-        @SerializedName("mysticSeason")
-        var mysticSeason: MysticSeason,
+    @SerializedName("mysticSeason")
+    var mysticSeason: MysticSeason,
 
-        @SerializedName("blacksmithHardcore")
-        var blacksmithHardcore: BlacksmithHardcore,
+    @SerializedName("blacksmithHardcore")
+    var blacksmithHardcore: BlacksmithHardcore,
 
-        @SerializedName("jewelerHardcore")
-        var jewelerHardcore: JewelerHardcore,
+    @SerializedName("jewelerHardcore")
+    var jewelerHardcore: JewelerHardcore,
 
-        @SerializedName("mysticHardcore")
-        var mysticHardcore: MysticHardcore,
+    @SerializedName("mysticHardcore")
+    var mysticHardcore: MysticHardcore,
 
-        @SerializedName("blacksmithSeasonHardcore")
-        var blacksmithSeasonHardcore: BlacksmithSeasonHardcore,
+    @SerializedName("blacksmithSeasonHardcore")
+    var blacksmithSeasonHardcore: BlacksmithSeasonHardcore,
 
-        @SerializedName("jewelerSeasonHardcore")
-        var jewelerSeasonHardcore: JewelerSeasonHardcore,
+    @SerializedName("jewelerSeasonHardcore")
+    var jewelerSeasonHardcore: JewelerSeasonHardcore,
 
-        @SerializedName("mysticSeasonHardcore")
-        var mysticSeasonHardcore: MysticSeasonHardcore
+    @SerializedName("mysticSeasonHardcore")
+    var mysticSeasonHardcore: MysticSeasonHardcore
 )

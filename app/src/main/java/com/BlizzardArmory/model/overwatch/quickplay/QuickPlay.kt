@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class QuickPlay(
 
-        @SerializedName("quickPlayStats")
-        var quickPlayStats: QuickPlayStats,
+    @SerializedName("quickPlayStats")
+    var quickPlayStats: QuickPlayStats,
 
-        @SerializedName("rating")
-        var rating: Int,
+    @SerializedName("rating")
+    var rating: Int,
 
-        @SerializedName("ratingIcon")
-        var ratingIcon: String,
+    @SerializedName("ratingIcon")
+    var ratingIcon: String,
 
-        @SerializedName("ratings")
-        var ratings: Any
+    @SerializedName("ratings")
+    var ratings: Any
 
 )

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class EliteKills(
 
-        @SerializedName("elites")
-        var elites: Int
+    @SerializedName("elites")
+    var elites: Int
 
 )

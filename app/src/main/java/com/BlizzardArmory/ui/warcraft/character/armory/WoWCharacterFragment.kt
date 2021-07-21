@@ -40,6 +40,7 @@ import com.BlizzardArmory.util.WoWClassColor
 import com.BlizzardArmory.util.events.*
 import com.BlizzardArmory.util.state.FavoriteState
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
@@ -322,7 +323,7 @@ class WoWCharacterFragment : Fragment() {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
                 favoriteCharacters.characters.removeAt(indexOfCharacter)
                 prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
-                Toast.makeText(requireActivity(), "Character removed from favorites", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Character removed from favorites", Snackbar.LENGTH_SHORT)
                     .show()
                 addToFavorite(favoriteCharacters, characterSummary, gson, prefs)
 
@@ -346,7 +347,7 @@ class WoWCharacterFragment : Fragment() {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Full)
                 favoriteCharacters.characters.add(FavoriteCharacter(characterSummary, viewModel.region))
                 prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
-                Toast.makeText(requireActivity(), "Character added to favorites", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Character added to favorites", Snackbar.LENGTH_SHORT)
                     .show()
                 deleteFavorite(favoriteCharacters, characterSummary, indexOfCharacter, gson, prefs)
             }
@@ -561,7 +562,7 @@ class WoWCharacterFragment : Fragment() {
         binding.mastery.text =
             String.format(Locale.ENGLISH, "%s: %.2f%%", resources.getString(R.string.mastery), statistic.mastery.value.toDouble())
         binding.versatility.text = ""
-            String.format(Locale.ENGLISH, "%s: %.2f%%", resources.getString(R.string.vers), statistic.versatilityDamageDoneBonus.toDouble())
+        String.format(Locale.ENGLISH, "%s: %.2f%%", resources.getString(R.string.vers), statistic.versatilityDamageDoneBonus.toDouble())
     }
 
     private fun getErrorMessage(responseCode: Int): String {
@@ -656,6 +657,10 @@ class WoWCharacterFragment : Fragment() {
                             activity.supportFragmentManager.popBackStack()
                         }
                         activity.supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                            ActivityFragment.addOnBackPressCallback(activity)
+                            activity.supportFragmentManager.popBackStack()
+                        }
+                        activity.supportFragmentManager.findFragmentByTag("mplusleaderboard") != null -> {
                             ActivityFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }

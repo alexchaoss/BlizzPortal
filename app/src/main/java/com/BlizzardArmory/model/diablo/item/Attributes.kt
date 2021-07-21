@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName
  */
 data class Attributes(
 
-        @SerializedName("other")
+    @SerializedName("other")
 
-        val other: List<Any>,
+    val other: List<Any>,
 
-        @SerializedName("primary")
+    @SerializedName("primary")
 
-        val primary: List<Primary>,
+    val primary: List<Primary>,
 
-        @SerializedName("secondary")
+    @SerializedName("secondary")
 
-        val secondary: List<Secondary>
+    val secondary: List<Secondary>
 )

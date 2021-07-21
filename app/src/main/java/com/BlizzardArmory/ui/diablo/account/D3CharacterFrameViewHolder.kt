@@ -16,7 +16,7 @@ import org.greenrobot.eventbus.EventBus
 
 
 class D3CharacterFrameViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_character_frame, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_character_frame, parent, false)) {
 
     var frame: ImageView? = null
     var portrait: ImageView? = null

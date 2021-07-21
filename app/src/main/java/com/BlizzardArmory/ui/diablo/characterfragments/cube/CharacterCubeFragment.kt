@@ -27,7 +27,7 @@ class CharacterCubeFragment : Fragment() {
     private val cubeMap = HashMap<String, ImageView?>()
 
     private var characterInformation: CharacterInformation? = null
-    
+
     private var _binding: D3CubeFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CharacterCubeViewModel by viewModels()

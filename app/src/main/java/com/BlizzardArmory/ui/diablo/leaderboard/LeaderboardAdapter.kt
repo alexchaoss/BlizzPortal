@@ -52,7 +52,7 @@ class LeaderboardAdapter(private val list: List<Row>, private val region: String
         notifyDataSetChanged()
     }
 
-    private fun searchWithConstraint(constraint: String, search: (data: String, constraint: String ) -> Boolean) {
+    private fun searchWithConstraint(constraint: String, search: (data: String, constraint: String) -> Boolean) {
         for (row in list) {
             var match = false
             for (player in row.player) {

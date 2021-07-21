@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class Brackets(
 
-        @SerializedName("href") val href: String
+    @SerializedName("href") val href: String
 )

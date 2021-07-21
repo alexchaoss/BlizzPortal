@@ -61,7 +61,7 @@ class NewsPageFragment : Fragment() {
         activity?.supportFragmentManager?.popBackStack()
     }
 
-    companion object{
+    companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 NewsListFragment.addOnBackPressCallback(activity)

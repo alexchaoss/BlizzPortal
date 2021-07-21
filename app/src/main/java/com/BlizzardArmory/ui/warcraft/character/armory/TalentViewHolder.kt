@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
 
 class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_talent_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_talent_list, parent, false)) {
 
     var level: TextView? = null
     var name: TextView? = null
@@ -37,21 +37,21 @@ class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     EventBus.getDefault().post(TalentClickedEvent(
-                            talent.spellTooltip.description,
-                            talent.spellTooltip.spell.name,
-                            talent.spellTooltip.powerCost,
-                            talent.spellTooltip.castTime,
-                            talent.spellTooltip.cooldown,
-                            true))
+                        talent.spellTooltip.description,
+                        talent.spellTooltip.spell.name,
+                        talent.spellTooltip.powerCost,
+                        talent.spellTooltip.castTime,
+                        talent.spellTooltip.cooldown,
+                        true))
                 }
                 MotionEvent.ACTION_UP -> {
                     EventBus.getDefault().post(TalentClickedEvent(
-                            talent.spellTooltip.description,
-                            talent.spellTooltip.spell.name,
-                            talent.spellTooltip.powerCost,
-                            talent.spellTooltip.castTime,
-                            talent.spellTooltip.cooldown,
-                            false))
+                        talent.spellTooltip.description,
+                        talent.spellTooltip.spell.name,
+                        talent.spellTooltip.powerCost,
+                        talent.spellTooltip.castTime,
+                        talent.spellTooltip.cooldown,
+                        false))
                 }
             }
             return@setOnTouchListener true

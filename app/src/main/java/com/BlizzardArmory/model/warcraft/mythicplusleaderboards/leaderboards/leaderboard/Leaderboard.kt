@@ -3,7 +3,7 @@ package com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.le
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
-data class Leaderboard (
+data class Leaderboard(
 
     @SerializedName("_links") val _links: Links,
     @SerializedName("map") val map: GameMap,

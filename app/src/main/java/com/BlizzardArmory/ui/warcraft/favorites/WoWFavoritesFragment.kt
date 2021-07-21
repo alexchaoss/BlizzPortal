@@ -48,7 +48,7 @@ class WoWFavoritesFragment : Fragment() {
         _binding = null
     }
 
-    companion object{
+    companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 NewsPageFragment.addOnBackPressCallback(activity)

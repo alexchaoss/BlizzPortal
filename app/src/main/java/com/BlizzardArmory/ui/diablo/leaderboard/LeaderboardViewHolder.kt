@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
 
 
 class LeaderboardViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_leaderboard_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_leaderboard_list, parent, false)) {
 
     var rank: TextView? = null
     var tier: TextView? = null

@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class LadderTeam(
 
-        @SerializedName("ladderMembers") val ladderMembers: List<LadderMembers>
+    @SerializedName("ladderMembers") val ladderMembers: List<LadderMembers>
 )

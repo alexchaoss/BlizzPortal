@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Transmog(
 
-        @SerializedName("item")
-        var item: Item,
+    @SerializedName("item")
+    var item: Item,
 
-        @SerializedName("display_string")
-        var displayString: String,
+    @SerializedName("display_string")
+    var displayString: String,
 
-        @SerializedName("item_modified_appearance_id")
-        var itemModifiedAppearanceId: Long
+    @SerializedName("item_modified_appearance_id")
+    var itemModifiedAppearanceId: Long
 
 )

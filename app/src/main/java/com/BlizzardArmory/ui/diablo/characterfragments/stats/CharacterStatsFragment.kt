@@ -41,7 +41,7 @@ class CharacterStatsFragment : Fragment() {
     private var selectedRegion = ""
     private var id = 0L
     private lateinit var errorMessages: ErrorMessages
-    
+
     private var _binding: D3CharacterFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CharacterStatsViewModel by viewModels()
@@ -107,10 +107,14 @@ class CharacterStatsFragment : Fragment() {
 
     private fun setStats() {
         val primaryStats = DecimalFormat("#0")
-        binding.strengthText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.strength?.roundToInt()).toString()
-        binding.dexterityText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.dexterity?.roundToInt()).toString()
-        binding.intelligenceText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.intelligence?.roundToInt()).toString()
-        binding.vitalityText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.vitality?.roundToInt()).toString()
+        binding.strengthText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.strength?.roundToInt())
+            .toString()
+        binding.dexterityText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.dexterity?.roundToInt())
+            .toString()
+        binding.intelligenceText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.intelligence?.roundToInt())
+            .toString()
+        binding.vitalityText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.vitality?.roundToInt())
+            .toString()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.damage.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.damage) + "</font>", Html.FROM_HTML_MODE_LEGACY)
             binding.toughness.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.toughness) + "</font>", Html.FROM_HTML_MODE_LEGACY)
@@ -151,15 +155,19 @@ class CharacterStatsFragment : Fragment() {
 
     private fun setGlobes() {
         val life: String = if (viewModel.getCharacterInformation().value!!.stats.life >= 1000) {
-            (viewModel.getCharacterInformation().value!!.stats.life / 1000).roundToInt().toString() + "K"
+            (viewModel.getCharacterInformation().value!!.stats.life / 1000).roundToInt()
+                .toString() + "K"
         } else {
             viewModel.getCharacterInformation().value!!.stats.life.toString()
         }
         binding.totalLife.text = life
         val ressourceText: String = if (viewModel.getCharacterInformation().value!!.class_ == "demon-hunter") {
-            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt().toString() + "\n" + viewModel.getCharacterInformation().value!!.stats.secondaryResource.roundToInt().toString()
+            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt()
+                .toString() + "\n" + viewModel.getCharacterInformation().value!!.stats.secondaryResource.roundToInt()
+                .toString()
         } else {
-            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt().toString()
+            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt()
+                .toString()
         }
         binding.ressource.text = ressourceText
         when (viewModel.getCharacterInformation().value!!.class_) {
@@ -267,7 +275,7 @@ class CharacterStatsFragment : Fragment() {
         spellPanelShown = spellShownEvent.data
     }
 
-    companion object{
+    companion object {
         private var itemPanelShown = false
         private var spellPanelShown = false
         fun addOnBackPressCallback(activity: NavigationActivity) {

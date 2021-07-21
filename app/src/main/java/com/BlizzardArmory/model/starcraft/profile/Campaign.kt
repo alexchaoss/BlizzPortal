@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class Campaign(
 
-        @SerializedName("difficultyCompleted")
-        var difficultyCompleted: DifficultyCompleted
+    @SerializedName("difficultyCompleted")
+    var difficultyCompleted: DifficultyCompleted
 
 )

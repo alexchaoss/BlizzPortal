@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class Gem(
 
-        @SerializedName("item")
-        var item: GemInfo,
+    @SerializedName("item")
+    var item: GemInfo,
 
-        @SerializedName("attributes")
-        var attributes: List<String>,
+    @SerializedName("attributes")
+    var attributes: List<String>,
 
-        @SerializedName("isGem")
-        var isGem: Boolean,
+    @SerializedName("isGem")
+    var isGem: Boolean,
 
-        @SerializedName("isJewel")
-        var isJewel: Boolean
+    @SerializedName("isJewel")
+    var isJewel: Boolean
 
 )

@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/d3_nav"
-        app:tabTextAppearance="@style/MineCustomTabText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabIndicatorColor="#ff0000"
         app:tabSelectedTextColor="#F5F5F5"
+        app:tabTextAppearance="@style/MineCustomTabText"
         app:tabTextColor="#555555">
 
         <com.google.android.material.tabs.TabItem

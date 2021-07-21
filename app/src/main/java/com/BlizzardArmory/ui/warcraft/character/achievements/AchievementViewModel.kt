@@ -95,13 +95,15 @@ class AchievementViewModel : BaseViewModel() {
     }
 
     private fun createAchievementsMap() {
-        Log.i("IS NULL", allAchievements.value.isNullOrEmpty().toString() + " " + categories.value.isNullOrEmpty().toString() + " " + (characterAchievements.value != null).toString())
+        Log.i("IS NULL", allAchievements.value.isNullOrEmpty()
+            .toString() + " " + categories.value.isNullOrEmpty()
+            .toString() + " " + (characterAchievements.value != null).toString())
         mappedAchievements.value = categories.value?.groupBy { it.id }
-                ?.mapValues { map ->
-                    allAchievements.value?.filter { a ->
-                        a.category_id == map.key && characterAchievements.value!!.achievements.any { b -> a.id == b.id }
-                    }
-                }?.toMutableMap()!!
+            ?.mapValues { map ->
+                allAchievements.value?.filter { a ->
+                    a.category_id == map.key && characterAchievements.value!!.achievements.any { b -> a.id == b.id }
+                }
+            }?.toMutableMap()!!
         if (!EventBus.getDefault().isRegistered(this@AchievementViewModel)) {
             EventBus.getDefault().register(this@AchievementViewModel)
         }

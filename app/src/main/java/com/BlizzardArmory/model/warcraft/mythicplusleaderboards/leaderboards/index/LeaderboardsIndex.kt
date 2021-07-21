@@ -3,8 +3,8 @@ package com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.in
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
-data class LeaderboardsIndex (
+data class LeaderboardsIndex(
 
-	@SerializedName("_links") val links : Links,
-	@SerializedName("current_leaderboards") val current_leaderboards : List<CurrentLeaderboards>
+    @SerializedName("_links") val links: Links,
+    @SerializedName("current_leaderboards") val current_leaderboards: List<CurrentLeaderboards>
 )

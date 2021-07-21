@@ -89,7 +89,8 @@ class ReputationsFragment : Fragment() {
         })
 
         viewModel.getReputations().observe(viewLifecycleOwner, {
-            val xpacs = viewModel.getReputationsWithParentInfo().value!!.filter { expansionsId.contains(it.id) }.sortedBy { expansionsId.indexOf(it.id) }.map { it.name }
+            val xpacs = viewModel.getReputationsWithParentInfo().value!!.filter { expansionsId.contains(it.id) }
+                .sortedBy { expansionsId.indexOf(it.id) }.map { it.name }
             setAdapter(xpacs.toMutableList(), binding.repSpinner)
         })
 
@@ -100,7 +101,8 @@ class ReputationsFragment : Fragment() {
 
     private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {
         spinnerList.add(0, "Select Expansion")
-        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
+        val arrayAdapter: ArrayAdapter<*> = object :
+            ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
@@ -156,14 +158,14 @@ class ReputationsFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(character: String, realm: String, media: String, region: String) =
-                WoWNavFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(CHARACTER, character)
-                        putString(REALM, realm)
-                        putString(MEDIA, media)
-                        putString(REGION, region)
-                    }
+            WoWNavFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CHARACTER, character)
+                    putString(REALM, realm)
+                    putString(MEDIA, media)
+                    putString(REGION, region)
                 }
+            }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

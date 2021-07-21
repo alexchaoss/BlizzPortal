@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName
  */
 data class BlacksmithSeason(
 
-        @SerializedName("slug")
-        var slug: String,
+    @SerializedName("slug")
+    var slug: String,
 
 
-        @SerializedName("level")
-        var level: Int
+    @SerializedName("level")
+    var level: Int
 
 )

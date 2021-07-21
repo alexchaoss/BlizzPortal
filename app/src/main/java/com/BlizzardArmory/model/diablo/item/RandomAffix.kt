@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class RandomAffix(
 
-        @SerializedName("oneOf")
+    @SerializedName("oneOf")
 
-        val oneOf: List<OneOf>
+    val oneOf: List<OneOf>
 )

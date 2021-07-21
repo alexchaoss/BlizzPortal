@@ -13,38 +13,38 @@ import java.util.*
 
 data class Average(
 
-        @SerializedName("allDamageDoneAvgPer10Min")
-        var allDamageDoneAvgPer10Min: Double,
+    @SerializedName("allDamageDoneAvgPer10Min")
+    var allDamageDoneAvgPer10Min: Double,
 
-        @SerializedName("barrierDamageDoneAvgPer10Min")
-        var barrierDamageDoneAvgPer10Min: Double,
+    @SerializedName("barrierDamageDoneAvgPer10Min")
+    var barrierDamageDoneAvgPer10Min: Double,
 
-        @SerializedName("deathsAvgPer10Min")
-        var deathsAvgPer10Min: Float,
+    @SerializedName("deathsAvgPer10Min")
+    var deathsAvgPer10Min: Float,
 
-        @SerializedName("eliminationsAvgPer10Min")
-        var eliminationsAvgPer10Min: Float,
+    @SerializedName("eliminationsAvgPer10Min")
+    var eliminationsAvgPer10Min: Float,
 
-        @SerializedName("finalBlowsAvgPer10Min")
-        var finalBlowsAvgPer10Min: Float,
+    @SerializedName("finalBlowsAvgPer10Min")
+    var finalBlowsAvgPer10Min: Float,
 
-        @SerializedName("healingDoneAvgPer10Min")
-        var healingDoneAvgPer10Min: Double,
+    @SerializedName("healingDoneAvgPer10Min")
+    var healingDoneAvgPer10Min: Double,
 
-        @SerializedName("heroDamageDoneAvgPer10Min")
-        var heroDamageDoneAvgPer10Min: Double,
+    @SerializedName("heroDamageDoneAvgPer10Min")
+    var heroDamageDoneAvgPer10Min: Double,
 
-        @SerializedName("objectiveKillsAvgPer10Min")
-        var objectiveKillsAvgPer10Min: Float,
+    @SerializedName("objectiveKillsAvgPer10Min")
+    var objectiveKillsAvgPer10Min: Float,
 
-        @SerializedName("objectiveTimeAvgPer10Min")
-        var objectiveTimeAvgPer10Min: String,
+    @SerializedName("objectiveTimeAvgPer10Min")
+    var objectiveTimeAvgPer10Min: String,
 
-        @SerializedName("soloKillsAvgPer10Min")
-        var soloKillsAvgPer10Min: Float,
+    @SerializedName("soloKillsAvgPer10Min")
+    var soloKillsAvgPer10Min: Float,
 
-        @SerializedName("timeSpentOnFireAvgPer10Min")
-        var timeSpentOnFireAvgPer10Min: String
+    @SerializedName("timeSpentOnFireAvgPer10Min")
+    var timeSpentOnFireAvgPer10Min: String
 ) {
     val average: HashMap<String, String>
         get() {

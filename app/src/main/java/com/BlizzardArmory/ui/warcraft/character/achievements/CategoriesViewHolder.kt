@@ -16,7 +16,7 @@ import com.BlizzardArmory.util.events.SubCategoryEvent
 import org.greenrobot.eventbus.EventBus
 
 class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_achievement_category, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_achievement_category, parent, false)) {
 
     var progressBar: ProgressBar? = null
     var categoryName: TextView? = null
@@ -53,7 +53,8 @@ class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
                 }?.map { it.points }?.sumBy { it }!!
             }
         } else {
-            currentPoints = mappedAchievements[category.id]?.filter { achievements.find { ac -> ac.id == it.id }?.completed_timestamp != 0L }?.sumBy { it.points }!!
+            currentPoints = mappedAchievements[category.id]?.filter { achievements.find { ac -> ac.id == it.id }?.completed_timestamp != 0L }
+                ?.sumBy { it.points }!!
         }
 
         Log.i("points", currentPoints.toString())

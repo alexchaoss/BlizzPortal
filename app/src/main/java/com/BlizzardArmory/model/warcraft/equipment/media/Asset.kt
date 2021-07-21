@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Asset(
 
-        @SerializedName("key")
-        var key: String,
+    @SerializedName("key")
+    var key: String,
 
-        @SerializedName("value")
-        var value: String
+    @SerializedName("value")
+    var value: String
 
 )

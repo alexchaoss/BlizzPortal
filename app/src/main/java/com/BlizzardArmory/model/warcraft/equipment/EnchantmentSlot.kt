@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class EnchantmentSlot(
 
-        @SerializedName("id")
-        var id: Long,
+    @SerializedName("id")
+    var id: Long,
 
-        @SerializedName("type")
-        var type: String
+    @SerializedName("type")
+    var type: String
 
 )

@@ -44,7 +44,8 @@ class SC2LeaderboardViewModel : BaseViewModel() {
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val board = response.body()
-                    leaderboard.value = board!!.ladderMembers.groupBy { Triple(it.joinTimestamp, it.wins, it.losses) }.map { it.value }
+                    leaderboard.value = board!!.ladderMembers.groupBy { Triple(it.joinTimestamp, it.wins, it.losses) }
+                        .map { it.value }
                     NetworkUtils.loading = false
                 } else {
                     NetworkUtils.loading = false

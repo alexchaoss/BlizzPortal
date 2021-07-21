@@ -4,7 +4,7 @@ import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
 
-data class Season (
+data class Season(
 
     @SerializedName("_links") val links: Links,
     @SerializedName("id") val id: Int,

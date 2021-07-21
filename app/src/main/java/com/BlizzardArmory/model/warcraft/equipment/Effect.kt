@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Effect(
 
-        @SerializedName("display_string")
-        var displayString: String,
+    @SerializedName("display_string")
+    var displayString: String,
 
-        @SerializedName("required_count")
-        var requiredCount: Int
+    @SerializedName("required_count")
+    var requiredCount: Int
 
 )

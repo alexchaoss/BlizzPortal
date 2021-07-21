@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class UserInformation(
 
-        @SerializedName("sub")
-        val sub: String,
+    @SerializedName("sub")
+    val sub: String,
 
-        @SerializedName("id")
-        val userID: String,
+    @SerializedName("id")
+    val userID: String,
 
-        @SerializedName("battletag")
-        val battleTag: String
+    @SerializedName("battletag")
+    val battleTag: String
 
 )

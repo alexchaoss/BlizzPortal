@@ -13,8 +13,11 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
@@ -23,6 +26,7 @@ import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
@@ -130,8 +134,7 @@ class MainActivity : LocalizationActivity() {
     private fun setLoginButtonToBattlenet() {
         binding.buttonLogin.setOnClickListener {
             if (selectedRegion == "Select Region") {
-                Toast.makeText(applicationContext, "Please select a region", Toast.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(binding.root, "Please select a region", Snackbar.LENGTH_SHORT).show()
             } else {
                 checkConnectionBeforeLogin()
             }

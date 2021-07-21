@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Weapon(
 
-        @SerializedName("damage")
-        var damage: Damage,
+    @SerializedName("damage")
+    var damage: Damage,
 
-        @SerializedName("attack_speed")
-        var attackSpeed: AttackSpeed,
+    @SerializedName("attack_speed")
+    var attackSpeed: AttackSpeed,
 
-        @SerializedName("dps")
-        var dps: Dps
+    @SerializedName("dps")
+    var dps: Dps
 
 )

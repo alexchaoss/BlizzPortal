@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Best1v1Finish(
 
-        @SerializedName("leagueName")
-        var leagueName: String,
+    @SerializedName("leagueName")
+    var leagueName: String,
 
-        @SerializedName("timesAchieved")
-        var timesAchieved: Int
+    @SerializedName("timesAchieved")
+    var timesAchieved: Int
 
 )

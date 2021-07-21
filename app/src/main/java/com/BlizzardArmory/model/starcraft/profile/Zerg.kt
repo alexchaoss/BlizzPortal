@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 class Zerg(
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("maxLevelPoints")
-        var maxLevelPoints: Int,
+    @SerializedName("maxLevelPoints")
+    var maxLevelPoints: Int,
 
-        @SerializedName("currentLevelPoints")
-        var currentLevelPoints: Int
+    @SerializedName("currentLevelPoints")
+    var currentLevelPoints: Int
 
 )

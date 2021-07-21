@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class SwarmLevels(
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("terran")
-        var terran: Terran,
+    @SerializedName("terran")
+    var terran: Terran,
 
-        @SerializedName("zerg")
-        var zerg: Zerg,
+    @SerializedName("zerg")
+    var zerg: Zerg,
 
-        @SerializedName("protoss")
-        var protoss: Protoss
+    @SerializedName("protoss")
+    var protoss: Protoss
 
 )

@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/sc2BackgroundColor"
-    android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
+    android:orientation="vertical"
     tools:context=".ui.main.MainActivity">
 
 
@@ -115,8 +115,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/starcraft_normal"
-                android:text="@string/snapshot"
                 android:gravity="center"
+                android:text="@string/snapshot"
                 android:textAlignment="center"
                 android:textColor="#FFF"
                 android:textSize="30sp"
@@ -293,8 +293,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/starcraft_normal"
-                android:text="@string/statistics"
                 android:gravity="center"
+                android:text="@string/statistics"
                 android:textAlignment="center"
                 android:textColor="#FFF"
                 android:textSize="30sp"
@@ -354,8 +354,8 @@
                         android:id="@+id/zerg_wins"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
                         android:gravity="end"
+                        android:textAlignment="viewEnd"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -377,8 +377,8 @@
                         android:id="@+id/protoss_wins"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
                         android:gravity="end"
+                        android:textAlignment="viewEnd"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -401,8 +401,8 @@
                         android:id="@+id/season_played"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
                         android:gravity="end"
+                        android:textAlignment="viewEnd"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -425,8 +425,8 @@
                         android:id="@+id/career_played"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
                         android:gravity="end"
+                        android:textAlignment="viewEnd"
                         android:textColor="#cce6ff"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -510,8 +510,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/starcraft_normal"
-                android:text="@string/race_levels"
                 android:gravity="center"
+                android:text="@string/race_levels"
                 android:textAlignment="center"
                 android:textColor="#FFF"
                 android:textSize="30sp"
@@ -670,8 +670,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/starcraft_normal"
-                android:text="@string/campaign"
                 android:gravity="center"
+                android:text="@string/campaign"
                 android:textAlignment="center"
                 android:textColor="#FFF"
                 android:textSize="30sp"
@@ -833,8 +833,8 @@
         android:id="@+id/loadingCircle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:background="#50000000"
+        android:gravity="center"
         android:visibility="gone">
 
         <com.github.ybq.android.spinkit.SpinKitView

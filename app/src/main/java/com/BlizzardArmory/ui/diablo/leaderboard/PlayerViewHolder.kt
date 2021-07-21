@@ -21,10 +21,10 @@ import com.bumptech.glide.Glide
 
 
 class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_player_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_player_list, parent, false)) {
 
-    var btag : TextView? = null
-    var icon : ImageView? = null
+    var btag: TextView? = null
+    var icon: ImageView? = null
 
     init {
         btag = itemView.findViewById(R.id.btag)
@@ -45,7 +45,9 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         btag?.text = playerName
         btag?.setTextColor(getColorByClass(player.data.find { it.id == "HeroClass" }?.string))
 
-        Glide.with(context).load(NetworkUtils.getD3Asset(getGender(player.data.find { it.id == "HeroClass" }?.string!!, player.data.find { it.id == "HeroGender" }?.string!!))).into(icon!!)
+        Glide.with(context)
+            .load(NetworkUtils.getD3Asset(getGender(player.data.find { it.id == "HeroClass" }?.string!!, player.data.find { it.id == "HeroGender" }?.string!!)))
+            .into(icon!!)
 
         val battlenetOAuth2Params: BattlenetOAuth2Params? = (context as NavigationActivity).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         if (playerName != "unavailable") {
@@ -54,7 +56,7 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
     }
 
     private fun getColorByClass(heroClass: String?): Int {
-        return when(heroClass){
+        return when (heroClass) {
             "monk" -> Color.parseColor("#cdd410")
             "barbarian" -> Color.parseColor("#e38f35")
             "witch doctor" -> Color.parseColor("#14d156")

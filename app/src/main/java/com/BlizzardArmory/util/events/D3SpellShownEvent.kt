@@ -9,7 +9,7 @@ class D3SpellShownEvent
  *
  * @param data the data
  */(
-        /**
-         * The Data.
-         */
-        var data: Boolean)
+    /**
+     * The Data.
+     */
+    var data: Boolean)

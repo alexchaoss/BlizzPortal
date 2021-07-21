@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 class AttackSpeed(
 
-        @SerializedName("value")
-        var value: Int,
+    @SerializedName("value")
+    var value: Int,
 
-        @SerializedName("display_string")
-        var displayString: String
+    @SerializedName("display_string")
+    var displayString: String
 
 )

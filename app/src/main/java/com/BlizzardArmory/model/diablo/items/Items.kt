@@ -8,43 +8,43 @@ import com.google.gson.annotations.SerializedName
  */
 data class Items(
 
-        @SerializedName("head")
-        var head: Head,
+    @SerializedName("head")
+    var head: Head,
 
-        @SerializedName("neck")
-        var neck: Neck,
+    @SerializedName("neck")
+    var neck: Neck,
 
-        @SerializedName("torso")
-        var torso: Torso,
+    @SerializedName("torso")
+    var torso: Torso,
 
-        @SerializedName("shoulders")
-        var shoulders: Shoulders,
+    @SerializedName("shoulders")
+    var shoulders: Shoulders,
 
-        @SerializedName("legs")
-        var legs: Legs,
+    @SerializedName("legs")
+    var legs: Legs,
 
-        @SerializedName("waist")
-        var waist: Waist,
+    @SerializedName("waist")
+    var waist: Waist,
 
-        @SerializedName("hands")
-        var hands: Hands,
+    @SerializedName("hands")
+    var hands: Hands,
 
-        @SerializedName("bracers")
-        var bracers: Bracers,
+    @SerializedName("bracers")
+    var bracers: Bracers,
 
-        @SerializedName("feet")
-        var feet: Feet,
+    @SerializedName("feet")
+    var feet: Feet,
 
-        @SerializedName("leftFinger")
-        var leftFinger: LeftFinger,
+    @SerializedName("leftFinger")
+    var leftFinger: LeftFinger,
 
-        @SerializedName("rightFinger")
-        var rightFinger: RightFinger,
+    @SerializedName("rightFinger")
+    var rightFinger: RightFinger,
 
-        @SerializedName("mainHand")
-        var mainHand: MainHand,
+    @SerializedName("mainHand")
+    var mainHand: MainHand,
 
-        @SerializedName("offHand")
-        var offHand: OffHand
+    @SerializedName("offHand")
+    var offHand: OffHand
 
 )

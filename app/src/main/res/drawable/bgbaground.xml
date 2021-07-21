@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Describes the line -->
     <item
-        android:start="-2dp"
-        android:end="-2dp">
+        android:end="-2dp"
+        android:start="-2dp">
         <shape>
             <solid android:color="#05FFFFFF" />
             <stroke

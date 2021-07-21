@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class Dye(
 
-        @SerializedName("id")
-        var id: String,
+    @SerializedName("id")
+    var id: String,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("icon")
-        var icon: String,
+    @SerializedName("icon")
+    var icon: String,
 
-        @SerializedName("tooltipParams")
-        var tooltipParams: String
+    @SerializedName("tooltipParams")
+    var tooltipParams: String
 
 )

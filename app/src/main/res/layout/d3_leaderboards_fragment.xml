@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="vertical"
         android:weightSum="4">
 
@@ -22,52 +22,56 @@
             android:layout_height="wrap_content"
             android:layoutDirection="rtl"
             app:chainUseRtl="true"
-            app:searchIcon="@drawable/rep_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:searchIcon="@drawable/rep_search" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:paddingTop="10dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal"
-            android:layout_marginBottom="5dp">
+            android:paddingStart="5dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="5dp">
+
             <TextView
-                android:layout_weight="0.5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="0.5"
                 android:gravity="center"
                 android:paddingStart="10dp"
                 android:text="Rank"
-                android:textColor="#FFF"/>
+                android:textColor="#FFF" />
+
             <TextView
-                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="2"
                 android:gravity="center"
                 android:text="Players"
-                android:textColor="#FFF"/>
+                android:textColor="#FFF" />
+
             <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="0.5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_gravity="center"
                 android:text="Tier"
-                android:textColor="#FFF"/>
+                android:textColor="#FFF" />
+
             <TextView
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:text="Time"
-                android:textColor="#FFF"/>
+                android:textColor="#FFF" />
         </LinearLayout>
 
 

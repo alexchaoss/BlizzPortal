@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Media(
 
-        @SerializedName("_links")
-        var links: Links,
+    @SerializedName("_links")
+    var links: Links,
 
-        @SerializedName("assets")
-        var assets: List<Asset>
+    @SerializedName("assets")
+    var assets: List<Asset>
 
 )

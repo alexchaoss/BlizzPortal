@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/wow_nav"
-        app:tabMode="auto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabTextAppearance="@style/MineCustomTabText"
         app:tabIndicatorColor="@color/owBackgroundColor"
+        app:tabMode="auto"
         app:tabSelectedTextColor="@color/owBackgroundColor"
+        app:tabTextAppearance="@style/MineCustomTabText"
 
         app:tabTextColor="@color/owHeaderColor">
 

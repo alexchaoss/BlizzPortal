@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName
  */
 data class BlacksmithHardcore(
 
-        @SerializedName("slug")
-        var slug: String,
+    @SerializedName("slug")
+    var slug: String,
 
 
-        @SerializedName("level")
-        var level: Int? = null
+    @SerializedName("level")
+    var level: Int? = null
 
 )

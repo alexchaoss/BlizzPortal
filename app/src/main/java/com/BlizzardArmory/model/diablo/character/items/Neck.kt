@@ -20,7 +20,7 @@ class Neck {
      * @param id the id
      */
     @SerializedName("id")
-        var id: String? = null
+    var id: String? = null
 
     /**
      * Gets name.
@@ -33,7 +33,7 @@ class Neck {
      * @param name the name
      */
     @SerializedName("name")
-        var name: String? = null
+    var name: String? = null
 
     /**
      * Gets icon.
@@ -46,7 +46,7 @@ class Neck {
      * @param icon the icon
      */
     @SerializedName("icon")
-        var icon: String? = null
+    var icon: String? = null
 
     /**
      * Gets display color.
@@ -59,7 +59,7 @@ class Neck {
      * @param displayColor the display color
      */
     @SerializedName("displayColor")
-        var displayColor: String? = null
+    var displayColor: String? = null
 
     /**
      * Gets tooltip params.
@@ -72,9 +72,10 @@ class Neck {
      * @param tooltipParams the tooltip params
      */
     @SerializedName("tooltipParams")
-        var tooltipParams: String? = null
+    var tooltipParams: String? = null
 
     override fun toString(): String {
-        return ToStringBuilder(this).append("id", id).append("name", name).append("icon", icon).append("displayColor", displayColor).append("tooltipParams", tooltipParams).toString()
+        return ToStringBuilder(this).append("id", id).append("name", name).append("icon", icon)
+            .append("displayColor", displayColor).append("tooltipParams", tooltipParams).toString()
     }
 }

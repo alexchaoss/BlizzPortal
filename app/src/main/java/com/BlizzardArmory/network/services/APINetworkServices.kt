@@ -4,18 +4,17 @@ import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
 import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
-import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.instances.Instances
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.expansion.Expansion
 import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
+import com.BlizzardArmory.model.warcraft.specialization.Specialization
 import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import com.BlizzardArmory.network.NetworkUtils
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Url
 
 interface APINetworkServices {
-
-    @GET("/instances/{locale}")
-    suspend fun getInstances(@Path("locale") locale: String = NetworkUtils.locale): Response<List<Instances>>
 
     @GET("/categories/{locale}")
     suspend fun getAchievementCategories(@Path("locale") locale: String = NetworkUtils.locale): Response<Categories>
@@ -41,4 +40,11 @@ interface APINetworkServices {
 
     @GET("/reputations/{locale}")
     suspend fun getReputationPlusParentInfo(@Path("locale") locale: String = NetworkUtils.locale): Response<List<ReputationPlusParentInfo>>
+
+    @GET("/playableSpecialization")
+    suspend fun getAllPlayableSpecializations(): Response<List<Specialization>>
+
+    //Raider.IO
+    @GET
+    suspend fun getExpansion(@Url url: String): Response<Expansion>
 }

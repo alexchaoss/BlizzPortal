@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Skills(
 
-        @SerializedName("active")
-        var active: List<Active>,
+    @SerializedName("active")
+    var active: List<Active>,
 
-        @SerializedName("passive")
-        var passive: List<Passive>
+    @SerializedName("passive")
+    var passive: List<Passive>
 
 )

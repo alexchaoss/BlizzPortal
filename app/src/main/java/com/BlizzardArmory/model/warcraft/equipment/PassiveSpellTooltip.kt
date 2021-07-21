@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class PassiveSpellTooltip(
 
-        @SerializedName("spell")
-        var spell: Spell,
+    @SerializedName("spell")
+    var spell: Spell,
 
-        @SerializedName("description")
-        var description: String,
+    @SerializedName("description")
+    var description: String,
 
-        @SerializedName("cast_time")
-        var castTime: String
+    @SerializedName("cast_time")
+    var castTime: String
 
 )

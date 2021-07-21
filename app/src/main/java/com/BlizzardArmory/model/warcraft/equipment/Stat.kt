@@ -8,22 +8,22 @@ import com.google.gson.annotations.SerializedName
  */
 data class Stat(
 
-        @SerializedName("type")
-        var type: Type,
+    @SerializedName("type")
+    var type: Type,
 
-        @SerializedName("value")
-        var value: Int,
+    @SerializedName("value")
+    var value: Int,
 
-        @SerializedName("display_string")
-        var display_string: String,
+    @SerializedName("display_string")
+    var display_string: String,
 
-        @SerializedName("display")
-        var display: Display,
+    @SerializedName("display")
+    var display: Display,
 
-        @SerializedName("is_negated")
-        var isIsNegated: Boolean,
+    @SerializedName("is_negated")
+    var isIsNegated: Boolean,
 
-        @SerializedName("is_equip_bonus")
-        var isIsEquipBonus: Boolean
+    @SerializedName("is_equip_bonus")
+    var isIsEquipBonus: Boolean
 
 )

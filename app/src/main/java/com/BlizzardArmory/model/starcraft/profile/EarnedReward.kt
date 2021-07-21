@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class EarnedReward(
 
-        @SerializedName("rewardId")
-        var rewardId: String,
+    @SerializedName("rewardId")
+    var rewardId: String,
 
-        @SerializedName("achievementId")
-        var achievementId: String,
+    @SerializedName("achievementId")
+    var achievementId: String,
 
-        @SerializedName("selected")
-        var isSelected: Boolean
+    @SerializedName("selected")
+    var isSelected: Boolean
 
 )

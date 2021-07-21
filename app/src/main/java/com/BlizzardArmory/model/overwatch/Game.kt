@@ -11,11 +11,11 @@ import java.util.*
 
 data class Game(
 
-        @SerializedName("gamesWon")
-        var gamesWon: Int,
+    @SerializedName("gamesWon")
+    var gamesWon: Int,
 
-        @SerializedName("timePlayed")
-        var timePlayed: String
+    @SerializedName("timePlayed")
+    var timePlayed: String
 ) {
     val game: HashMap<String, String>
         get() {

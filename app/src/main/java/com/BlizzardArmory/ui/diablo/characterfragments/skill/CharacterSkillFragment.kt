@@ -143,15 +143,17 @@ class CharacterSkillFragment : Fragment() {
                     }, null)
                 }
             }
-            Glide.with(this).load(NetworkUtils.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
-                    .placeholder(R.drawable.loading_placeholder).into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            skillList[skillIcons[key]!!.first].setImageDrawable(resource)
-                            setOnTouchSkillTooltip(key, runeText, skillList[skillIcons[key]!!.first].drawable)
-                        }
+            Glide.with(this)
+                .load(NetworkUtils.D3_ICON_SKILLS.replace("url", skillIcons[key]!!.second.skill.icon))
+                .placeholder(R.drawable.loading_placeholder)
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        skillList[skillIcons[key]!!.first].setImageDrawable(resource)
+                        setOnTouchSkillTooltip(key, runeText, skillList[skillIcons[key]!!.first].drawable)
+                    }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
         }
     }
 
@@ -172,16 +174,16 @@ class CharacterSkillFragment : Fragment() {
                 binding.tooltipSkillIcon.setPadding(0, 0, 0, 0)
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     binding.skillTooltipText.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
-                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                            .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
+                        .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                        .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                        .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                        .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                 } else {
                     binding.skillTooltipText.text = Html.fromHtml(skillIcons[tempKey]!!.second.skill.descriptionHtml
-                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                            .replace("</span>".toRegex(), "</font>"))
+                        .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                        .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                        .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                        .replace("</span>".toRegex(), "</font>"))
                 }
                 if (runeText != "") {
                     binding.runeSeparator.visibility = View.VISIBLE
@@ -189,17 +191,17 @@ class CharacterSkillFragment : Fragment() {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
                                 + skillIcons[tempKey]!!.second.rune.descriptionHtml)
-                                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                                .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
+                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                            .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                     } else {
                         binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skillIcons[tempKey]!!.second.rune.name + "</font></big><br>"
                                 + skillIcons[tempKey]!!.second.rune.descriptionHtml)
-                                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                                .replace("</span>".toRegex(), "</font>"))
+                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                            .replace("</span>".toRegex(), "</font>"))
                     }
                 } else {
                     binding.runeTooltipText.text = ""
@@ -214,22 +216,23 @@ class CharacterSkillFragment : Fragment() {
     }
 
 
-
     private fun downloadPssiveIcons() {
         for (i in characterInformation?.skills?.passive?.indices!!) {
             val tempPair = Pair(i, characterInformation?.skills?.passive?.get(i)?.skill!!)
             passiveIcons[characterInformation?.skills?.passive?.get(i)?.skill?.name!!] = tempPair
         }
         for (key in passiveIcons.keys) {
-            Glide.with(this).load(NetworkUtils.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))
-                    .placeholder(R.drawable.loading_placeholder).into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            passiveList[passiveIcons[key]!!.first].setImageDrawable(resource)
-                            setOnTouchPassiveTooltip(key, passiveList[passiveIcons[key]!!.first].drawable)
-                        }
+            Glide.with(this)
+                .load(NetworkUtils.D3_ICON_SKILLS.replace("url", passiveIcons[key]!!.second.icon))
+                .placeholder(R.drawable.loading_placeholder)
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        passiveList[passiveIcons[key]!!.first].setImageDrawable(resource)
+                        setOnTouchPassiveTooltip(key, passiveList[passiveIcons[key]!!.first].drawable)
+                    }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
         }
     }
 
@@ -252,16 +255,16 @@ class CharacterSkillFragment : Fragment() {
                 binding.tooltipSkillIcon.setPadding(15, 15, 15, 15)
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     binding.skillTooltipText.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
-                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                            .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
+                        .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                        .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                        .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                        .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
                 } else {
                     binding.skillTooltipText.text = Html.fromHtml(passiveIcons[tempKey]!!.second.descriptionHtml
-                            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                            .replace("</span>".toRegex(), "</font>"))
+                        .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                        .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                        .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                        .replace("</span>".toRegex(), "</font>"))
                 }
                 binding.skillTooltipScroll.visibility = View.VISIBLE
                 EventBus.getDefault().post(D3SpellShownEvent(true))

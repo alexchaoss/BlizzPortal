@@ -8,39 +8,39 @@ import com.google.gson.annotations.SerializedName
  */
 data class Hero(
 
-        @SerializedName("id")
-        var id: Long,
+    @SerializedName("id")
+    var id: Long,
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("class")
-        var class_: String,
+    @SerializedName("class")
+    var class_: String,
 
-        @SerializedName("classSlug")
-        var classSlug: String,
+    @SerializedName("classSlug")
+    var classSlug: String,
 
-        @SerializedName("gender")
-        var gender: Int,
+    @SerializedName("gender")
+    var gender: Int,
 
-        @SerializedName("level")
-        var level: Int,
+    @SerializedName("level")
+    var level: Int,
 
-        @SerializedName("kills")
-        var kills: EliteKills,
+    @SerializedName("kills")
+    var kills: EliteKills,
 
-        @SerializedName("paragonLevel")
-        var paragonLevel: Int,
+    @SerializedName("paragonLevel")
+    var paragonLevel: Int,
 
-        @SerializedName("hardcore")
-        var hardcore: Boolean,
+    @SerializedName("hardcore")
+    var hardcore: Boolean,
 
-        @SerializedName("seasonal")
-        var seasonal: Boolean,
+    @SerializedName("seasonal")
+    var seasonal: Boolean,
 
-        @SerializedName("dead")
-        var dead: Boolean,
+    @SerializedName("dead")
+    var dead: Boolean,
 
-        @SerializedName("last-updated")
-        var lastUpdated: Long
+    @SerializedName("last-updated")
+    var lastUpdated: Long
 )

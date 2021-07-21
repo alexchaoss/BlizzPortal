@@ -14,7 +14,7 @@ import java.util.*
 
 
 class D3DeadCharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_character_dead, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_character_dead, parent, false)) {
 
     var frame: ImageView? = null
     var name: TextView? = null
@@ -29,7 +29,8 @@ class D3DeadCharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(fallenHero: FallenHero) {
-        Glide.with(itemView).load(NetworkUtils.getD3Asset(getFallenHeroFrame(fallenHero))).into(frame!!)
+        Glide.with(itemView).load(NetworkUtils.getD3Asset(getFallenHeroFrame(fallenHero)))
+            .into(frame!!)
 
         val format = SimpleDateFormat("MM/dd/yy", Locale.getDefault())
         val dateFormatted = Date(fallenHero.death.time.toLong() * 1000L)

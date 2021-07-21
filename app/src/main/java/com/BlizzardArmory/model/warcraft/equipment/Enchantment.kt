@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Enchantment(
 
-        @SerializedName("display_string")
-        var displayString: String,
+    @SerializedName("display_string")
+    var displayString: String,
 
-        @SerializedName("enchantment_id")
-        var enchantmentId: Long,
+    @SerializedName("enchantment_id")
+    var enchantmentId: Long,
 
-        @SerializedName("enchantment_slot")
-        var enchantmentSlot: EnchantmentSlot
+    @SerializedName("enchantment_slot")
+    var enchantmentSlot: EnchantmentSlot
 
 )

@@ -21,7 +21,7 @@ open class Item {
      * @param id the id
      */
     @SerializedName("id")
-        var id: String? = null
+    var id: String? = null
 
     /**
      * Gets name.
@@ -34,7 +34,7 @@ open class Item {
      * @param name the name
      */
     @SerializedName("name")
-        var name: String? = null
+    var name: String? = null
 
     /**
      * Gets icon.
@@ -47,7 +47,7 @@ open class Item {
      * @param icon the icon
      */
     @SerializedName("icon")
-        var icon: String? = null
+    var icon: String? = null
 
     /**
      * Gets display color.
@@ -60,7 +60,7 @@ open class Item {
      * @param displayColor the display color
      */
     @SerializedName("displayColor")
-        var displayColor: String? = null
+    var displayColor: String? = null
 
     /**
      * Gets tooltip params.
@@ -73,7 +73,7 @@ open class Item {
      * @param tooltipParams the tooltip params
      */
     @SerializedName("tooltipParams")
-        var tooltipParams: String? = null
+    var tooltipParams: String? = null
 
     /**
      * Gets required level.
@@ -86,7 +86,7 @@ open class Item {
      * @param requiredLevel the required level
      */
     @SerializedName("requiredLevel")
-        var requiredLevel: Double? = null
+    var requiredLevel: Double? = null
 
     /**
      * Gets item level.
@@ -99,7 +99,7 @@ open class Item {
      * @param itemLevel the item level
      */
     @SerializedName("itemLevel")
-        var itemLevel: Double? = null
+    var itemLevel: Double? = null
 
     /**
      * Gets stack size max.
@@ -112,7 +112,7 @@ open class Item {
      * @param stackSizeMax the stack size max
      */
     @SerializedName("stackSizeMax")
-        var stackSizeMax: Double? = null
+    var stackSizeMax: Double? = null
 
     /**
      * Gets account bound.
@@ -125,7 +125,7 @@ open class Item {
      * @param accountBound the account bound
      */
     @SerializedName("accountBound")
-        var accountBound: Boolean? = null
+    var accountBound: Boolean? = null
 
     /**
      * Gets flavor text.
@@ -138,7 +138,7 @@ open class Item {
      * @param flavorText the flavor text
      */
     @SerializedName("flavorText")
-        var flavorText: String? = null
+    var flavorText: String? = null
 
     /**
      * Gets type name.
@@ -151,7 +151,7 @@ open class Item {
      * @param typeName the type name
      */
     @SerializedName("typeName")
-        var typeName: String? = null
+    var typeName: String? = null
 
     /**
      * Gets type.
@@ -164,7 +164,7 @@ open class Item {
      * @param type the type
      */
     @SerializedName("type")
-        var type: Type? = null
+    var type: Type? = null
 
     /**
      * Gets armor.
@@ -177,7 +177,7 @@ open class Item {
      * @param armor the armor
      */
     @SerializedName("armor")
-        var armor: Double? = null
+    var armor: Double? = null
 
     /**
      * Gets attacks per second.
@@ -190,7 +190,7 @@ open class Item {
      * @param attacksPerSecond the attacks per second
      */
     @SerializedName("attacksPerSecond")
-        var attacksPerSecond: Double? = null
+    var attacksPerSecond: Double? = null
 
     /**
      * Gets min damage.
@@ -203,7 +203,7 @@ open class Item {
      * @param minDamage the min damage
      */
     @SerializedName("minDamage")
-        var minDamage: Double? = null
+    var minDamage: Double? = null
 
     /**
      * Gets max damage.
@@ -216,7 +216,7 @@ open class Item {
      * @param maxDamage the max damage
      */
     @SerializedName("maxDamage")
-        var maxDamage: Double? = null
+    var maxDamage: Double? = null
 
     /**
      * Gets elemental type.
@@ -229,7 +229,7 @@ open class Item {
      * @param elementalType the elemental type
      */
     @SerializedName("elementalType")
-        var elementalType: String? = null
+    var elementalType: String? = null
 
     /**
      * Gets slots.
@@ -242,7 +242,7 @@ open class Item {
      * @param slots the slots
      */
     @SerializedName("slots")
-        var slots: String? = null
+    var slots: String? = null
 
     /**
      * Gets attributes.
@@ -255,7 +255,7 @@ open class Item {
      * @param attributes the attributes
      */
     @SerializedName("attributes")
-        var attributes: Attributes? = null
+    var attributes: Attributes? = null
 
     /**
      * Gets attributes html.
@@ -268,7 +268,7 @@ open class Item {
      * @param attributesHtml the attributes html
      */
     @SerializedName("attributesHtml")
-        var attributesHtml: AttributesHtml? = null
+    var attributesHtml: AttributesHtml? = null
 
     /**
      * Gets open sockets.
@@ -281,7 +281,7 @@ open class Item {
      * @param openSockets the open sockets
      */
     @SerializedName("openSockets")
-        var openSockets: Double? = null
+    var openSockets: Double? = null
 
     /**
      * Gets gems.
@@ -294,7 +294,7 @@ open class Item {
      * @param gems the gems
      */
     @SerializedName("gems")
-        var gems: List<Gem>? = null
+    var gems: List<Gem>? = null
 
     /**
      * Gets set.
@@ -307,7 +307,7 @@ open class Item {
      * @param set the set
      */
     @SerializedName("set")
-        var set: Set? = null
+    var set: Set? = null
 
     /**
      * Gets season required to drop.
@@ -320,7 +320,7 @@ open class Item {
      * @param seasonRequiredToDrop the season required to drop
      */
     @SerializedName("seasonRequiredToDrop")
-        var seasonRequiredToDrop: Double? = null
+    var seasonRequiredToDrop: Double? = null
 
     /**
      * Gets dye.
@@ -333,7 +333,7 @@ open class Item {
      * @param dye the dye
      */
     @SerializedName("dye")
-        var dye: Dye? = null
+    var dye: Dye? = null
 
     /**
      * Gets transmog.
@@ -346,7 +346,7 @@ open class Item {
      * @param transmog the transmog
      */
     @SerializedName("transmog")
-        var transmog: Transmog? = null
+    var transmog: Transmog? = null
 
     @SerializedName("isSeasonRequiredToDrop")
 
@@ -371,6 +371,17 @@ open class Item {
     }
 
     override fun toString(): String {
-        return ToStringBuilder(this).append("id", id).append("name", name).append("icon", icon).append("displayColor", displayColor).append("tooltipParams", tooltipParams).append("requiredLevel", requiredLevel).append("itemLevel", itemLevel).append("stackSizeMax", stackSizeMax).append("accountBound", accountBound).append("flavorText", flavorText).append("typeName", typeName).append("type", type).append("armor", armor).append("attacksPerSecond", attacksPerSecond).append("minDamage", minDamage).append("maxDamage", maxDamage).append("slots", slots).append("attributes", attributes).append("attributesHtml", attributesHtml).append("openSockets", openSockets).append("gems", gems).append("set", set).append("seasonRequiredToDrop", seasonRequiredToDrop).append("dye", dye).append("transmog", transmog).append("isSeasonRequiredToDrop", isSeasonRequiredToDrop).toString()
+        return ToStringBuilder(this).append("id", id).append("name", name).append("icon", icon)
+            .append("displayColor", displayColor).append("tooltipParams", tooltipParams)
+            .append("requiredLevel", requiredLevel).append("itemLevel", itemLevel)
+            .append("stackSizeMax", stackSizeMax).append("accountBound", accountBound)
+            .append("flavorText", flavorText).append("typeName", typeName).append("type", type)
+            .append("armor", armor).append("attacksPerSecond", attacksPerSecond)
+            .append("minDamage", minDamage).append("maxDamage", maxDamage).append("slots", slots)
+            .append("attributes", attributes).append("attributesHtml", attributesHtml)
+            .append("openSockets", openSockets).append("gems", gems).append("set", set)
+            .append("seasonRequiredToDrop", seasonRequiredToDrop).append("dye", dye)
+            .append("transmog", transmog).append("isSeasonRequiredToDrop", isSeasonRequiredToDrop)
+            .toString()
     }
 }

@@ -29,9 +29,9 @@
         android:scaleY="0.5"
         android:textColor="#FFF"
         android:textSize="28sp"
+        app:drawableStartCompat="@drawable/lifetime_kills"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:drawableStartCompat="@drawable/lifetime_kills"
         app:layout_constraintTop_toBottomOf="@id/battletag" />
 
 
@@ -44,10 +44,10 @@
         android:scaleY="0.5"
         android:textColor="#FFF"
         android:textSize="28sp"
+        app:drawableStartCompat="@drawable/elite_kills_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/paragon"
         app:layout_constraintStart_toEndOf="@id/lifetime"
-        app:drawableStartCompat="@drawable/elite_kills_image"
         app:layout_constraintTop_toBottomOf="@id/battletag" />
 
     <TextView
@@ -59,9 +59,9 @@
         android:scaleY="0.5"
         android:textColor="#FFF"
         android:textSize="28sp"
+        app:drawableStartCompat="@drawable/paragon_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:drawableStartCompat="@drawable/paragon_image"
         app:layout_constraintTop_toBottomOf="@id/battletag" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

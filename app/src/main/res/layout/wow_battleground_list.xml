@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/recyclerviewposition"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recyclerviewposition"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp"
+    android:orientation="horizontal"
+    android:paddingStart="10dp"
     android:paddingTop="10dp"
     android:paddingEnd="10dp"
-    android:paddingStart="10dp"
-    android:orientation="horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingBottom="10dp">
 
     <TextView
         android:id="@+id/bgname"
-        android:layout_weight="1"
-        android:layout_gravity="start"
         android:layout_width="115dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_weight="1"
         android:textColor="#968d83"
         android:textSize="15sp" />
 
     <TextView
         android:id="@+id/bggames"
-        android:layout_weight="1"
-        android:textAlignment="center"
         android:layout_width="25dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAlignment="center"
         android:textColor="#ae967d"
         android:textSize="13sp" />
 
     <TextView
         android:id="@+id/bgwin"
-        android:layout_weight="1"
         android:layout_width="0dp"
-        android:textAlignment="center"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAlignment="center"
         android:textColor="#02e304"
         android:textSize="13sp" />
 
     <TextView
         android:id="@+id/bgwinrate"
-        android:layout_weight="1"
         android:layout_width="0dp"
-        android:textAlignment="center"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAlignment="center"
         android:textColor="#ae967d"
         android:textSize="13sp" />
 

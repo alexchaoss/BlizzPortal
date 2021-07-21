@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * The type Ow platform choice dialog.
@@ -41,11 +41,14 @@ object OWPlatformChoiceDialog {
         fragment.arguments = bundle
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         if (fragmentManager.findFragmentById(R.id.fragment) != null) {
-            fragmentManager.beginTransaction().remove(fragmentManager.findFragmentById(R.id.fragment)!!).commit()
+            fragmentManager.beginTransaction()
+                .remove(fragmentManager.findFragmentById(R.id.fragment)!!).commit()
         }
         val newsListFragment = NewsListFragment()
-        fragmentManager.beginTransaction().replace(R.id.fragment, newsListFragment, "news_fragment").commit()
-        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment").addToBackStack("ow_account").commit()
+        fragmentManager.beginTransaction().replace(R.id.fragment, newsListFragment, "news_fragment")
+            .commit()
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment")
+            .addToBackStack("ow_account").commit()
         fragmentManager.executePendingTransactions()
     }
 
@@ -69,7 +72,7 @@ object OWPlatformChoiceDialog {
                 dialog.Button(OK, 16f,
                     {
                         if ((dialog.tagMap["username"] as EditText).text.isEmpty()) {
-                            Toast.makeText(activity.applicationContext, "Please enter a username", Toast.LENGTH_SHORT)
+                            Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter a username", Snackbar.LENGTH_SHORT)
                                 .show()
                         } else {
                             username = (dialog.tagMap["username"] as EditText).text.toString()

@@ -30,12 +30,12 @@ class NavigationViewModel : BaseViewModel() {
     )
 
     private val viewStateSubject: BehaviorSubject<ViewState> =
-            BehaviorSubject.createDefault(
-                    ViewState(
-                            startPanelState = PanelState.Closed,
-                            endPanelState = PanelState.Closed
-                    )
+        BehaviorSubject.createDefault(
+            ViewState(
+                startPanelState = PanelState.Closed,
+                endPanelState = PanelState.Closed
             )
+        )
 
     init {
         wowConnectedRealms.value = mutableMapOf()
@@ -116,7 +116,7 @@ class NavigationViewModel : BaseViewModel() {
                 "dynamic-eu",
                 query,
                 "eu",
-                )
+            )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     wowConnectedRealms.value?.set("EU", response.body()!!)

@@ -36,8 +36,7 @@ class RosterAdapter(private val activities: List<Members>, private val context: 
         holder.bind(member)
 
         holder.itemView.setOnClickListener {
-            val woWNavFragment =
-                WoWNavFragment.newInstance(member.character.name, member.character.realm.slug, "null", region)
+            val woWNavFragment = WoWNavFragment.newInstance(member.character.name, member.character.realm.slug, "null", region)
             (context as NavigationActivity).supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
                 .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")

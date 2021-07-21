@@ -9,13 +9,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Links(
 
-        @SerializedName("self")
-        var self: Self,
+    @SerializedName("self")
+    var self: Self,
 
-        @SerializedName("user")
-        var user: User,
+    @SerializedName("user")
+    var user: User,
 
-        @SerializedName("profile")
-        var profile: Profile
+    @SerializedName("profile")
+    var profile: Profile
 
 )

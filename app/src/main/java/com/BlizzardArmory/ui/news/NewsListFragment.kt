@@ -65,7 +65,7 @@ class NewsListFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if ((recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0
-                        || (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == recyclerView.adapter?.itemCount!! - 1) {
+                    || (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == recyclerView.adapter?.itemCount!! - 1) {
                     binding.backToTop.visibility = View.GONE
                 } else {
                     binding.backToTop.visibility = View.VISIBLE
@@ -97,7 +97,7 @@ class NewsListFragment : Fragment() {
         }
     }
 
-    companion object{
+    companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 val intent = Intent(activity, MainActivity::class.java)

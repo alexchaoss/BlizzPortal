@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class MythicKeystoneProfile(
 
-        @SerializedName("href")
-        var href: String
+    @SerializedName("href")
+    var href: String
 
 )

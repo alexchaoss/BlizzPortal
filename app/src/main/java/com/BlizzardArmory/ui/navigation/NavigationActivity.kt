@@ -7,7 +7,10 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.*
+import android.widget.AutoCompleteTextView
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -38,7 +41,7 @@ import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
-import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MPlusLeaderboardsFragment
+import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboard.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.FilterNewsEvent
@@ -50,11 +53,11 @@ import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.discord.panels.OverlappingPanelsLayout
 import com.discord.panels.PanelState
 import com.discord.panels.PanelsChildGestureRegionObserver
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.reactivex.rxjava3.disposables.Disposable
-import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -142,8 +145,7 @@ class NavigationActivity : LocalizationActivity(),
         webview.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 binding.loadingCircle.visibility = View.GONE
-                Toast.makeText(this@NavigationActivity, "Logout Successful", Toast.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(binding.root, "Logout Successful", Snackbar.LENGTH_SHORT).show()
                 finish()
             }
         }
@@ -661,12 +663,13 @@ class NavigationActivity : LocalizationActivity(),
         when {
             !(dialog.tagMap["btag_field"] as EditText).text.toString()
                 .matches(".+#[0-9]+".toRegex()) -> {
-                Toast.makeText(dialog.context, "Please enter a BattleTag", Toast.LENGTH_SHORT)
+                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter a BattleTag", Snackbar.LENGTH_SHORT)
                     .show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 .equals("Select Region", ignoreCase = true) -> {
-                Toast.makeText(dialog.context, "Please enter the region", Toast.LENGTH_SHORT).show()
+                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the region", Snackbar.LENGTH_SHORT)
+                    .show()
             }
             else -> {
                 dialog.dismiss()
@@ -681,11 +684,13 @@ class NavigationActivity : LocalizationActivity(),
     private fun validSearchedWoWChracterFields(dialog: DialogPrompt) {
         when {
             (dialog.tagMap["character_field"] as EditText).text.toString() == "" -> {
-                Toast.makeText(this, "Please enter the character name", Toast.LENGTH_SHORT).show()
+                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the character name", Snackbar.LENGTH_SHORT)
+                    .show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 .equals("Select Region", ignoreCase = true) -> {
-                Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
+                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the region", Snackbar.LENGTH_SHORT)
+                    .show()
             }
             else -> {
                 characterClicked = (dialog.tagMap["character_field"] as EditText).text.toString()
@@ -704,7 +709,7 @@ class NavigationActivity : LocalizationActivity(),
                     viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
                     dialog.dismiss()
                 } else {
-                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT)
+                    Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter a valid realm for this region", Snackbar.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -714,11 +719,13 @@ class NavigationActivity : LocalizationActivity(),
     private fun validSearchedWoWGuildFields(dialog: DialogPrompt) {
         when {
             (dialog.tagMap["guild_field"] as EditText).text.toString() == "" -> {
-                Toast.makeText(this, "Please enter the guild name", Toast.LENGTH_SHORT).show()
+                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the character name", Snackbar.LENGTH_SHORT)
+                    .show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 .equals("Select Region", ignoreCase = true) -> {
-                Toast.makeText(this, "Please enter the region", Toast.LENGTH_SHORT).show()
+                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the character name", Snackbar.LENGTH_SHORT)
+                    .show()
             }
             else -> {
                 val guildName = (dialog.tagMap["guild_field"] as EditText).text.toString()
@@ -738,7 +745,7 @@ class NavigationActivity : LocalizationActivity(),
                     callWoWGuildFragment(guildName, selectedRegion, guildRealm, dialog)
                     dialog.dismiss()
                 } else {
-                    Toast.makeText(this, "Please enter a valid realm for this region", Toast.LENGTH_SHORT)
+                    Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter a valid realm for this region", Snackbar.LENGTH_SHORT)
                         .show()
                 }
 

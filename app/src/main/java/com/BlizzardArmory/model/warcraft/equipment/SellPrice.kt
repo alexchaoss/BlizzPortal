@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class SellPrice(
 
-        @SerializedName("value")
-        var value: Int,
+    @SerializedName("value")
+    var value: Int,
 
-        @SerializedName("display_strings")
-        var displayStrings: DisplayStrings
+    @SerializedName("display_strings")
+    var displayStrings: DisplayStrings
 
 )

@@ -7,19 +7,19 @@ import com.google.gson.annotations.SerializedName
  * The type Season snapshot.
  */
 data class SeasonSnapshot(
-        @SerializedName("1v1")
-        var oneVone: OneVOne,
+    @SerializedName("1v1")
+    var oneVone: OneVOne,
 
-        @SerializedName("2v2")
-        var twoVtwo: TwoVTwo,
+    @SerializedName("2v2")
+    var twoVtwo: TwoVTwo,
 
-        @SerializedName("3v3")
-        var threeVthree: ThreeVThree,
+    @SerializedName("3v3")
+    var threeVthree: ThreeVThree,
 
-        @SerializedName("4v4")
-        var fourVfour: FourVFour,
+    @SerializedName("4v4")
+    var fourVfour: FourVFour,
 
-        @SerializedName("Archon")
-        var archon: Archon
+    @SerializedName("Archon")
+    var archon: Archon
 
 )

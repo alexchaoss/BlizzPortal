@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class DifficultyCompleted(
 
-        @SerializedName("wings-of-liberty")
-        var wingsOfLiberty: String,
+    @SerializedName("wings-of-liberty")
+    var wingsOfLiberty: String,
 
-        @SerializedName("heart-of-the-swarm")
-        var heartOfTheSwarm: String,
+    @SerializedName("heart-of-the-swarm")
+    var heartOfTheSwarm: String,
 
-        @SerializedName("legacy-of-the-void")
-        var legacyOfTheVoid: String
+    @SerializedName("legacy-of-the-void")
+    var legacyOfTheVoid: String
 
 )

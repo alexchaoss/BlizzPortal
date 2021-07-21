@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class Set(
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("slug")
-        var slug: String,
+    @SerializedName("slug")
+    var slug: String,
 
-        @SerializedName("description")
-        var description: String,
+    @SerializedName("description")
+    var description: String,
 
-        @SerializedName("descriptionHtml")
-        var descriptionHtml: String
+    @SerializedName("descriptionHtml")
+    var descriptionHtml: String
 
 )

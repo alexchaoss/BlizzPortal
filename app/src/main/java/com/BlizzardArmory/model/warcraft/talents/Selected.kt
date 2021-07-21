@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Selected(
 
-        @SerializedName("talent")
-        var talent: Talent,
+    @SerializedName("talent")
+    var talent: Talent,
 
-        @SerializedName("spelltooltip")
-        var spellTooltip: SpellTooltip
+    @SerializedName("spelltooltip")
+    var spellTooltip: SpellTooltip
 
 )

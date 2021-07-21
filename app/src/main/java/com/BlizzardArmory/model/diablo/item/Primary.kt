@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Primary(
 
-        @SerializedName("text")
+    @SerializedName("text")
 
-        val text: String,
+    val text: String,
 
 
-        @SerializedName("textHtml")
+    @SerializedName("textHtml")
 
-        val textHtml: String
+    val textHtml: String
 
 )

@@ -3,19 +3,24 @@
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:startColor="#000"
                 android:centerColor="#000000"
-                android:type="radial"
-                android:gradientRadius="700dp"
-                android:endColor="#350000"
                 android:centerX="1.6"
                 android:centerY="0.5"
-                />
+                android:endColor="#350000"
+                android:gradientRadius="700dp"
+                android:startColor="#000"
+                android:type="radial" />
         </shape>
     </item>
-    <item android:bottom="1dp" android:left="1dp" android:top="1dp" android:right="-3dp">
+    <item
+        android:bottom="1dp"
+        android:left="1dp"
+        android:right="-3dp"
+        android:top="1dp">
         <shape android:shape="rectangle">
-            <stroke android:width="3dp" android:color="#550000"/>
+            <stroke
+                android:width="3dp"
+                android:color="#550000" />
         </shape>
     </item>
 </layer-list>

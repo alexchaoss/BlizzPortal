@@ -2,10 +2,13 @@ package com.BlizzardArmory.ui.warcraft.mythicplusleaderboards
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.instances.Instances
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.expansion.Expansion
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.index.LeaderboardsIndex
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Leaderboard
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.Periods
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.Season
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.index.SeasonsIndex
+import com.BlizzardArmory.model.warcraft.specialization.Specialization
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
@@ -19,11 +22,17 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
 
     private var seasonIndex: MutableLiveData<SeasonsIndex> = MutableLiveData()
     private var season: MutableLiveData<Season> = MutableLiveData()
-    private var mythicKeystoneLeaderboard: MutableLiveData<Leaderboard> = MutableLiveData()
-    private var instances: MutableLiveData<List<Instances>> = MutableLiveData()
+    private var mythicKeystoneLeaderboard: MutableLiveData<List<Leaderboard>> = MutableLiveData()
+    private var mythicKeystoneLeaderboardIndex: MutableLiveData<LeaderboardsIndex> = MutableLiveData()
+    private var expansions: MutableLiveData<List<Expansion>> = MutableLiveData()
+    private var specs: MutableLiveData<List<Specialization>> = MutableLiveData()
 
-    fun getInstances(): LiveData<List<Instances>> {
-        return instances
+    fun getExpansions(): LiveData<List<Expansion>> {
+        return expansions
+    }
+
+    fun getSpecializations(): LiveData<List<Specialization>> {
+        return specs
     }
 
     fun getSeasonIndex(): LiveData<SeasonsIndex> {
@@ -34,19 +43,43 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
         return season
     }
 
-    fun downloadInstances() {
+    fun getMythicKeystoneLeaderboard(): LiveData<List<Leaderboard>> {
+        return mythicKeystoneLeaderboard
+    }
+
+    fun downloadSpecializations() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient().getInstances()
+            val response = RetroClient.getAPIClient().getAllPlayableSpecializations()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    instances.value = response.body()
+                    specs.value = response.body()!!
                 } else {
-                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
         }
         jobs.add(job)
+    }
+
+    fun downloadInstances() {
+        val expansions = mutableListOf<Expansion>()
+        for (expansionId in 6..8) {
+            val job = coroutineScope.launch {
+                val response = RetroClient.getAPIClient()
+                    .getExpansion(NetworkUtils.getExpansionFromRIO(expansionId))
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        expansions.add(response.body()!!)
+                        if (expansions.size == 3) {
+                            this@MPlusLeaderboardsViewModel.expansions.value = expansions.sortedBy { it.dungeons[0].id }
+                        }
+                    } else {
+                        errorCode.value = response.code()
+                    }
+                }
+            }
+            jobs.add(job)
+        }
     }
 
     fun downloadSeasonIndex() {
@@ -57,7 +90,6 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     seasonIndex.value = response.body()
                 } else {
-                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
@@ -74,7 +106,6 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
                 if (response.isSuccessful) {
                     season.value = response.body()
                 } else {
-                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
@@ -83,21 +114,45 @@ class MPlusLeaderboardsViewModel : BaseViewModel() {
         jobs.add(job)
     }
 
-    fun downloadMythicKeystoneLeaderboard(connectedRealm: Int, dungeonId: Long, period: Int) {
+    fun downloadMythicKeystoneLeaderboardIndex(connectedRealm: Int) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient()
-                .getMythicKeystoneLeaderboard(connectedRealm, dungeonId, period, "dynamic-" + NetworkUtils.region, NetworkUtils.region)
+                .getMythicKeystoneLeaderboardsIndex(connectedRealm, "dynamic-" + NetworkUtils.region, NetworkUtils.region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    mythicKeystoneLeaderboard.value = response.body()
+                    mythicKeystoneLeaderboardIndex.value = response.body()
                 } else {
-                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }
 
         }
         jobs.add(job)
+    }
+
+    fun downloadMythicKeystoneLeaderboard(connectedRealm: Int, dungeonId: Long, periods: List<Periods>, region: String) {
+        val tempLeaderboards = mutableListOf<Leaderboard>()
+        for (period in periods) {
+            val job = coroutineScope.launch {
+                val response = RetroClient.getWoWClient()
+                    .getMythicKeystoneLeaderboard(connectedRealm, dungeonId, period.id, "dynamic-${region.lowercase()}", region.lowercase())
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        tempLeaderboards.add(response.body()!!)
+
+                        if (tempLeaderboards.size == periods.size) {
+                            NetworkUtils.loading = false
+                            mythicKeystoneLeaderboard.value = tempLeaderboards
+                        }
+                    } else {
+                        NetworkUtils.loading = false
+                        errorCode.value = response.code()
+                    }
+                }
+
+            }
+            jobs.add(job)
+        }
     }
 
     @Subscribe

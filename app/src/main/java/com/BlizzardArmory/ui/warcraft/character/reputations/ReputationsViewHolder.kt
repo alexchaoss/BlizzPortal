@@ -13,7 +13,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
 
 class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_rep_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_rep_list, parent, false)) {
 
     var progressBar: ProgressBar? = null
     var repTier: TextView? = null

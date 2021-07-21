@@ -177,6 +177,7 @@
     <string name="mastery">Mastery</string>
     <string name="vers">Versatility</string>
     <string name="mplus_leaderboards">Mythic+ Leaderboards</string>
+    <string name="realm">Realm</string>
 
     <string-array name="regions">
         <item>Select Region</item>

@@ -7,7 +7,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -21,6 +24,7 @@ import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.state.RightPanelState
+import com.google.android.material.snackbar.Snackbar
 
 class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     FragmentManager.OnBackStackChangedListener {
@@ -150,7 +154,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
             adapter = LeaderboardAdapter(listOf(), requireContext(), currentPlayerCountRank)
         }
         viewModel.downloadLeaderboard(regionId,
-                viewModel.getLeague().value!!.tier[currentTier].division[currentDivision].ladder_id, region)
+            viewModel.getLeague().value!!.tier[currentTier].division[currentDivision].ladder_id, region)
     }
 
     private fun setTeamTypeButtons() {
@@ -263,13 +267,13 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     private fun setSearchButton() {
         rightPanel.binding.rightPanelSc2.search.setOnClickListener {
             if (rightPanel.binding.rightPanelSc2.season.selectedItemPosition == 0) {
-                Toast.makeText(activity, "Please select a season", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please select a season", Snackbar.LENGTH_SHORT).show()
             } else if (rightPanel.binding.rightPanelSc2.region.selectedItemPosition == 0) {
-                Toast.makeText(activity, "Please select a region", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please select a region", Snackbar.LENGTH_SHORT).show()
             } else if (rightPanel.binding.rightPanelSc2.league.selectedItemPosition == 0) {
-                Toast.makeText(activity, "Please select a league", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please select a league", Snackbar.LENGTH_SHORT).show()
             } else if (rightPanel.binding.rightPanelSc2.league.selectedItem == "Grandmaster" && !v1Toggle) {
-                Toast.makeText(activity, "Grandmaster league can only be 1v1", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Grandmaster league can only be 1v1", Snackbar.LENGTH_SHORT)
                     .show()
             } else {
                 viewModel.seasonId = rightPanel.binding.rightPanelSc2.season.selectedItem.toString()
@@ -302,7 +306,8 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     }
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
-        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
+        val arrayAdapter: ArrayAdapter<*> = object :
+            ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }

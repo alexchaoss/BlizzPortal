@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class ItemSet(
 
-        @SerializedName("name")
-        var name: String,
+    @SerializedName("name")
+    var name: String,
 
-        @SerializedName("id")
-        var id: Long
+    @SerializedName("id")
+    var id: Long
 
 )

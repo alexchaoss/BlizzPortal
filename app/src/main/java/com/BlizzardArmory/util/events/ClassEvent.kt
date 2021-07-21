@@ -9,7 +9,7 @@ class ClassEvent
  *
  * @param data the data
  */(
-        /**
-         * The Data.
-         */
-        var data: Int)
+    /**
+     * The Data.
+     */
+    var data: Int)

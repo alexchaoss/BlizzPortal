@@ -7,7 +7,6 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,6 +30,7 @@ import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.BlizzardArmory.util.state.FavoriteState
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.greenrobot.eventbus.EventBus
@@ -163,7 +163,7 @@ class D3Fragment : Fragment() {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
                 profiles.profiles.removeAt(indexOfProfile)
                 prefs.edit().putString("d3-favorites", gson.toJson(profiles)).apply()
-                Toast.makeText(requireActivity(), "Profile removed from favorites", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Profile removed from favorites", Snackbar.LENGTH_SHORT)
                     .show()
                 addToFavorite(profiles, accountInformation, gson, prefs)
             }
@@ -185,7 +185,7 @@ class D3Fragment : Fragment() {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Full)
                 profiles.profiles.add(D3FavoriteProfile(accountInformation, selectedRegion!!, battleTag!!))
                 prefs.edit().putString("d3-favorites", gson.toJson(profiles)).apply()
-                Toast.makeText(requireActivity(), "Profile added to favorites", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, "Profile added to favorites", Snackbar.LENGTH_SHORT)
                     .show()
                 deleteFavorite(profiles, accountInformation, indexOfProfile, gson, prefs)
             }

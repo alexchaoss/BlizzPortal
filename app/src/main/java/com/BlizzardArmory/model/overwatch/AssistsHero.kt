@@ -8,31 +8,31 @@ import com.google.gson.annotations.SerializedName
  */
 data class AssistsHero(
 
-        @SerializedName("defensiveAssists")
-        var defensiveAssists: Double,
+    @SerializedName("defensiveAssists")
+    var defensiveAssists: Double,
 
-        @SerializedName("defensiveAssistsAvgPer10Min")
-        var defensiveAssistsAvgPer10Min: Float,
+    @SerializedName("defensiveAssistsAvgPer10Min")
+    var defensiveAssistsAvgPer10Min: Float,
 
-        @SerializedName("defensiveAssistsMostInGame")
-        var defensiveAssistsMostInGame: Double,
+    @SerializedName("defensiveAssistsMostInGame")
+    var defensiveAssistsMostInGame: Double,
 
-        @SerializedName("healingDone")
-        var healingDone: Double,
+    @SerializedName("healingDone")
+    var healingDone: Double,
 
-        @SerializedName("healingDoneAvgPer10Min")
-        var healingDoneAvgPer10Min: Double,
+    @SerializedName("healingDoneAvgPer10Min")
+    var healingDoneAvgPer10Min: Double,
 
-        @SerializedName("healingDoneMostInGame")
-        var healingDoneMostInGame: Double,
+    @SerializedName("healingDoneMostInGame")
+    var healingDoneMostInGame: Double,
 
-        @SerializedName("offensiveAssists")
-        var offensiveAssists: Double,
+    @SerializedName("offensiveAssists")
+    var offensiveAssists: Double,
 
-        @SerializedName("offensiveAssistsAvgPer10Min")
-        var offensiveAssistsAvgPer10Min: Float,
+    @SerializedName("offensiveAssistsAvgPer10Min")
+    var offensiveAssistsAvgPer10Min: Float,
 
-        @SerializedName("offensiveAssistsMostInGame")
-        var offensiveAssistsMostInGame: Double
+    @SerializedName("offensiveAssistsMostInGame")
+    var offensiveAssistsMostInGame: Double
 
 )

@@ -21,12 +21,12 @@
         android:id="@+id/renowmLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="2dp"
         android:fontFamily="@font/morpheus"
         android:gravity="center"
         android:textAlignment="center"
         android:textColor="#fff"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="2dp"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@id/renown_circle"
         app:layout_constraintEnd_toEndOf="@id/renown_circle"
@@ -165,17 +165,17 @@
     <RelativeLayout
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
-        android:padding="1dp"
+        android:layout_marginEnd="20dp"
         android:background="#5c5c5c"
+        android:padding="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/character3">
 
         <ImageView
             android:id="@+id/covenant_class_spell"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 
@@ -184,15 +184,15 @@
         android:layout_height="40dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:padding="1dp"
         android:background="#5c5c5c"
+        android:padding="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/character1">
 
         <ImageView
             android:id="@+id/covenant_spell"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 
@@ -200,11 +200,11 @@
         android:id="@+id/spell_tooltip"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:background="@drawable/talent_tooltip_bg"
         android:orientation="vertical"
         android:padding="10dp"
         android:visibility="gone"
-        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

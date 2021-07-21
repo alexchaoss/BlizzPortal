@@ -38,7 +38,7 @@ private const val MEDIA = "media"
 private const val REGION = "region"
 
 
-class PvPFragment : Fragment(){
+class PvPFragment : Fragment() {
 
     private var media: String? = null
 
@@ -252,14 +252,14 @@ class PvPFragment : Fragment(){
     companion object {
         @JvmStatic
         fun newInstance(character: String, realm: String, media: String, region: String) =
-                WoWNavFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(CHARACTER, character)
-                        putString(REALM, realm)
-                        putString(MEDIA, media)
-                        putString(REGION, region)
-                    }
+            WoWNavFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CHARACTER, character)
+                    putString(REALM, realm)
+                    putString(MEDIA, media)
+                    putString(REGION, region)
                 }
+            }
     }
 
 }

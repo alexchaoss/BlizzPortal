@@ -12,7 +12,7 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.bumptech.glide.Glide
 
 class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_encounter_list, parent, false)) {
 
     private var raidName: TextView? = null
     private var raidLevel: TextView? = null
@@ -28,7 +28,8 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     fun bind(instances: Instances, level: String) {
-        Glide.with(itemView.context).load(NetworkUtils.getWoWAsset(findBanner(instances))).into(banner!!)
+        Glide.with(itemView.context).load(NetworkUtils.getWoWAsset(findBanner(instances)))
+            .into(banner!!)
         raidName?.text = instances.instance.name
         raidLevel?.text = level
         recyclerView?.apply {

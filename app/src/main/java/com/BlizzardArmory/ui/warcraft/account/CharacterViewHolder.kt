@@ -30,7 +30,7 @@ import java.util.*
 
 
 class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_character_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_character_list, parent, false)) {
 
     private var avatar: ImageView? = null
     private var faction: ImageView? = null
@@ -107,7 +107,8 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         }
         val fullURL = mediaUrl + NetworkUtils.NOT_FOUND_URL_AVATAR + character.playableRace.id + "-" + (if (character.gender.type == "MALE") 1 else 0) + ".jpg"
 
-        Glide.with(context.applicationContext).load(fullURL).placeholder(R.drawable.loading_placeholder).into(avatar!!)
+        Glide.with(context.applicationContext).load(fullURL)
+            .placeholder(R.drawable.loading_placeholder).into(avatar!!)
         downloaded = true
         job?.cancel()
     }

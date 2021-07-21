@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 data class Role(
 
-        @SerializedName("type")
-        var type: String,
+    @SerializedName("type")
+    var type: String,
 
-        @SerializedName("name")
-        var name: String
+    @SerializedName("name")
+    var name: String
 )

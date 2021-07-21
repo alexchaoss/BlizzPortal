@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName
  */
 data class TimePlayed(
 
-        @SerializedName("demon-hunter")
-        var demonHunter: Double,
+    @SerializedName("demon-hunter")
+    var demonHunter: Double,
 
-        @SerializedName("barbarian")
-        var barbarian: Double,
+    @SerializedName("barbarian")
+    var barbarian: Double,
 
-        @SerializedName("witch-doctor")
-        var witchDoctor: Double,
+    @SerializedName("witch-doctor")
+    var witchDoctor: Double,
 
-        @SerializedName("necromancer")
-        var necromancer: Double,
+    @SerializedName("necromancer")
+    var necromancer: Double,
 
-        @SerializedName("wizard")
-        var wizard: Double,
+    @SerializedName("wizard")
+    var wizard: Double,
 
-        @SerializedName("monk")
-        var monk: Double,
+    @SerializedName("monk")
+    var monk: Double,
 
-        @SerializedName("crusader")
-        var crusader: Double
+    @SerializedName("crusader")
+    var crusader: Double
 
 )

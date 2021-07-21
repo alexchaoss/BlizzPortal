@@ -17,7 +17,7 @@ import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 
 
 class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_player_list, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.d3_player_list, parent, false)) {
 
     var name: TextView? = null
     var icon: ImageView? = null

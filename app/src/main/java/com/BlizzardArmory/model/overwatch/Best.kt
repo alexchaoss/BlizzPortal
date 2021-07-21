@@ -13,62 +13,62 @@ import java.util.*
 
 data class Best(
 
-        @SerializedName("allDamageDoneMostInGame")
-        var allDamageDoneMostInGame: Double,
+    @SerializedName("allDamageDoneMostInGame")
+    var allDamageDoneMostInGame: Double,
 
-        @SerializedName("barrierDamageDoneMostInGame")
-        var barrierDamageDoneMostInGame: Double,
+    @SerializedName("barrierDamageDoneMostInGame")
+    var barrierDamageDoneMostInGame: Double,
 
-        @SerializedName("defensiveAssistsMostInGame")
-        var defensiveAssistsMostInGame: Double,
+    @SerializedName("defensiveAssistsMostInGame")
+    var defensiveAssistsMostInGame: Double,
 
-        @SerializedName("eliminationsMostInGame")
-        var eliminationsMostInGame: Double,
+    @SerializedName("eliminationsMostInGame")
+    var eliminationsMostInGame: Double,
 
-        @SerializedName("environmentalKillsMostInGame")
-        var environmentalKillsMostInGame: Double,
+    @SerializedName("environmentalKillsMostInGame")
+    var environmentalKillsMostInGame: Double,
 
-        @SerializedName("finalBlowsMostInGame")
-        var finalBlowsMostInGame: Double,
+    @SerializedName("finalBlowsMostInGame")
+    var finalBlowsMostInGame: Double,
 
-        @SerializedName("healingDoneMostInGame")
-        var healingDoneMostInGame: Double,
+    @SerializedName("healingDoneMostInGame")
+    var healingDoneMostInGame: Double,
 
-        @SerializedName("heroDamageDoneMostInGame")
-        var heroDamageDoneMostInGame: Double,
+    @SerializedName("heroDamageDoneMostInGame")
+    var heroDamageDoneMostInGame: Double,
 
-        @SerializedName("killsStreakBest")
-        var killsStreakBest: Double,
+    @SerializedName("killsStreakBest")
+    var killsStreakBest: Double,
 
-        @SerializedName("meleeFinalBlowsMostInGame")
-        var meleeFinalBlowsMostInGame: Double,
+    @SerializedName("meleeFinalBlowsMostInGame")
+    var meleeFinalBlowsMostInGame: Double,
 
-        @SerializedName("multikillsBest")
-        var multikillsBest: Double,
+    @SerializedName("multikillsBest")
+    var multikillsBest: Double,
 
-        @SerializedName("objectiveKillsMostInGame")
-        var objectiveKillsMostInGame: Double,
+    @SerializedName("objectiveKillsMostInGame")
+    var objectiveKillsMostInGame: Double,
 
-        @SerializedName("objectiveTimeMostInGame")
-        var objectiveTimeMostInGame: String,
+    @SerializedName("objectiveTimeMostInGame")
+    var objectiveTimeMostInGame: String,
 
-        @SerializedName("offensiveAssistsMostInGame")
-        var offensiveAssistsMostInGame: Double,
+    @SerializedName("offensiveAssistsMostInGame")
+    var offensiveAssistsMostInGame: Double,
 
-        @SerializedName("reconAssistsMostInGame")
-        var reconAssistsMostInGame: Double,
+    @SerializedName("reconAssistsMostInGame")
+    var reconAssistsMostInGame: Double,
 
-        @SerializedName("soloKillsMostInGame")
-        var soloKillsMostInGame: Double,
+    @SerializedName("soloKillsMostInGame")
+    var soloKillsMostInGame: Double,
 
-        @SerializedName("teleporterPadsDestroyedMostInGame")
-        var teleporterPadsDestroyedMostInGame: Double,
+    @SerializedName("teleporterPadsDestroyedMostInGame")
+    var teleporterPadsDestroyedMostInGame: Double,
 
-        @SerializedName("timeSpentOnFireMostInGame")
-        var timeSpentOnFireMostInGame: String,
+    @SerializedName("timeSpentOnFireMostInGame")
+    var timeSpentOnFireMostInGame: String,
 
-        @SerializedName("turretsDestroyedMostInGame")
-        var turretsDestroyedMostInGame: Double
+    @SerializedName("turretsDestroyedMostInGame")
+    var turretsDestroyedMostInGame: Double
 ) {
     val bestList: HashMap<String, String>
         get() {

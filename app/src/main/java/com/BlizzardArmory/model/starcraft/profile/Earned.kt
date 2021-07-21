@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Earned(
 
-        @SerializedName("quantity")
-        var quantity: Int,
+    @SerializedName("quantity")
+    var quantity: Int,
 
-        @SerializedName("startTime")
-        var startTime: Int
+    @SerializedName("startTime")
+    var startTime: Int
 
 )

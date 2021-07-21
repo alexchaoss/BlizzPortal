@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 data class ItemEquipped(
 
-        @SerializedName("item")
-        var item: Item,
+    @SerializedName("item")
+    var item: Item,
 
-        @SerializedName("is_equipped")
-        var isIsEquipped: Boolean
+    @SerializedName("is_equipped")
+    var isIsEquipped: Boolean
 )

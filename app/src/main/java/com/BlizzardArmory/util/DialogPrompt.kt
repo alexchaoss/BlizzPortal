@@ -50,6 +50,7 @@ class DialogPrompt(val context: Context) {
         container.setPadding(30, 30, 30, 30)
         buttonParams.setMargins(10, 20, 10, 20)
         buttonParams.weight = 1f
+        tagMap["main_container"] = container
     }
 
     fun addCustomView(view: View, tag: String = "") {
@@ -155,7 +156,8 @@ class DialogPrompt(val context: Context) {
     }
 
     private fun setAdapter(spinnerList: Array<String>, spinner: Spinner) {
-        val arrayAdapter: ArrayAdapter<*> = object : ArrayAdapter<String?>(context, android.R.layout.simple_dropdown_item_1line, spinnerList) {
+        val arrayAdapter: ArrayAdapter<*> = object :
+            ArrayAdapter<String?>(context, android.R.layout.simple_dropdown_item_1line, spinnerList) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }

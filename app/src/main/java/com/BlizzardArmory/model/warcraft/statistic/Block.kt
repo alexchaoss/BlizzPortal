@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Block(
 
-        @SerializedName("rating")
-        var rating: Int,
+    @SerializedName("rating")
+    var rating: Int,
 
-        @SerializedName("rating_bonus")
-        var ratingBonus: Float,
+    @SerializedName("rating_bonus")
+    var ratingBonus: Float,
 
-        @SerializedName("value")
-        var value: Float
+    @SerializedName("value")
+    var value: Float
 
 )

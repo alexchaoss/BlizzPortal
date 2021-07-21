@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class Requirements(
 
-        @SerializedName("level")
-        var level: Level,
+    @SerializedName("level")
+    var level: Level,
 
-        @SerializedName("faction")
-        var faction: Faction
+    @SerializedName("faction")
+    var faction: Faction
 
 )

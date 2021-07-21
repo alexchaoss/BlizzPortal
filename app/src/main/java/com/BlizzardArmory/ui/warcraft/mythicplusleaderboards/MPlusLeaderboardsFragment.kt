@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.warcraft.mythicraidleaderboard
+package com.BlizzardArmory.ui.warcraft.mythicplusleaderboards
 
 import android.graphics.Color
 import android.os.Bundle
@@ -18,11 +18,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowMythicPlusLeaderboardsFragmentBinding
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.LeadingGroups
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
-import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsViewModel
 import com.BlizzardArmory.util.state.RightPanelState
+import com.google.android.material.snackbar.Snackbar
 
 class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
     FragmentManager.OnBackStackChangedListener {
@@ -31,7 +32,15 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
     private val binding get() = _binding!!
     private val viewModel: MPlusLeaderboardsViewModel by viewModels()
 
-    private lateinit var rightPanel: NavigationActivity
+    private lateinit var navigationActivity: NavigationActivity
+
+    private var selectedConnectedRealm = 0
+    private var region = "US"
+    private var selectedDungeon = 0L
+    private var selectedSeason = 0
+
+    private var dungeonList = mutableListOf("Dungeon")
+    private val seasonList = mutableListOf("Season")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
@@ -43,9 +52,23 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         super.onCreate(savedInstanceState)
         setObservers()
 
-        rightPanel = (requireActivity() as NavigationActivity)
-        rightPanel.selectRightPanel(RightPanelState.WoWMPlusLeaderboard)
+        navigationActivity = (requireActivity() as NavigationActivity)
+        navigationActivity.selectRightPanel(RightPanelState.WoWMPlusLeaderboard)
         this.parentFragmentManager.addOnBackStackChangedListener(this)
+
+        navigationActivity.binding.rightPanelWowMplus.realm.setTextColor(Color.WHITE)
+        navigationActivity.binding.rightPanelWowMplus.realm.textSize = 20f
+        navigationActivity.binding.rightPanelWowMplus.realm.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            navigationActivity.binding.rightPanelWowMplus.realm.textCursorDrawable = null
+        }
+
+        navigationActivity.binding.rightPanelWowMplus.realm.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line,
+            NavigationActivity.realms.flatMap { it.value.results }
+                .flatMap { it.connectedRealm.realms }.flatMap { it.name.getAllNames() }.distinct())
+        )
+
+        selectedConnectedRealm = NavigationActivity.realms["US"]!!.results.first().connectedRealm.id
 
         binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
@@ -53,37 +76,109 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
 
+        setAdapter(dungeonList, navigationActivity.binding.rightPanelWowMplus.dungeon)
+
         NetworkUtils.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
-        viewModel.downloadInstances()
+        viewModel.downloadSpecializations()
+        setSearch()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        rightPanel.selectRightPanel(RightPanelState.NewsSelection)
+        navigationActivity.selectRightPanel(RightPanelState.NewsSelection)
         this.parentFragmentManager.removeOnBackStackChangedListener(this)
     }
 
 
     private fun setObservers() {
 
-        viewModel.getInstances().observe(viewLifecycleOwner, {
+        viewModel.getSpecializations().observe(viewLifecycleOwner, {
+            viewModel.downloadInstances()
+        })
+
+        viewModel.getExpansions().observe(viewLifecycleOwner, {
             viewModel.downloadSeasonIndex()
+            selectedDungeon = it.last().dungeons.first().challenge_mode_id
         })
 
         viewModel.getSeasonIndex().observe(viewLifecycleOwner, {
-            viewModel.downloadSeason(it.seasons.last().id)
+            seasonList.addAll(it.seasons.map { season -> season.id.toString() })
+            setAdapter(seasonList, navigationActivity.binding.rightPanelWowMplus.season)
+            selectedSeason = it.current_season.id
+            viewModel.downloadSeason(viewModel.getSeasonIndex().value?.current_season?.id!!)
         })
 
         viewModel.getSeason().observe(viewLifecycleOwner, {
-            Log.i("Realms", NavigationActivity.realms["US"]!!.results[0].connectedRealm.realms.toString())
-            viewModel.downloadMythicKeystoneLeaderboard(11, viewModel.getInstances().value!!.last().id, it.periods.last().id)
+            viewModel.downloadMythicKeystoneLeaderboard(selectedConnectedRealm, selectedDungeon, it.periods, region)
+        })
+
+        viewModel.getMythicKeystoneLeaderboard().observe(viewLifecycleOwner, {
+            val leaderboards = it.filter { leaderboard -> leaderboard.leading_groups != null }
+
+            val groups = leaderboards.flatMap { group ->
+                group.leading_groups
+            }.sortedWith(compareBy<LeadingGroups> {
+                it.keystone_levelstone_level
+            }.thenByDescending {
+                it.duration
+            }).reversed()
+
+
+            binding.leaderboardRecycler.apply {
+                adapter = LeaderboardAdapter(groups, context, viewModel.getSpecializations().value!!, it, region)
+                binding.loadingCircle.visibility = View.GONE
+            }
         })
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             binding.loadingCircle.visibility = View.GONE
         })
+    }
+
+    private fun setSearch() {
+        navigationActivity.binding.rightPanelWowMplus.search.setOnClickListener {
+            when {
+                navigationActivity.binding.rightPanelWowMplus.season.selectedItemPosition == 0 -> {
+                    Snackbar.make(binding.root, "Please select a season", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+                navigationActivity.binding.rightPanelWowMplus.dungeon.selectedItemPosition == 0 -> {
+                    Snackbar.make(binding.root, "Please select a dungeon", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+                !NavigationActivity.realms.flatMap { it.value.results }
+                    .flatMap { data -> data.connectedRealm.realms }
+                    .map { it.name }.flatMap { it.getAllNames() }
+                    .any { it == navigationActivity.binding.rightPanelWowMplus.realm.text.toString() } -> {
+                    Snackbar.make(binding.root, "Please select an existing realm", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+                else -> {
+                    selectedConnectedRealm = NavigationActivity.realms.flatMap {
+                        it.value.results
+                    }.find {
+                        it.connectedRealm.realms.flatMap {
+                            it.name.getAllNames()
+                        }
+                            .contains(navigationActivity.binding.rightPanelWowMplus.realm.text.toString())
+                    }?.connectedRealm?.id!!
+
+                    region = NavigationActivity.realms.entries.find { it.value.results.any { it.connectedRealm.id == selectedConnectedRealm } }!!.key
+
+                    selectedSeason = navigationActivity.binding.rightPanelWowMplus.season.selectedItem.toString()
+                        .toInt()
+
+                    selectedDungeon = viewModel.getExpansions().value?.flatMap { it.dungeons }
+                        ?.find { it.name.contains(navigationActivity.binding.rightPanelWowMplus.dungeon.selectedItem as String) }?.challenge_mode_id!!
+                    binding.loadingCircle.visibility = View.VISIBLE
+                    viewModel.downloadSeason(selectedSeason)
+                    navigationActivity.binding.overlappingPanel.closePanels()
+                }
+            }
+        }
+
     }
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
@@ -115,6 +210,20 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 20f
                     view.gravity = Gravity.CENTER
+
+                    if (parent.getItemAtPosition(0) == "Season") {
+                        dungeonList = dungeonList.subList(0, 1)
+                        when (position) {
+                            1, 2, 3, 4 -> {
+                                dungeonList.addAll(viewModel.getExpansions().value!![1].dungeons.map { it.name })
+                                setAdapter(dungeonList, navigationActivity.binding.rightPanelWowMplus.dungeon)
+                            }
+                            5, 6 -> {
+                                dungeonList.addAll(viewModel.getExpansions().value!![2].dungeons.map { it.name })
+                                setAdapter(dungeonList, navigationActivity.binding.rightPanelWowMplus.dungeon)
+                            }
+                        }
+                    }
                 } catch (e: Exception) {
                     Log.e("Error", e.toString())
                 }
@@ -135,16 +244,16 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         try {
             (binding.leaderboardRecycler.adapter as LeaderboardAdapter).filter(newText!!)
         } catch (e: Exception) {
-            Log.e("Error", "Couldn't filter leaderboards")
+            Log.e("Error", e.localizedMessage!!)
         }
         return false
     }
 
     override fun onBackStackChanged() {
         if (requireActivity().supportFragmentManager.fragments.last().tag == this.tag) {
-            rightPanel.selectRightPanel(RightPanelState.WoWMPlusLeaderboard)
+            navigationActivity.selectRightPanel(RightPanelState.WoWMPlusLeaderboard)
         } else {
-            rightPanel.selectRightPanel(RightPanelState.NewsSelection)
+            navigationActivity.selectRightPanel(RightPanelState.NewsSelection)
         }
     }
 
