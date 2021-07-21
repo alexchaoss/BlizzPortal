@@ -111,6 +111,10 @@ class WoWNavFragment : Fragment() {
                     WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
+                activity?.supportFragmentManager?.findFragmentByTag("mplusleaderboard") != null -> {
+                    ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    activity?.supportFragmentManager?.popBackStack()
+                }
                 else -> {
                     NewsListFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)

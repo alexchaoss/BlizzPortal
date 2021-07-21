@@ -631,7 +631,6 @@ class WoWCharacterFragment : Fragment() {
                             NetworkUtils.loading = true
                         }, "retry"), dialog!!.Button(
                             errorMessages.BACK, 18f,
-
                             {
                                 dialog!!.dismiss()
                                 EventBus.getDefault().post(NetworkEvent(true))
