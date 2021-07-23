@@ -68,7 +68,7 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 fullLeaderboardList.add(list[constraint.toInt() - 1])
             } else {
                 searchWithConstraint(constraint) { data, const ->
-                    return@searchWithConstraint data.contains(const)
+                    return@searchWithConstraint data.contains(const.lowercase())
                 }
             }
         }
@@ -79,10 +79,10 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
         for (entry in list) {
             var match = false
             when {
-                search(entry.guild.name, constraint) -> {
+                search(entry.guild.name.lowercase(), constraint) -> {
                     match = true
                 }
-                search(entry.guild.realm.name, constraint) -> {
+                search(entry.guild.realm.name.lowercase(), constraint) -> {
                     match = true
                 }
             }

@@ -24,21 +24,28 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
     lateinit var region: String
 
     private val soulbinds: MutableLiveData<CharacterSoulbinds> = MutableLiveData()
-    private val soulbind: MutableLiveData<Soulbind> = MutableLiveData()
-    private val techTalents: MutableLiveData<List<TechTalent>> = MutableLiveData()
-    private val techTrees: MutableLiveData<TechTalentTree> = MutableLiveData()
+    private val soulbind: MutableLiveData<MutableMap<Long, Soulbind>> = MutableLiveData()
+    private val techTalents: MutableLiveData<MutableMap<Long, List<TechTalent>>> = MutableLiveData()
+    private val techTrees: MutableLiveData<MutableMap<Long, TechTalentTree>> = MutableLiveData()
     private var covenantClassSpells: MutableLiveData<List<CovenantSpells>> = MutableLiveData()
     private var covenantSpell: MutableLiveData<List<CovenantSpells>> = MutableLiveData()
+
+    private val techTalentsTemp: MutableMap<Long, List<TechTalent>> = mutableMapOf()
+
+    init {
+        soulbind.value = mutableMapOf()
+        techTrees.value = mutableMapOf()
+    }
 
     fun getSoulbinds(): LiveData<CharacterSoulbinds> {
         return soulbinds
     }
 
-    fun getTechTalents(): LiveData<List<TechTalent>> {
+    fun getTechTalents(): LiveData<MutableMap<Long, List<TechTalent>>> {
         return techTalents
     }
 
-    fun getTechTrees(): LiveData<TechTalentTree> {
+    fun getTechTrees(): LiveData<MutableMap<Long, TechTalentTree>> {
         return techTrees
     }
 
@@ -60,7 +67,10 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     soulbinds.value = response.body()
-                    downloadSoulbind(soulbinds.value!!.soulbinds[0].soulbind.id)
+                    for (soulbind in soulbinds.value?.soulbinds!!) {
+                        downloadSoulbind(soulbind.soulbind.id)
+                    }
+
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
@@ -78,8 +88,8 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    soulbind.value = response.body()
-                    downloadTechTree()
+                    soulbind.value?.set(id, response.body()!!)
+                    downloadTechTree(soulbind.value?.get(id)!!.techtalentTree.id, id)
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
@@ -88,14 +98,14 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
         jobs.add(job)
     }
 
-    fun downloadTechTree() {
+    fun downloadTechTree(techTreeIndex: Long, soulbindId: Long) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient(getApplication(), true)
-                .getTechTree(soulbind.value!!.techtalentTree.id, region.lowercase())
+                .getTechTree(techTreeIndex, region.lowercase())
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    techTrees.value = response.body()!!
-                    downloadTechTalents()
+                    techTrees.value?.set(techTreeIndex, response.body()!!)
+                    downloadTechTalents(techTrees.value?.get(techTreeIndex)!!.id, soulbindId)
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
@@ -104,18 +114,22 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
         jobs.add(job)
     }
 
-    fun downloadTechTalents() {
+    fun downloadTechTalents(id: Long, soulbindId: Long) {
         val tempTalents = mutableListOf<TechTalent>()
-        for (talent in techTrees.value?.talents!!) {
+        for (talent in techTrees.value?.get(id)!!.talents) {
             val job = coroutineScope.launch {
                 val response = RetroClient.getWoWClient(getApplication(), true)
                     .getTechTalent(talent.id, region.lowercase())
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        if (tempTalents.size == techTrees.value!!.talents.size - 1) {
-                            Log.i("TEST", "Download talents over")
-                            tempTalents.add(response.body()!!)
-                            techTalents.value = tempTalents.sortedBy { it.tier }
+                        if (tempTalents.size == techTrees.value?.get(id)!!.talents.size - 1) {
+                            if (techTalentsTemp.size == soulbind.value!!.size - 1) {
+                                techTalentsTemp.set(soulbindId, tempTalents.sortedBy { it.tier })
+                                techTalents.value = techTalentsTemp
+                            } else {
+                                tempTalents.add(response.body()!!)
+                                techTalentsTemp.set(soulbindId, tempTalents.sortedBy { it.tier })
+                            }
                         } else {
                             tempTalents.add(response.body()!!)
                         }
@@ -135,7 +149,7 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
     fun downloadCovenantClassSpell(characterClass: Int) {
         val job = coroutineScope.launch {
             val response = RetroClient.getAPIClient(getApplication(), true)
-                .getCovenantSpells(characterClass)
+                .getCovenantClassSpells(characterClass)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     covenantClassSpells.value = response.body()

@@ -40,11 +40,11 @@ class LeaderboardAdapter(private val list: List<Row>, private val region: String
             } else {
                 if (constraint == "m" || constraint == "f") {
                     searchWithConstraint(constraint) { data, const ->
-                        return@searchWithConstraint data == const
+                        return@searchWithConstraint data == const.lowercase()
                     }
                 } else {
                     searchWithConstraint(constraint) { data, const ->
-                        return@searchWithConstraint data.contains(const)
+                        return@searchWithConstraint data.contains(const.lowercase())
                     }
                 }
             }
@@ -57,7 +57,7 @@ class LeaderboardAdapter(private val list: List<Row>, private val region: String
             var match = false
             for (player in row.player) {
                 for (data in player.data) {
-                    if (data.string != null && search(data.string, constraint)) {
+                    if (data.string != null && search(data.string.lowercase(), constraint)) {
                         match = true
                     }
                 }

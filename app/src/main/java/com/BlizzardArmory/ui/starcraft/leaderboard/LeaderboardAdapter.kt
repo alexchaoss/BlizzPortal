@@ -40,7 +40,7 @@ class LeaderboardAdapter(private val list: List<List<LadderMembers>>, private va
                 fullLeaderboardList.add(list[constraint.toInt() - playerRank])
             } else {
                 searchWithConstraint(constraint) { data, const ->
-                    return@searchWithConstraint data.contains(const)
+                    return@searchWithConstraint data.contains(const.lowercase())
                 }
             }
         }
@@ -52,13 +52,13 @@ class LeaderboardAdapter(private val list: List<List<LadderMembers>>, private va
             var match = false
             for (member in team) {
                 when {
-                    search(member.character.displayName, constraint) -> {
+                    search(member.character.displayName.lowercase(), constraint) -> {
                         match = true
                     }
-                    search(member.character.clanName, constraint) -> {
+                    search(member.character.clanName.lowercase(), constraint) -> {
                         match = true
                     }
-                    search(member.character.clanTag, constraint) -> {
+                    search(member.character.clanTag.lowercase(), constraint) -> {
                         match = true
                     }
                 }

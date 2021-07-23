@@ -62,7 +62,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
 
     fun bind(talents: List<TechTalent>, trait: Traits?) {
         setConduits(talents)
-        if (talents[0].socketType != null && trait != null) {
+        if (talents[0].socketType != null && trait != null && trait.conduitSocket.socket != null) {
             downloadConduit(trait.conduitSocket.socket.conduit.id, trait.displayOrder, trait.conduitSocket.socket.rank)
         }
         setIcons(talents, trait)

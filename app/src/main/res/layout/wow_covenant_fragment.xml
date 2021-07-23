@@ -187,6 +187,7 @@
         android:background="#5c5c5c"
         android:padding="1dp"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/character1">
 
         <ImageView

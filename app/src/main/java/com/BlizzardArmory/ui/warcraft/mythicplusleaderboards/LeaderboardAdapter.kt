@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.mythicplusleaderboards
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +44,7 @@ class LeaderboardAdapter(private val list: List<LeadingGroups>, private val cont
                 fullLeaderboardList.add(list[constraint.toInt() - 1])
             } else {
                 searchWithConstraint(constraint) { data, const ->
-                    return@searchWithConstraint data.contains(const)
+                    return@searchWithConstraint data.contains(const.lowercase())
                 }
             }
         }
@@ -56,13 +55,11 @@ class LeaderboardAdapter(private val list: List<LeadingGroups>, private val cont
         for (entry in list) {
             var match = false
             for (members in entry.members) {
-                Log.i("Name", members.profile.name)
-                if (search(members.profile.name, constraint)) {
+                if (search(members.profile.name.lowercase(), constraint)) {
                     match = true
                 }
             }
             if (match) {
-                Log.i("TEST", "Constraint match")
                 fullLeaderboardList.add(entry)
             }
         }

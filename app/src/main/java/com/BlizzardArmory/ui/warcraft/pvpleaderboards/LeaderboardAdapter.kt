@@ -37,7 +37,7 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
         if (constraint.lowercase(Locale.getDefault()).isEmpty()) {
             fullLeaderboardList.addAll(list)
         } else {
-            if (constraint.toIntOrNull() != null && constraint.toInt() > 0 && constraint.toInt() - 1 <= list.size) {
+            if (constraint.isDigitsOnly() && constraint.toInt() > 0 && constraint.toInt() - 1 <= list.size) {
                 fullLeaderboardList.add(list[constraint.toInt() - 1])
             } else {
                 searchWithConstraint(constraint) { data, const ->
@@ -58,23 +58,16 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 search(entry.faction.type.lowercase(), constraint) -> {
                     match = true
                 }
-                search(entry.character.realm.name.lowercase(), constraint) -> {
-                    match = true
-                }
-                search(entry.character.realm.name.lowercase(), constraint) -> {
-                    match = true
-                }
                 else -> {
-                    if (constraint.contains("rating")) {
-                        if (constraint.contains("=") && search(entry.rating.toString(), constraint.substringAfter("="))) {
+                    if (constraint.matches("rating[=<>][0-9].*".toRegex())) {
+                        val delimiter = constraint.last { !it.isLetterOrDigit() }
+                        val rating = constraint.substringAfter(delimiter)
+                        Log.i("Rating", rating)
+                        if (constraint.contains("=") && search(entry.rating.toString(), rating)) {
                             match = true
-                        } else if (constraint.contains(">") && constraint.substringAfter(">")
-                                .isDigitsOnly() && entry.rating > constraint.substringAfter(">")
-                                .toInt()) {
+                        } else if (constraint.contains(">") && entry.rating > rating.toInt()) {
                             match = true
-                        } else if (constraint.contains("<") && constraint.substringAfter("<")
-                                .isDigitsOnly() && entry.rating < constraint.substringAfter("<")
-                                .toInt()) {
+                        } else if (constraint.contains("<") && entry.rating < rating.toInt()) {
                             match = true
                         }
                     }
@@ -82,7 +75,6 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
             }
 
             if (match) {
-                Log.i("TEST", "Constraint match")
                 fullLeaderboardList.add(entry)
             }
         }

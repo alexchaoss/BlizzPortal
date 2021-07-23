@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class TechTalentTree(
 
     @SerializedName("_links") val links: Links,
-    @SerializedName("id") val id: Int,
+    @SerializedName("id") val id: Long,
     @SerializedName("max_tiers") val max_tiers: Int,
     @SerializedName("talents") val talents: List<Talents>
 )

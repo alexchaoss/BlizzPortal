@@ -18,7 +18,7 @@ import com.BlizzardArmory.databinding.WowCovenantFragmentBinding
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.CharacterSoulbinds
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.Soulbinds
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
-import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
+import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalent
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.MetricConversion
 import com.BlizzardArmory.util.events.ClassEvent
@@ -73,13 +73,15 @@ class CovenantFragment : Fragment() {
             Glide.with(requireContext())
                 .load(it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }?.icon)
                 .into(binding.covenantClassSpell)
-            //setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
+            setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
 
         })
         viewModel.getTechTalents().observe(viewLifecycleOwner, {
             binding.conduitRecycler.apply {
-                adapter = SoulbindAdapter(it.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[0].traits, requireContext())
+                adapter = SoulbindAdapter(it.values.first()
+                    .groupBy { talent -> talent.tier }, viewModel.getSoulbinds().value!!.soulbinds[0].traits, requireContext())
             }
+            setOnAvatarClickListeners(it)
         })
 
         viewModel.getcovenantSpell().observe(viewLifecycleOwner, {
@@ -96,50 +98,71 @@ class CovenantFragment : Fragment() {
         })
     }
 
-    private fun setOnAvatarClickListeners(mutableMap: MutableMap<Int, List<TechTalentWithIcon>>) {
-        /* mutableMap.forEach { map ->
-             val soulbinds = viewModel.getSoulbinds().value?.soulbinds
-             //val index = soulbinds!!.indexOf(soulbinds.find { sb -> sb.soulbind.id == map.key })
-             /* val tree = viewModel.getTechTrees().value!![soulbinds[index].soulbind.id]!!.talents
-                 .sortedBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
-                 .groupBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
-                 .map { it.value }*/
-             when (index) {
-                 0 -> {
-                     binding.avatar1.setOnClickListener {
+    private fun setOnAvatarClickListeners(mutableMap: MutableMap<Long, List<TechTalent>>) {
 
-                         setGreyShade(binding.avatar1, 1f)
-                         setGreyShade(binding.avatar2, 0f)
-                         setGreyShade(binding.avatar3, 0f)
-                         binding.conduitRecycler.apply {
-                             adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
-                         }
-                     }
-                 }
+        val selectedBorder = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(120, requireContext()), MetricConversion.getDPMetric(120, requireContext()))
 
-                 1 -> {
-                     binding.avatar2.setOnClickListener {
-                         setGreyShade(binding.avatar2, 1f)
-                         setGreyShade(binding.avatar1, 0f)
-                         setGreyShade(binding.avatar3, 0f)
-                         binding.conduitRecycler.apply {
-                             adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
-                         }
-                     }
-                 }
+        val unselectedBorder = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(100, requireContext()), MetricConversion.getDPMetric(120, requireContext()))
 
-                 2 -> {
-                     binding.avatar3.setOnClickListener {
-                         setGreyShade(binding.avatar3, 1f)
-                         setGreyShade(binding.avatar1, 0f)
-                         setGreyShade(binding.avatar2, 0f)
-                         binding.conduitRecycler.apply {
-                             adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
-                         }
-                     }
-                 }
-             }
-         }*/
+        mutableMap.forEach { map ->
+            val soulbinds = viewModel.getSoulbinds().value?.soulbinds
+            when (val index = soulbinds!!.indexOf(soulbinds.find { sb -> sb.soulbind.id == map.key })) {
+                0 -> {
+                    binding.avatar1.setOnClickListener {
+                        setGreyShade(binding.avatar1, 1f)
+                        setGreyShade(binding.avatar2, 0f)
+                        setGreyShade(binding.avatar3, 0f)
+                        binding.border1.setImageResource(R.drawable.soulbinds_portrait_selected)
+                        binding.border1.layoutParams = selectedBorder
+                        binding.border2.setImageResource(R.drawable.soulbinds_portrait_border)
+                        binding.border2.layoutParams = unselectedBorder
+                        binding.border3.setImageResource(R.drawable.soulbinds_portrait_border)
+                        binding.border3.layoutParams = unselectedBorder
+                        binding.conduitRecycler.apply {
+                            adapter = SoulbindAdapter(map.value.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[index].traits, requireContext())
+                        }
+                    }
+                }
+
+                1 -> {
+                    binding.avatar2.setOnClickListener {
+                        setGreyShade(binding.avatar2, 1f)
+                        setGreyShade(binding.avatar1, 0f)
+                        setGreyShade(binding.avatar3, 0f)
+                        binding.border1.setImageResource(R.drawable.soulbinds_portrait_border)
+                        binding.border1.layoutParams = unselectedBorder
+                        binding.border2.setImageResource(R.drawable.soulbinds_portrait_selected)
+                        binding.border2.layoutParams = selectedBorder
+                        binding.border3.setImageResource(R.drawable.soulbinds_portrait_border)
+                        binding.border3.layoutParams = unselectedBorder
+                        binding.conduitRecycler.apply {
+                            binding.conduitRecycler.apply {
+                                adapter = SoulbindAdapter(map.value.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[index].traits, requireContext())
+                            }
+                        }
+                    }
+                }
+
+                2 -> {
+                    binding.avatar3.setOnClickListener {
+                        setGreyShade(binding.avatar3, 1f)
+                        setGreyShade(binding.avatar1, 0f)
+                        setGreyShade(binding.avatar2, 0f)
+                        binding.border1.setImageResource(R.drawable.soulbinds_portrait_border)
+                        binding.border1.layoutParams = unselectedBorder
+                        binding.border2.setImageResource(R.drawable.soulbinds_portrait_border)
+                        binding.border2.layoutParams = unselectedBorder
+                        binding.border3.setImageResource(R.drawable.soulbinds_portrait_selected)
+                        binding.border3.layoutParams = selectedBorder
+                        binding.conduitRecycler.apply {
+                            binding.conduitRecycler.apply {
+                                adapter = SoulbindAdapter(map.value.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[index].traits, requireContext())
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setHeader(it: CharacterSoulbinds) {

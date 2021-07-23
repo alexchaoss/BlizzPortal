@@ -34,7 +34,7 @@ interface APINetworkServices {
     suspend fun getCovenantSpells(@Path("covenantId") covenantId: Int,
                                   @Path("locale") locale: String = NetworkUtils.locale): Response<List<CovenantSpells>>
 
-    @GET("/covenant/{playableClassId}/{locale}")
+    @GET("/covenant/class/{playableClassId}/{locale}")
     suspend fun getCovenantClassSpells(@Path("playableClassId") playableClassId: Int,
                                        @Path("locale") locale: String = NetworkUtils.locale): Response<List<CovenantSpells>>
 
