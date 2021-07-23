@@ -1,4 +1,4 @@
-package com.BlizzardArmory.model.warcraft.covenant.conduit
+package com.BlizzardArmory.model.common
 
 import com.google.gson.annotations.SerializedName
 

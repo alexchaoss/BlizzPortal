@@ -7,10 +7,10 @@ import com.google.gson.annotations.SerializedName
 data class Soulbind(
 
     @SerializedName("_links") val links: Links,
-    @SerializedName("id") val id: Int,
+    @SerializedName("id") val id: Long,
     @SerializedName("name") val name: String,
     @SerializedName("covenant") val covenant: Covenant,
     @SerializedName("creature") val creature: Creature,
     @SerializedName("follower") val follower: Follower,
-    @SerializedName("talent_tree") val techTalent_tree: TechTalentTree
+    @SerializedName("talent_tree") val techtalentTree: TechTalentTree
 )

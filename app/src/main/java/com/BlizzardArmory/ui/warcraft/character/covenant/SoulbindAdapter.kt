@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.Traits
-import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
-import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.Talents
+import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalent
 
-class SoulbindAdapter(private val list: List<List<Talents>>, private val traits: List<Traits>, private val icons: List<TechTalentWithIcon>, private val context: Context)
+class SoulbindAdapter(private val list: Map<Int, List<TechTalent>>, private val traits: List<Traits>, private val context: Context)
     : RecyclerView.Adapter<SoulbindViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SoulbindViewHolder {
@@ -17,8 +16,14 @@ class SoulbindAdapter(private val list: List<List<Talents>>, private val traits:
     }
 
     override fun onBindViewHolder(holder: SoulbindViewHolder, position: Int) {
-        val talents: List<Talents> = list[position]
-        holder.bind(talents, traits.find { it.tier == position }!!, icons)
+        val talents: List<TechTalent> = list[position]!!
+        var trait: Traits? = null
+
+        if (traits.size >= position) {
+            trait = traits.find { it.tier == position }
+        }
+
+        holder.bind(talents, trait)
     }
 
     override fun getItemCount(): Int = list.size

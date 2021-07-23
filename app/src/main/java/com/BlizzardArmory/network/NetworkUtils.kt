@@ -15,6 +15,8 @@ object NetworkUtils {
     var HEROKU_PROXY_BASE_URL = "https://blizzardgamesprofiles.herokuapp.com/"
     var HEROKU_API_BASE_URL = "https://blizzard-armory-server.herokuapp.com/"
 
+    val logs = false
+
     /**
      * The constant paypalURL.
      */

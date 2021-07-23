@@ -3,7 +3,10 @@ package com.BlizzardArmory.network.services
 import com.BlizzardArmory.model.warcraft.account.Account
 import com.BlizzardArmory.model.warcraft.achievements.characterachievements.Achievements
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
-import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.SoulbindInformation
+import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.CharacterSoulbinds
+import com.BlizzardArmory.model.warcraft.covenant.conduit.Conduit
+import com.BlizzardArmory.model.warcraft.covenant.soulbind.Soulbind
+import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalent
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
 import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
 import com.BlizzardArmory.model.warcraft.equipment.Equipment
@@ -64,10 +67,38 @@ interface WoWNetworkServices {
 
     @GET("/data/wow/tech-talent-tree/{id}")
     suspend fun getTechTree(
-        @Path("id") id: Int,
+        @Path("id") id: Long,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<TechTalentTree>
+
+    @GET("/data/wow/tech-talent/{techTalentId}")
+    suspend fun getTechTalent(
+        @Path("techTalentId") techTalentId: Int,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<TechTalent>
+
+    @GET("/data/wow/media/tech-talent/{techTalentId}")
+    suspend fun getTechTalentMedia(
+        @Path("techTalentId") techTalentId: Int,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<Media>
+
+    @GET("/data/wow/covenant/conduit/{conduitId}")
+    suspend fun getConduit(
+        @Path("conduitId") conduitId: Int,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<Conduit>
+
+    @GET("/data/wow/media/spell/{spellId}")
+    suspend fun getSpellMedia(
+        @Path("spellId") spellId: Int,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<Media>
 
     @GET("/data/wow/leaderboard/hall-of-fame/{raid}/{faction}")
     suspend fun getMythicRaidLeaderboards(
@@ -189,6 +220,14 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<com.BlizzardArmory.model.warcraft.pvp.leaderboards.Leaderboard>
 
+    @GET("/data/wow/covenant/soulbind/{soulbindId}")
+    suspend fun getSoulbind(
+        @Path("soulbindId") soulbindId: Long,
+        @Query("namespace") namespace: String,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<Soulbind>
+
     //Profile
 
     @GET("/profile/wow/character/{realm}/{character}/character-media")
@@ -286,5 +325,5 @@ interface WoWNetworkServices {
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
-    ): Response<SoulbindInformation>
+    ): Response<CharacterSoulbinds>
 }

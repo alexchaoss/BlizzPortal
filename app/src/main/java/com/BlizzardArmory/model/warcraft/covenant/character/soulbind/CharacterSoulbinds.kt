@@ -4,10 +4,9 @@ import com.BlizzardArmory.model.common.Character
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
+data class CharacterSoulbinds(
 
-data class SoulbindInformation(
-
-    @SerializedName("_links") val links: Links,
+    @SerializedName("_links") val _links: Links,
     @SerializedName("character") val character: Character,
     @SerializedName("chosen_covenant") val chosenCovenant: ChosenCovenant,
     @SerializedName("renown_level") val renownLevel: Int,

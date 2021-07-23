@@ -15,13 +15,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowCovenantFragmentBinding
-import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.SoulbindInformation
+import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.CharacterSoulbinds
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.Soulbinds
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
 import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.MetricConversion
 import com.BlizzardArmory.util.events.ClassEvent
+import com.BlizzardArmory.util.events.TechTalentClickedEvent
 import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -60,16 +61,11 @@ class CovenantFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
-
-        })
-
         viewModel.getSoulbinds().observe(viewLifecycleOwner, {
             setHeader(it)
             setAvatars(it)
             viewModel.downloadCovenantSpell(it.chosenCovenant.id)
             viewModel.downloadCovenantClassSpell(characterClass)
-            it.soulbinds.forEach { soulbind -> viewModel.downloadTechTalents(soulbind.soulbind.id) }
 
         })
 
@@ -77,29 +73,19 @@ class CovenantFragment : Fragment() {
             Glide.with(requireContext())
                 .load(it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }?.icon)
                 .into(binding.covenantClassSpell)
-            setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
+            //setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
 
         })
         viewModel.getTechTalents().observe(viewLifecycleOwner, {
-            Log.i("COV UP", "updated")
-
-            if (it.size == viewModel.getSoulbinds().value?.soulbinds?.size) {
-                it.forEach { map ->
-                    viewModel.downloadTechTree(map.value[0].treeId, map.key)
-                }
-            }
-        })
-
-        viewModel.getTechTrees().observe(viewLifecycleOwner, {
-            if (it.size == viewModel.getSoulbinds().value?.soulbinds?.size) {
-                setOnAvatarClickListeners(viewModel.getTechTalents().value!!)
+            binding.conduitRecycler.apply {
+                adapter = SoulbindAdapter(it.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[0].traits, requireContext())
             }
         })
 
         viewModel.getcovenantSpell().observe(viewLifecycleOwner, {
             try {
-                Glide.with(requireContext()).load(it[0].icon).into(binding.covenantSpell)
-                setOnSpellTouched(binding.covenantSpell, it[0])
+                //Glide.with(requireContext()).load(it[0].icon).into(binding.covenantSpell)
+                //setOnSpellTouched(binding.covenantSpell, it[0])
             } catch (e: Exception) {
                 Log.e("Error", "no icon", e)
             }
@@ -111,53 +97,52 @@ class CovenantFragment : Fragment() {
     }
 
     private fun setOnAvatarClickListeners(mutableMap: MutableMap<Int, List<TechTalentWithIcon>>) {
+        /* mutableMap.forEach { map ->
+             val soulbinds = viewModel.getSoulbinds().value?.soulbinds
+             //val index = soulbinds!!.indexOf(soulbinds.find { sb -> sb.soulbind.id == map.key })
+             /* val tree = viewModel.getTechTrees().value!![soulbinds[index].soulbind.id]!!.talents
+                 .sortedBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
+                 .groupBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
+                 .map { it.value }*/
+             when (index) {
+                 0 -> {
+                     binding.avatar1.setOnClickListener {
 
-        mutableMap.forEach { map ->
-            val soulbinds = viewModel.getSoulbinds().value?.soulbinds
-            val index = soulbinds!!.indexOf(soulbinds.find { sb -> sb.soulbind.id == map.key })
-            val tree = viewModel.getTechTrees().value!![soulbinds[index].soulbind.id]!!.talents
-                .sortedBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
-                .groupBy { talent -> soulbinds[index].traits.find { talent.id == it.trait.id }?.tier }
-                .map { it.value }
-            when (index) {
-                0 -> {
-                    binding.avatar1.setOnClickListener {
+                         setGreyShade(binding.avatar1, 1f)
+                         setGreyShade(binding.avatar2, 0f)
+                         setGreyShade(binding.avatar3, 0f)
+                         binding.conduitRecycler.apply {
+                             adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
+                         }
+                     }
+                 }
 
-                        setGreyShade(binding.avatar1, 1f)
-                        setGreyShade(binding.avatar2, 0f)
-                        setGreyShade(binding.avatar3, 0f)
-                        binding.conduitRecycler.apply {
-                            adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
-                        }
-                    }
-                }
+                 1 -> {
+                     binding.avatar2.setOnClickListener {
+                         setGreyShade(binding.avatar2, 1f)
+                         setGreyShade(binding.avatar1, 0f)
+                         setGreyShade(binding.avatar3, 0f)
+                         binding.conduitRecycler.apply {
+                             adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
+                         }
+                     }
+                 }
 
-                1 -> {
-                    binding.avatar2.setOnClickListener {
-                        setGreyShade(binding.avatar2, 1f)
-                        setGreyShade(binding.avatar1, 0f)
-                        setGreyShade(binding.avatar3, 0f)
-                        binding.conduitRecycler.apply {
-                            adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
-                        }
-                    }
-                }
-
-                2 -> {
-                    binding.avatar3.setOnClickListener {
-                        setGreyShade(binding.avatar3, 1f)
-                        setGreyShade(binding.avatar1, 0f)
-                        setGreyShade(binding.avatar2, 0f)
-                        binding.conduitRecycler.apply {
-                            adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
-                        }
-                    }
-                }
-            }
-        }
+                 2 -> {
+                     binding.avatar3.setOnClickListener {
+                         setGreyShade(binding.avatar3, 1f)
+                         setGreyShade(binding.avatar1, 0f)
+                         setGreyShade(binding.avatar2, 0f)
+                         binding.conduitRecycler.apply {
+                             adapter = SoulbindAdapter(tree, soulbinds[index].traits, map.value, requireContext())
+                         }
+                     }
+                 }
+             }
+         }*/
     }
 
-    private fun setHeader(it: SoulbindInformation) {
+    private fun setHeader(it: CharacterSoulbinds) {
         when (it.chosenCovenant.id) {
             1 -> binding.renownCircle.setImageResource(R.drawable.renown_level_circle_kyrian)
             2 -> binding.renownCircle.setImageResource(R.drawable.renown_level_circle_venthyr)
@@ -181,39 +166,39 @@ class CovenantFragment : Fragment() {
         EventBus.getDefault().unregister(this)
     }
 
-    private fun setAvatars(soulbindInformation: SoulbindInformation) {
+    private fun setAvatars(soulbindInformation: CharacterSoulbinds) {
         when (soulbindInformation.soulbinds.size) {
-            1 -> setAvatar(binding.avatar1, binding.border1, soulbindInformation.soulbinds[0])
+            1 -> setAvatar(binding.avatar1, binding.border1, soulbindInformation.soulbinds[0], 0)
             2 -> {
-                setAvatar(binding.avatar1, binding.border1, soulbindInformation.soulbinds[0])
-                setAvatar(binding.avatar2, binding.border2, soulbindInformation.soulbinds[1])
+                setAvatar(binding.avatar1, binding.border1, soulbindInformation.soulbinds[0], 0)
+                setAvatar(binding.avatar2, binding.border2, soulbindInformation.soulbinds[1], 1)
             }
             3 -> {
-                setAvatar(binding.avatar1, binding.border1, soulbindInformation.soulbinds[0])
-                setAvatar(binding.avatar2, binding.border2, soulbindInformation.soulbinds[1])
-                setAvatar(binding.avatar3, binding.border3, soulbindInformation.soulbinds[2])
+                setAvatar(binding.avatar1, binding.border1, soulbindInformation.soulbinds[0], 0)
+                setAvatar(binding.avatar2, binding.border2, soulbindInformation.soulbinds[1], 1)
+                setAvatar(binding.avatar3, binding.border3, soulbindInformation.soulbinds[2], 2)
             }
         }
 
         binding.renowmLevel.text = soulbindInformation.renownLevel.toString()
     }
 
-    private fun setAvatar(avatar: ImageView, border: ImageView, soulbinds: Soulbinds) {
+    private fun setAvatar(avatar: ImageView, border: ImageView, soulbinds: Soulbinds, index: Int) {
         when (soulbinds.soulbind.id) {
-            1 -> avatar.setImageResource(R.drawable.niya)
-            2 -> avatar.setImageResource(R.drawable.dreamweaver)
-            3 -> avatar.setImageResource(R.drawable.general_draven)
-            4 -> avatar.setImageResource(R.drawable.plague_deviser_marileth)
-            5 -> avatar.setImageResource(R.drawable.emeni)
-            6 -> avatar.setImageResource(R.drawable.korayn)
-            7 -> avatar.setImageResource(R.drawable.pelagos)
-            8 -> avatar.setImageResource(R.drawable.nadjia_the_mistblade)
-            9 -> avatar.setImageResource(R.drawable.theotar_the_mad_duke)
-            10 -> avatar.setImageResource(R.drawable.bonesmith_heirmir)
-            13 -> avatar.setImageResource(R.drawable.kleia)
-            18 -> avatar.setImageResource(R.drawable.forgelite_prime_mikanikos)
+            1L -> avatar.setImageResource(R.drawable.niya)
+            2L -> avatar.setImageResource(R.drawable.dreamweaver)
+            3L -> avatar.setImageResource(R.drawable.general_draven)
+            4L -> avatar.setImageResource(R.drawable.plague_deviser_marileth)
+            5L -> avatar.setImageResource(R.drawable.emeni)
+            6L -> avatar.setImageResource(R.drawable.korayn)
+            7L -> avatar.setImageResource(R.drawable.pelagos)
+            8L -> avatar.setImageResource(R.drawable.nadjia_the_mistblade)
+            9L -> avatar.setImageResource(R.drawable.theotar_the_mad_duke)
+            10L -> avatar.setImageResource(R.drawable.bonesmith_heirmir)
+            13L -> avatar.setImageResource(R.drawable.kleia)
+            18L -> avatar.setImageResource(R.drawable.forgelite_prime_mikanikos)
         }
-        if (soulbinds.active) {
+        if (index == 0) {
             border.setImageResource(R.drawable.soulbinds_portrait_selected)
             val params = ConstraintLayout.LayoutParams(MetricConversion.getDPMetric(120, requireContext()), MetricConversion.getDPMetric(120, requireContext()))
             border.layoutParams = params
@@ -232,7 +217,20 @@ class CovenantFragment : Fragment() {
     public fun classEventReceived(classEvent: ClassEvent) {
         Log.i("class", "received")
         characterClass = classEvent.data
-        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public fun techTalentTouchedEvent(techTalentClickedEvent: TechTalentClickedEvent) {
+        if (techTalentClickedEvent.touch) {
+            binding.spellCost.visibility = View.GONE
+            binding.spellCd.visibility = View.GONE
+            binding.spellTooltip.visibility = View.VISIBLE
+            binding.spellName.text = techTalentClickedEvent.name
+            binding.spellCast.text = techTalentClickedEvent.castTime
+            binding.spellDescription.text = techTalentClickedEvent.description
+        } else {
+            binding.spellTooltip.visibility = View.GONE
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -241,6 +239,7 @@ class CovenantFragment : Fragment() {
             view.performClick()
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    binding.spellCd.visibility = View.VISIBLE
                     binding.spellTooltip.visibility = View.VISIBLE
                     if (covenantSpells.powerCost == null || covenantSpells.powerCost == "") {
                         binding.spellCost.visibility = View.GONE

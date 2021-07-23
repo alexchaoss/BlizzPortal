@@ -4,9 +4,10 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.SoulbindInformation
+import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.CharacterSoulbinds
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
-import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
+import com.BlizzardArmory.model.warcraft.covenant.soulbind.Soulbind
+import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalent
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
@@ -22,28 +23,22 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
     lateinit var realm: String
     lateinit var region: String
 
-    private val soulbinds: MutableLiveData<SoulbindInformation> = MutableLiveData()
-    private val techTalents: MutableLiveData<MutableMap<Int, List<TechTalentWithIcon>>> = MutableLiveData()
-    private val techTrees: MutableLiveData<MutableMap<Int, TechTalentTree>> = MutableLiveData()
+    private val soulbinds: MutableLiveData<CharacterSoulbinds> = MutableLiveData()
+    private val soulbind: MutableLiveData<Soulbind> = MutableLiveData()
+    private val techTalents: MutableLiveData<List<TechTalent>> = MutableLiveData()
+    private val techTrees: MutableLiveData<TechTalentTree> = MutableLiveData()
     private var covenantClassSpells: MutableLiveData<List<CovenantSpells>> = MutableLiveData()
     private var covenantSpell: MutableLiveData<List<CovenantSpells>> = MutableLiveData()
 
-    private val talentMap = mutableMapOf<Int, List<TechTalentWithIcon>>()
-    private val treeMap = mutableMapOf<Int, TechTalentTree>()
-
-    init {
-        techTalents.value = mutableMapOf()
-    }
-
-    fun getSoulbinds(): LiveData<SoulbindInformation> {
+    fun getSoulbinds(): LiveData<CharacterSoulbinds> {
         return soulbinds
     }
 
-    fun getTechTalents(): LiveData<MutableMap<Int, List<TechTalentWithIcon>>> {
+    fun getTechTalents(): LiveData<List<TechTalent>> {
         return techTalents
     }
 
-    fun getTechTrees(): LiveData<MutableMap<Int, TechTalentTree>> {
+    fun getTechTrees(): LiveData<TechTalentTree> {
         return techTrees
     }
 
@@ -57,7 +52,7 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadCharacterSoulbinds() {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getSoulbinds(
+            val response = RetroClient.getWoWClient(getApplication(), true).getSoulbinds(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
@@ -65,6 +60,7 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     soulbinds.value = response.body()
+                    downloadSoulbind(soulbinds.value!!.soulbinds[0].soulbind.id)
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
@@ -73,28 +69,72 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
         jobs.add(job)
     }
 
-    fun downloadTechTree(id: Int, soulbindId: Int) {
+    fun downloadSoulbind(id: Long) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getTechTree(id, region.lowercase(Locale.getDefault()))
+            val response = RetroClient.getWoWClient(getApplication(), true).getSoulbind(
+                id,
+                "static-${region.lowercase()}",
+                region.lowercase(Locale.getDefault())
+            )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    treeMap[soulbindId] = response.body()!!
-                    techTrees.value = treeMap
+                    soulbind.value = response.body()
+                    downloadTechTree()
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
             }
-            if (!EventBus.getDefault().isRegistered(this@CovenantViewModel)) {
-                EventBus.getDefault().register(this@CovenantViewModel)
+        }
+        jobs.add(job)
+    }
+
+    fun downloadTechTree() {
+        val job = coroutineScope.launch {
+            val response = RetroClient.getWoWClient(getApplication(), true)
+                .getTechTree(soulbind.value!!.techtalentTree.id, region.lowercase())
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    techTrees.value = response.body()!!
+                    downloadTechTalents()
+                } else {
+                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                }
             }
         }
         jobs.add(job)
+    }
+
+    fun downloadTechTalents() {
+        val tempTalents = mutableListOf<TechTalent>()
+        for (talent in techTrees.value?.talents!!) {
+            val job = coroutineScope.launch {
+                val response = RetroClient.getWoWClient(getApplication(), true)
+                    .getTechTalent(talent.id, region.lowercase())
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        if (tempTalents.size == techTrees.value!!.talents.size - 1) {
+                            Log.i("TEST", "Download talents over")
+                            tempTalents.add(response.body()!!)
+                            techTalents.value = tempTalents.sortedBy { it.tier }
+                        } else {
+                            tempTalents.add(response.body()!!)
+                        }
+
+                    } else {
+                        Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                    }
+                }
+                if (!EventBus.getDefault().isRegistered(this@CovenantViewModel)) {
+                    EventBus.getDefault().register(this@CovenantViewModel)
+                }
+            }
+            jobs.add(job)
+        }
     }
 
     fun downloadCovenantClassSpell(characterClass: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication())
+            val response = RetroClient.getAPIClient(getApplication(), true)
                 .getCovenantSpells(characterClass)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -109,27 +149,11 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadCovenantSpell(covenantId: Int) {
         val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication())
+            val response = RetroClient.getAPIClient(getApplication(), true)
                 .getCovenantSpells(covenantId)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     covenantSpell.value = response.body()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
-    }
-
-    fun downloadTechTalents(soulbindId: Int) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication())
-                .getTechTalentsWithIcon(soulbindId)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    talentMap[soulbindId] = response.body()!!
-                    techTalents.value = talentMap
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
                 }
