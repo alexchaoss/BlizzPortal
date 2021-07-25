@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class ConduitSocket(
 
     @SerializedName("type") val type: Type,
-    @SerializedName("socket") val socket: Socket
+    @SerializedName("socket") val socket: Socket?
 )

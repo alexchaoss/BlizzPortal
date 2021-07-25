@@ -13,10 +13,10 @@ data class TechTalent(
     @SerializedName("talent_tree") val talent_tree: TalentTree,
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String,
-    @SerializedName("spell_tooltip") val spell_tooltip: Spell_tooltip,
+    @SerializedName("spell_tooltip") val spell_tooltip: Spell_tooltip?,
     @SerializedName("tier") val tier: Int,
     @SerializedName("display_order") val display_order: Int,
     @SerializedName("prerequisite_talent") val prerequisite_talent: Prerequisite_talent,
     @SerializedName("media") val media: Media,
-    @SerializedName("socket_type") val socketType: SocketType
+    @SerializedName("socket_type") val socketType: SocketType?
 )

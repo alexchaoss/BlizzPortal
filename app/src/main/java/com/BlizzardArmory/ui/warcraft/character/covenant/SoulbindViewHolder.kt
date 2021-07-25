@@ -62,7 +62,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
 
     fun bind(talents: List<TechTalent>, trait: Traits?) {
         setConduits(talents)
-        if (talents[0].socketType != null && trait != null && trait.conduitSocket.socket != null) {
+        if (talents[0].socketType != null && trait != null && trait.conduitSocket?.socket != null) {
             downloadConduit(trait.conduitSocket.socket.conduit.id, trait.displayOrder, trait.conduitSocket.socket.rank)
         }
         setIcons(talents, trait)
@@ -76,7 +76,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
     }
 
     private fun setOnTalenttouchAction(talent: TechTalent, node: ConstraintLayout) {
-        if (talent.socketType == null) {
+        if (talent.spell_tooltip != null) {
             node?.setOnTouchListener { v, event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
@@ -99,7 +99,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
                 node1?.visibility = View.INVISIBLE
                 node3?.visibility = View.INVISIBLE
                 if (talents[0].socketType != null) {
-                    when (talents[0].socketType.type) {
+                    when (talents[0].socketType?.type) {
                         ConduitSocketType.ENDURANCE.type -> icon2?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_protect)
                         ConduitSocketType.FINESSE.type -> icon2?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_attack)
                         ConduitSocketType.POTENCY.type -> icon2?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_utility)
@@ -111,13 +111,13 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
                 if (talents[0].socketType != null) {
                     talents.forEachIndexed { index, talent ->
                         if (index == 0) {
-                            when (talents[index].socketType.type) {
+                            when (talents[index].socketType?.type) {
                                 ConduitSocketType.ENDURANCE.type -> icon1?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_protect)
                                 ConduitSocketType.FINESSE.type -> icon1?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_attack)
                                 ConduitSocketType.POTENCY.type -> icon1?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_utility)
                             }
                         } else {
-                            when (talents[index].socketType.type) {
+                            when (talents[index].socketType?.type) {
                                 ConduitSocketType.ENDURANCE.type -> icon3?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_protect)
                                 ConduitSocketType.FINESSE.type -> icon3?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_attack)
                                 ConduitSocketType.POTENCY.type -> icon3?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_utility)
@@ -132,21 +132,21 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
                     talents.forEachIndexed { index, talent ->
                         when (index) {
                             0 -> {
-                                when (talents[index].socketType.type) {
+                                when (talents[index].socketType?.type) {
                                     ConduitSocketType.ENDURANCE.type -> icon1?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_protect)
                                     ConduitSocketType.FINESSE.type -> icon1?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_utility)
                                     ConduitSocketType.POTENCY.type -> icon1?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_attack)
                                 }
                             }
                             1 -> {
-                                when (talents[index].socketType.type) {
+                                when (talents[index].socketType?.type) {
                                     ConduitSocketType.ENDURANCE.type -> icon2?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_protect)
                                     ConduitSocketType.FINESSE.type -> icon2?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_utility)
                                     ConduitSocketType.POTENCY.type -> icon2?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_attack)
                                 }
                             }
                             else -> {
-                                when (talents[index].socketType.type) {
+                                when (talents[index].socketType?.type) {
                                     ConduitSocketType.ENDURANCE.type -> icon3?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_protect)
                                     ConduitSocketType.FINESSE.type -> icon3?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_utility)
                                     ConduitSocketType.POTENCY.type -> icon3?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_attack)

@@ -16,14 +16,15 @@ class SoulbindAdapter(private val list: Map<Int, List<TechTalent>>, private val 
     }
 
     override fun onBindViewHolder(holder: SoulbindViewHolder, position: Int) {
-        val talents: List<TechTalent> = list[position]!!
+        val talents: List<TechTalent>? = list[position]
         var trait: Traits? = null
 
         if (traits.size >= position) {
             trait = traits.find { it.tier == position }
         }
-
-        holder.bind(talents, trait)
+        if (!talents.isNullOrEmpty()) {
+            holder.bind(talents, trait)
+        }
     }
 
     override fun getItemCount(): Int = list.size

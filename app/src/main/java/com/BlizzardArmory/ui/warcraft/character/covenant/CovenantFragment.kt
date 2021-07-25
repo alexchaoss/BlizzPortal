@@ -73,13 +73,20 @@ class CovenantFragment : Fragment() {
             Glide.with(requireContext())
                 .load(it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }?.icon)
                 .into(binding.covenantClassSpell)
-            setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
-
+            try {
+                setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
+            } catch (e: Exception) {
+                binding.classSpellContainer.visibility = View.GONE
+                Log.e("Error", "Covenant Class Spell", e)
+            }
         })
         viewModel.getTechTalents().observe(viewLifecycleOwner, {
-            binding.conduitRecycler.apply {
-                adapter = SoulbindAdapter(it.values.first()
-                    .groupBy { talent -> talent.tier }, viewModel.getSoulbinds().value!!.soulbinds[0].traits, requireContext())
+            val soulbind = viewModel.getSoulbinds().value!!.soulbinds[0]
+            val talents = it[soulbind.soulbind.id]?.groupBy { talent -> talent.tier }
+            if (!talents.isNullOrEmpty()) {
+                binding.conduitRecycler.apply {
+                    adapter = SoulbindAdapter(talents, soulbind.traits, requireContext())
+                }
             }
             setOnAvatarClickListeners(it)
         })
@@ -106,6 +113,7 @@ class CovenantFragment : Fragment() {
 
         mutableMap.forEach { map ->
             val soulbinds = viewModel.getSoulbinds().value?.soulbinds
+            val talents = map.value.groupBy { it.tier }
             when (val index = soulbinds!!.indexOf(soulbinds.find { sb -> sb.soulbind.id == map.key })) {
                 0 -> {
                     binding.avatar1.setOnClickListener {
@@ -118,9 +126,7 @@ class CovenantFragment : Fragment() {
                         binding.border2.layoutParams = unselectedBorder
                         binding.border3.setImageResource(R.drawable.soulbinds_portrait_border)
                         binding.border3.layoutParams = unselectedBorder
-                        binding.conduitRecycler.apply {
-                            adapter = SoulbindAdapter(map.value.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[index].traits, requireContext())
-                        }
+                        setConduitRecyclerAdapter(talents, soulbinds, index)
                     }
                 }
 
@@ -135,11 +141,7 @@ class CovenantFragment : Fragment() {
                         binding.border2.layoutParams = selectedBorder
                         binding.border3.setImageResource(R.drawable.soulbinds_portrait_border)
                         binding.border3.layoutParams = unselectedBorder
-                        binding.conduitRecycler.apply {
-                            binding.conduitRecycler.apply {
-                                adapter = SoulbindAdapter(map.value.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[index].traits, requireContext())
-                            }
-                        }
+                        setConduitRecyclerAdapter(talents, soulbinds, index)
                     }
                 }
 
@@ -154,12 +156,20 @@ class CovenantFragment : Fragment() {
                         binding.border2.layoutParams = unselectedBorder
                         binding.border3.setImageResource(R.drawable.soulbinds_portrait_selected)
                         binding.border3.layoutParams = selectedBorder
-                        binding.conduitRecycler.apply {
-                            binding.conduitRecycler.apply {
-                                adapter = SoulbindAdapter(map.value.groupBy { it.tier }, viewModel.getSoulbinds().value!!.soulbinds[index].traits, requireContext())
-                            }
-                        }
+                        setConduitRecyclerAdapter(talents, soulbinds, index)
                     }
+                }
+            }
+        }
+    }
+
+    private fun setConduitRecyclerAdapter(talents: Map<Int, List<TechTalent>>, soulbinds: List<Soulbinds>, index: Int) {
+        if (!talents.isNullOrEmpty()) {
+            binding.conduitRecycler.apply {
+                adapter = if (!soulbinds[index].traits.isNullOrEmpty()) {
+                    SoulbindAdapter(talents, soulbinds[index].traits, requireContext())
+                } else {
+                    SoulbindAdapter(talents, listOf(), requireContext())
                 }
             }
         }
