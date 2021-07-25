@@ -4,7 +4,6 @@ import android.content.Context
 import com.BlizzardArmory.network.services.*
 import com.BlizzardArmory.util.ConnectionStatus
 import com.google.gson.GsonBuilder
-import com.ncornette.cache.OkCacheControl
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,8 +21,9 @@ object RetroClient {
         val cacheSize = 60 * 1024 * 1024L
         val cache = Cache(context.cacheDir, cacheSize)
 
-        val networkMonitor = OkCacheControl.NetworkMonitor {
-            ConnectionStatus.hasNetwork()
+        val networkMonitor = object : OkCacheControl.NetworkMonitor {
+            override val isOnline: Boolean
+                get() = ConnectionStatus.hasNetwork()
         }
 
 
