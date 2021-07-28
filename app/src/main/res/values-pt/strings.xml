@@ -141,4 +141,6 @@
     <string name="authorized_blizzportal">Certifique-se de ter autorizado o BlizzPortal a ter acesso aos diferentes escopos. Para acessar adequadamente todos os dados necessários, o BlizzPortal precisa ter escopos World of Warcraft, Starcraft 2, Diablo 3 e OpenID.</string>
     <string name="still_can_t_connect">Ainda não consegue se conectar?</string>
     <string name="tier">Nível</string>
+    <string name="need_help">Preciso de ajuda?</string>
+    <string name="connection_guide">Guia de Conexão</string>
 </resources>

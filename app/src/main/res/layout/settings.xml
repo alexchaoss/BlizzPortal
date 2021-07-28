@@ -5,83 +5,110 @@
     android:clickable="true"
     android:focusable="true">
 
-    <LinearLayout
-        android:id="@+id/settings_layout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#272931"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/settings_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/select_a_language"
-            android:textAlignment="center"
-            android:textColor="#FFF"
-            android:textSize="25sp" />
+            android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/spinner_language"
-            android:layout_width="300dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/gradient_spinner"
-            android:hint="@string/select_region"
-            android:textColorHint="#FFFFFF"
-            android:textSize="25sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:text="@string/select_a_language"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="25sp" />
 
-        <Button
-            android:id="@+id/rate"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/buttonstyle"
-            android:text="@string/rate_my_app"
-            android:textColor="#FFF"
-            android:textSize="18sp" />
+            <Spinner
+                android:id="@+id/spinner_language"
+                android:layout_width="300dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/gradient_spinner"
+                android:hint="@string/select_region"
+                android:textColorHint="#FFFFFF"
+                android:textSize="25sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:text="@string/want_to_donate"
-            android:textAlignment="center"
-            android:textColor="#FFF"
-            android:textSize="25sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="@string/need_help"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="25sp" />
 
-        <Button
-            android:id="@+id/donation"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:background="@drawable/buttonstyle"
-            android:text="@string/paypal"
-            android:textColor="#FFF"
-            android:textSize="18sp" />
+            <Button
+                android:id="@+id/guide"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/buttonstyle"
+                android:text="@string/connection_guide"
+                android:textColor="#FFF"
+                android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/licenses"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/buttonstyle"
-            android:text="@string/licenses"
-            android:textColor="#FFF"
-            android:textSize="18sp" />
+            <Button
+                android:id="@+id/rate"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/buttonstyle"
+                android:text="@string/rate_my_app"
+                android:textColor="#FFF"
+                android:textSize="18sp" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="@string/want_to_donate"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/donation"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/buttonstyle"
+                android:text="@string/paypal"
+                android:textColor="#FFF"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/licenses"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/buttonstyle"
+                android:text="@string/licenses"
+                android:textColor="#FFF"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <WebView
         android:id="@+id/webview"

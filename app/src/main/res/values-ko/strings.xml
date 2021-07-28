@@ -141,4 +141,6 @@
     <string name="authorized_blizzportal">BlizzPortal이 다른 범위에 액세스할 수 있도록 승인했는지 확인하세요. 필요한 모든 데이터에 제대로 액세스하려면 BlizzPortal에 World of Warcraft, Starcraft 2, Diablo 3 및 OpenID 범위가 있어야 합니다.</string>
     <string name="still_can_t_connect">여전히 연결할 수 없습니까?</string>
     <string name="tier">층</string>
+    <string name="need_help">도움이 필요하다?</string>
+    <string name="connection_guide">연결 가이드</string>
 </resources>

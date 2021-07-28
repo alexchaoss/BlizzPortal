@@ -88,6 +88,8 @@
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_margin="5dp"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/close_button" />
 
 </RelativeLayout>

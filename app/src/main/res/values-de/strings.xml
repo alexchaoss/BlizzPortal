@@ -141,4 +141,6 @@
     <string name="authorized_blizzportal">Stellen Sie sicher, dass Sie BlizzPortal den Zugriff auf die verschiedenen Bereiche autorisiert haben. Um korrekt auf alle benötigten Daten zugreifen zu können, muss BlizzPortal über die Bereiche World of Warcraft, Starcraft 2, Diablo 3 und OpenID verfügen.</string>
     <string name="still_can_t_connect">Kann immer noch keine Verbindung herstellen?</string>
     <string name="tier">Ebene</string>
+    <string name="need_help">Brauchen Sie Hilfe?</string>
+    <string name="connection_guide">Anschlussanleitung</string>
 </resources>

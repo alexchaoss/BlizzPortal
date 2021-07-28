@@ -43,6 +43,7 @@ class HelpFragment : Fragment() {
         super.onCreate(savedInstanceState)
         binding.closeButton.setOnClickListener {
             closeFragment(activity as NavigationActivity)
+            requireActivity().supportFragmentManager.popBackStack()
         }
         binding.privacy.setOnClickListener {
             StfalconImageViewer.Builder(context, listOf(binding.privacy.resources)) { imageView, _ ->

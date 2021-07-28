@@ -70,7 +70,7 @@ class DialogPrompt(val context: Context) {
         helpButton.setOnClickListener {
             val fragment = HelpFragment()
             (context as NavigationActivity).supportFragmentManager.beginTransaction()
-                .add(R.id.fragment, fragment, "helpfragment")
+                .add(R.id.fragment, fragment, FragmentTag.HELPFRAGMENT.name)
                 .addToBackStack("help").commit()
             context.supportFragmentManager.executePendingTransactions()
             this.dismiss()

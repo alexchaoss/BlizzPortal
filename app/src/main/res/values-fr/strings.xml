@@ -141,4 +141,6 @@
     <string name="authorized_blizzportal">Assurez-vous d\'avoir autorisé BlizzPortal à accéder aux différents scopes. Pour accéder correctement à toutes les données nécessaires, BlizzPortal doit disposer de portées World of Warcraft, Starcraft 2, Diablo 3 et OpenID.</string>
     <string name="still_can_t_connect">Vous n\'arrivez toujours pas à vous connecter ?</string>
     <string name="tier">Niveau</string>
+    <string name="need_help">Besoin d\'aide?</string>
+    <string name="connection_guide">Guide de connexion</string>
 </resources>

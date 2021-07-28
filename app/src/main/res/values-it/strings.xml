@@ -141,4 +141,6 @@
     <string name="authorized_blizzportal">Assicurati di aver autorizzato BlizzPortal ad avere accesso ai diversi ambiti. Per accedere correttamente a tutti i dati necessari, BlizzPortal deve disporre di ambiti di World of Warcraft, Starcraft 2, Diablo 3 e OpenID.</string>
     <string name="still_can_t_connect">Non riesci ancora a connetterti?</string>
     <string name="tier">Livello</string>
+    <string name="need_help">Ho bisogno di aiuto?</string>
+    <string name="connection_guide">Guida alla connessione</string>
 </resources>

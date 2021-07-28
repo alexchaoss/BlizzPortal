@@ -131,14 +131,16 @@
 	<string name="win">Victoria</string>
 	<string name="loss">Pérdida</string>
 	<string name="players">Jugadores</string>
-	<string name="points">Puntos</string>
-	<string name="losses">Pérdidas</string>
-	<string name="arranged">Organizado</string>
-	<string name="random">Aleatorio</string>
-	<string name="show_more">Mostrar más</string>
-	<string name="can_t_connect">¿No se puede conectar?</string>
-	<string name="privacy_settings_enabled">Asegúrese de tener habilitada su configuración de privacidad. Al deshabilitar esta opción, hace que su información sea privada e inaccesible para los desarrolladores de la comunidad.</string>
-	<string name="authorized_blizzportal">Asegúrese de haber autorizado BlizzPortal para tener acceso a los diferentes ámbitos. Para acceder correctamente a todos los datos necesarios, BlizzPortal debe tener ámbitos de World of Warcraft, Starcraft 2, Diablo 3 y OpenID.</string>
-	<string name="still_can_t_connect">¿Aún no puedes conectarte?</string>
-	<string name="tier">Nivel</string>
+    <string name="points">Puntos</string>
+    <string name="losses">Pérdidas</string>
+    <string name="arranged">Organizado</string>
+    <string name="random">Aleatorio</string>
+    <string name="show_more">Mostrar más</string>
+    <string name="can_t_connect">¿No se puede conectar?</string>
+    <string name="privacy_settings_enabled">Asegúrese de tener habilitada su configuración de privacidad. Al deshabilitar esta opción, hace que su información sea privada e inaccesible para los desarrolladores de la comunidad.</string>
+    <string name="authorized_blizzportal">Asegúrese de haber autorizado BlizzPortal para tener acceso a los diferentes ámbitos. Para acceder correctamente a todos los datos necesarios, BlizzPortal debe tener ámbitos de World of Warcraft, Starcraft 2, Diablo 3 y OpenID.</string>
+    <string name="still_can_t_connect">¿Aún no puedes conectarte?</string>
+    <string name="tier">Nivel</string>
+    <string name="need_help">¿Necesitas ayuda?</string>
+    <string name="connection_guide">Guía de conexión</string>
 </resources>

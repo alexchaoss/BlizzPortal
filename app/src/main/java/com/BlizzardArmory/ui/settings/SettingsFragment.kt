@@ -21,6 +21,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.SettingsBinding
 import com.BlizzardArmory.network.NetworkUtils
+import com.BlizzardArmory.ui.HelpFragment
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
@@ -41,7 +42,6 @@ import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFr
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
 import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import org.greenrobot.eventbus.EventBus
 
 class SettingsFragment : Fragment() {
@@ -54,31 +54,7 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        activity?.onBackPressedDispatcher?.addCallback {
-            if (requireActivity().supportFragmentManager.backStackEntryCount > 1) {
-                when (requireActivity().supportFragmentManager.fragments[requireActivity().supportFragmentManager.backStackEntryCount - 2].tag) {
-                    FragmentTag.WOWFAVORITES.name -> WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.D3FAVORITES.name -> D3FavoriteFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.OWFAVORITES.name -> OWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.D3NAV.name -> CharacterStatsFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.D3FRAGMENT.name -> D3Fragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.D3LEADERBOARD.name -> D3LeaderboardFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.NAVFRAGMENT.name -> WoWCharacterFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.WOWFRAGMENT.name -> AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.WOWGUILDNAVFRAGMENT.name -> ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.WOWMPLUSLEADERBOARD.name -> MPlusLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.WOWPVPLEADERBOARD.name -> PvpLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.WOWRAIDLEADERBOARD.name -> MRaidLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.SC2FRAGMENT.name -> SC2Fragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.SC2LEADERBOARD.name -> SC2LeaderboardFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    FragmentTag.OVERWATCHFRAGMENT.name -> OWFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    else -> NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
-                }
-            } else {
-                NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
-            }
-            activity?.supportFragmentManager?.popBackStack()
-        }
+        addBackPressedCallBack(requireActivity() as NavigationActivity)
         _binding = SettingsBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -148,10 +124,22 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setSettingsButtons() {
-        OssLicensesMenuActivity.setActivityTitle(getString(R.string.custom_license_title))
-        binding.licenses.setOnClickListener { startActivity(Intent(activity, OssLicensesMenuActivity::class.java)) }
+        binding.licenses.setOnClickListener {
+            val fragment = LibsFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragment, fragment, FragmentTag.LIBSFRAGMENT.name)
+                .addToBackStack("libs").commit()
+            requireActivity().supportFragmentManager.executePendingTransactions()
+        }
         binding.rate.setOnClickListener { openAppStoreForReview() }
         binding.donation.setOnClickListener { binding.webview.loadUrl(NetworkUtils.PAYPAL_URL) }
+        binding.guide.setOnClickListener {
+            val fragment = HelpFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragment, fragment, FragmentTag.HELPFRAGMENT.name)
+                .addToBackStack("help").commit()
+            requireActivity().supportFragmentManager.executePendingTransactions()
+        }
     }
 
     private fun openAppStoreForReview() {
@@ -183,5 +171,35 @@ class SettingsFragment : Fragment() {
             else -> "en_US"
         }
         sharedPreferences!!.edit().putString("locale", locale).apply()
+    }
+
+    companion object {
+        fun addBackPressedCallBack(activity: NavigationActivity) {
+            activity.onBackPressedDispatcher.addCallback {
+                if (activity.supportFragmentManager.backStackEntryCount > 1) {
+                    when (activity.supportFragmentManager.fragments[activity.supportFragmentManager.backStackEntryCount - 2].tag) {
+                        FragmentTag.WOWFAVORITES.name -> WoWFavoritesFragment.addOnBackPressCallback(activity)
+                        FragmentTag.D3FAVORITES.name -> D3FavoriteFragment.addOnBackPressCallback(activity)
+                        FragmentTag.OWFAVORITES.name -> OWFavoritesFragment.addOnBackPressCallback(activity)
+                        FragmentTag.D3NAV.name -> CharacterStatsFragment.addOnBackPressCallback(activity)
+                        FragmentTag.D3FRAGMENT.name -> D3Fragment.addOnBackPressCallback(activity)
+                        FragmentTag.D3LEADERBOARD.name -> D3LeaderboardFragment.addOnBackPressCallback(activity)
+                        FragmentTag.NAVFRAGMENT.name -> WoWCharacterFragment.addOnBackPressCallback(activity)
+                        FragmentTag.WOWFRAGMENT.name -> AccountFragment.addOnBackPressCallback(activity)
+                        FragmentTag.WOWGUILDNAVFRAGMENT.name -> ActivityFragment.addOnBackPressCallback(activity)
+                        FragmentTag.WOWMPLUSLEADERBOARD.name -> MPlusLeaderboardsFragment.addOnBackPressCallback(activity)
+                        FragmentTag.WOWPVPLEADERBOARD.name -> PvpLeaderboardsFragment.addOnBackPressCallback(activity)
+                        FragmentTag.WOWRAIDLEADERBOARD.name -> MRaidLeaderboardsFragment.addOnBackPressCallback(activity)
+                        FragmentTag.SC2FRAGMENT.name -> SC2Fragment.addOnBackPressCallback(activity)
+                        FragmentTag.SC2LEADERBOARD.name -> SC2LeaderboardFragment.addOnBackPressCallback(activity)
+                        FragmentTag.OVERWATCHFRAGMENT.name -> OWFragment.addOnBackPressCallback(activity)
+                        else -> NewsPageFragment.addOnBackPressCallback(activity)
+                    }
+                } else {
+                    NewsPageFragment.addOnBackPressCallback(activity)
+                }
+                activity.supportFragmentManager.popBackStack()
+            }
+        }
     }
 }

@@ -141,4 +141,6 @@
     <string name="authorized_blizzportal">Убедитесь, что вы разрешили BlizzPortal доступ к различным областям. Для правильного доступа ко всем необходимым данным на BlizzPortal должны быть прицелы World of Warcraft, Starcraft 2, Diablo 3 и OpenID.</string>
     <string name="still_can_t_connect">Все еще не удается подключиться?</string>
     <string name="tier">Уровень</string>
+    <string name="need_help">Нужна помощь?</string>
+    <string name="connection_guide">Руководство по подключению</string>
 </resources>

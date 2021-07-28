@@ -1,13 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#272931</item>
         <item name="colorPrimaryDark">#21242d</item>
         <item name="colorAccent">#272931</item>
         <item name="android:navigationBarColor">@color/colorAccent</item>
-
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>

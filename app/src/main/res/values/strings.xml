@@ -210,6 +210,8 @@
     <string name="still_can_t_connect">Still Can\'t Connect?</string>
     <string name="authorized_blizzportal">Make sure you authorized BlizzPortal to have access to the different scopes. To properly access all data needed, BlizzPortal needs to have World of Warcraft, Starcraft 2, Diablo 3 and OpenID scopes. \n\nThese can be enabled by going to Connections and changing the authorizations for BlizzPortal.</string>
     <string name="tier">Tier</string>
+    <string name="need_help">Need Help?</string>
+    <string name="connection_guide">Connection Guide</string>
 
     <string-array name="regions">
         <item>Select Region</item>
