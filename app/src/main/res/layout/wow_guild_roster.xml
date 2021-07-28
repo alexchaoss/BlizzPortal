@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="Name"
+            android:text="@string/name"
             android:textColor="#f8b700"
             android:textSize="15sp" />
 
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Class"
+            android:text="@string/character_class"
             android:textAlignment="center"
             android:textColor="#f8b700"
             android:textSize="15sp" />
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Level"
+            android:text="@string/level"
             android:textAlignment="center"
             android:textColor="#f8b700"
             android:textSize="15sp" />
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Rank"
+            android:text="@string/rank"
             android:textAlignment="center"
             android:textColor="#f8b700"
             android:textSize="15sp" />

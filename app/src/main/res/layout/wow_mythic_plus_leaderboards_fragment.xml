@@ -56,7 +56,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="Rank"
+                android:text="@string/rank"
                 android:textColor="#FFF" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.1"
                 android:gravity="center"
-                android:text="Team"
+                android:text="@string/team"
                 android:textColor="#FFF" />
 
             <TextView
@@ -75,7 +75,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.4"
                 android:gravity="center"
-                android:text="Key"
+                android:text="@string/key"
                 android:textColor="#FFF" />
 
             <TextView
@@ -84,7 +84,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.8"
                 android:gravity="center"
-                android:text="Time"
+                android:text="@string/time"
                 android:textColor="#FFF" />
 
             <TextView
@@ -93,7 +93,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.2"
                 android:gravity="center"
-                android:text="Affixes"
+                android:text="@string/affixes"
                 android:textColor="#FFF" />
         </LinearLayout>
 

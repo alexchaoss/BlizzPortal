@@ -28,7 +28,6 @@
         android:layout_gravity="center"
         android:layout_marginStart="2dp"
         android:gravity="start"
-        android:text="Placeholder"
         android:textColor="#FFF"
         android:textSize="12sp" />
 

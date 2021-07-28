@@ -12,7 +12,7 @@
         android:background="#00000000"
         android:gravity="center"
         android:padding="7dp"
-        android:text="Show More"
+        android:text="@string/show_more"
         android:textColor="#FFF"
         android:textSize="14sp" />
 

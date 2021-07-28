@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">Выбор региона</string>
@@ -33,7 +32,6 @@
     <string name="settingsTitle">настройки</string>
     <string name="want_to_donate">Хотите помочь?</string>
     <string name="character">символ</string>
-    <string name="progress2">Прогресс</string>
     <string name="level">уровень</string>
     <string name="honor">Честь</string>
     <string name="reputation">репутации</string>
@@ -89,6 +87,7 @@
     <string name="leaderboards">Таблицы лидеров</string>
     <string name="search">Рейтинг</string>
     <string name="covenant">ковенантами</string>
+    <string name="progress2">Прогресс</string>
     <string name="account">Счет</string>
     <string name="raid_leaderboards">Рейтинг рейдов</string>
     <string name="search_guild">Искать в гильдии</string>
@@ -108,9 +107,38 @@
     <string name="haste">Поспешность</string>
     <string name="mastery">Мастерство</string>
     <string name="vers">Универсальность</string>
-    <string name="mplus_leaderboards">Mythic+ Leaderboards</string>
-    <string name="realm">Realm</string>
     <string name="horde">Horde</string>
     <string name="alliance">Alliance</string>
-    <string name="pvp_leaderboards">PvP Leaderboards</string>
+    <string name="mplus_leaderboards">Mythic+ Таблицы лидеров</string>
+    <string name="pvp_leaderboards">PvP Таблицы лидеров</string>
+    <string name="realm">Область</string>
+    <string name="please_select_region">Пожалуйста, выберите регион</string>
+    <string name="unstable_connection">Интернет-соединение нестабильно</string>
+    <string name="connected_network">Вы в настоящее время подключены к сети?</string>
+    <string name="yes">да</string>
+    <string name="no">Нет</string>
+    <string name="connection_required">Это приложение требует активного подключения к Интернету, чтобы продолжить</string>
+    <string name="name">Имя</string>
+    <string name="character_class">класс</string>
+    <string name="rank">Классифицировать</string>
+    <string name="key">Ключ</string>
+    <string name="time">Время</string>
+    <string name="affixes">Аффиксы</string>
+    <string name="guild">Гильдия</string>
+    <string name="rating">Рейтинг</string>
+    <string name="player">Игрок</string>
+    <string name="faction">Фракция</string>
+    <string name="win">Выиграть</string>
+    <string name="loss">Потеря</string>
+    <string name="players">Игроки</string>
+    <string name="points">Точки</string>
+    <string name="losses">Убытки</string>
+    <string name="arranged">Согласованный</string>
+    <string name="random">Случайный</string>
+    <string name="show_more">Показать больше</string>
+    <string name="can_t_connect">Не могу подключиться?</string>
+    <string name="privacy_settings_enabled">Убедитесь, что у вас включены настройки конфиденциальности. Отключив эту опцию, вы сделаете свою информацию конфиденциальной и недоступной для разработчиков сообщества.</string>
+    <string name="authorized_blizzportal">Убедитесь, что вы разрешили BlizzPortal доступ к различным областям. Для правильного доступа ко всем необходимым данным на BlizzPortal должны быть прицелы World of Warcraft, Starcraft 2, Diablo 3 и OpenID.</string>
+    <string name="still_can_t_connect">Все еще не удается подключиться?</string>
+    <string name="tier">Уровень</string>
 </resources>

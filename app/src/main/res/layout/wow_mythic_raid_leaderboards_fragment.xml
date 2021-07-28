@@ -65,7 +65,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="Rank"
+                android:text="@string/rank"
                 android:textColor="#FFF" />
 
             <TextView
@@ -74,7 +74,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.5"
                 android:gravity="center"
-                android:text="Guild"
+                android:text="@string/guild"
                 android:textColor="#FFF" />
 
             <TextView
@@ -83,7 +83,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Realm"
+                android:text="@string/realm"
                 android:textColor="#FFF" />
         </LinearLayout>
 

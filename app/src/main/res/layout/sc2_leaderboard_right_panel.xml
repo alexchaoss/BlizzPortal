@@ -124,7 +124,7 @@
             android:layout_weight="1"
             android:background="@drawable/sc2_leaderboards_button_selected"
             android:gravity="center"
-            android:text="Arranged"
+            android:text="@string/arranged"
             android:textAlignment="center"
             android:textColor="#FFF"
             android:textSize="20sp" />
@@ -137,7 +137,7 @@
             android:layout_weight="1"
             android:background="@drawable/leaderboards_button"
             android:gravity="center"
-            android:text="Random"
+            android:text="@string/random"
             android:textAlignment="center"
             android:textColor="#FFF"
             android:textSize="20sp" />

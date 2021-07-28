@@ -133,8 +133,9 @@ class MainActivity : LocalizationActivity() {
 
     private fun setLoginButtonToBattlenet() {
         binding.buttonLogin.setOnClickListener {
-            if (selectedRegion == "Select Region") {
-                Snackbar.make(binding.root, "Please select a region", Snackbar.LENGTH_SHORT).show()
+            if (selectedRegion == getString(R.string.select_region)) {
+                Snackbar.make(binding.root, getString(R.string.please_select_region), Snackbar.LENGTH_SHORT)
+                    .show()
             } else {
                 checkConnectionBeforeLogin()
             }
@@ -146,17 +147,17 @@ class MainActivity : LocalizationActivity() {
             viewModel.openLoginToBattleNet()
         } else {
             val dialog = DialogPrompt(this)
-            dialog.addTitle("Internet connection unstable", 20F, "title")
-                .addMessage("Are you currently connected to a network?", 16F, "message")
+            dialog.addTitle(getString(R.string.unstable_connection), 20F, "title")
+                .addMessage(getString(R.string.connected_network), 16F, "message")
                 .addButtons(
-                    dialog.Button("Yes", 16F, { viewModel.openLoginToBattleNet() }, "positive"),
+                    dialog.Button(getString(R.string.yes), 16F, { viewModel.openLoginToBattleNet() }, "positive"),
                     dialog.Button(
-                        "No", 16F,
+                        getString(R.string.no), 16F,
                         {
                             dialog.dismiss()
                             val confirmDialog = DialogPrompt(this)
-                            confirmDialog.addMessage("This application requires an active internet connection to continue", 20F)
-                                .addButtons(dialog.Button("Ok", 16F, { confirmDialog.dismiss() }, "close"))
+                            confirmDialog.addMessage(getString(R.string.connection_required), 20F)
+                                .addButtons(dialog.Button(getString(R.string.ok), 16F, { confirmDialog.dismiss() }, "close"))
                                 .show()
                         }, "negative"
                     )

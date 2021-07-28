@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">지역 선택</string>
@@ -33,7 +32,6 @@
     <string name="settingsTitle">설정</string>
     <string name="want_to_donate">기부를 원하십니까?</string>
     <string name="character">캐릭터</string>
-    <string name="progress2">진행</string>
     <string name="level">수평</string>
     <string name="honor">명예</string>
     <string name="reputation">평판</string>
@@ -89,6 +87,7 @@
     <string name="leaderboards">Leaderboards</string>
     <string name="search">검색</string>
     <string name="covenant">성약의</string>
+    <string name="progress2">진행</string>
     <string name="account">계정</string>
     <string name="raid_leaderboards">레이드 리더 보드</string>
     <string name="search_guild">검색 길드</string>
@@ -108,9 +107,38 @@
     <string name="haste">서두름</string>
     <string name="mastery">지배</string>
     <string name="vers">다재</string>
-    <string name="mplus_leaderboards">Mythic+ Leaderboards</string>
-    <string name="realm">Realm</string>
     <string name="horde">Horde</string>
     <string name="alliance">Alliance</string>
-    <string name="pvp_leaderboards">PvP Leaderboards</string>
+    <string name="mplus_leaderboards">Mythic+ 리더보드</string>
+    <string name="pvp_leaderboards">PvP 리더보드</string>
+    <string name="realm">왕국</string>
+    <string name="please_select_region">지역을 선택해 주세요</string>
+    <string name="unstable_connection">인터넷 연결이 불안정함</string>
+    <string name="connected_network">현재 네트워크에 연결되어 있습니까?</string>
+    <string name="yes">예</string>
+    <string name="no">아니요</string>
+    <string name="connection_required">이 응용 프로그램을 계속하려면 활성 인터넷 연결이 필요합니다.</string>
+    <string name="name">이름</string>
+    <string name="character_class">수업</string>
+    <string name="rank">계급</string>
+    <string name="key">열쇠</string>
+    <string name="time">시간</string>
+    <string name="affixes">접미사</string>
+    <string name="guild">동업 조합</string>
+    <string name="rating">평가</string>
+    <string name="player">플레이어</string>
+    <string name="faction">파벌</string>
+    <string name="win">이기다</string>
+    <string name="loss">상실</string>
+    <string name="players">선수</string>
+    <string name="points">포인트들</string>
+    <string name="losses">사상자 수</string>
+    <string name="arranged">정리</string>
+    <string name="random">무작위의</string>
+    <string name="show_more">자세히보기</string>
+    <string name="can_t_connect">연결할 수 없습니까?</string>
+    <string name="privacy_settings_enabled">개인 정보 설정이 활성화되어 있는지 확인하십시오. 이 옵션을 비활성화하면 정보를 비공개로 설정하고 커뮤니티 개발자가 액세스할 수 없습니다.</string>
+    <string name="authorized_blizzportal">BlizzPortal이 다른 범위에 액세스할 수 있도록 승인했는지 확인하세요. 필요한 모든 데이터에 제대로 액세스하려면 BlizzPortal에 World of Warcraft, Starcraft 2, Diablo 3 및 OpenID 범위가 있어야 합니다.</string>
+    <string name="still_can_t_connect">여전히 연결할 수 없습니까?</string>
+    <string name="tier">층</string>
 </resources>

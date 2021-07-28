@@ -70,7 +70,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="Rank"
+                android:text="@string/rank"
                 android:textColor="#FFF" />
 
             <TextView
@@ -79,7 +79,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.3"
                 android:gravity="center"
-                android:text="Players"
+                android:text="@string/players"
                 android:textColor="#FFF" />
 
             <TextView
@@ -88,7 +88,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Points"
+                android:text="@string/points"
                 android:textColor="#FFF" />
 
             <TextView
@@ -97,7 +97,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="Wins"
+                android:text="@string/wins"
                 android:textColor="#FFF" />
 
             <TextView
@@ -106,7 +106,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.7"
                 android:gravity="center"
-                android:text="Losses"
+                android:text="@string/losses"
                 android:textColor="#FFF" />
         </LinearLayout>
 

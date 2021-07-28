@@ -55,7 +55,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="Rank"
+                android:text="@string/rank"
                 android:textColor="#FFF" />
 
             <TextView
@@ -64,7 +64,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Rating"
+                android:text="@string/rating"
                 android:textColor="#FFF" />
 
             <TextView
@@ -73,7 +73,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.6"
                 android:gravity="center"
-                android:text="Player"
+                android:text="@string/player"
                 android:textColor="#FFF" />
 
             <TextView
@@ -82,7 +82,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.7"
                 android:gravity="center"
-                android:text="Faction"
+                android:text="@string/faction"
                 android:textColor="#FFF" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.6"
                 android:gravity="center"
-                android:text="Win"
+                android:text="@string/win"
                 android:textColor="#FFF" />
 
             <TextView
@@ -100,7 +100,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.6"
                 android:gravity="center"
-                android:text="Loss"
+                android:text="@string/loss"
                 android:textColor="#FFF" />
         </LinearLayout>
 

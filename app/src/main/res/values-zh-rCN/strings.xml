@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">选择地区</string>
@@ -33,7 +32,6 @@
     <string name="settingsTitle">设置</string>
     <string name="want_to_donate">想捐款吗？</string>
     <string name="character">字符</string>
-    <string name="progress2">进展</string>
     <string name="level">水平</string>
     <string name="honor">荣誉</string>
     <string name="reputation">声誉</string>
@@ -89,6 +87,7 @@
     <string name="leaderboards">排行榜</string>
     <string name="search">搜索</string>
     <string name="covenant">境的誓盟</string>
+    <string name="progress2">进展</string>
     <string name="account">帐户</string>
     <string name="raid_leaderboards">突襲排行榜</string>
     <string name="search_guild">搜索公會</string>
@@ -108,9 +107,38 @@
     <string name="haste">急速</string>
     <string name="mastery">精通</string>
     <string name="vers">多功能性</string>
-    <string name="mplus_leaderboards">Mythic+ Leaderboards</string>
-    <string name="realm">Realm</string>
     <string name="horde">Horde</string>
     <string name="alliance">Alliance</string>
-    <string name="pvp_leaderboards">PvP Leaderboards</string>
+    <string name="mplus_leaderboards">Mythic+ 排行榜</string>
+    <string name="pvp_leaderboards">PvP 排行榜</string>
+    <string name="realm">領域</string>
+    <string name="please_select_region">請選擇地區</string>
+    <string name="unstable_connection">互聯網連接不穩定</string>
+    <string name="connected_network">您當前是否連接到網絡？</string>
+    <string name="yes">是的</string>
+    <string name="no">不</string>
+    <string name="connection_required">此應用程序需要有效的互聯網連接才能繼續</string>
+    <string name="name">名稱</string>
+    <string name="character_class">班級</string>
+    <string name="rank">秩</string>
+    <string name="key">鑰匙</string>
+    <string name="time">時間</string>
+    <string name="affixes">詞綴</string>
+    <string name="guild">公會</string>
+    <string name="rating">評分</string>
+    <string name="player">播放器</string>
+    <string name="faction">派</string>
+    <string name="win">贏</string>
+    <string name="loss">損失</string>
+    <string name="players">球員</string>
+    <string name="points">積分</string>
+    <string name="losses">損失</string>
+    <string name="arranged">已安排</string>
+    <string name="random">隨機的</string>
+    <string name="show_more">展示更多</string>
+    <string name="can_t_connect">無法連接？</string>
+    <string name="privacy_settings_enabled">確保您啟用了隱私設置。 通過禁用此選項，您可以將您的信息設為私密且社區開發人員無法訪問。</string>
+    <string name="authorized_blizzportal">確保您授權 BlizzPortal 訪問不同的範圍。 為了正確訪問所需的所有數據，BlizzPortal 需要擁有魔獸世界、星際爭霸 2、暗黑破壞神 3 和 OpenID 範圍。</string>
+    <string name="still_can_t_connect">仍然無法連接？</string>
+    <string name="tier">等級</string>
 </resources>

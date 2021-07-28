@@ -97,7 +97,7 @@
     <string name="pvp" translatable="false">PvP</string>
     <string name="banner" translatable="false">banner</string>
     <string name="raid_name" translatable="false">raid name</string>
-    <string name="level">level</string>
+    <string name="level">Level</string>
     <string name="background" translatable="false">background</string>
     <string name="honor">Honor</string>
     <string name="arena" translatable="false">ARENA</string>
@@ -181,6 +181,35 @@
     <string name="horde">Horde</string>
     <string name="alliance">Alliance</string>
     <string name="pvp_leaderboards">PvP Leaderboards</string>
+    <string name="please_select_region">Please select a region</string>
+    <string name="unstable_connection">Internet connection unstable</string>
+    <string name="connected_network">Are you currently connected to a network?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="connection_required">This application requires an active internet connection to continue</string>
+    <string name="name">Name</string>
+    <string name="character_class">Class</string>
+    <string name="rank">Rank</string>
+    <string name="key">Key</string>
+    <string name="time">Time</string>
+    <string name="affixes">Affixes</string>
+    <string name="guild">Guild</string>
+    <string name="rating">Rating</string>
+    <string name="player">Player</string>
+    <string name="faction">Faction</string>
+    <string name="win">Win</string>
+    <string name="loss">Loss</string>
+    <string name="players">Players</string>
+    <string name="points">Points</string>
+    <string name="losses">Losses</string>
+    <string name="arranged">Arranged</string>
+    <string name="random">Random</string>
+    <string name="show_more">Show More</string>
+    <string name="can_t_connect">Can\'t Connect?</string>
+    <string name="privacy_settings_enabled">Make sure you have your privacy settings enabled. By disabling this option, you make your information private and inaccessible to community developpers. \n\nTo enable this setting, login to your battle.net account, go to Privacy and look for the last option.</string>
+    <string name="still_can_t_connect">Still Can\'t Connect?</string>
+    <string name="authorized_blizzportal">Make sure you authorized BlizzPortal to have access to the different scopes. To properly access all data needed, BlizzPortal needs to have World of Warcraft, Starcraft 2, Diablo 3 and OpenID scopes. \n\nThese can be enabled by going to Connections and changing the authorizations for BlizzPortal.</string>
+    <string name="tier">Tier</string>
 
     <string-array name="regions">
         <item>Select Region</item>

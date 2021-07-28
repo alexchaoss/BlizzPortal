@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BlizzPortal</string>
     <string name="select_region">Region wählen</string>
@@ -33,7 +32,6 @@
     <string name="settingsTitle">die Einstellungen</string>
     <string name="want_to_donate">Wollen Sie spenden?</string>
     <string name="character">Charakter</string>
-    <string name="progress2">Fortschritt</string>
     <string name="level">Niveau</string>
     <string name="honor">Ehre</string>
     <string name="reputation">Ruf</string>
@@ -89,6 +87,7 @@
     <string name="leaderboards">Bestenlisten</string>
     <string name="search">Search</string>
     <string name="covenant">Pakte</string>
+    <string name="progress2">Fortschritt</string>
     <string name="account">Konto</string>
     <string name="raid_leaderboards">Raid-Bestenlisten</string>
     <string name="search_guild">Gilde suchen</string>
@@ -108,9 +107,38 @@
     <string name="haste">Eile</string>
     <string name="mastery">Meisterschaft</string>
     <string name="vers">Vielseitigkeit</string>
-    <string name="mplus_leaderboards">Mythic+ Leaderboards</string>
-    <string name="realm">Realm</string>
     <string name="horde">Horde</string>
     <string name="alliance">Alliance</string>
-    <string name="pvp_leaderboards">PvP Leaderboards</string>
+    <string name="mplus_leaderboards">Mythic+ Bestenlisten</string>
+    <string name="pvp_leaderboards">PvP Bestenlisten</string>
+    <string name="realm">Reich</string>
+    <string name="please_select_region">Bitte wählen Sie eine Region</string>
+    <string name="unstable_connection">Internetverbindung instabil</string>
+    <string name="connected_network">Sind Sie derzeit mit einem Netzwerk verbunden?</string>
+    <string name="yes">Jawohl</string>
+    <string name="no">Nein</string>
+    <string name="connection_required">Diese Anwendung erfordert eine aktive Internetverbindung, um fortzufahren</string>
+    <string name="name">Name</string>
+    <string name="character_class">Klasse</string>
+    <string name="rank">Rang</string>
+    <string name="key">Taste</string>
+    <string name="time">Zeit</string>
+    <string name="affixes">Zusätze</string>
+    <string name="guild">Gilde</string>
+    <string name="rating">Bewertung</string>
+    <string name="player">Spieler</string>
+    <string name="faction">Fraktion</string>
+    <string name="win">Gewinnen</string>
+    <string name="loss">Verlust</string>
+    <string name="players">Spielerinnen</string>
+    <string name="points">Punkte</string>
+    <string name="losses">Verluste</string>
+    <string name="arranged">Angeordnet</string>
+    <string name="random">Zufällig</string>
+    <string name="show_more">Zeig mehr</string>
+    <string name="can_t_connect">Kann keine Verbindung herstellen?</string>
+    <string name="privacy_settings_enabled">Stellen Sie sicher, dass Ihre Datenschutzeinstellungen aktiviert sind. Wenn Sie diese Option deaktivieren, werden Ihre Informationen privat und für Community-Entwickler unzugänglich.</string>
+    <string name="authorized_blizzportal">Stellen Sie sicher, dass Sie BlizzPortal den Zugriff auf die verschiedenen Bereiche autorisiert haben. Um korrekt auf alle benötigten Daten zugreifen zu können, muss BlizzPortal über die Bereiche World of Warcraft, Starcraft 2, Diablo 3 und OpenID verfügen.</string>
+    <string name="still_can_t_connect">Kann immer noch keine Verbindung herstellen?</string>
+    <string name="tier">Ebene</string>
 </resources>
