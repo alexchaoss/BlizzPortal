@@ -13,6 +13,7 @@ import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.lea
 import com.BlizzardArmory.model.warcraft.specialization.Specialization
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
 
 
@@ -40,7 +41,7 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
             val woWNavFragment = WoWNavFragment.newInstance(member.profile.name, member.profile.realm.slug, "null", region)
             (context as NavigationActivity).supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+                .add(R.id.fragment, woWNavFragment, FragmentTag.NAVFRAGMENT.name)
                 .addToBackStack("wow_nav").commit()
             context.supportFragmentManager.executePendingTransactions()
         }

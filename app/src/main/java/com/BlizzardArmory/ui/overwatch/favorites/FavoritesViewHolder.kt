@@ -14,6 +14,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfile
 import com.BlizzardArmory.ui.overwatch.OWFragment
 import com.BlizzardArmory.util.ConnectionStatus
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.GlobalScope
@@ -71,7 +72,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             bundle.putString("username", profile.username)
             bundle.putString("platform", profile.platform)
             fragment.arguments = bundle
-            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "overwatchfragment")
+            fragmentManager.beginTransaction()
+                .add(R.id.fragment, fragment, FragmentTag.OVERWATCHFRAGMENT.name)
                 .addToBackStack("ow_account").commit()
             fragmentManager.executePendingTransactions()
         }

@@ -14,6 +14,7 @@ import com.BlizzardArmory.model.starcraft.leaderboard.Character
 import com.BlizzardArmory.model.starcraft.leaderboard.LadderMembers
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
+import com.BlizzardArmory.util.FragmentTag
 
 
 class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -42,7 +43,8 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
             bundle.putString("profileId", player.id.toString())
             fragment.arguments = bundle
             (context as NavigationActivity).supportFragmentManager.beginTransaction()
-                .add(R.id.fragment, fragment, "sc2fragment").addToBackStack("sc2").commit()
+                .add(R.id.fragment, fragment, FragmentTag.SC2FRAGMENT.name).addToBackStack("sc2")
+                .commit()
             context.supportFragmentManager.executePendingTransactions()
         }
     }

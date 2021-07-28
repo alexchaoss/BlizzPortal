@@ -28,6 +28,7 @@ import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.state.FavoriteState
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -511,7 +512,7 @@ class OWFragment : Fragment() {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
-                    if (activity.supportFragmentManager.findFragmentByTag("owfavorites") != null) {
+                    if (activity.supportFragmentManager.findFragmentByTag(FragmentTag.OWFAVORITES.name) != null) {
                         OWFavoritesFragment.addOnBackPressCallback(activity)
                         activity.supportFragmentManager.popBackStack()
                     } else {

@@ -14,6 +14,7 @@ import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
+import com.BlizzardArmory.util.FragmentTag
 
 
 class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -53,7 +54,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             bundle.putString("region", profile.region)
             bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
             fragment.arguments = bundle
-            fragmentManager.beginTransaction().add(R.id.fragment, fragment, "d3fragment")
+            fragmentManager.beginTransaction()
+                .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
                 .addToBackStack("d3_account").commit()
             fragmentManager.executePendingTransactions()
         }

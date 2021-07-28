@@ -27,6 +27,7 @@ import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.BlizzardArmory.util.state.FavoriteState
 import com.bumptech.glide.Glide
@@ -246,7 +247,7 @@ class D3Fragment : Fragment() {
         val fragmentManager = parentFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-        fragmentTransaction.add(R.id.fragment, d3CharacterNav, "NAV_FRAGMENT")
+        fragmentTransaction.add(R.id.fragment, d3CharacterNav, FragmentTag.NAVFRAGMENT.name)
         fragmentTransaction.addToBackStack("d3_nav").commit()
         parentFragmentManager.executePendingTransactions()
     }
@@ -324,11 +325,11 @@ class D3Fragment : Fragment() {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
                     when {
-                        activity.supportFragmentManager.findFragmentByTag("d3leaderboard") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.D3LEADERBOARD.name) != null -> {
                             D3LeaderboardFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
-                        activity.supportFragmentManager.findFragmentByTag("d3favorites") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.D3FAVORITES.name) != null -> {
                             D3FavoriteFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }

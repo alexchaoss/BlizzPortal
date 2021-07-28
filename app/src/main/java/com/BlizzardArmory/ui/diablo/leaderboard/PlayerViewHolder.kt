@@ -17,6 +17,7 @@ import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
+import com.BlizzardArmory.util.FragmentTag
 import com.bumptech.glide.Glide
 
 
@@ -77,7 +78,8 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
             bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
             fragment.arguments = bundle
             (context as NavigationActivity).supportFragmentManager.beginTransaction()
-                .add(R.id.fragment, fragment, "d3fragment").addToBackStack("d3fragment").commit()
+                .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
+                .addToBackStack(FragmentTag.D3FRAGMENT.name).commit()
             context.supportFragmentManager.executePendingTransactions()
         }
     }

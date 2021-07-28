@@ -50,6 +50,7 @@ class PvpLeaderboardsViewModel(application: Application) : BaseViewModel(applica
                 if (response.isSuccessful) {
                     pvpLeaderboard.value = response.body()
                 } else {
+                    NetworkUtils.loading = false
                     errorCode.value = response.code()
                 }
             }

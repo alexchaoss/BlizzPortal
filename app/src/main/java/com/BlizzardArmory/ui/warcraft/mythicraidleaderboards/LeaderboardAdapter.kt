@@ -12,6 +12,7 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.FragmentTag
 import java.util.*
 
 class LeaderboardAdapter(private val list: List<Entries>, private val context: Context) :
@@ -44,7 +45,8 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                 bundle.putString("region", guild.region)
                 fragment.arguments = bundle
                 context.supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment, fragment, "guild_nav_fragment").addToBackStack("wow_guild")
+                    .add(R.id.fragment, fragment, FragmentTag.WOWGUILDNAVFRAGMENT.name)
+                    .addToBackStack("wow_guild")
                     .commit()
                 context.supportFragmentManager.executePendingTransactions()
             } else {

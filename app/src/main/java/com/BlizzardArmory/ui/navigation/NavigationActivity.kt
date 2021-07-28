@@ -45,6 +45,7 @@ import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFr
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.MenuItemClickEvent
@@ -131,7 +132,7 @@ class NavigationActivity : LocalizationActivity(),
                     var fragment = AccountFragment()
                     openWoWAccount(fragment)
                 }
-                "D3Fragment" -> {
+                FragmentTag.D3FRAGMENT.name -> {
                     callD3Fragment(OauthFlowStarter.bundle?.getString("battletag")!!, OauthFlowStarter.bundle?.getString("region")!!)
                 }
             }
@@ -471,9 +472,25 @@ class NavigationActivity : LocalizationActivity(),
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.logout) -> {
-
-                binding.loadingCircle.visibility = View.VISIBLE
-                clearCredentials()
+                searchDialog.addTitle("Logout", 18F, "title")
+                    .addMessage("Do you want to log out?", 16F, "message")
+                    .addButtons(
+                        searchDialog.Button(
+                            "Ok", 16F,
+                            {
+                                binding.loadingCircle.visibility = View.VISIBLE
+                                clearCredentials()
+                            },
+                            "close_button",
+                        ),
+                        searchDialog.Button(
+                            "Cancel", 16F,
+                            {
+                                searchDialog.dismiss()
+                            },
+                            "cancel_button",
+                        ))
+                    .show()
             }
             resources.getString(R.string.diablo_3) -> {
                 (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
@@ -509,7 +526,7 @@ class NavigationActivity : LocalizationActivity(),
                         fragment.arguments = bundle
                         resetBackStack()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment, fragment, "overwatchfragment")
+                            .replace(R.id.fragment, fragment, FragmentTag.OVERWATCHFRAGMENT.name)
                             .addToBackStack("ow_account").commit()
                         supportFragmentManager.executePendingTransactions()
                     }
@@ -517,7 +534,8 @@ class NavigationActivity : LocalizationActivity(),
                         fragment = SC2Fragment()
                         resetBackStack()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment, fragment, "sc2fragment").addToBackStack("sc2")
+                            .add(R.id.fragment, fragment, FragmentTag.SC2FRAGMENT.name)
+                            .addToBackStack("sc2")
                             .commit()
                         binding.overlappingPanel.closePanels()
                     }
@@ -540,7 +558,6 @@ class NavigationActivity : LocalizationActivity(),
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.search_character) -> {
-                binding.loadingCircle.visibility = View.VISIBLE
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                     .addEditText("character_field")
                     .addMessage("Realm", 18F, "realm_label")
@@ -578,21 +595,24 @@ class NavigationActivity : LocalizationActivity(),
                     resources.getString(R.string.world_of_warcraft) -> {
                         fragment = WoWFavoritesFragment()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment, fragment, "wowfavorites").addToBackStack("wow_fav")
+                            .add(R.id.fragment, fragment, FragmentTag.WOWFAVORITES.name)
+                            .addToBackStack("wow_fav")
                             .commit()
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.diablo_3) -> {
                         fragment = D3FavoriteFragment()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment, fragment, "d3favorites").addToBackStack("d3_fav")
+                            .add(R.id.fragment, fragment, FragmentTag.D3FAVORITES.name)
+                            .addToBackStack("d3_fav")
                             .commit()
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.overwatch) -> {
                         fragment = OWFavoritesFragment()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment, fragment, "owfavorites").addToBackStack("ow_fav")
+                            .add(R.id.fragment, fragment, FragmentTag.OWFAVORITES.name)
+                            .addToBackStack("ow_fav")
                             .commit()
                         supportFragmentManager.executePendingTransactions()
                     }
@@ -607,15 +627,15 @@ class NavigationActivity : LocalizationActivity(),
                         fragment = D3LeaderboardFragment()
                         resetBackStack()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment, fragment, "d3leaderboard")
-                            .addToBackStack("d3_leaderboard").commit()
+                            .add(R.id.fragment, fragment, FragmentTag.D3LEADERBOARD.name)
+                            .addToBackStack(FragmentTag.D3LEADERBOARD.name).commit()
                         supportFragmentManager.executePendingTransactions()
                     }
                     resources.getString(R.string.starcraft_2) -> {
                         fragment = SC2LeaderboardFragment()
                         resetBackStack()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment, fragment, "sc2leaderboard")
+                            .add(R.id.fragment, fragment, FragmentTag.SC2LEADERBOARD.name)
                             .addToBackStack("sc2_leaderboard").commit()
                         supportFragmentManager.executePendingTransactions()
                     }
@@ -627,7 +647,7 @@ class NavigationActivity : LocalizationActivity(),
                 fragment = MRaidLeaderboardsFragment()
                 resetBackStack()
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment, fragment, "mraidleaderboard")
+                    .add(R.id.fragment, fragment, FragmentTag.WOWRAIDLEADERBOARD.name)
                     .addToBackStack("mraid_leaderboard").commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
@@ -637,7 +657,7 @@ class NavigationActivity : LocalizationActivity(),
                 fragment = MPlusLeaderboardsFragment()
                 resetBackStack()
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment, fragment, "mplusleaderboard")
+                    .add(R.id.fragment, fragment, FragmentTag.WOWMPLUSLEADERBOARD.name)
                     .addToBackStack("mplus_leaderboard").commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
@@ -647,7 +667,7 @@ class NavigationActivity : LocalizationActivity(),
                 fragment = PvpLeaderboardsFragment()
                 resetBackStack()
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment, fragment, "pvpleaderboard")
+                    .add(R.id.fragment, fragment, FragmentTag.WOWPVPLEADERBOARD.name)
                     .addToBackStack("pvp_leaderboard").commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
@@ -656,7 +676,8 @@ class NavigationActivity : LocalizationActivity(),
                 toggleFavoriteButton(FavoriteState.Hidden)
                 fragment = SettingsFragment()
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment, fragment, "settingsfragment").addToBackStack("settings")
+                    .add(R.id.fragment, fragment, FragmentTag.SETTINGSFRAGMENT.name)
+                    .addToBackStack("settings")
                     .commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
@@ -666,7 +687,8 @@ class NavigationActivity : LocalizationActivity(),
 
     private fun openWoWAccount(fragment: Fragment) {
         resetBackStack()
-        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment, "wowfragment")
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragment, fragment, FragmentTag.WOWFRAGMENT.name)
             .addToBackStack("wow_account").commit()
         supportFragmentManager.executePendingTransactions()
     }
@@ -722,6 +744,7 @@ class NavigationActivity : LocalizationActivity(),
                 if (viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
                         .map { it.name }.flatMap { it.getAllNames() }
                         .any { it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                    binding.loadingCircle.visibility = View.VISIBLE
                     characterRealm =
                         viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
                             .find {
@@ -758,6 +781,7 @@ class NavigationActivity : LocalizationActivity(),
                 if (viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
                         .map { it.name }.flatMap { it.getAllNames() }
                         .any { it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
+                    binding.loadingCircle.visibility = View.VISIBLE
                     guildRealm =
                         viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
                             .find {
@@ -785,7 +809,7 @@ class NavigationActivity : LocalizationActivity(),
         resetBackStack()
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            .add(R.id.fragment, fragment, "guild_nav_fragment")
+            .add(R.id.fragment, fragment, FragmentTag.WOWGUILDNAVFRAGMENT.name)
             .addToBackStack("wow_guild").commit()
         supportFragmentManager.executePendingTransactions()
         dialog.dismiss()
@@ -800,7 +824,7 @@ class NavigationActivity : LocalizationActivity(),
         resetBackStack()
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            .add(R.id.fragment, fragment, "d3fragment")
+            .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
             .addToBackStack("d3_account").commit()
         supportFragmentManager.executePendingTransactions()
     }
@@ -815,8 +839,8 @@ class NavigationActivity : LocalizationActivity(),
             WoWNavFragment.newInstance(characterClicked, characterRealm, mediaString, selectedRegion)
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
-            .addToBackStack("wow_nav").commit()
+            .add(R.id.fragment, woWNavFragment, FragmentTag.NAVFRAGMENT.name)
+            .addToBackStack(FragmentTag.NAVFRAGMENT.name).commit()
         supportFragmentManager.executePendingTransactions()
         binding.loadingCircle.visibility = View.GONE
     }
@@ -824,9 +848,9 @@ class NavigationActivity : LocalizationActivity(),
 
     override fun onGestureRegionsUpdate(gestureRegions: List<Rect>) {
         when (supportFragmentManager.fragments.last().tag) {
-            "NAV_FRAGMENT",
-            "overwatchfragment",
-            "guild_nav_fragment" -> {
+            FragmentTag.NAVFRAGMENT.name,
+            FragmentTag.OVERWATCHFRAGMENT.name,
+            FragmentTag.WOWGUILDNAVFRAGMENT.name -> {
                 for (rect in gestureRegions) {
                     rect.set(
                         (resources.displayMetrics.widthPixels * 0.25).toInt(), rect.top,

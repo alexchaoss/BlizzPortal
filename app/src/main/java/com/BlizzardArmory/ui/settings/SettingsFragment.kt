@@ -30,10 +30,16 @@ import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.OWFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
+import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
+import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
+import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFragment
+import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
+import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import org.greenrobot.eventbus.EventBus
@@ -51,16 +57,21 @@ class SettingsFragment : Fragment() {
         activity?.onBackPressedDispatcher?.addCallback {
             if (requireActivity().supportFragmentManager.backStackEntryCount > 1) {
                 when (requireActivity().supportFragmentManager.fragments[requireActivity().supportFragmentManager.backStackEntryCount - 2].tag) {
-                    "wowfavorites" -> WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "d3favorites" -> D3FavoriteFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "owfavorites" -> OWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "d3nav" -> CharacterStatsFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "d3fragment" -> D3Fragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "d3_leaderboard" -> D3LeaderboardFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "NAV_FRAGMENT" -> WoWCharacterFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "wowfragment" -> AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "sc2fragment" -> SC2Fragment.addOnBackPressCallback(activity as NavigationActivity)
-                    "overwatchfragment" -> OWFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.WOWFAVORITES.name -> WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.D3FAVORITES.name -> D3FavoriteFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.OWFAVORITES.name -> OWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.D3NAV.name -> CharacterStatsFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.D3FRAGMENT.name -> D3Fragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.D3LEADERBOARD.name -> D3LeaderboardFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.NAVFRAGMENT.name -> WoWCharacterFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.WOWFRAGMENT.name -> AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.WOWGUILDNAVFRAGMENT.name -> ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.WOWMPLUSLEADERBOARD.name -> MPlusLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.WOWPVPLEADERBOARD.name -> PvpLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.WOWRAIDLEADERBOARD.name -> MRaidLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.SC2FRAGMENT.name -> SC2Fragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.SC2LEADERBOARD.name -> SC2LeaderboardFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    FragmentTag.OVERWATCHFRAGMENT.name -> OWFragment.addOnBackPressCallback(activity as NavigationActivity)
                     else -> NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
                 }
             } else {

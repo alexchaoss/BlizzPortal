@@ -11,21 +11,23 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import com.BlizzardArmory.R
+import com.BlizzardArmory.ui.HelpFragment
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 
 class DialogPrompt(val context: Context) {
 
     private val builder = AlertDialog.Builder(context, R.style.DialogBlizzPortal)
     private var dialog: AlertDialog? = null
-    private val layoutParams =
-        LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-    private val buttonParams =
-        LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+    private val wrapperParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+    private val containerParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+    private val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+    private val wrapper = RelativeLayout(context)
     private val container = LinearLayout(context)
     val tagMap = mutableMapOf<String, View>()
 
     inner class Button(val text: String, val size: Float, val onClick: () -> Unit, val tag: String = "", val color: Int = Color.WHITE, val bcontext: Context = context) {
-
         fun button(): android.widget.Button {
             val button = Button(context)
             button.text = text
@@ -41,7 +43,10 @@ class DialogPrompt(val context: Context) {
     }
 
     init {
-        layoutParams.gravity = Gravity.CENTER
+        wrapper.layoutParams = wrapperParams
+        wrapper.addView(container)
+        containerParams.addRule(RelativeLayout.CENTER_IN_PARENT)
+        container.layoutParams = containerParams
         dialog = builder.create()
         dialog!!.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialog!!.setCancelable(true)
@@ -51,9 +56,33 @@ class DialogPrompt(val context: Context) {
         buttonParams.setMargins(10, 20, 10, 20)
         buttonParams.weight = 1f
         tagMap["main_container"] = container
+        addHelpButton()
     }
 
-    fun addCustomView(view: View, tag: String = "") {
+    private fun addHelpButton() {
+        val helpButton = ImageView(context)
+        helpButton.setImageResource(R.drawable.ic_baseline_help_outline_24)
+        helpButton.setPadding(0, 15, 15, 0)
+        wrapper.addView(helpButton)
+        helpButton.updateLayoutParams<RelativeLayout.LayoutParams> {
+            addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+        }
+        helpButton.setOnClickListener {
+            val fragment = HelpFragment()
+            (context as NavigationActivity).supportFragmentManager.beginTransaction()
+                .add(R.id.fragment, fragment, "helpfragment")
+                .addToBackStack("help").commit()
+            context.supportFragmentManager.executePendingTransactions()
+            this.dismiss()
+        }
+    }
+
+    fun addCustomView(view: View, tag: String = "", onClick: (() -> Unit?)? = null) {
+        if (onClick != null) {
+            view.setOnClickListener {
+                onClick()
+            }
+        }
         container.addView(view)
         if (tag != "") {
             tagMap[tag] = view
@@ -65,7 +94,7 @@ class DialogPrompt(val context: Context) {
         textView.textSize = size
         textView.gravity = Gravity.CENTER_HORIZONTAL
         textView.setPadding(0, 20, 0, 20)
-        textView.layoutParams = layoutParams
+        textView.layoutParams = containerParams
         textView.setTextColor(Color.WHITE)
         textView.text = text
         container.addView(textView)
@@ -79,7 +108,7 @@ class DialogPrompt(val context: Context) {
         val textView = TextView(context)
         textView.textSize = size
         textView.gravity = Gravity.CENTER_HORIZONTAL
-        textView.layoutParams = layoutParams
+        textView.layoutParams = containerParams
         textView.setTextColor(Color.WHITE)
         textView.text = text
         container.addView(textView)
@@ -202,7 +231,7 @@ class DialogPrompt(val context: Context) {
         dialog!!.window?.setLayout(MetricConversion.getDPMetric(320, context), WindowManager.LayoutParams.WRAP_CONTENT)
         dialog!!.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
         dialog!!.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-        dialog!!.addContentView(container, layoutParams)
+        dialog!!.addContentView(wrapper, wrapperParams)
     }
 
     fun dismiss() {

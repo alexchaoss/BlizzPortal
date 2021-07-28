@@ -14,6 +14,7 @@ import com.BlizzardArmory.model.warcraft.pvp.leaderboards.Entries
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -92,7 +93,7 @@ class LeaderboardViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
             val woWNavFragment = WoWNavFragment.newInstance(entry.character.name, entry.character.realm.slug, "null", region)
             (context as NavigationActivity).supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+                .add(R.id.fragment, woWNavFragment, FragmentTag.NAVFRAGMENT.name)
                 .addToBackStack("wow_nav").commit()
             context.supportFragmentManager.executePendingTransactions()
         }

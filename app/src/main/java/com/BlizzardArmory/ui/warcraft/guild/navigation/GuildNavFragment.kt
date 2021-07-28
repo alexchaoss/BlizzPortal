@@ -12,6 +12,7 @@ import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayout
@@ -82,15 +83,15 @@ class GuildNavFragment : Fragment() {
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
             when {
-                requireActivity().supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
+                requireActivity().supportFragmentManager.findFragmentByTag(FragmentTag.NAVFRAGMENT.name) != null -> {
                     WoWCharacterFragment.addOnBackPressCallback(activity as NavigationActivity)
                     requireActivity().supportFragmentManager.popBackStack()
                 }
-                requireActivity().supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {
+                requireActivity().supportFragmentManager.findFragmentByTag(FragmentTag.WOWRAIDLEADERBOARD.name) != null -> {
                     MRaidLeaderboardsFragment.addOnBackPressCallback(activity as NavigationActivity)
                     requireActivity().supportFragmentManager.popBackStack()
                 }
-                requireActivity().supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                requireActivity().supportFragmentManager.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                     requireActivity().supportFragmentManager.popBackStack()
                 }

@@ -18,6 +18,7 @@ import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.ConnectionStatus
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -119,7 +120,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
                 WoWNavFragment.newInstance(character?.characterSummary?.name?.lowercase(Locale.getDefault())!!, character?.characterSummary?.realm?.slug!!, media, character?.region!!)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            fragmentTransaction.replace(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
+            fragmentTransaction.replace(R.id.fragment, woWNavFragment, FragmentTag.NAVFRAGMENT.name)
             fragmentTransaction.addToBackStack("wow_nav").commit()
             fragmentManager.executePendingTransactions()
         }

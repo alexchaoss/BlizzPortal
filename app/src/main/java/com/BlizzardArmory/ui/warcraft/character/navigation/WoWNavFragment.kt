@@ -12,6 +12,7 @@ import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayout
@@ -100,22 +101,22 @@ class WoWNavFragment : Fragment() {
     public fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
             when {
-                activity?.supportFragmentManager?.findFragmentByTag("guild_nav_fragment") != null -> {
+                activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                 }
-                activity?.supportFragmentManager?.findFragmentByTag("wowfragment") != null -> {
+                activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWFRAGMENT.name) != null -> {
                     AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
-                activity?.supportFragmentManager?.findFragmentByTag("wowfavorites") != null -> {
+                activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWFAVORITES.name) != null -> {
                     WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
-                activity?.supportFragmentManager?.findFragmentByTag("mplusleaderboard") != null -> {
+                activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWMPLUSLEADERBOARD.name) != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
-                activity?.supportFragmentManager?.findFragmentByTag("pvpleaderboard") != null -> {
+                activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWPVPLEADERBOARD.name) != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }

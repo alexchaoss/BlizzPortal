@@ -34,6 +34,7 @@ import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
 import com.BlizzardArmory.util.events.*
 import com.BlizzardArmory.util.state.FavoriteState
@@ -161,7 +162,7 @@ class WoWCharacterFragment : Fragment() {
                     bundle.putString("region", viewModel.region.lowercase(Locale.getDefault()))
                     fragment.arguments = bundle
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .add(R.id.fragment, fragment, "guild_nav_fragment")
+                        .add(R.id.fragment, fragment, FragmentTag.WOWGUILDNAVFRAGMENT.name)
                         .addToBackStack("wow_guild")
                         .commit()
                     requireActivity().supportFragmentManager.executePendingTransactions()
@@ -639,23 +640,23 @@ class WoWCharacterFragment : Fragment() {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
                     when {
-                        activity.supportFragmentManager.findFragmentByTag("wowfragment") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWFRAGMENT.name) != null -> {
                             AccountFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
-                        activity.supportFragmentManager.findFragmentByTag("wowfavorites") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWFAVORITES.name) != null -> {
                             WoWFavoritesFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
-                        activity.supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
                             ActivityFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
-                        activity.supportFragmentManager.findFragmentByTag("mplusleaderboard") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWMPLUSLEADERBOARD.name) != null -> {
                             ActivityFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
-                        activity.supportFragmentManager.findFragmentByTag("pvpleaderboard") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWPVPLEADERBOARD.name) != null -> {
                             ActivityFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }

@@ -21,6 +21,7 @@ import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -211,15 +212,15 @@ class ActivityFragment : Fragment() {
             activity.onBackPressedDispatcher.addCallback {
                 if (!NetworkUtils.loading) {
                     when {
-                        activity.supportFragmentManager.findFragmentByTag("NAV_FRAGMENT") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.NAVFRAGMENT.name) != null -> {
                             WoWCharacterFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
-                        activity.supportFragmentManager.findFragmentByTag("mraidleaderboard") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWRAIDLEADERBOARD.name) != null -> {
                             MRaidLeaderboardsFragment.addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }
-                        activity.supportFragmentManager.findFragmentByTag("guild_nav_fragment") != null -> {
+                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
                             addOnBackPressCallback(activity)
                             activity.supportFragmentManager.popBackStack()
                         }

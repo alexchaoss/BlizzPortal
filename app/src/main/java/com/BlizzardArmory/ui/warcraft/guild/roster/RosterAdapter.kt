@@ -10,6 +10,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
+import com.BlizzardArmory.util.FragmentTag
 import java.util.*
 
 class RosterAdapter(private val activities: List<Members>, private val context: Context, private val region: String) :
@@ -39,8 +40,8 @@ class RosterAdapter(private val activities: List<Members>, private val context: 
             val woWNavFragment = WoWNavFragment.newInstance(member.character.name, member.character.realm.slug, "null", region)
             (context as NavigationActivity).supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-                .add(R.id.fragment, woWNavFragment, "NAV_FRAGMENT")
-                .addToBackStack("wow_nav").commit()
+                .add(R.id.fragment, woWNavFragment, FragmentTag.NAVFRAGMENT.name)
+                .addToBackStack(FragmentTag.NAVFRAGMENT.name).commit()
             context.supportFragmentManager.executePendingTransactions()
         }
     }

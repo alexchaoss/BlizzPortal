@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.news.NewsListFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.FragmentTag
 import com.google.android.material.snackbar.Snackbar
 
 /**
@@ -45,9 +46,11 @@ object OWPlatformChoiceDialog {
                 .remove(fragmentManager.findFragmentById(R.id.fragment)!!).commit()
         }
         val newsListFragment = NewsListFragment()
-        fragmentManager.beginTransaction().replace(R.id.fragment, newsListFragment, "news_fragment")
+        fragmentManager.beginTransaction()
+            .replace(R.id.fragment, newsListFragment, FragmentTag.NEWSPAGEFRAGMENT.name)
             .commit()
-        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, "overwatchfragment")
+        fragmentManager.beginTransaction()
+            .replace(R.id.fragment, fragment, FragmentTag.OVERWATCHFRAGMENT.name)
             .addToBackStack("ow_account").commit()
         fragmentManager.executePendingTransactions()
     }
