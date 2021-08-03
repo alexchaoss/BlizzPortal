@@ -15,7 +15,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3CharacterFragmentBinding
@@ -44,7 +44,7 @@ class CharacterStatsFragment : Fragment() {
 
     private var _binding: D3CharacterFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CharacterStatsViewModel by viewModels()
+    private lateinit var viewModel: CharacterStatsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
@@ -69,6 +69,8 @@ class CharacterStatsFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(CharacterStatsViewModel::class.java)
         errorMessages = ErrorMessages(this.resources)
         val bundle = requireArguments()
         id = bundle.getLong("id")

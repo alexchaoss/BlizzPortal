@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.databinding.WowGuildNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsListFragment
+import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment

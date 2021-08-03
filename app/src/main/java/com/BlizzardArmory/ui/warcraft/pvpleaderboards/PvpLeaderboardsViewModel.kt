@@ -63,5 +63,6 @@ class PvpLeaderboardsViewModel(application: Application) : BaseViewModel(applica
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadSeasonIndex()
     }
 }

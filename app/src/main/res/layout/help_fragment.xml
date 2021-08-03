@@ -43,8 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:adjustViewBounds="true"
-                android:src="@drawable/battlenet_privacy_settings" />
+                android:adjustViewBounds="true" />
 
             <TextView
                 android:id="@+id/title2"
@@ -75,8 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:adjustViewBounds="true"
-                android:src="@drawable/battlenet_privacy_settings" />
+                android:adjustViewBounds="true" />
 
         </LinearLayout>
 

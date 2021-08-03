@@ -18,7 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3SkillFragmentBinding
@@ -56,7 +56,7 @@ class CharacterSkillFragment : Fragment() {
 
     private var _binding: D3SkillFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CharacterSkillViewModel by viewModels()
+    private lateinit var viewModel: CharacterSkillViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = D3SkillFragmentBinding.inflate(layoutInflater)
@@ -65,6 +65,8 @@ class CharacterSkillFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(CharacterSkillViewModel::class.java)
         battlenetOAuth2Params = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         battlenetOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
 

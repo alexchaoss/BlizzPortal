@@ -14,8 +14,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 113
-        versionName "4.92"
+        versionCode 114
+        versionName "4.93"
         multiDexEnabled true
     }
     buildTypes {
@@ -30,6 +30,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
     }
     compileOptions {
         sourceCompatibility = 1.8
@@ -37,6 +38,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.0.0-rc02'
     }
 }
 
@@ -46,9 +50,6 @@ buildscript {
         maven { url "https://jitpack.io" }
         mavenCentral()
         google()
-    }
-    dependencies {
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
     }
 }
 
@@ -62,7 +63,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation "androidx.preference:preference-ktx:1.1.1"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
@@ -80,7 +81,7 @@ dependencies {
 
     implementation "com.google.android.play:core:1.10.0"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.10"
     implementation 'androidx.fragment:fragment-ktx:1.3.6'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0-rc02"
@@ -100,6 +101,13 @@ dependencies {
 
     implementation 'com.mikepenz:aboutlibraries:8.9.1'
 
+    implementation 'androidx.activity:activity-compose:1.3.0'
+    implementation 'androidx.compose.material:material:1.0.0'
+    implementation 'androidx.compose.animation:animation:1.0.0'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.0'
 
     implementation('com.google.apis:google-api-services-oauth2:v2-rev99-1.21.0') {
         exclude module: 'httpclient' //by artifact name

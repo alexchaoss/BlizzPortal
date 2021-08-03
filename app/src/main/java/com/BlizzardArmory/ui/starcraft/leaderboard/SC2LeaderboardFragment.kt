@@ -15,13 +15,13 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.Sc2LeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.state.RightPanelState
 import com.google.android.material.snackbar.Snackbar
@@ -53,7 +53,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var _binding: Sc2LeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: SC2LeaderboardViewModel by viewModels()
+    private lateinit var viewModel: SC2LeaderboardViewModel
 
     private lateinit var rightPanel: NavigationActivity
 
@@ -72,6 +72,9 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(SC2LeaderboardViewModel::class.java)
+
         rightPanel = (requireActivity() as NavigationActivity)
         rightPanel.selectRightPanel(RightPanelState.Sc2Leaderboard)
         this.parentFragmentManager.addOnBackStackChangedListener(this)

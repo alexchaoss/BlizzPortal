@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -18,7 +19,8 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.activity.viewModels
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.MainActivityBinding
@@ -39,14 +41,17 @@ class MainActivity : LocalizationActivity() {
 
     private var sharedPreferences: SharedPreferences? = null
     private val REQUEST_CODE_IN_APP_UPDATE = 7500
-    private val viewModel: MainViewModel by viewModels()
+    private lateinit var viewModel: MainViewModel
 
     private lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
+            .create(MainViewModel::class.java)
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         FirebaseApp.initializeApp(this)
         FirebaseCrashlytics.getInstance().sendUnsentReports()
 
@@ -69,6 +74,7 @@ class MainActivity : LocalizationActivity() {
         viewModel.getBattlenetOAuth2Params().observe(this, {
             OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
         })
+
     }
 
     override fun onResume() {
@@ -77,15 +83,6 @@ class MainActivity : LocalizationActivity() {
         appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 appUpdateManager.startUpdateFlowForResult(appUpdateInfo, IMMEDIATE, this, REQUEST_CODE_IN_APP_UPDATE)
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_IN_APP_UPDATE) {
-            if (resultCode != RESULT_OK) {
-                checkForAppUpdates()
             }
         }
     }
@@ -208,8 +205,22 @@ class MainActivity : LocalizationActivity() {
         val appUpdateManager = AppUpdateManagerFactory.create(this)
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, IMMEDIATE, this, REQUEST_CODE_IN_APP_UPDATE)
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                appUpdateManager.startUpdateFlowForResult(appUpdateInfo, IMMEDIATE, this, REQUEST_CODE_IN_APP_UPDATE)
+                openActivityForResult()
+            }
         }
+    }
+
+    private fun openActivityForResult() {
+        val resultUpdate = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != Activity.RESULT_OK) {
+                Snackbar.make(binding.root, "App Update failed, please try again on the next app launch.", Snackbar.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        resultUpdate.launch(Intent(this, MainActivity::class.java))
     }
 
     private fun initLocale() {

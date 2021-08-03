@@ -15,7 +15,7 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
@@ -66,16 +66,7 @@ class CharacterGearFragment : Fragment() {
 
     private var _binding: D3GearFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CharacterGearViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            battletag = it.getString(BATTLETAG)!!
-            selectedRegion = it.getString(SELECTED_REGION)!!
-            id = it.getLong(ID)
-        }
-    }
+    private lateinit var viewModel: CharacterGearViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = D3GearFragmentBinding.inflate(layoutInflater)
@@ -84,6 +75,15 @@ class CharacterGearFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(CharacterGearViewModel::class.java)
+
+        arguments?.let {
+            battletag = it.getString(BATTLETAG)!!
+            selectedRegion = it.getString(SELECTED_REGION)!!
+            id = it.getLong(ID)
+        }
+
         NetworkUtils.loading = true
         addImageViewItemsToList()
         setObservers()

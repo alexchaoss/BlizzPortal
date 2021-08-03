@@ -160,5 +160,6 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadSpecializations()
     }
 }

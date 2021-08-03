@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowProgressFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
@@ -38,17 +38,7 @@ class ProgressFragment : Fragment() {
 
     private var _binding: WowProgressFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ProgressViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            viewModel.character = it.getString(CHARACTER)!!
-            viewModel.realm = it.getString(REALM)!!
-            media = it.getString(MEDIA)
-            viewModel.region = it.getString(REGION)!!
-        }
-    }
+    private lateinit var viewModel: ProgressViewModel
 
     override fun onStart() {
         super.onStart()
@@ -72,6 +62,16 @@ class ProgressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(ProgressViewModel::class.java)
+
+        arguments?.let {
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
+            media = it.getString(MEDIA)
+            viewModel.region = it.getString(REGION)!!
+        }
+
         setObservers()
         viewModel.downloadEncounterInformation()
     }

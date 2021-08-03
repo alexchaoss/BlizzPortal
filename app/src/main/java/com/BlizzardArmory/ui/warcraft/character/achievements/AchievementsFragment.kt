@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
@@ -43,17 +43,7 @@ class AchievementsFragment : Fragment() {
 
     private var _binding: WowAchievementsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AchievementViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            viewModel.character = it.getString(CHARACTER)!!
-            viewModel.realm = it.getString(REALM)!!
-            media = it.getString(MEDIA)
-            viewModel.region = it.getString(REGION)!!
-        }
-    }
+    private lateinit var viewModel: AchievementViewModel
 
     override fun onStart() {
         super.onStart()
@@ -77,6 +67,16 @@ class AchievementsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(AchievementViewModel::class.java)
+
+        arguments?.let {
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
+            media = it.getString(MEDIA)
+            viewModel.region = it.getString(REGION)!!
+        }
+
         gson = GsonBuilder().create()
         prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
 

@@ -103,5 +103,6 @@ class AchievementViewModel(application: Application) : BaseViewModel(application
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadAchievementInformation()
     }
 }

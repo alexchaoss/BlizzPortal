@@ -93,5 +93,6 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadBothLeaderboard("Sanctum of Domination")
     }
 }

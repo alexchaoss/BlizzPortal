@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.databinding.WowFavoritesBinding
-import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfiles
+import com.BlizzardArmory.model.overwatch.account.favorite.FavoriteProfiles
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.google.gson.GsonBuilder
 
 class OWFavoritesFragment : Fragment() {

@@ -11,9 +11,9 @@ import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.NavigationActivityBarBinding
@@ -30,9 +30,9 @@ import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
-import com.BlizzardArmory.ui.news.NewsListFragment
-import com.BlizzardArmory.ui.overwatch.OWFragment
-import com.BlizzardArmory.ui.overwatch.OWPlatformChoiceDialog
+import com.BlizzardArmory.ui.news.list.NewsListFragment
+import com.BlizzardArmory.ui.overwatch.account.OWFragment
+import com.BlizzardArmory.ui.overwatch.account.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.settings.SettingsFragment
 import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
@@ -81,13 +81,17 @@ class NavigationActivity : LocalizationActivity(),
 
     lateinit var barBinding: NavigationActivityBarBinding
     lateinit var binding: NavigationActivityBinding
-    private val viewModel: NavigationViewModel by viewModels()
+    private lateinit var viewModel: NavigationViewModel
     private var viewStateDisposable: Disposable? = null
 
     private val menuList = arrayListOf<MenuItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
+            .create(NavigationViewModel::class.java)
+
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             handleUncaughtException(thread, throwable)
         }

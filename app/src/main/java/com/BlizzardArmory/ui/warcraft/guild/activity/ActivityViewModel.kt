@@ -22,6 +22,10 @@ class ActivityViewModel(application: Application) : BaseViewModel(application) {
     private val guildCrestBorder: MutableLiveData<Media> = MutableLiveData()
     private val guildCrestEmblem: MutableLiveData<Media> = MutableLiveData()
 
+    var realm = ""
+    var guildName = ""
+    var region = ""
+
     fun getGuildSummary(): MutableLiveData<Guild> {
         return guildSummary
     }
@@ -38,10 +42,10 @@ class ActivityViewModel(application: Application) : BaseViewModel(application) {
         return guildCrestEmblem
     }
 
-    fun downloadGuildSummary(realm: String, name: String, region: String) {
+    fun downloadGuildSummary() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient(getApplication()).getGuildSummary(
-                realm, name, "profile-$region", region)
+                realm, guildName, "profile-$region", region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildSummary.value = response.body()
@@ -88,10 +92,10 @@ class ActivityViewModel(application: Application) : BaseViewModel(application) {
 
     }
 
-    fun downloadGuildActivity(realm: String, name: String, region: String) {
+    fun downloadGuildActivity() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient(getApplication()).getGuildActivity(
-                realm, name, "profile-$region", region)
+                realm, guildName, "profile-$region", region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildActivity.value = response.body()
@@ -106,5 +110,7 @@ class ActivityViewModel(application: Application) : BaseViewModel(application) {
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadGuildSummary()
+        downloadGuildActivity()
     }
 }

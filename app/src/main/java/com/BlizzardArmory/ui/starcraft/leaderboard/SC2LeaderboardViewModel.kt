@@ -93,7 +93,7 @@ class SC2LeaderboardViewModel(application: Application) : BaseViewModel(applicat
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
-
+        downloadCurrentSeason(1, NetworkUtils.region)
     }
 
     private fun getQueueAsInt(): Int {

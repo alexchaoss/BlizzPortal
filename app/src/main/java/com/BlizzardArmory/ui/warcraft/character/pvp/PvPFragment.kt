@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowPvpFragmentBinding
@@ -42,17 +42,7 @@ class PvPFragment : Fragment() {
 
     private var _binding: WowPvpFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: PvPViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            viewModel.character = it.getString(CHARACTER)!!
-            viewModel.realm = it.getString(REALM)!!
-            media = it.getString(MEDIA)
-            viewModel.region = it.getString(REGION)!!
-        }
-    }
+    private lateinit var viewModel: PvPViewModel
 
     override fun onStart() {
         super.onStart()
@@ -76,6 +66,15 @@ class PvPFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(PvPViewModel::class.java)
+
+        arguments?.let {
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
+            media = it.getString(MEDIA)
+            viewModel.region = it.getString(REGION)!!
+        }
 
         setObservers()
         viewModel.downloadPvPSummary()

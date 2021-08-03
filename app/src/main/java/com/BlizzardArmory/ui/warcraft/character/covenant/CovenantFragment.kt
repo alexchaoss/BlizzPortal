@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowCovenantFragmentBinding
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.CharacterSoulbinds
@@ -38,16 +38,8 @@ class CovenantFragment : Fragment() {
 
     private var _binding: WowCovenantFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CovenantViewModel by viewModels()
+    private lateinit var viewModel: CovenantViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            viewModel.character = it.getString(CHARACTER)!!
-            viewModel.realm = it.getString(REALM)!!
-            viewModel.region = it.getString(REGION)!!
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = WowCovenantFragmentBinding.inflate(layoutInflater)
@@ -56,6 +48,13 @@ class CovenantFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(CovenantViewModel::class.java)
+        arguments?.let {
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
+            viewModel.region = it.getString(REGION)!!
+        }
         setObservers()
         viewModel.downloadCharacterSoulbinds()
     }

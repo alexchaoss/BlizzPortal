@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3FragmentBinding
@@ -25,7 +25,7 @@ import com.BlizzardArmory.ui.diablo.characterfragments.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.D3CharacterEvent
@@ -46,7 +46,7 @@ class D3Fragment : Fragment() {
 
     private var _binding: D3FragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: D3ViewModel by viewModels()
+    private lateinit var viewModel: D3ViewModel
 
     private lateinit var navigationActivity: NavigationActivity
 
@@ -74,6 +74,8 @@ class D3Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(D3ViewModel::class.java)
         navigationActivity = (requireActivity() as NavigationActivity)
         errorMessages = ErrorMessages(this.resources)
         battleTag = arguments?.getString("battletag")

@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowRepFragmentBinding
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
@@ -42,17 +42,7 @@ class ReputationsFragment : Fragment() {
 
     private var _binding: WowRepFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ReputationsViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            viewModel.character = it.getString(CHARACTER)!!
-            viewModel.realm = it.getString(REALM)!!
-            media = it.getString(MEDIA)
-            viewModel.region = it.getString(REGION)!!
-        }
-    }
+    private lateinit var viewModel: ReputationsViewModel
 
     override fun onStart() {
         super.onStart()
@@ -76,6 +66,16 @@ class ReputationsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(ReputationsViewModel::class.java)
+
+        arguments?.let {
+            viewModel.character = it.getString(CHARACTER)!!
+            viewModel.realm = it.getString(REALM)!!
+            media = it.getString(MEDIA)
+            viewModel.region = it.getString(REGION)!!
+        }
+
         setObservers()
         viewModel.downloadReputationsPlusParentInfo()
     }

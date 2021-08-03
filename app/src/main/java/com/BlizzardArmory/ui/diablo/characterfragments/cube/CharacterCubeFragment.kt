@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.databinding.D3CubeFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
 import com.BlizzardArmory.network.NetworkUtils
@@ -30,7 +30,7 @@ class CharacterCubeFragment : Fragment() {
 
     private var _binding: D3CubeFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CharacterCubeViewModel by viewModels()
+    private lateinit var viewModel: CharacterCubeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = D3CubeFragmentBinding.inflate(layoutInflater)
@@ -39,6 +39,8 @@ class CharacterCubeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(CharacterCubeViewModel::class.java)
         viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         binding.cubeArmorItem.setImageResource(0)
         binding.cubeSwordItem.setImageResource(0)

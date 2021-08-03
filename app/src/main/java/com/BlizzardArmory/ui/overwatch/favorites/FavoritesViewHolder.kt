@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfile
-import com.BlizzardArmory.ui.overwatch.OWFragment
+import com.BlizzardArmory.model.overwatch.account.favorite.FavoriteProfile
+import com.BlizzardArmory.ui.overwatch.account.OWFragment
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent

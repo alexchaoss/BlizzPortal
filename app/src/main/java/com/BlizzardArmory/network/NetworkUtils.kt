@@ -49,6 +49,11 @@ object NetworkUtils {
     const val D3_ICON_ITEMS = "http://media.blizzard.com/d3/icons/items/large/icon.png"
 
     /**
+     * Bnet images
+     */
+    const val BNET_ASSETS = "https://alexchaoss.github.io/BnetAuthorize/img/bnet/image.png"
+
+    /**
      * D3 images
      */
     const val D3_ASSETS = "https://alexchaoss.github.io/BnetAuthorize/img/d3/image.png"
@@ -90,7 +95,7 @@ object NetworkUtils {
         get() = if (NetworkUtils.region.equals("cn", ignoreCase = true)) {
             BASE_URL_CN_USER_INFO
         } else {
-            BASE_URL_USER_INFO.replace("zone", NetworkUtils.region.lowercase(Locale.getDefault()))
+            BASE_URL_USER_INFO.replace("zone", region.lowercase(Locale.getDefault()))
         }
 
     /**
@@ -98,8 +103,7 @@ object NetworkUtils {
      *
      * @return the region
      */
-    val region: String
-        get() = MainActivity.selectedRegion.lowercase(Locale.getDefault())
+    lateinit var region: String
 
     val locale: String
         get() = MainActivity.locale
@@ -134,6 +138,10 @@ object NetworkUtils {
     @JvmStatic
     fun getOWPortraitImage(character: String): String {
         return OW_ASSETS.replace("image", character + "_portrait")
+    }
+
+    fun getBnetAsset(name: String): String {
+        return BNET_ASSETS.replace("image", name)
     }
 
     fun getOWIconImage(character: String): String {

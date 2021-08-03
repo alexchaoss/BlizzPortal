@@ -14,7 +14,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
@@ -28,7 +28,7 @@ import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsListFragment
+import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
@@ -60,7 +60,7 @@ class WoWCharacterFragment : Fragment() {
 
     private var _binding: WowCharacterFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: WoWCharacterViewModel by viewModels()
+    private lateinit var viewModel: WoWCharacterViewModel
 
     private lateinit var navigationActivity: NavigationActivity
 
@@ -71,6 +71,8 @@ class WoWCharacterFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(WoWCharacterViewModel::class.java)
         navigationActivity = (requireActivity() as NavigationActivity)
         NetworkUtils.loading = true
         errorMessages = ErrorMessages(this.resources)

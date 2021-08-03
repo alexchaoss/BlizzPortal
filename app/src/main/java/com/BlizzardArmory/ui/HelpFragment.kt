@@ -8,13 +8,14 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.HelpFragmentBinding
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
-import com.BlizzardArmory.ui.overwatch.OWFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
+import com.BlizzardArmory.ui.overwatch.account.OWFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
@@ -41,6 +42,12 @@ class HelpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Glide.with(this).load(NetworkUtils.getBnetAsset("battlenet_privacy_settings"))
+            .into(binding.privacy)
+        Glide.with(this).load(NetworkUtils.getBnetAsset("battlenet_connections_settings"))
+            .into(binding.connections)
+
         binding.closeButton.setOnClickListener {
             closeFragment(activity as NavigationActivity)
             requireActivity().supportFragmentManager.popBackStack()

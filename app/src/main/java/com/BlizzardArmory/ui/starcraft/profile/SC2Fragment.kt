@@ -18,7 +18,7 @@ import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
@@ -29,7 +29,7 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -46,7 +46,7 @@ class SC2Fragment : Fragment() {
 
     private var _binding: Sc2FragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: SC2ViewModel by viewModels()
+    private lateinit var viewModel: SC2ViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
@@ -56,6 +56,9 @@ class SC2Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(SC2ViewModel::class.java)
+
         errorMessages = ErrorMessages(this.resources)
         setObservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())

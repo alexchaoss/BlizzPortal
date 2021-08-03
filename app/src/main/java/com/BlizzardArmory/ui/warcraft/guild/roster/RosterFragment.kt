@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowGuildRosterBinding
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
@@ -25,7 +25,7 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: WowGuildRosterBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: RosterViewModel by viewModels()
+    private lateinit var viewModel: RosterViewModel
 
     private var realm: String? = null
     private var guildName: String? = null
@@ -57,10 +57,12 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(RosterViewModel::class.java)
         val bundle = requireArguments()
-        realm = bundle.getString("realm")
-        guildName = bundle.getString("guildName")
-        region = bundle.getString("region")
+        viewModel.realm = bundle.getString("realm")!!
+        viewModel.guildName = bundle.getString("guildName")!!
+        viewModel.region = bundle.getString("region")!!
 
         binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
@@ -69,7 +71,7 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
         textView.setHintTextColor(Color.parseColor("#ffffff"))
 
         setObservers()
-        viewModel.downloadGuildRoster(realm!!, guildName!!, region!!)
+        viewModel.downloadGuildRoster()
     }
 
     private fun setObservers() {
@@ -84,7 +86,7 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
-            viewModel.downloadGuildRoster(realm!!, guildName!!, region!!)
+            viewModel.downloadGuildRoster()
         }
     }
 

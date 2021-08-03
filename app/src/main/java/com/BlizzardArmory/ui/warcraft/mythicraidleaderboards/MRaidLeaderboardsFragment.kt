@@ -14,12 +14,12 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowMythicRaidLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 
 class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -28,7 +28,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: WowMythicRaidLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: MRaidLeaderboardsViewModel by viewModels()
+    private lateinit var viewModel: MRaidLeaderboardsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
@@ -38,6 +38,8 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(MRaidLeaderboardsViewModel::class.java)
         setObservers()
         addRaidsToList()
 

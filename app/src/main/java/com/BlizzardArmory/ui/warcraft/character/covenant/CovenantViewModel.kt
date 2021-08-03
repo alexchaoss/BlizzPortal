@@ -11,10 +11,12 @@ import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalent
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 class CovenantViewModel(application: Application) : BaseViewModel(application) {
@@ -174,5 +176,11 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
             }
         }
         jobs.add(job)
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadCharacterSoulbinds()
     }
 }

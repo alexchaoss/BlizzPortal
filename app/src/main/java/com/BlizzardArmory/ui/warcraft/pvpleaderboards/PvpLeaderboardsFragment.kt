@@ -15,12 +15,12 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowPvpLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.state.RightPanelState
 import com.google.android.material.snackbar.Snackbar
 
@@ -29,7 +29,7 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var _binding: WowPvpLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: PvpLeaderboardsViewModel by viewModels()
+    private lateinit var viewModel: PvpLeaderboardsViewModel
 
     private lateinit var navigationActivity: NavigationActivity
 
@@ -51,6 +51,8 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(PvpLeaderboardsViewModel::class.java)
         setObservers()
 
         navigationActivity = (requireActivity() as NavigationActivity)

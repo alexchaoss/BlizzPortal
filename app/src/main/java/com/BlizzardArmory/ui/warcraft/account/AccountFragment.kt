@@ -14,7 +14,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowAccountFragmentBinding
@@ -24,7 +24,7 @@ import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
 import okhttp3.internal.toImmutableList
 
@@ -35,7 +35,7 @@ class AccountFragment : Fragment() {
 
     private var _binding: WowAccountFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AccountViewModel by viewModels()
+    private lateinit var viewModel: AccountViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = WowAccountFragmentBinding.inflate(layoutInflater)
@@ -44,6 +44,8 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity?.application!!)
+            .create(AccountViewModel::class.java)
         errorMessages = ErrorMessages(this.resources)
         addOnBackPressCallback(activity as NavigationActivity)
         binding.loadingCircle.visibility = View.VISIBLE

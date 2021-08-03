@@ -15,14 +15,18 @@ class RosterViewModel(application: Application) : BaseViewModel(application) {
 
     private val guildRoster: MutableLiveData<Roster> = MutableLiveData()
 
+    var realm = ""
+    var guildName = ""
+    var region = ""
+
     fun getGuildRoster(): MutableLiveData<Roster> {
         return guildRoster
     }
 
-    fun downloadGuildRoster(realm: String, name: String, region: String) {
+    fun downloadGuildRoster() {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient(getApplication()).getGuildRoster(
-                realm, name, "profile-$region", region)
+                realm, guildName, "profile-$region", region)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     guildRoster.value = response.body()
@@ -37,5 +41,6 @@ class RosterViewModel(application: Application) : BaseViewModel(application) {
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
+        downloadGuildRoster()
     }
 }

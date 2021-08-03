@@ -7,8 +7,8 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.databinding.TokenActivityBinding
@@ -29,10 +29,12 @@ class AuthorizationTokenActivity : AppCompatActivity() {
     private var prefs: SharedPreferences? = null
 
     private lateinit var binding: TokenActivityBinding
-    private val viewModel: AuthorizationTokenViewModel by viewModels()
+    private lateinit var viewModel: AuthorizationTokenViewModel
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
+            .create(AuthorizationTokenViewModel::class.java)
         binding = TokenActivityBinding.inflate(layoutInflater)
         visibility = this.intent?.extras?.getInt("visisble")!!
         if (visibility != 8) {
