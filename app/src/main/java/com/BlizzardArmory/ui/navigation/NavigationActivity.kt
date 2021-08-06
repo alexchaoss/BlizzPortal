@@ -30,9 +30,9 @@ import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
-import com.BlizzardArmory.ui.news.NewsListFragment
-import com.BlizzardArmory.ui.overwatch.OWFragment
-import com.BlizzardArmory.ui.overwatch.OWPlatformChoiceDialog
+import com.BlizzardArmory.ui.news.list.NewsListFragment
+import com.BlizzardArmory.ui.overwatch.account.OWFragment
+import com.BlizzardArmory.ui.overwatch.account.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.settings.SettingsFragment
 import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
@@ -45,7 +45,7 @@ import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFr
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.FragmentTag
+import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.MenuItemClickEvent

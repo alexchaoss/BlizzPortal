@@ -21,7 +21,7 @@ import com.BlizzardArmory.databinding.WowMythicPlusLeaderboardsFragmentBinding
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.LeadingGroups
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.state.RightPanelState
 import com.google.android.material.snackbar.Snackbar
 

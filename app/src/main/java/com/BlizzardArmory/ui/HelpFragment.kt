@@ -13,8 +13,8 @@ import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragm
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
-import com.BlizzardArmory.ui.overwatch.OWFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
+import com.BlizzardArmory.ui.overwatch.account.OWFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
@@ -25,7 +25,7 @@ import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
-import com.BlizzardArmory.util.FragmentTag
+import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 import com.stfalcon.imageviewer.StfalconImageViewer
 

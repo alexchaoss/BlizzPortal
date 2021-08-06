@@ -12,7 +12,7 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.FragmentTag
+import com.BlizzardArmory.util.state.FragmentTag
 import java.util.*
 
 class LeaderboardAdapter(private val list: List<Entries>, private val context: Context) :

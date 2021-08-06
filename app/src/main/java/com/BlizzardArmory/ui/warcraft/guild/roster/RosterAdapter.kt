@@ -10,7 +10,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
-import com.BlizzardArmory.util.FragmentTag
+import com.BlizzardArmory.util.state.FragmentTag
 import java.util.*
 
 class RosterAdapter(private val activities: List<Members>, private val context: Context, private val region: String) :

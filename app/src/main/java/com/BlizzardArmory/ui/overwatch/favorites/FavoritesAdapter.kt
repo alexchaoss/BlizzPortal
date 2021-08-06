@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.model.overwatch.favorite.FavoriteProfile
+import com.BlizzardArmory.model.overwatch.account.favorite.FavoriteProfile
 
 class FavoritesAdapter(private val list: List<FavoriteProfile>, private val fragmentManager: FragmentManager, private val context: Context)
     : RecyclerView.Adapter<FavoritesViewHolder>() {

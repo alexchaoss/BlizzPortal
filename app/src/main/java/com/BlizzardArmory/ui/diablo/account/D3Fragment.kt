@@ -25,9 +25,9 @@ import com.BlizzardArmory.ui.diablo.characterfragments.navigation.D3CharacterNav
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.FragmentTag
+import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.BlizzardArmory.util.state.FavoriteState
 import com.bumptech.glide.Glide

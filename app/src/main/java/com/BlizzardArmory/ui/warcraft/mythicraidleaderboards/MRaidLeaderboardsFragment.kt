@@ -19,7 +19,7 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowMythicRaidLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 
 class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 

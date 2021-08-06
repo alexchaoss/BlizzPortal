@@ -15,6 +15,7 @@ import androidx.core.view.updateLayoutParams
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.HelpFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
+import com.BlizzardArmory.util.state.FragmentTag
 
 class DialogPrompt(val context: Context) {
 

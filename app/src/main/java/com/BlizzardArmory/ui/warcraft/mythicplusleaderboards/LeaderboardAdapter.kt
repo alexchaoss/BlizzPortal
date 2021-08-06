@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.KeystoneAffixes
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Leaderboard
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.LeadingGroups
 import com.BlizzardArmory.model.warcraft.specialization.Specialization
@@ -29,8 +30,8 @@ class LeaderboardAdapter(private val list: List<LeadingGroups>, private val cont
         val newPosition = list.indexOfFirst {
             Triple(it.completed_timestamp, it.keystone_levelstone_level, it.duration) == Triple(group.completed_timestamp, group.keystone_levelstone_level, group.duration)
         }
-        val affixes = leaderboard.find { it.period_end_timestamp >= group.completed_timestamp && it.period_start_timestamp <= group.completed_timestamp }!!.keystone_affixesstone_affixes
-        holder.bind(group, 1 + newPosition, affixes, region)
+        val entryAffixes = leaderboard.find { it.period_end_timestamp >= group.completed_timestamp && it.period_start_timestamp <= group.completed_timestamp }!!.keystone_affixesstone_affixes
+        holder.bind(group, 1 + newPosition, entryAffixes, region)
     }
 
     override fun getItemCount(): Int = fullLeaderboardList.size
@@ -52,6 +53,7 @@ class LeaderboardAdapter(private val list: List<LeadingGroups>, private val cont
     }
 
     private fun searchWithConstraint(constraint: String, search: (data: String, constraint: String) -> Boolean) {
+
         for (entry in list) {
             var match = false
             for (members in entry.members) {

@@ -13,7 +13,7 @@ import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.lea
 import com.BlizzardArmory.model.warcraft.specialization.Specialization
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
-import com.BlizzardArmory.util.FragmentTag
+import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
 
 

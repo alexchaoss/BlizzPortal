@@ -14,7 +14,7 @@ import com.BlizzardArmory.model.warcraft.pvp.leaderboards.Entries
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
-import com.BlizzardArmory.util.FragmentTag
+import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

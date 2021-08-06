@@ -13,7 +13,7 @@ import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacters
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.navigation.NavigationActivity
-import com.BlizzardArmory.ui.news.NewsPageFragment
+import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.ui.warcraft.account.FavoritesAdapter
 import com.google.gson.GsonBuilder
 
