@@ -14,6 +14,7 @@ object NetworkUtils {
     var loading = false
     var HEROKU_PROXY_BASE_URL = "https://blizzardgamesprofiles.herokuapp.com/"
     var HEROKU_API_BASE_URL = "https://blizzard-armory-server.herokuapp.com/"
+    var AWS_PROXY_BASE_URL = "https://blizzportalproxy-env.eba-ykhzpmue.us-east-1.elasticbeanstalk.com/"
 
     val logs = false
 
