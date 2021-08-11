@@ -68,6 +68,7 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     }
 
     fun downloadUserInfo() {
+        var downloadCount = 0
         val job = coroutineScope.launch {
             val response = RetroClient.getGeneralClient(getApplication()).getUserInfo(
                 battlenetOAuth2Helper?.accessToken,
@@ -77,8 +78,10 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
                 if (response.isSuccessful) {
                     userInformation.value = response.body()
                 } else {
-                    Log.e("Error", response.message())
-                    errorCode.value = response.code()
+                    downloadCount++
+                    if (downloadCount <= 5) {
+                        downloadUserInfo()
+                    }
                 }
             }
         }

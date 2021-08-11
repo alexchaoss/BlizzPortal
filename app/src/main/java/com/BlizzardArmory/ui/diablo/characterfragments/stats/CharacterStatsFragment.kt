@@ -158,7 +158,7 @@ class CharacterStatsFragment : Fragment() {
             (viewModel.getCharacterInformation().value!!.stats.life / 1000).roundToInt()
                 .toString() + "K"
         } else {
-            viewModel.getCharacterInformation().value!!.stats.life.toString()
+            viewModel.getCharacterInformation().value!!.stats.life.roundToInt().toString()
         }
         binding.totalLife.text = life
         val ressourceText: String = if (viewModel.getCharacterInformation().value!!.class_ == "demon-hunter") {

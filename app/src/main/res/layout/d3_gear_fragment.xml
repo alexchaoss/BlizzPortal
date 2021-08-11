@@ -7,8 +7,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gear_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -16,171 +17,413 @@
 
         <ImageView
             android:id="@+id/paperdoll_bg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/paperdoll"
-            android:src="@drawable/paperdoll"
+            android:src="@drawable/d3_paperdoll_barb_female"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/shoulder"
-            android:layout_width="67dp"
-            android:layout_height="87dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="30dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/shoulders"
-            app:layout_constraintBottom_toTopOf="@id/gloves"
-            app:layout_constraintEnd_toStartOf="@id/head"
-            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toTopOf="@id/paperdoll_bg" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineShoulderBottom"
+            app:layout_constraintEnd_toStartOf="@id/guidelineShoulderRight"
+            app:layout_constraintStart_toStartOf="@id/guidelineShoulderLeft"
+            app:layout_constraintTop_toTopOf="@id/guidelineShoulderTop" />
 
         <ImageView
             android:id="@+id/gloves"
-            android:layout_width="67dp"
-            android:layout_height="87dp"
-            android:layout_marginEnd="20dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/gloves"
-            app:layout_constraintBottom_toTopOf="@id/ring1"
-            app:layout_constraintEnd_toStartOf="@id/chest"
-            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toBottomOf="@id/shoulder" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineGlovesBottom"
+            app:layout_constraintEnd_toStartOf="@id/guidelineLeftEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineLeftStart"
+            app:layout_constraintTop_toTopOf="@id/guidelineGlovesTop" />
 
         <ImageView
             android:id="@+id/ring1"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginEnd="27dp"
-            android:layout_marginBottom="2dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/ring1"
-            app:layout_constraintBottom_toTopOf="@id/main_hand"
-            app:layout_constraintEnd_toStartOf="@id/legs"
-            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toBottomOf="@id/gloves" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineRingBottom"
+            app:layout_constraintEnd_toStartOf="@id/guidelineLeftEndRing"
+            app:layout_constraintStart_toStartOf="@id/guidelineLeftStartRing"
+            app:layout_constraintTop_toTopOf="@id/guidelineRingTop" />
 
         <ImageView
             android:id="@+id/main_hand"
-            android:layout_width="67dp"
-            android:layout_height="130dp"
-            android:layout_marginEnd="28dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/main_hand"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/boots"
-            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toBottomOf="@id/ring1" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineWeaponShieldBottom"
+            app:layout_constraintEnd_toStartOf="@id/guidelineLeftEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineLeftStart"
+            app:layout_constraintTop_toTopOf="@id/guidelineWeaponShieldTop" />
 
 
         <ImageView
             android:id="@+id/head"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="3dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/head"
-            app:layout_constraintBottom_toTopOf="@id/chest"
-            app:layout_constraintEnd_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toTopOf="@id/paperdoll_bg" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineHeadBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineSmallCenterRight"
+            app:layout_constraintStart_toStartOf="@id/guidelineSmallCenterLeft"
+            app:layout_constraintTop_toTopOf="@id/guidelineHeadTop" />
 
         <ImageView
             android:id="@+id/chest"
-            android:layout_width="82dp"
-            android:layout_height="115dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="3dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/chest"
-            app:layout_constraintBottom_toTopOf="@id/belt"
-            app:layout_constraintEnd_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toBottomOf="@id/head"
-            app:layout_constraintVertical_chainStyle="packed" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineChestBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCenterRight"
+            app:layout_constraintStart_toStartOf="@id/guidelineCenterLeft"
+            app:layout_constraintTop_toTopOf="@id/guidelineChestTop" />
 
         <ImageView
             android:id="@+id/belt"
-            android:layout_width="82dp"
-            android:layout_height="34dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="4dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/belt"
-            app:layout_constraintBottom_toTopOf="@id/legs"
-            app:layout_constraintEnd_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toBottomOf="@id/chest" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineBeltBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCenterRight"
+            app:layout_constraintStart_toStartOf="@id/guidelineCenterLeft"
+            app:layout_constraintTop_toTopOf="@id/guidelineBeltTop" />
 
         <ImageView
             android:id="@+id/legs"
-            android:layout_width="67dp"
-            android:layout_height="87dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="4dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/legs"
-            app:layout_constraintBottom_toTopOf="@id/boots"
-            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toBottomOf="@id/belt" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelinePantsBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineSmallCenterRight"
+            app:layout_constraintStart_toStartOf="@id/guidelineSmallCenterLeft"
+            app:layout_constraintTop_toTopOf="@id/guidelinePantsTop" />
 
         <ImageView
             android:id="@+id/boots"
-            android:layout_width="67dp"
-            android:layout_height="87dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="20dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/boots"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toStartOf="@id/paperdoll_bg"
-            app:layout_constraintTop_toBottomOf="@id/legs" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineBootsBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineSmallCenterRight"
+            app:layout_constraintStart_toStartOf="@id/guidelineSmallCenterLeft"
+            app:layout_constraintTop_toTopOf="@id/guidelineBootsTop" />
 
         <ImageView
             android:id="@+id/amulet"
-            android:layout_width="55dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginEnd="40dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/amulet"
-            app:layout_constraintBottom_toTopOf="@id/bracers"
-            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toEndOf="@+id/chest"
-            app:layout_constraintTop_toTopOf="@id/paperdoll_bg" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineAmuletBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineAmuletEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineAmuletStart"
+            app:layout_constraintTop_toTopOf="@id/guidelineAmuletTop" />
 
         <ImageView
             android:id="@+id/bracers"
-            android:layout_width="67dp"
-            android:layout_height="87dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="12dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/bracers"
-            app:layout_constraintBottom_toTopOf="@id/ring2"
-            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toEndOf="@id/chest"
-            app:layout_constraintTop_toBottomOf="@id/amulet" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineGlovesBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineRightEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineRightStart"
+            app:layout_constraintTop_toTopOf="@id/guidelineGlovesTop" />
 
         <ImageView
             android:id="@+id/ring2"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="23dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/ring2"
-            app:layout_constraintBottom_toTopOf="@id/off_hand"
-            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toEndOf="@id/legs"
-            app:layout_constraintTop_toBottomOf="@id/bracers" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineRingBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineRightEndRing"
+            app:layout_constraintStart_toStartOf="@id/guidelineRightStartRing"
+            app:layout_constraintTop_toTopOf="@id/guidelineRingTop" />
 
         <ImageView
             android:id="@+id/off_hand"
-            android:layout_width="67dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/off_hand"
-            app:layout_constraintBottom_toBottomOf="@id/paperdoll_bg"
-            app:layout_constraintEnd_toEndOf="@id/paperdoll_bg"
-            app:layout_constraintStart_toEndOf="@id/boots"
-            app:layout_constraintTop_toBottomOf="@id/ring2" />
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineWeaponShieldBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineRightEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineRightStart"
+            app:layout_constraintTop_toTopOf="@id/guidelineWeaponShieldTop" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineHeadTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.032" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineHeadBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.169" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineCenterLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.38" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineCenterRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.627" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineSmallCenterLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.405" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineSmallCenterRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineShoulderLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.143" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineShoulderRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.335" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineLeftStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.058" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineLeftEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.256" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineLeftStartRing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.097" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineLeftEndRing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.22" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineShoulderTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.082" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineShoulderBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.27" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineGlovesTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.31" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineGlovesBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineRingTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.54" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineRingBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.625" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineWeaponShieldTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.66" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineWeaponShieldBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.954" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineChestTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.188" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineChestBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.44" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBeltTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.465" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBeltBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.525" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelinePantsTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.55" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelinePantsBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.74" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBootsTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.76" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBootsBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.955" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineAmuletStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.674" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineAmuletEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.83" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineAmuletTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.13" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineAmuletBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.245" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineRightStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineRightEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineRightStartRing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.788" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineRightEndRing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.91" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

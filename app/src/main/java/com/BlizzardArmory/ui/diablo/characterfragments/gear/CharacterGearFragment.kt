@@ -39,6 +39,8 @@ import kotlin.math.roundToInt
 private const val BATTLETAG = "battletag"
 private const val SELECTED_REGION = "region"
 private const val ID = "id"
+private const val GENDER = "gender"
+private const val CHAR_CLASS = "class"
 
 class CharacterGearFragment : Fragment() {
 
@@ -50,6 +52,8 @@ class CharacterGearFragment : Fragment() {
     private var battletag = ""
     private var selectedRegion = ""
     private var id = 0L
+    private var charClass = ""
+    private var gender = 0
 
     private var layoutParamsStats: LinearLayout.LayoutParams? = null
     private var armor: TextView? = null
@@ -74,6 +78,8 @@ class CharacterGearFragment : Fragment() {
             battletag = it.getString(BATTLETAG)!!
             selectedRegion = it.getString(SELECTED_REGION)!!
             id = it.getLong(ID)
+            charClass = it.getString(CHAR_CLASS)!!
+            gender = it.getInt(GENDER)
         }
     }
 
@@ -87,6 +93,8 @@ class CharacterGearFragment : Fragment() {
         NetworkUtils.loading = true
         addImageViewItemsToList()
         setObservers()
+
+        setPaperDoll()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
@@ -117,6 +125,46 @@ class CharacterGearFragment : Fragment() {
         misctext!!.setTextColor(Color.WHITE)
         layoutParamsStats = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
         layoutParamsStats!!.setMargins(20, 0, 20, 0)
+    }
+
+    private fun setPaperDoll() {
+        when (charClass) {
+            "barbarian" -> if (gender == 0) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_barb_male)
+            } else if (gender == 1) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_barb_female)
+            }
+            "wizard" -> if (gender == 0) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_wiz_male)
+            } else if (gender == 1) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_wiz_female)
+            }
+            "demon-hunter" -> if (gender == 0) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_dh_male)
+            } else if (gender == 1) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_dh_female)
+            }
+            "witch-doctor" -> if (gender == 0) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_wd_male)
+            } else if (gender == 1) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_wd_female)
+            }
+            "necromancer" -> if (gender == 0) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_necro_male)
+            } else if (gender == 1) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_necro_female)
+            }
+            "monk" -> if (gender == 0) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_monk_male)
+            } else if (gender == 1) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_monk_female)
+            }
+            "crusader" -> if (gender == 0) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_crusader_male)
+            } else if (gender == 1) {
+                binding.paperdollBg.setImageResource(R.drawable.d3_paperdoll_crusader_female)
+            }
+        }
     }
 
     private fun setObservers() {
@@ -200,7 +248,8 @@ class CharacterGearFragment : Fragment() {
             for (key in itemIconURL.keys) {
                 if (itemIconURL[key] != null) {
                     Glide.with(this).load(itemIconURL[key])
-                        .placeholder(R.drawable.loading_placeholder).into(imageViewItem[key]!!)
+                        .placeholder(R.drawable.loading_placeholder).centerCrop()
+                        .into(imageViewItem[key]!!)
                 }
             }
         }
@@ -210,9 +259,8 @@ class CharacterGearFragment : Fragment() {
         imageView?.setOnTouchListener { _: View?, event: MotionEvent ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 itemPanelOpen = true
-                setBackgroundAndColor(item, imageView)
-
                 setLayoutParams(item)
+                setBackgroundAndColor(item, imageView)
                 setName(item)
                 setTypeName(item)
                 binding.slot.text = item.slots
@@ -513,16 +561,17 @@ class CharacterGearFragment : Fragment() {
         backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(item)))
         binding.itemScrollView.background = backgroundStroke
         binding.itemName.background = getHeaderBackground(item)
-        val background = selectBackgroundColor(item.displayColor!!, isEtheral(item.typeName!!))
-        val backgroundStrokeTooltipIcon = GradientDrawable()
-        backgroundStrokeTooltipIcon.setStroke(3, Color.parseColor(selectColor(item.displayColor!!, isEtheral(item.typeName!!))))
-        backgroundStrokeTooltipIcon.cornerRadius = 5f
+        var background = selectBackgroundColor(item.displayColor!!, isEtheral(item.typeName!!))
         val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = background
-        layers[1] = backgroundStrokeTooltipIcon
+        layers[0] = ContextCompat.getDrawable(requireContext(), R.drawable.d3_tooltip_item_bg)
+        layers[1] = background
         val layerList = LayerDrawable(layers)
-        binding.itemIcon.background = layerList
-        binding.itemIcon.setImageDrawable(imageView.drawable)
+        when (item.displayColor) {
+            "blue", "yellow", "orange", "green" -> binding.itemIcon.background = layerList
+            else -> binding.itemIcon.background = ContextCompat.getDrawable(requireContext(), R.drawable.d3_tooltip_item_bg)
+        }
+        Glide.with(this).load(itemIconURL[item.slots]).placeholder(R.drawable.loading_placeholder)
+            .centerCrop().into(binding.itemIcon)
     }
 
     private fun addImageViewItemsToList() {
@@ -549,8 +598,8 @@ class CharacterGearFragment : Fragment() {
                 backgroundStroke.setStroke(3, Color.parseColor(selectColor(item.displayColor!!, isEtheral(item.typeName!!))))
                 backgroundStroke.cornerRadius = 5f
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = background
-                layers[1] = backgroundStroke
+                layers[0] = ContextCompat.getDrawable(requireContext(), R.drawable.d3_item_bg)
+                layers[1] = background
                 val layerList = LayerDrawable(layers)
                 imageViewItem[item.slots]!!.background = layerList
             } catch (e: Exception) {
@@ -561,18 +610,16 @@ class CharacterGearFragment : Fragment() {
 
     private fun selectBackgroundColor(color: String, isEthereal: Boolean): Drawable {
         if (isEthereal) {
-            return ContextCompat.getDrawable(requireContext(), R.drawable.turquoise_bg_item_d3)!!
+            return ContextCompat.getDrawable(requireContext(), R.drawable.d3_ethereal_item_bg)!!
         }
         when (color) {
-            "blue" -> return ContextCompat.getDrawable(requireContext(), R.drawable.blue_bg_item_d3)!!
-            "yellow" -> return ContextCompat.getDrawable(requireContext(), R.drawable.yellow_bg_item_d3)!!
-            "orange" -> return ContextCompat.getDrawable(requireContext(), R.drawable.orange_bg_item_d3)!!
-            "green" -> return ContextCompat.getDrawable(requireContext(), R.drawable.green_bg_item_d3)!!
-            "white" -> return ContextCompat.getDrawable(requireContext(), R.drawable.brown_bg_item_d3)!!
-            else -> {
-            }
+            "blue" -> return ContextCompat.getDrawable(requireContext(), R.drawable.d3_blue_item_bg)!!
+            "yellow" -> return ContextCompat.getDrawable(requireContext(), R.drawable.d3_rare_item_bg)!!
+            "orange" -> return ContextCompat.getDrawable(requireContext(), R.drawable.d3_legendary_item_bg)!!
+            "green" -> return ContextCompat.getDrawable(requireContext(), R.drawable.d3_set_item_bg)!!
         }
-        return ContextCompat.getDrawable(requireContext(), R.drawable.brown_bg_item_d3)!!
+
+        return ContextCompat.getDrawable(requireContext(), R.drawable.d3_item_bg)!!
     }
 
     private fun isEtheral(type: String): Boolean {

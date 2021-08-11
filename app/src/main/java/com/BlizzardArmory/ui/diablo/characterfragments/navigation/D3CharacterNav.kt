@@ -17,6 +17,8 @@ import org.greenrobot.eventbus.ThreadMode
 private const val BTAG = "battletag"
 private const val ID = "id"
 private const val REGION = "region"
+private const val GENDER = "gender"
+private const val CHAR_CLASS = "class"
 
 
 class D3CharacterNav : Fragment() {
@@ -24,6 +26,8 @@ class D3CharacterNav : Fragment() {
     private var btag: String? = null
     private var id: Long? = null
     private var region: String? = null
+    private var gender: Int = 0
+    private var charClass: String? = null
 
     private var _binding: D3NavbarFragmentBinding? = null
     private val binding get() = _binding!!
@@ -34,6 +38,8 @@ class D3CharacterNav : Fragment() {
             btag = it.getString(BTAG)
             id = it.getLong(ID)
             region = it.getString(REGION)
+            charClass = it.getString(CHAR_CLASS)
+            gender = it.getInt(GENDER)
         }
     }
 
@@ -51,9 +57,11 @@ class D3CharacterNav : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.wowPager.offscreenPageLimit = 3
         val bundle = Bundle()
-        bundle.putString("battletag", btag)
-        bundle.putLong("id", id!!)
-        bundle.putString("region", region)
+        bundle.putString(BTAG, btag)
+        bundle.putLong(ID, id!!)
+        bundle.putString(REGION, region)
+        bundle.putInt(GENDER, gender)
+        bundle.putString(CHAR_CLASS, charClass)
         val adapter = MyAdapter(childFragmentManager, binding.navBar.tabCount, bundle)
         binding.wowPager.adapter = adapter
         binding.wowPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.navBar))
@@ -85,12 +93,14 @@ class D3CharacterNav : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(btag: String, id: Long, region: String) =
+        fun newInstance(btag: String, id: Long, region: String, gender: Int, charClass: String) =
             D3CharacterNav().apply {
                 arguments = Bundle().apply {
                     putString(BTAG, btag)
                     putLong(ID, id)
                     putString(REGION, region)
+                    putInt(GENDER, gender)
+                    putString(CHAR_CLASS, charClass)
                 }
             }
     }

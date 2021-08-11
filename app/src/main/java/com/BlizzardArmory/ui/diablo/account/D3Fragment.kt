@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3FragmentBinding
 import com.BlizzardArmory.model.diablo.account.AccountInformation
+import com.BlizzardArmory.model.diablo.account.Hero
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfile
 import com.BlizzardArmory.model.diablo.favorite.D3FavoriteProfiles
 import com.BlizzardArmory.network.ErrorMessages
@@ -27,9 +28,9 @@ import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.D3CharacterEvent
 import com.BlizzardArmory.util.state.FavoriteState
+import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -96,11 +97,11 @@ class D3Fragment : Fragment() {
             setProgression()
             setTimePlayed()
             binding.characterFrameRecycler.apply {
-                adapter = D3CharacterFrameAdapter(viewModel.getProfile().value?.heroes!!)
+                adapter = D3CharacterFrameAdapter(viewModel.getProfile().value?.heroes!!.sortedByDescending { hero -> hero.lastUpdated })
             }
             if (viewModel.getProfile().value?.fallenHeroes != null) {
                 binding.characterDeadRecycler.apply {
-                    adapter = D3DeadCharacterAdapter(viewModel.getProfile().value?.fallenHeroes!!)
+                    adapter = D3DeadCharacterAdapter(viewModel.getProfile().value?.fallenHeroes!!.sortedBy { hero -> hero.death.time })
                 }
             }
             manageFavorite(it)
@@ -234,14 +235,16 @@ class D3Fragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun d3CharacterEventReceived(d3CharacterEvent: D3CharacterEvent) {
-        displayFragment(d3CharacterEvent.hero.id)
+        displayFragment(d3CharacterEvent.hero)
     }
 
-    private fun displayFragment(characterId: Long) {
+    private fun displayFragment(hero: Hero) {
         val bundle = Bundle()
         bundle.putString("battletag", battleTag)
-        bundle.putLong("id", characterId)
+        bundle.putLong("id", hero.id)
         bundle.putString("region", selectedRegion)
+        bundle.putString("class", hero.classSlug)
+        bundle.putInt("gender", hero.gender)
         val d3CharacterNav = D3CharacterNav()
         d3CharacterNav.arguments = bundle
         val fragmentManager = parentFragmentManager

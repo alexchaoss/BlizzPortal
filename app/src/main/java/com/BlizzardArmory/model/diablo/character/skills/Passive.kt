@@ -8,6 +8,6 @@ import com.google.gson.annotations.SerializedName
  */
 data class Passive(
 
-    @SerializedName("skill") var skill: Skill? = null
+    @SerializedName("skill") var skill: Skill
 
 )

@@ -5,396 +5,59 @@
     android:layout_height="match_parent"
     android:background="@drawable/diablo3_main_window">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/skill_layout"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/skills"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineBottomSkills"
+        app:layout_constraintTop_toTopOf="@id/guidelineTopSkills"
+        app:spanCount="2" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/passives"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineBottomPassives"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@id/guidelineTopPassives" />
 
-        <ImageView
-            android:id="@+id/skill1"
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/d3_skill_unselected"
-            android:contentDescription="@string/skill_icon"
-            app:layout_constraintBottom_toTopOf="@id/skill3"
-            app:layout_constraintEnd_toStartOf="@id/skill2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTopSkills"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
 
-        <LinearLayout
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/skill1"
-            app:layout_constraintEnd_toEndOf="@+id/skill1"
-            app:layout_constraintStart_toStartOf="@+id/skill1"
-            app:layout_constraintTop_toTopOf="@+id/skill1">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottomSkills"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.68" />
 
-            <ImageView
-                android:id="@+id/skill1_icon"
-                android:layout_width="30dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="13dp"
-                android:contentDescription="@string/skill_icon" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTopPassives"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.69" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottomPassives"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.91" />
 
-                <TextView
-                    android:id="@+id/skill1_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#FFF"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/skill1_rune"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/skill2"
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/d3_skill_unselected"
-            android:contentDescription="@string/skill_icon"
-            app:layout_constraintBottom_toTopOf="@id/skill4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/skill1"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/skill2"
-            app:layout_constraintEnd_toEndOf="@+id/skill2"
-            app:layout_constraintStart_toStartOf="@+id/skill2"
-            app:layout_constraintTop_toTopOf="@+id/skill2">
-
-            <ImageView
-                android:id="@+id/skill2_icon"
-                android:layout_width="30dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="13dp"
-                android:contentDescription="@string/skill_icon" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/skill2_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#FFF"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/skill2_rune"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/skill3"
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/d3_skill_unselected"
-            android:contentDescription="@string/skill_icon"
-            app:layout_constraintBottom_toTopOf="@id/skill5"
-            app:layout_constraintEnd_toStartOf="@id/skill4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/skill1" />
-
-        <LinearLayout
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/skill3"
-            app:layout_constraintEnd_toEndOf="@+id/skill3"
-            app:layout_constraintStart_toStartOf="@+id/skill3"
-            app:layout_constraintTop_toTopOf="@+id/skill3">
-
-            <ImageView
-                android:id="@+id/skill3_icon"
-                android:layout_width="30dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="13dp"
-                android:contentDescription="@string/skill_icon" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/skill3_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#FFF"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/skill3_rune"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/skill4"
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/d3_skill_unselected"
-            android:contentDescription="@string/skill_icon"
-            app:layout_constraintBottom_toTopOf="@id/skill6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/skill3"
-            app:layout_constraintTop_toBottomOf="@id/skill2" />
-
-        <LinearLayout
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/skill4"
-            app:layout_constraintEnd_toEndOf="@+id/skill4"
-            app:layout_constraintStart_toStartOf="@+id/skill4"
-            app:layout_constraintTop_toTopOf="@+id/skill4">
-
-            <ImageView
-                android:id="@+id/skill4_icon"
-                android:layout_width="30dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="13dp"
-                android:contentDescription="@string/skill_icon" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/skill4_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#FFF"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/skill4_rune"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/skill5"
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/d3_skill_unselected"
-            android:contentDescription="@string/skill_icon"
-            app:layout_constraintBottom_toTopOf="@id/labelBarrier3"
-            app:layout_constraintEnd_toStartOf="@id/skill6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/skill3" />
-
-        <LinearLayout
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/skill5"
-            app:layout_constraintEnd_toEndOf="@+id/skill5"
-            app:layout_constraintStart_toStartOf="@+id/skill5"
-            app:layout_constraintTop_toTopOf="@+id/skill5">
-
-            <ImageView
-                android:id="@+id/skill5_icon"
-                android:layout_width="30dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="13dp"
-                android:contentDescription="@string/skill_icon" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/skill5_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#FFF"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/skill5_rune"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/skill6"
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/d3_skill_unselected"
-            android:contentDescription="@string/skill_icon"
-            app:layout_constraintBottom_toTopOf="@id/labelBarrier3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/skill5"
-            app:layout_constraintTop_toBottomOf="@id/skill4" />
-
-        <LinearLayout
-            android:layout_width="185dp"
-            android:layout_height="65dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/skill6"
-            app:layout_constraintEnd_toEndOf="@+id/skill6"
-            app:layout_constraintStart_toStartOf="@+id/skill6"
-            app:layout_constraintTop_toTopOf="@+id/skill6">
-
-            <ImageView
-                android:id="@+id/skill6_icon"
-                android:layout_width="30dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="13dp"
-                android:contentDescription="@string/skill_icon" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/skill6_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#FFF"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/skill6_rune"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#c7b377"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/labelBarrier3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="skill5,skill6"
-            app:layout_constraintBottom_toBottomOf="@id/skill5" />
-
-        <ImageView
-            android:id="@+id/passive1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/d3_passive_unselected"
-            android:contentDescription="@string/passive_icon"
-            android:padding="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/passive2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
-
-        <ImageView
-            android:id="@+id/passive2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/d3_passive_unselected"
-            android:contentDescription="@string/passive_icon"
-            android:padding="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/passive3"
-            app:layout_constraintStart_toEndOf="@id/passive1"
-            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
-
-        <ImageView
-            android:id="@+id/passive3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/d3_passive_unselected"
-            android:contentDescription="@string/passive_icon"
-            android:padding="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/passive4"
-            app:layout_constraintStart_toEndOf="@id/passive2"
-            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
-
-        <ImageView
-            android:id="@+id/passive4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/d3_passive_unselected"
-            android:contentDescription="@string/passive_icon"
-            android:padding="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/passive3"
-            app:layout_constraintTop_toBottomOf="@id/labelBarrier3" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:id="@+id/skill_tooltip_scroll"
