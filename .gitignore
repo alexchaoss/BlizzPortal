@@ -90,7 +90,7 @@ obj/
 /out/
 
 # User-specific configurations
-.idea/*
+.idea/
 
 # OS-specific files
 .DS_Store
