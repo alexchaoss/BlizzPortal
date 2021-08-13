@@ -7,11 +7,11 @@ __Currently supported games:__
 - Diablo 3
 - Starcraft 2
 - Overwatch
-- more to come if Blizzard decides to add the API for those select games.
+- more to come if Blizzard decides to add additional APIs.
 
 *Hearthstone is not implemented as no user data is exposed.
 
-This app is currently only available on android phones of minimum SDK 21 and up. 
+This app is currently available on android phones of minimum SDK 21 and up. 
 
 ## Installation
 
