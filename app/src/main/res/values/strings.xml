@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BlizzPortal</string>
+    <string name="app_name" translatable="false">BlizzPortal</string>
     <string name="select_region">Select Region</string>
     <string name="login">Login</string>
     <string name="battlenetlogo" translatable="false">battlenetLogo</string>
@@ -212,6 +212,7 @@
     <string name="tier">Tier</string>
     <string name="need_help">Need Help?</string>
     <string name="connection_guide">Connection Guide</string>
+    <string name="overwatch_league">Overwatch League</string>
 
     <string-array name="regions">
         <item>Select Region</item>

@@ -34,6 +34,7 @@ import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.overwatch.account.OWFragment
 import com.BlizzardArmory.ui.overwatch.account.OWPlatformChoiceDialog
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
+import com.BlizzardArmory.ui.overwatch.overwatchleague.OWLeagueFragment
 import com.BlizzardArmory.ui.settings.SettingsFragment
 import com.BlizzardArmory.ui.starcraft.leaderboard.SC2LeaderboardFragment
 import com.BlizzardArmory.ui.starcraft.profile.SC2Fragment
@@ -45,11 +46,11 @@ import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFr
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.MenuItemClickEvent
 import com.BlizzardArmory.util.state.FavoriteState
+import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.state.RightPanelState
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.discord.panels.OverlappingPanelsLayout
@@ -175,6 +176,7 @@ class NavigationActivity : LocalizationActivity(),
         menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
         menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.search_profile), R.drawable.rep_search, false))
         menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
+        menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.overwatch_league), R.drawable.ic_baseline_leaderboard_24, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.settingsTitle), R.drawable.settings, false))
         menuList.add(MenuItem(true, "", resources.getString(R.string.logout), R.drawable.logout_icon, false))
     }
@@ -669,6 +671,16 @@ class NavigationActivity : LocalizationActivity(),
                 supportFragmentManager.beginTransaction()
                     .add(R.id.fragment, fragment, FragmentTag.WOWPVPLEADERBOARD.name)
                     .addToBackStack("pvp_leaderboard").commit()
+                supportFragmentManager.executePendingTransactions()
+                binding.overlappingPanel.closePanels()
+            }
+            resources.getString(R.string.overwatch_league) -> {
+                toggleFavoriteButton(FavoriteState.Hidden)
+                fragment = OWLeagueFragment()
+                resetBackStack()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment, fragment, FragmentTag.OVERWATCHLEAGUE.name)
+                    .addToBackStack("overwatch_league").commit()
                 supportFragmentManager.executePendingTransactions()
                 binding.overlappingPanel.closePanels()
             }

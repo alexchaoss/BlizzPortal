@@ -3,6 +3,8 @@ package com.BlizzardArmory.ui.diablo.characterfragments.skill
 import android.app.Application
 import com.BlizzardArmory.R
 import com.BlizzardArmory.ui.BaseViewModel
+import com.BlizzardArmory.util.events.LocaleSelectedEvent
+import org.greenrobot.eventbus.Subscribe
 
 class CharacterSkillViewModel(application: Application) : BaseViewModel(application) {
 
@@ -26,5 +28,10 @@ class CharacterSkillViewModel(application: Application) : BaseViewModel(applicat
             "e" -> return R.drawable.rune_e
         }
         return 0
+    }
+
+    @Subscribe
+    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(LocaleSelectedEvent)
     }
 }
