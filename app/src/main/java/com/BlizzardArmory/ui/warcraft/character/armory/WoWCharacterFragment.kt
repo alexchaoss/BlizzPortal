@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.text.Html
 import android.view.*
 import android.widget.*
 import androidx.activity.addCallback
@@ -435,27 +434,15 @@ class WoWCharacterFragment : Fragment() {
                 nameView?.text = viewModel.nameList[equippedItem.slot.type]
                 nameView?.setTextColor(viewModel.getItemColor(equippedItem))
                 nameView?.textSize = 20f
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    statsView?.text =
-                        Html.fromHtml(viewModel.stats[equippedItem.slot.type], Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                            val resourceId =
-                                resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                            val drawable =
-                                ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
-                            drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                            drawable
-                        }, null)
-                } else {
-                    statsView?.text =
-                        Html.fromHtml(viewModel.stats[equippedItem.slot.type], { source: String? ->
-                            val resourceId =
-                                resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                            val drawable =
-                                ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
-                            drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                            drawable
-                        }, null)
-                }
+                statsView?.text =
+                    HtmlCompat.fromHtml(viewModel.stats[equippedItem.slot.type]!!, HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
+                        val resourceId =
+                            resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                        val drawable =
+                            ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                        drawable
+                    }, null)
                 statsView?.setTextColor(Color.WHITE)
                 statsView?.textSize = 13f
                 binding.itemScrollView.setPadding(10, 10, 10, 10)

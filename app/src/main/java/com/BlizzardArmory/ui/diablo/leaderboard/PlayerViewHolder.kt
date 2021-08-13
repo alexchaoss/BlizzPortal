@@ -3,11 +3,11 @@ package com.BlizzardArmory.ui.diablo.leaderboard
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
@@ -36,11 +36,7 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         val playerName = if (player.data.find { it.id == "HeroBattleTag" }?.string == null) {
             "unavailable"
         } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                Html.fromHtml("<u>${player.data.find { it.id == "HeroBattleTag" }?.string!!}</u>", Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                Html.fromHtml("<u>${player.data.find { it.id == "HeroBattleTag" }?.string!!}</u>")
-            }
+            HtmlCompat.fromHtml("<u>${player.data.find { it.id == "HeroBattleTag" }?.string!!}</u>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
 
         btag?.text = playerName

@@ -1,13 +1,12 @@
 package com.BlizzardArmory.ui.diablo.account
 
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
@@ -119,11 +118,7 @@ class D3Fragment : Fragment() {
                 "<font color=#b00000>" +
                 viewModel.getProfile().value?.paragonLevelHardcore +
                 "</font>"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.paragonLevel.text = Html.fromHtml(paragon, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            binding.paragonLevel.text = Html.fromHtml(paragon)
-        }
+        binding.paragonLevel.text = HtmlCompat.fromHtml(paragon, HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.eliteKills.text = viewModel.getProfile().value?.kills?.elites.toString()
         binding.lifetimeKills.text = viewModel.getProfile().value?.kills?.monsters.toString()
     }

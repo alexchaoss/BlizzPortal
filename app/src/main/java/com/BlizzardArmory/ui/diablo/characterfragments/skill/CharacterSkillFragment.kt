@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -13,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.R
@@ -98,41 +98,27 @@ class CharacterSkillFragment : Fragment() {
             .into(binding.tooltipSkillIcon)
         binding.tooltipSkillIcon.setBackgroundResource(0)
         binding.tooltipSkillIcon.setPadding(0, 0, 0, 0)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            binding.skillTooltipText.text = Html.fromHtml(skill.skill.descriptionHtml
-                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            binding.skillTooltipText.text = Html.fromHtml(skill.skill.descriptionHtml
-                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                .replace("</span>".toRegex(), "</font>"))
-        }
+
+        binding.skillTooltipText.text = HtmlCompat.fromHtml(skill.skill.descriptionHtml
+            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+            .replace("</span>".toRegex(), "</font>"), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
 
         if (skill.rune != null) {
             binding.runeSeparator.visibility = View.VISIBLE
             binding.tooltipRuneIcon.setImageResource(viewModel.getRuneIcon(skill.rune!!.type))
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skill.rune!!.name + "</font></big><br>"
-                        + skill.rune!!.descriptionHtml)
-                    .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                    .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                    .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                    .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skill.rune!!.name + "</font></big><br>"
-                        + skill.rune!!.descriptionHtml)
-                    .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                    .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                    .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                    .replace("</span>".toRegex(), "</font>"))
-            }
-                }
-                binding.skillTooltipScroll.visibility = View.VISIBLE
-                EventBus.getDefault().post(D3SpellShownEvent(true))
+            binding.runeTooltipText.text = HtmlCompat.fromHtml(("<big><font color=\"#FFFFFF\">" + skill.rune!!.name + "</font></big><br>"
+                    + skill.rune!!.descriptionHtml)
+                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+                .replace("</span>".toRegex(), "</font>"), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        }
+        binding.skillTooltipScroll.visibility = View.VISIBLE
+        EventBus.getDefault().post(D3SpellShownEvent(true))
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -152,30 +138,20 @@ class CharacterSkillFragment : Fragment() {
             .into(binding.tooltipSkillIcon)
         binding.tooltipSkillIcon.setBackgroundResource(R.drawable.d3_passive_unselected)
         binding.tooltipSkillIcon.setPadding(15, 15, 15, 15)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            binding.skillTooltipText.text = Html.fromHtml(skill.skill.descriptionHtml
-                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            binding.skillTooltipText.text = Html.fromHtml(skill.skill.descriptionHtml
-                .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
-                .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
-                .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
-                .replace("</span>".toRegex(), "</font>"))
-                }
-                binding.skillTooltipScroll.visibility = View.VISIBLE
-                EventBus.getDefault().post(D3SpellShownEvent(true))
-                try {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        binding.runeTooltipText.text = Html.fromHtml("<i>" + skill.skill.flavorText + "</i>", Html.FROM_HTML_MODE_LEGACY)
-                    } else {
-                        binding.runeTooltipText.text = Html.fromHtml("<i>" + skill.skill.flavorText + "</i>")
-                    }
-                } catch (e: Exception) {
-                    binding.runeSeparator.visibility = View.GONE
-                }
+
+        binding.skillTooltipText.text = HtmlCompat.fromHtml(skill.skill.descriptionHtml
+            .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
+            .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
+            .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
+            .replace("</span>".toRegex(), "</font>"), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        binding.skillTooltipScroll.visibility = View.VISIBLE
+        EventBus.getDefault().post(D3SpellShownEvent(true))
+        try {
+            binding.runeTooltipText.text = HtmlCompat.fromHtml("<i>" + skill.skill.flavorText + "</i>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        } catch (e: Exception) {
+            binding.runeSeparator.visibility = View.GONE
+        }
 
 
     }

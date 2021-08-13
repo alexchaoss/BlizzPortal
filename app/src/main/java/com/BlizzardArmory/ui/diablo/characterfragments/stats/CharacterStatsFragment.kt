@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -115,15 +114,10 @@ class CharacterStatsFragment : Fragment() {
             .toString()
         binding.vitalityText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.vitality?.roundToInt())
             .toString()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.damage.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.damage) + "</font>", Html.FROM_HTML_MODE_LEGACY)
-            binding.toughness.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.toughness) + "</font>", Html.FROM_HTML_MODE_LEGACY)
-            binding.recovery.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.healing) + "</font>", Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            binding.damage.text = Html.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.damage) + "</font>")
-            binding.toughness.text = Html.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.toughness) + "</font>")
-            binding.recovery.text = Html.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.healing) + "</font>")
-        }
+        binding.damage.text = HtmlCompat.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.damage) + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.toughness.text = HtmlCompat.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.toughness) + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.recovery.text = HtmlCompat.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.healing) + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+
     }
 
 
@@ -190,11 +184,8 @@ class CharacterStatsFragment : Fragment() {
     private fun setName() {
         val levelClass = ("<font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.level + "</font>" + "<font color=#555da5> (" + viewModel.getCharacterInformation().value!!.paragonLevel
                 + ")</font> <font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.class_)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.levelClass.text = Html.fromHtml(levelClass, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            binding.levelClass.text = Html.fromHtml(levelClass)
-        }
+        binding.levelClass.text = HtmlCompat.fromHtml(levelClass, HtmlCompat.FROM_HTML_MODE_LEGACY)
+
         if (viewModel.getCharacterInformation().value!!.name.length in 8..9) {
             binding.characterName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
         } else if (viewModel.getCharacterInformation().value!!.name.length > 9) {

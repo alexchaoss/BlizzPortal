@@ -350,13 +350,16 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                         .append(selectedEssence.essence.name).append("</font><br>")
                 }
             } else {
-                azeriteSpells = StringBuilder("<br><font color=#edc201>" + equippedItem.azeriteDetails?.selectedPowersString + "</font><br>")
-                for (selectedPower in equippedItem.azeriteDetails?.selectedPowers!!) {
-                    if (!selectedPower.isIsDisplayHidden) {
-                        azeriteSpells.append("- ").append(selectedPower.spellTooltip.spell.name)
-                            .append("<br>")
-                        azeriteSpells.append("<font color=#00ff00>")
-                            .append(selectedPower.spellTooltip.description).append("</font><br>")
+                if (equippedItem.azeriteDetails != null) {
+                    azeriteSpells = StringBuilder("<br><font color=#edc201>" + equippedItem.azeriteDetails?.selectedPowersString + "</font><br>")
+                    for (selectedPower in equippedItem.azeriteDetails?.selectedPowers!!) {
+                        if (!selectedPower.isIsDisplayHidden) {
+                            azeriteSpells.append("- ").append(selectedPower.spellTooltip.spell.name)
+                                .append("<br>")
+                            azeriteSpells.append("<font color=#00ff00>")
+                                .append(selectedPower.spellTooltip.description)
+                                .append("</font><br>")
+                        }
                     }
                 }
             }
@@ -422,7 +425,9 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
         if (enchant.toString() != "") {
             stats[equippedItem.slot.type] = stats[equippedItem.slot.type].toString() + String.format("<br>%s", enchant)
         }
-        stats[equippedItem.slot.type] = stats[equippedItem.slot.type] + azeriteSpells
+        if (azeriteSpells.isNotEmpty()) {
+            stats[equippedItem.slot.type] = stats[equippedItem.slot.type] + azeriteSpells
+        }
         if (trigger != "") {
             stats[equippedItem.slot.type] = stats[equippedItem.slot.type].toString() + String.format("<br>%s<br>", trigger)
         }

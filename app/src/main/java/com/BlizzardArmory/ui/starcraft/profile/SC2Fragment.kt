@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -17,6 +16,7 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
@@ -449,27 +449,15 @@ class SC2Fragment : Fragment() {
         } else {
             binding.clan.visibility = View.GONE
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            binding.achievementPoints.text =
-                Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                    val resourceId =
-                        resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable =
-                        ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
-                    drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                    drawable
-                }, null)
-        } else {
-            binding.achievementPoints.text =
-                Html.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, { source: String? ->
-                    val resourceId =
-                        resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable =
-                        ResourcesCompat.getDrawable(resources, resourceId, requireActivity().theme)
-                    drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                    drawable
-                }, null)
-        }
+        binding.achievementPoints.text =
+            HtmlCompat.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
+                val resourceId =
+                    resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                val drawable =
+                    ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                drawable
+            }, null)
     }
 
     private fun downloadAvatar() {

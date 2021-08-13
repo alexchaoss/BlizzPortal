@@ -1,11 +1,11 @@
 package com.BlizzardArmory.ui.diablo.characterfragments.cube
 
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.BlizzardArmory.databinding.D3CubeFragmentBinding
@@ -62,11 +62,7 @@ class CharacterCubeFragment : Fragment() {
                     }
                 }
                 binding.cubeText.visibility = View.VISIBLE
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    binding.cubeText.text = Html.fromHtml(cubeText, Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    binding.cubeText.text = Html.fromHtml(cubeText)
-                }
+                binding.cubeText.text = HtmlCompat.fromHtml(cubeText, HtmlCompat.FROM_HTML_MODE_LEGACY)
             }
         })
     }

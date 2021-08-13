@@ -7,13 +7,12 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
@@ -294,18 +293,10 @@ class CharacterGearFragment : Fragment() {
     private fun setMisc(item: Item) {
         try {
             if (item.accountBound!!) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + (item.requiredLevel!!).roundToInt() + "<br>Account bound</font>", Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + (item.requiredLevel!!).roundToInt() + "<br>Account bound</font>")
-                }
+                misctext!!.text = HtmlCompat.fromHtml("<font color=\"#a99877\">Required Level: " + (item.requiredLevel!!).roundToInt() + "<br>Account bound</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 misctext!!.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + (item.requiredLevel!!).roundToInt() + "<br></font>", Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    misctext!!.text = Html.fromHtml("<font color=\"#a99877\">Required Level: " + (item.requiredLevel!!).roundToInt() + "<br></font>")
-                }
+                misctext!!.text = HtmlCompat.fromHtml("<font color=\"#a99877\">Required Level: " + (item.requiredLevel!!).roundToInt() + "<br></font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 misctext!!.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
             }
             binding.itemStats.addView(misctext, layoutParamsStats)
@@ -317,11 +308,7 @@ class CharacterGearFragment : Fragment() {
     private fun setFlavorText(item: Item) {
         try {
             if (item.flavorText != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    flavortext!!.text = Html.fromHtml("<font color=\"#9d7853\">\"<i>" + item.flavorText + "</i>\"</font><br>", Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    flavortext!!.text = Html.fromHtml("<font color=\"#9d7853\">\"<i>" + item.flavorText + "</i>\"</font><br>")
-                }
+                flavortext!!.text = HtmlCompat.fromHtml("<font color=\"#9d7853\">\"<i>" + item.flavorText + "</i>\"</font><br>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 binding.itemStats.addView(flavortext, layoutParamsStats)
             }
         } catch (e: Exception) {
@@ -331,13 +318,8 @@ class CharacterGearFragment : Fragment() {
 
     private fun setTransmog(item: Item) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                transmog!!.text = Html.fromHtml("<font color=\"#7979d4\">Transmogrification:</font><br>" + "<font color=\""
-                        + selectColor(item.transmog?.displayColor!!, isEtheral(item.typeName!!)) + "\">" + item.transmog?.name + "</font><br>", Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                transmog!!.text = Html.fromHtml("<font color=\"#7979d4\">Transmogrification:</font><br>" + "<font color=\""
-                        + selectColor(item.transmog?.displayColor!!, isEtheral(item.typeName!!)) + "\">" + item.transmog?.name + "</font><br>")
-            }
+            transmog!!.text = HtmlCompat.fromHtml("<font color=\"#7979d4\">Transmogrification:</font><br>" + "<font color=\""
+                    + selectColor(item.transmog?.displayColor!!, isEtheral(item.typeName!!)) + "\">" + item.transmog?.name + "</font><br>", HtmlCompat.FROM_HTML_MODE_LEGACY)
             binding.itemStats.addView(transmog, layoutParamsStats)
         } catch (e: Exception) {
             Log.i("Transmog", "no transmog")
@@ -356,21 +338,12 @@ class CharacterGearFragment : Fragment() {
             setText = setText.replace("<span class=\"tooltip-icon-utility\"></span>".toRegex(), "&nbsp;&nbsp;<img src=\"utility\">")
             setText = setText.replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#")
                 .replace("</span>".toRegex(), "</font>")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                set!!.text = Html.fromHtml(setText, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                    val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                    drawable
-                }, null)
-            } else {
-                set!!.text = Html.fromHtml(setText, { source: String? ->
-                    val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                    val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                    drawable
-                }, null)
-            }
+            set!!.text = HtmlCompat.fromHtml(setText, HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
+                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
+                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                drawable
+            }, null)
             binding.itemStats.addView(set, layoutParamsStats)
         } catch (e: Exception) {
             Log.i("Set", "no set")
@@ -378,21 +351,12 @@ class CharacterGearFragment : Fragment() {
     }
 
     private fun setGems(gemsInfo: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            gems!!.text = Html.fromHtml(gemsInfo, Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
-        } else {
-            gems!!.text = Html.fromHtml(gemsInfo, { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
-        }
+        gems!!.text = HtmlCompat.fromHtml(gemsInfo, HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
+            val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+            val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
+            drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+            drawable
+        }, null)
         val gemParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         gemParams.setMargins(20, 0, 20, 0)
         gems!!.gravity = Gravity.CENTER_VERTICAL
@@ -400,40 +364,22 @@ class CharacterGearFragment : Fragment() {
     }
 
     private fun setSecondaryStats(secondaryStatsInfo: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            secondarystats!!.text = Html.fromHtml("Secondary<br>$secondaryStatsInfo", Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
-        } else {
-            secondarystats!!.text = Html.fromHtml("Secondary<br>$secondaryStatsInfo", { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
-        }
+        secondarystats!!.text = HtmlCompat.fromHtml("Secondary<br>$secondaryStatsInfo", HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
+            val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+            val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
+            drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+            drawable
+        }, null)
         binding.itemStats.addView(secondarystats, layoutParamsStats)
     }
 
     private fun setPrimaryStats(primaryStatsInfo: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            primarystats!!.text = Html.fromHtml("Primary<br>$primaryStatsInfo", Html.FROM_HTML_MODE_LEGACY, { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
-        } else {
-            primarystats!!.text = Html.fromHtml("Primary<br>$primaryStatsInfo", { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
-                drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
-        }
+        primarystats!!.text = HtmlCompat.fromHtml("Primary<br>$primaryStatsInfo", HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
+            val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+            val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
+            drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+            drawable
+        }, null)
         binding.itemStats.addView(primarystats, layoutParamsStats)
     }
 
@@ -443,17 +389,10 @@ class CharacterGearFragment : Fragment() {
                 val formatter: NumberFormat = DecimalFormat("#0.0")
                 val dpsText = ((item.minDamage!! + item.maxDamage!!) / 2 * item.attacksPerSecond!! * 10 / 10).roundToInt()
                     .toDouble()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    dps?.text = Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
-                            + formatter.format(item.minDamage) + " - "
-                            + formatter.format(item.maxDamage) + "<font color=\"#696969\"> Damage</font><br>"
-                            + formatter.format(item.attacksPerSecond) + "<font color=\"#696969\"> Attacks per Second</font><br>", Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    dps?.text = Html.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
-                            + formatter.format(item.minDamage) + " - "
-                            + formatter.format(item.maxDamage) + "<font color=\"#696969\"> Damage</font><br>"
-                            + formatter.format(item.attacksPerSecond) + "<font color=\"#696969\"> Attacks per Second</font><br>")
-                }
+                dps?.text = HtmlCompat.fromHtml("<big><big><big><big><big>" + formatter.format(dpsText) + "</big></big></big></big></big><br><font color=\"#696969\">Damage Per Second</font><br><br>"
+                        + formatter.format(item.minDamage) + " - "
+                        + formatter.format(item.maxDamage) + "<font color=\"#696969\"> Damage</font><br>"
+                        + formatter.format(item.attacksPerSecond) + "<font color=\"#696969\"> Attacks per Second</font><br>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 binding.armorDamage.addView(dps, layoutParamsStats)
                 when (item.elementalType) {
                     "fire" -> binding.imageStats.setBackgroundResource(R.drawable.fire)
@@ -476,17 +415,9 @@ class CharacterGearFragment : Fragment() {
     private fun setType(item: Item) {
         try {
             if (!item.type?.twoHanded!! && item.minDamage!! > 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    binding.slot.text = Html.fromHtml("1-Hand", Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    binding.slot.text = Html.fromHtml("1-Hand")
-                }
+                binding.slot.text = HtmlCompat.fromHtml("1-Hand", HtmlCompat.FROM_HTML_MODE_LEGACY)
             } else if (item.type?.twoHanded!! && item.minDamage!! > 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    binding.slot.text = Html.fromHtml("2-Hand", Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    binding.slot.text = Html.fromHtml("2-Hand")
-                }
+                binding.slot.text = HtmlCompat.fromHtml("2-Hand", HtmlCompat.FROM_HTML_MODE_LEGACY)
             } else {
                 binding.slot.text = item.slots
             }
@@ -498,11 +429,7 @@ class CharacterGearFragment : Fragment() {
     private fun setArmor(item: Item) {
         try {
             if (item.armor!! > 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    armor!!.text = Html.fromHtml("<big><big><big><big><big>" + (item.armor!!).roundToInt() + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>", Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    armor!!.text = Html.fromHtml("<big><big><big><big><big>" + (item.armor!!).roundToInt() + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>")
-                }
+                armor!!.text = HtmlCompat.fromHtml("<big><big><big><big><big>" + (item.armor!!).roundToInt() + "</big></big></big></big></big><br><font color=\"#696969\">Armor</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 binding.armorDamage.addView(armor, layoutParamsStats)
             }
         } catch (e: Exception) {
@@ -518,22 +445,14 @@ class CharacterGearFragment : Fragment() {
             val lastSpace2 = beforeLastSpace.lastIndexOf(" ")
             typeNameString = typeNameString.substring(0, lastSpace2) + "<br>" + typeNameString.substring(lastSpace2)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.typeName.text = Html.fromHtml(typeNameString, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            binding.typeName.text = Html.fromHtml(typeNameString)
-        }
+        binding.typeName.text = HtmlCompat.fromHtml(typeNameString, HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.typeName.setTextColor(Color.parseColor(selectColor(item.displayColor!!, isEtheral(item.typeName!!))))
     }
 
     private fun setName(item: Item) {
         try {
             val color = selectColor(item.displayColor!!, isEtheral(item.typeName!!))
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                binding.itemName.text = Html.fromHtml("<font color=\"" + color + "\">" + item.name + "</font>", Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                binding.itemName.text = Html.fromHtml("<font color=\"" + color + "\">" + item.name + "</font>")
-            }
+            binding.itemName.text = HtmlCompat.fromHtml("<font color=\"" + color + "\">" + item.name + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
             if (item.name?.length!! > 23) {
                 binding.itemName.textSize = 18f
             }
