@@ -15,6 +15,6 @@ data class SpellDescription(
     var description: String,
 
     @SerializedName("display_color")
-    var color: Color
+    var color: Color?
 
 )

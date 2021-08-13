@@ -12,7 +12,7 @@ data class Armor(
     var value: Int,
 
     @SerializedName("display_string")
-    var displayString: String,
+    var displayString: String?,
 
     @SerializedName("display")
     var display: Display

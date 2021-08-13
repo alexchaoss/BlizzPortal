@@ -39,7 +39,7 @@ data class CharacterSummary(
     var realm: Realm,
 
     @SerializedName("guild")
-    var guild: Guild,
+    var guild: Guild?,
 
     @SerializedName("level")
     var level: Int,

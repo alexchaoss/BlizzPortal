@@ -18,7 +18,7 @@ data class Profile(
     var career: Career,
 
     @SerializedName("swarmLevels")
-    var swarmLevels: SwarmLevels,
+    var swarmLevels: SwarmLevels?,
 
     @SerializedName("campaign")
     var campaign: Campaign,

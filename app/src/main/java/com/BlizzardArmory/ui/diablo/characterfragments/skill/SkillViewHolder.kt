@@ -30,8 +30,8 @@ class SkillViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     fun bind(skill: Active) {
         name?.text = skill.skill.name
         if (skill.rune != null) {
-            rune?.text = skill.rune.name
-            runeIcon?.setImageResource(itemView.context.resources.getIdentifier(getSmallRuneIcon(skill.rune.type), "drawable", BlizzardArmory.instance?.packageName))
+            rune?.text = skill.rune!!.name
+            runeIcon?.setImageResource(itemView.context.resources.getIdentifier(getSmallRuneIcon(skill.rune!!.type), "drawable", BlizzardArmory.instance?.packageName))
         }
         Glide.with(itemView).load(NetworkUtils.D3_ICON_SKILLS.replace("url", skill.skill.icon))
             .into(icon!!)

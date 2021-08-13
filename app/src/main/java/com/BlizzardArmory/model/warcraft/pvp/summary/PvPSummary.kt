@@ -10,7 +10,7 @@ data class PvPSummary(
     @SerializedName("_links") val links: Links,
     @SerializedName("brackets") val brackets: List<Brackets>,
     @SerializedName("honor_level") val honor_level: Int,
-    @SerializedName("pvp_map_statistics") val pvp_map_statistics: List<PvpMapStatistics>,
+    @SerializedName("pvp_map_statistics") val pvp_map_statistics: List<PvpMapStatistics>?,
     @SerializedName("honorable_kills") val honorable_kills: Int,
     @SerializedName("character") val character: Character
 )

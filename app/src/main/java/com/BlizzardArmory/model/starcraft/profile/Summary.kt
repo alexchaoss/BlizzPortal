@@ -18,7 +18,7 @@ data class Summary(
     var displayName: String,
 
     @SerializedName("clanName")
-    var clanName: String,
+    var clanName: String?,
 
     @SerializedName("clanTag")
     var clanTag: String,

@@ -7,6 +7,6 @@ data class Data(
 
     @SerializedName("id") val id: String,
     @SerializedName("number") val number: Int,
-    @SerializedName("string") val string: String,
+    @SerializedName("string") val string: String?,
     @SerializedName("timestamp") val timestamp: Long
 )

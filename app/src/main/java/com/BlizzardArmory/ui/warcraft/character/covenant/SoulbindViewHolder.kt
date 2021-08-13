@@ -77,7 +77,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
 
     private fun setOnTalenttouchAction(talent: TechTalent, node: ConstraintLayout) {
         if (talent.spell_tooltip != null) {
-            node?.setOnTouchListener { v, event ->
+            node.setOnTouchListener { _, event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
                         EventBus.getDefault()
@@ -109,7 +109,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
             2 -> {
                 node2?.visibility = View.INVISIBLE
                 if (talents[0].socketType != null) {
-                    talents.forEachIndexed { index, talent ->
+                    talents.forEachIndexed { index, _ ->
                         if (index == 0) {
                             when (talents[index].socketType?.type) {
                                 ConduitSocketType.ENDURANCE.type -> icon1?.setImageResource(R.drawable.soulbinds_tree_conduit_icon_protect)
@@ -129,7 +129,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
             }
             else -> {
                 if (talents[0].socketType != null) {
-                    talents.forEachIndexed { index, talent ->
+                    talents.forEachIndexed { index, _ ->
                         when (index) {
                             0 -> {
                                 when (talents[index].socketType?.type) {
@@ -181,7 +181,7 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
     }
 
     private fun setOnConduitTouchAction(conduit: Conduit, rank: Int, node: ConstraintLayout) {
-        node?.setOnTouchListener { v, event ->
+        node.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     EventBus.getDefault()

@@ -3,17 +3,21 @@ package com.BlizzardArmory.ui.diablo.characterfragments.navigation
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.BlizzardArmory.ui.diablo.characterfragments.cube.CharacterCubeFragment
 import com.BlizzardArmory.ui.diablo.characterfragments.gear.CharacterGearFragment
 import com.BlizzardArmory.ui.diablo.characterfragments.skill.CharacterSkillFragment
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 
 
-class MyAdapter(fm: FragmentManager, private var totalTabs: Int, internal var bundle: Bundle) :
-    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MyAdapter(fm: FragmentManager, lifecycle: Lifecycle, private var totalTabs: Int, internal var bundle: Bundle) :
+    FragmentStateAdapter(fm, lifecycle) {
+    override fun getItemCount(): Int {
+        return totalTabs
+    }
 
-    override fun getItem(position: Int): Fragment {
+    override fun createFragment(position: Int): Fragment {
         when (position) {
             0 -> {
                 val statsFragment = CharacterStatsFragment()
@@ -37,9 +41,5 @@ class MyAdapter(fm: FragmentManager, private var totalTabs: Int, internal var bu
             }
             else -> return CharacterStatsFragment()
         }
-    }
-
-    override fun getCount(): Int {
-        return totalTabs
     }
 }

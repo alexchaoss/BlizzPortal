@@ -32,8 +32,8 @@ class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         layout = itemView.findViewById(R.id.layout)
     }
 
-    fun bind(category: Category, locale: String, faction: String, mappedAchievements: Map<Long, List<DetailedAchievement>?>, achievements: List<Achievements>) {
-        var currentPoints = 0
+    fun bind(category: Category, faction: String, mappedAchievements: Map<Long, List<DetailedAchievement>?>, achievements: List<Achievements>) {
+        var currentPoints: Int
 
         if (category.parentCategoryId == null && category.id != 92L) {
             layout?.setOnClickListener {
@@ -46,24 +46,21 @@ class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
 
         if (category.parentCategoryId == null && category.id != 92L) {
-            currentPoints = mappedAchievements.values.sumBy { v ->
+            currentPoints = mappedAchievements.values.sumOf { v ->
                 v?.filter {
                     it.parent_category_id == category.id &&
                             (achievements.find { ac -> ac.id == it.id }?.completed_timestamp != 0L)
-                }?.map { it.points }?.sumBy { it }!!
+                }?.map { it.points }?.sumOf { it }!!
             }
         } else {
             currentPoints =
                 mappedAchievements[category.id]?.filter { achievements.find { ac -> ac.id == it.id }?.completed_timestamp != 0L }
-                    ?.sumBy { it.points }!!
+                    ?.sumOf { it.points }!!
         }
 
         Log.i("points", currentPoints.toString())
         progressBar?.max = 100
 
-        /*var name = category.name.substring(category.name.indexOf("en_US"))
-        name = name.substring(9, name.indexOf("es_ES") - 4)*/
-        //getLocale(locale, category)
         categoryName?.text = category.name
         categoryPoints?.text = currentPoints.toString()
         if ((category.alliancePoints != 0 || category.hordePoints != 0)) {
@@ -79,22 +76,4 @@ class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
 
     }
-
-    /*private fun getLocale(locale: String, category: Category){
-        when(locale){
-            "de_DE"-> categoryName?.text = category.name.name.deDE
-            "en_GB"->categoryName?.text = category.name.name.enGB
-            "en_US"-> categoryName?.text = category.name.name.enUS
-            "es_ES"-> categoryName?.text = category.name.name.esES
-            "es_MX"-> categoryName?.text = category.name.name.esMX
-            "fr_FR"-> categoryName?.text = category.name.name.frFR
-            "it_IT"-> categoryName?.text = category.name.name.itIT
-            "ko_KR"-> categoryName?.text = category.name.name.koKR
-            "pt_BR"-> categoryName?.text = category.name.name.ptBR
-            "ru_RU"-> categoryName?.text = category.name.name.ruRU
-            "zh_CN"-> categoryName?.text = category.name.name.zhCN
-            "zh_TW"-> categoryName?.text = category.name.name.zhTW
-        }
-    }*/
-
 }

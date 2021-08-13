@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class BestTeamFinish(
 
     @SerializedName("leagueName")
-    var leagueName: String,
+    var leagueName: String?,
 
     @SerializedName("timesAchieved")
     var timesAchieved: Int

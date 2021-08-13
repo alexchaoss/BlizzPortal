@@ -175,9 +175,9 @@ class CharacterGearFragment : Fragment() {
 
         viewModel.getItemsInfoSetup().observe(viewLifecycleOwner, {
             viewModel.getItems().forEachIndexed { index, item ->
-                getItemIconURL(item)
-                setItemBackgroundColor(item)
                 if (item != null) {
+                    getItemIconURL(item)
+                    setItemBackgroundColor(item)
                     setOnPressItemInformation(imageViewItem[item.slots], item, viewModel.getprimaryStats()[index]!!, viewModel.getsecondaryStats()[index]!!, viewModel.getgems()[index]!!)
                 }
             }
@@ -260,7 +260,7 @@ class CharacterGearFragment : Fragment() {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 itemPanelOpen = true
                 setLayoutParams(item)
-                setBackgroundAndColor(item, imageView)
+                setBackgroundAndColor(item)
                 setName(item)
                 setTypeName(item)
                 binding.slot.text = item.slots
@@ -555,7 +555,7 @@ class CharacterGearFragment : Fragment() {
         }
     }
 
-    private fun setBackgroundAndColor(item: Item, imageView: ImageView) {
+    private fun setBackgroundAndColor(item: Item) {
         val backgroundStroke = GradientDrawable()
         backgroundStroke.setColor(Color.parseColor("#000000"))
         backgroundStroke.setStroke(8, Color.parseColor(getItemBorderColor(item)))

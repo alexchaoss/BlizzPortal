@@ -6,16 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.state.FragmentTag
 import com.discord.panels.PanelsChildGestureRegionObserver
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -36,6 +37,8 @@ class WoWNavFragment : Fragment() {
 
     private var _binding: WowNavbarFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val tabsText = listOf(R.string.character, R.string.covenant, R.string.reputation, R.string.progress2, R.string.pvp, R.string.achievements)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,23 +65,11 @@ class WoWNavFragment : Fragment() {
         bundle.putString("region", region)
 
         binding.wowPager.offscreenPageLimit = 5
-        val adapter = NavAdapter(childFragmentManager, binding.navBar.tabCount, bundle)
-        binding.wowPager.adapter = adapter
-        binding.wowPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.navBar))
-
-        binding.navBar.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                binding.wowPager.currentItem = tab.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-
-            }
-        })
+        binding.wowPager.adapter = NavAdapter(childFragmentManager, this.lifecycle, binding.navBar.tabCount, bundle)
+        TabLayoutMediator(binding.navBar, binding.wowPager) { tab, position ->
+            tab.text = resources.getString(tabsText[position])
+            binding.wowPager.setCurrentItem(tab.position, true)
+        }.attach()
     }
 
     override fun onStart() {

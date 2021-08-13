@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.model.overwatch.statslab.Player
+import com.BlizzardArmory.model.overwatch.statslab.Hero
 
 
-class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
+class HeroViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.overwatch_league_generic_expand, parent, false)) {
 
     var name: TextView? = null
@@ -20,10 +20,10 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         recycler = itemView.findViewById(R.id.recycler)
     }
 
-    fun bind(player: Player) {
-        name?.text = player.name
+    fun bind(hero: Hero) {
+        name?.text = hero.name
         recycler?.apply {
-            adapter = HeroAdapter(player.heroes, context)
+            adapter = StatsAdapter(hero.stats, context)
         }
     }
 }

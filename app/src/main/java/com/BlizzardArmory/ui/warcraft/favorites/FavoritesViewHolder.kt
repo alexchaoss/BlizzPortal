@@ -14,12 +14,11 @@ import com.BlizzardArmory.model.warcraft.favorite.FavoriteCharacter
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
-import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.ConnectionStatus
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -82,7 +81,6 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     private fun downloadMedia() {
-        val bnOAuth2Helper = BattlenetOAuth2Helper(battlenetOAuth2Params!!)
         CoroutineScope(Dispatchers.IO).launch {
             val response = RetroClient.getWoWClient(context).getMedia(
                 character?.characterSummary?.name?.lowercase(Locale.getDefault())!!,

@@ -34,10 +34,10 @@ import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
 import com.BlizzardArmory.util.events.*
 import com.BlizzardArmory.util.state.FavoriteState
+import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -151,14 +151,14 @@ class WoWCharacterFragment : Fragment() {
             if (it.guild == null) {
                 binding.guild.visibility = View.GONE
             } else {
-                val guild = "&lt;<u>${it.guild.name}</u>&gt;"
+                val guild = "&lt;<u>${it.guild?.name}</u>&gt;"
                 binding.guild.text = HtmlCompat.fromHtml(guild, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                binding.guild.setOnClickListener { view ->
+                binding.guild.setOnClickListener { _ ->
                     navigationActivity.toggleFavoriteButton(FavoriteState.Hidden)
                     val fragment: Fragment = GuildNavFragment()
                     val bundle = Bundle()
                     bundle.putString("realm", it.realm.slug)
-                    bundle.putString("guildName", it.guild.name)
+                    bundle.putString("guildName", it.guild?.name)
                     bundle.putString("region", viewModel.region.lowercase(Locale.getDefault()))
                     fragment.arguments = bundle
                     requireActivity().supportFragmentManager.beginTransaction()

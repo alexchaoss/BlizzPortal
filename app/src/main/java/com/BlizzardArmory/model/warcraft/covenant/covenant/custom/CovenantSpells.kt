@@ -14,5 +14,5 @@ data class CovenantSpells(
     @SerializedName("cast_time") val castTime: String,
     @SerializedName("cooldown") val cooldown: String,
     @SerializedName("range") val range: String,
-    @SerializedName("power_cost") val powerCost: String
+    @SerializedName("power_cost") val powerCost: String?
 )

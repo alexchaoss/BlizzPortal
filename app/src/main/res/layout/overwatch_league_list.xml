@@ -8,134 +8,95 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="5dp">
 
-    <com.robertlevonyan.views.expandable.Expandable
-        android:id="@+id/expandable"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:exp_animateExpand="true"
-        app:exp_backgroundColor="#21242d">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/header"
+        <com.github.florent37.expansionpanel.ExpansionHeader
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            android:background="#21242d"
+            app:expansion_headerIndicator="@id/headerIndicator"
+            app:expansion_layout="@id/expansionLayout"
+            app:expansion_toggleOnClick="true">
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.1"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="14sp" />
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-            <TextView
-                android:id="@+id/type"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.7"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.1"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="#FFF"
+                    android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/map"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.2"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="14sp" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/type"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="#FFF"
+                    android:textSize="14sp" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/content"
+                <TextView
+                    android:id="@+id/map"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="#FFF"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/headerIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginLeft="16dp"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+        </com.github.florent37.expansionpanel.ExpansionHeader>
+
+        <com.github.florent37.expansionpanel.ExpansionLayout
+            android:id="@+id/expansionLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#32353e"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:text="Teams"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/teams"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:padding="5dp">
 
             <LinearLayout
-                android:id="@+id/teams"
+                android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/recyclers"
-                app:layout_constraintTop_toBottomOf="@+id/title">
+                android:orientation="vertical">
 
-                <TextView
+                <include
                     android:id="@+id/team1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:textColor="#FFF"
-                    android:textSize="14sp" />
+                    layout="@layout/overwatch_league_generic_expand" />
 
-                <TextView
+                <include
                     android:id="@+id/team2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:textColor="#FFF"
-                    android:textSize="14sp" />
+                    layout="@layout/overwatch_league_generic_expand" />
+
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/recyclers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/teams">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerTeam1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerTeam2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.robertlevonyan.views.expandable.Expandable>
+        </com.github.florent37.expansionpanel.ExpansionLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

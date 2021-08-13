@@ -34,7 +34,7 @@ data class EquippedItem(
     var modifiedAppearanceId: Long,
 
     @SerializedName("azerite_details")
-    var azeriteDetails: AzeriteDetails,
+    var azeriteDetails: AzeriteDetails?,
 
     @SerializedName("media")
     var media: Media,
@@ -55,7 +55,7 @@ data class EquippedItem(
     var armor: Armor,
 
     @SerializedName("stats")
-    var stats: List<Stat>,
+    var stats: List<Stat>?,
 
     @SerializedName("requirements")
     var requirements: Requirements,
@@ -76,7 +76,7 @@ data class EquippedItem(
     var spells: List<SpellDescription>,
 
     @SerializedName("description")
-    var description: String,
+    var description: String?,
 
     @SerializedName("is_subclass_hidden")
     var isIsSubclassHidden: Boolean,
@@ -88,7 +88,7 @@ data class EquippedItem(
     var nameDescriptionObject: NameDescription,
 
     @SerializedName("socket_bonus")
-    var socketBonus: String,
+    var socketBonus: String?,
 
     @SerializedName("sell_price")
     var sellPrice: SellPrice,

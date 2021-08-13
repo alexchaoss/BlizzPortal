@@ -138,7 +138,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private fun setSearchButton() {
         rightPanel.binding.rightPanelD3.search.setOnClickListener {
-            var leaderboard = ""
+            val leaderboard: String
             if (seasonToggle && rightPanel.binding.rightPanelD3.spinnerId.selectedItem == "Season") {
                 Snackbar.make(binding.root, "Please select a season", Snackbar.LENGTH_SHORT).show()
             } else if (!seasonToggle && rightPanel.binding.rightPanelD3.spinnerId.selectedItem == "Era") {

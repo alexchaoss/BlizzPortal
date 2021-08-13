@@ -269,9 +269,9 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setRaceLevelInformation() {
-        val terranTemp = "Level " + viewModel.getProfile().value!!.swarmLevels.terran.level
-        val zergTemp = "Level " + viewModel.getProfile().value!!.swarmLevels.zerg.level
-        val protossTemp = "Level " + viewModel.getProfile().value!!.swarmLevels.protoss.level
+        val terranTemp = "Level " + viewModel.getProfile().value!!.swarmLevels?.terran?.level
+        val zergTemp = "Level " + viewModel.getProfile().value!!.swarmLevels?.zerg?.level
+        val protossTemp = "Level " + viewModel.getProfile().value!!.swarmLevels?.protoss?.level
         binding.terranLevel.text = terranTemp
         binding.zergLevel.text = zergTemp
         binding.protossLevel.text = protossTemp
@@ -287,20 +287,20 @@ class SC2Fragment : Fragment() {
             viewModel.getProfile().value!!.career.totalCareerGames.toString()
         if (viewModel.getProfile().value!!.career.best1v1Finish.leagueName != null) {
             setSnapshotIcons(viewModel.getProfile().value!!.career.best1v1Finish.leagueName, 500, binding.bestOneIcon)
-            var temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(1)
-                .lowercase(Locale.getDefault())
+            var temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName?.substring(1)
+                ?.lowercase(Locale.getDefault())
             temp =
-                viewModel.getProfile().value!!.career.best1v1Finish.leagueName.substring(0, 1) + temp
+                viewModel.getProfile().value!!.career.best1v1Finish.leagueName?.substring(0, 1) + temp
             binding.bestOne.text = temp
         } else {
             binding.bestOne.visibility = View.GONE
         }
         if (viewModel.getProfile().value!!.career.bestTeamFinish.leagueName != null) {
             setSnapshotIcons(viewModel.getProfile().value!!.career.bestTeamFinish.leagueName, 500, binding.bestTeamIcon)
-            var temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(1)
-                .lowercase(Locale.getDefault())
+            var temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName?.substring(1)
+                ?.lowercase(Locale.getDefault())
             temp =
-                viewModel.getProfile().value!!.career.bestTeamFinish.leagueName.substring(0, 1) + temp
+                viewModel.getProfile().value!!.career.bestTeamFinish.leagueName?.substring(0, 1) + temp
             binding.bestTeam.text = temp
         } else {
             binding.bestTeam.visibility = View.GONE
@@ -437,7 +437,7 @@ class SC2Fragment : Fragment() {
     private fun setSummaryInformation() {
         if (viewModel.getProfile().value!!.swarmLevels != null && viewModel.getProfile().value!!.swarmLevels?.level != null) {
             binding.totalLevelText.text =
-                viewModel.getProfile().value!!.swarmLevels.level.toString()
+                viewModel.getProfile().value!!.swarmLevels?.level.toString()
         } else {
             binding.totalLevelText.text = "0"
         }

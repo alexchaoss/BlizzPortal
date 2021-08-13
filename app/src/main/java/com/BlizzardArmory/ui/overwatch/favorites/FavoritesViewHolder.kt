@@ -14,17 +14,13 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.account.favorite.FavoriteProfile
 import com.BlizzardArmory.ui.overwatch.account.OWFragment
 import com.BlizzardArmory.util.ConnectionStatus
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 
 
 class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -47,7 +43,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         level = itemView.findViewById(R.id.level)
         layout = itemView.findViewById(R.id.profile_layout)
         EventBus.getDefault().register(this)
-        job = GlobalScope.launch {
+        job = CoroutineScope(Dispatchers.Default).launch {
             do {
                 delay(3000)
                 if (!downloaded) {
@@ -61,7 +57,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
         this.fragmentManager = fragmentManager
         this.profile = profile
         username?.text = profile.username
-        platform?.text = profile.platform?.toUpperCase(Locale.ROOT)
+        platform?.text = profile.platform?.uppercase()
         val levelNumber = profile.profile?.level?.plus(100.times(profile.profile?.prestige!!))
         level?.text = levelNumber.toString()
         downloadAvatar()

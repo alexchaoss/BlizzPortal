@@ -52,7 +52,7 @@ class D3LeaderboardViewModel(application: Application) : BaseViewModel(applicati
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     seasonIndex.value = response.body()
-                    seasonIndex.value?.season?.forEachIndexed { index, season ->
+                    seasonIndex.value?.season?.forEachIndexed { index, _ ->
                         seasonIndexList.add((index + 1).toString())
                     }
                     downloadSeason(seasonIndexList.last(), "rift-barbarian", NetworkUtils.region)
@@ -92,7 +92,7 @@ class D3LeaderboardViewModel(application: Application) : BaseViewModel(applicati
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     eraIndex.value = response.body()
-                    eraIndex.value?.era?.forEachIndexed { index, season ->
+                    eraIndex.value?.era?.forEachIndexed { index, _ ->
                         eraIndexList.add((index + 1).toString())
                     }
                 } else {

@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3NavbarFragmentBinding
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -31,6 +32,8 @@ class D3CharacterNav : Fragment() {
 
     private var _binding: D3NavbarFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val tabsText = listOf(R.string.stats, R.string.gear, R.string.skills, R.string.cube)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,23 +65,11 @@ class D3CharacterNav : Fragment() {
         bundle.putString(REGION, region)
         bundle.putInt(GENDER, gender)
         bundle.putString(CHAR_CLASS, charClass)
-        val adapter = MyAdapter(childFragmentManager, binding.navBar.tabCount, bundle)
-        binding.wowPager.adapter = adapter
-        binding.wowPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.navBar))
-
-        binding.navBar.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                binding.wowPager.currentItem = tab.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-
-            }
-        })
+        binding.wowPager.adapter = MyAdapter(childFragmentManager, this.lifecycle, binding.navBar.tabCount, bundle)
+        TabLayoutMediator(binding.navBar, binding.wowPager) { tab, position ->
+            tab.text = resources.getString(tabsText[position])
+            binding.wowPager.currentItem = tab.position
+        }.attach()
     }
 
     override fun onStart() {

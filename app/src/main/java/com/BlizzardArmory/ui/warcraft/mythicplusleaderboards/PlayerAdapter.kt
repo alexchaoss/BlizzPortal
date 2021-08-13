@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Members
 import com.BlizzardArmory.model.warcraft.specialization.Specialization
-import com.BlizzardArmory.network.NetworkUtils.region
 
-class PlayerAdapter(private val list: List<Members>, private val context: Context, private val specialization: List<Specialization>, region: String)
+class PlayerAdapter(private val list: List<Members>, private val context: Context, private val specialization: List<Specialization>, private val region: String)
     : RecyclerView.Adapter<PlayerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {

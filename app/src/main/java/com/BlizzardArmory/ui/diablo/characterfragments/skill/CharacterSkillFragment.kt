@@ -114,17 +114,17 @@ class CharacterSkillFragment : Fragment() {
 
         if (skill.rune != null) {
             binding.runeSeparator.visibility = View.VISIBLE
-            binding.tooltipRuneIcon.setImageResource(viewModel.getRuneIcon(skill.rune.type))
+            binding.tooltipRuneIcon.setImageResource(viewModel.getRuneIcon(skill.rune!!.type))
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skill.rune.name + "</font></big><br>"
-                        + skill.rune.descriptionHtml)
+                binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skill.rune!!.name + "</font></big><br>"
+                        + skill.rune!!.descriptionHtml)
                     .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                     .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                     .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")
                     .replace("</span>".toRegex(), "</font>"), Html.FROM_HTML_MODE_LEGACY)
             } else {
-                binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skill.rune.name + "</font></big><br>"
-                        + skill.rune.descriptionHtml)
+                binding.runeTooltipText.text = Html.fromHtml(("<big><font color=\"#FFFFFF\">" + skill.rune!!.name + "</font></big><br>"
+                        + skill.rune!!.descriptionHtml)
                     .replace("<span class=\"d3-color-green".toRegex(), "<font color=\"#00ff00")
                     .replace("<span class=\"d3-color-gold".toRegex(), "<font color=\"#c7b377")
                     .replace("<span class=\"d3-color-yellow".toRegex(), "<font color=\"#ffff00")

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "331942866904-rd3h0doj008g1bdl8mbtbohppdimoloe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.BlizzardArmory",
+            "certificate_hash": "8b98424f9b0e1cbc561617cf3ba4c2734e4c2aac"
+          }
+        },
+        {
           "client_id": "331942866904-vgepl8se39g7t88pjcbo0qropjhn6l97.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,7 +37,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCbyY5iOMIriOusPilXZuOQL7sv-U_zyfE"
+          "current_key": "AIzaSyDqxQL546H8TBlvXZW1pJj-SCQZq_F2Jqs"
         }
       ],
       "services": {

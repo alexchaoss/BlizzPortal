@@ -334,7 +334,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
         }
         try {
             trigger = if (equippedItem.spells[0].color != null) {
-                "<font color=#" + rbgToHexHTML(equippedItem.spells[0].color) + ">" + equippedItem.spells[0].description + "</font>"
+                "<font color=#" + rbgToHexHTML(equippedItem.spells[0].color!!) + ">" + equippedItem.spells[0].description + "</font>"
             } else {
                 "<font color=#00ff00>" + equippedItem.spells[0].description + "</font>"
             }
@@ -343,15 +343,15 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
         try {
             if (equippedItem.item.id == 158075L) {
                 azeriteSpells.append("<br>")
-                for (selectedEssence in equippedItem.azeriteDetails.selectedEssences) {
+                for (selectedEssence in equippedItem.azeriteDetails?.selectedEssences!!) {
                     val essenceImage = "<img src=\"" + getEssenceImage(selectedEssence.slot) + "\"> "
                     val color = "<font color=#" + getEssenceRankColor(selectedEssence.rank) + ">"
                     azeriteSpells.append(essenceImage).append(color)
                         .append(selectedEssence.essence.name).append("</font><br>")
                 }
             } else {
-                azeriteSpells = StringBuilder("<br><font color=#edc201>" + equippedItem.azeriteDetails.selectedPowersString + "</font><br>")
-                for (selectedPower in equippedItem.azeriteDetails.selectedPowers) {
+                azeriteSpells = StringBuilder("<br><font color=#edc201>" + equippedItem.azeriteDetails?.selectedPowersString + "</font><br>")
+                for (selectedPower in equippedItem.azeriteDetails?.selectedPowers!!) {
                     if (!selectedPower.isIsDisplayHidden) {
                         azeriteSpells.append("- ").append(selectedPower.spellTooltip.spell.name)
                             .append("<br>")
@@ -387,7 +387,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
         } catch (e: Exception) {
         }
         if (equippedItem.item.id == 158075L) {
-            hoaLevel = "<font color=#edc201>" + equippedItem.azeriteDetails.level.displayString + "</font><br>"
+            hoaLevel = "<font color=#edc201>" + equippedItem.azeriteDetails?.level?.displayString + "</font><br>"
         }
         if (equippedItem.itemClass.id == 2L) {
             damageInfo = StringBuilder(equippedItem.weapon.damage.displayString)
@@ -400,20 +400,20 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                 .append(equippedItem.weapon.dps.displayString).append("<br>")
         }
         try {
-            for (i in equippedItem.stats.indices) {
-                statsString.append("<font color=#" + rbgToHexHTML(equippedItem.stats[i].display.color) + ">")
-                    .append(equippedItem.stats[i].display.displayString).append("</font>")
+            for (i in equippedItem.stats?.indices!!) {
+                statsString.append("<font color=#" + rbgToHexHTML(equippedItem.stats?.get(i)?.display?.color!!) + ">")
+                    .append(equippedItem.stats!![i].display.displayString).append("</font>")
                     .append("<br>")
             }
         } catch (e: Exception) {
             var i = 0
-            while (equippedItem.stats != null && i < equippedItem.stats.size) {
-                if (equippedItem.stats[i].isIsEquipBonus) {
+            while (equippedItem.stats != null && i < equippedItem.stats!!.size) {
+                if (equippedItem.stats!![i].isIsEquipBonus) {
                     statsString.append("<font color=#00ff00>")
-                        .append(equippedItem.stats[i].display_string).append("</font>")
+                        .append(equippedItem.stats!![i].display_string).append("</font>")
                         .append("<br>")
                 } else {
-                    statsString.append(equippedItem.stats[i].display_string).append("<br>")
+                    statsString.append(equippedItem.stats!![i].display_string).append("<br>")
                 }
                 i++
             }

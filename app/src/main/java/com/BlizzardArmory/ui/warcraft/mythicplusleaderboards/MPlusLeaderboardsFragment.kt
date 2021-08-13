@@ -114,11 +114,11 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
             viewModel.downloadMythicKeystoneLeaderboard(selectedConnectedRealm, selectedDungeon, it.periods, region)
         })
 
-        viewModel.getMythicKeystoneLeaderboard().observe(viewLifecycleOwner, {
+        viewModel.getMythicKeystoneLeaderboard().observe(viewLifecycleOwner, { it ->
             val leaderboards = it.filter { leaderboard -> leaderboard.leading_groups != null }
 
             val groups = leaderboards.flatMap { group ->
-                group.leading_groups
+                group.leading_groups!!
             }.sortedWith(compareBy<LeadingGroups> {
                 it.keystone_levelstone_level
             }.thenByDescending {

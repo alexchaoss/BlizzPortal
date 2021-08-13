@@ -17,7 +17,7 @@ class CategoriesAdapter(private val list: List<Category>, private val locale: St
 
     override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
         val category: Category = list[position]
-        holder.bind(category, locale, faction, mappedAchievements, achievements)
+        holder.bind(category, faction, mappedAchievements, achievements)
     }
 
     override fun getItemCount(): Int = list.size

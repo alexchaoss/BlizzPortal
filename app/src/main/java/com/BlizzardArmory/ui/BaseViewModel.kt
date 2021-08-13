@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.ThreadMode
 open class BaseViewModel(application: Application) : AndroidViewModel(application) {
     var jobs = arrayListOf<Job>()
 
-    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("Error", throwable.localizedMessage, throwable)
     }
 

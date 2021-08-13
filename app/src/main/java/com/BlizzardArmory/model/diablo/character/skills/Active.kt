@@ -12,6 +12,6 @@ data class Active(
     var skill: Skill,
 
     @SerializedName("rune")
-    var rune: Rune
+    var rune: Rune?
 
 )

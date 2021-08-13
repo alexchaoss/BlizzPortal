@@ -30,7 +30,7 @@ object WebNewsScrapper {
     }
 
     private fun Document.extractHtml() {
-        select(".ArticleListItem").forEachIndexed { index, element ->
+        select(".ArticleListItem").forEachIndexed { _, element ->
             val url = "https://news.blizzard.com${element.select(".ArticleLink").attr("href")}"
             val title = element.select(".sr-only").text()
             val game = element.select(".ArticleListItem-labelInner").text()
@@ -45,7 +45,7 @@ object WebNewsScrapper {
 
     fun parseNewsPage(pageURL: String): NewsPage {
         Jsoup.connect(pageURL).get().run {
-            select("#article-detail").forEachIndexed { index, element ->
+            select("#article-detail").forEachIndexed { _, element ->
                 val game = element.select(".ArticleDetail-community").text()
                 val title = element.select(".ArticleDetail-title").text()
                 val author = element.select(".ArticleDetail-bylineAuthor").text()

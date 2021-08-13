@@ -9,5 +9,5 @@ data class EncountersInformation(
 
     @SerializedName("_links") val links: Links,
     @SerializedName("character") val character: Character,
-    @SerializedName("expansions") val expansions: List<Expansions>
+    @SerializedName("expansions") val expansions: List<Expansions>?
 )

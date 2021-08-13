@@ -20,7 +20,7 @@ class CharacterGearViewModel(application: Application) : BaseViewModel(applicati
     private var itemsInformation: MutableLiveData<Items> = MutableLiveData()
     private var itemsInfoSetup: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val items = arrayListOf<Item>()
+    private val items = arrayListOf<Item?>()
     private val primaryStatsMap = mutableMapOf<Int, String>()
     private val secondaryStatsMap = mutableMapOf<Int, String>()
     private val gemsMap = mutableMapOf<Int, String>()
@@ -37,7 +37,7 @@ class CharacterGearViewModel(application: Application) : BaseViewModel(applicati
         return itemsInfoSetup
     }
 
-    fun getItems(): ArrayList<Item> {
+    fun getItems(): ArrayList<Item?> {
         return items
     }
 
@@ -66,7 +66,7 @@ class CharacterGearViewModel(application: Application) : BaseViewModel(applicati
                     itemsInformation.value = response.body()
                     itemInformation
                     items.forEachIndexed { index, item ->
-                        setItemInformation(item, index)
+                        setItemInformation(item!!, index)
                     }
                     if (!EventBus.getDefault().isRegistered(this@CharacterGearViewModel)) {
                         EventBus.getDefault().register(this@CharacterGearViewModel)
