@@ -8,13 +8,11 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.statslab.Match
-import com.github.florent37.expansionpanel.ExpansionLayout
 
 
 class MatchesViewHolder(inflater: LayoutInflater, val parent: ViewGroup, private val context: Context) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.overwatch_league_list, parent, false)) {
 
-    var expandable: ExpansionLayout? = null
     var team1Card: CardView? = null
     var team2Card: CardView? = null
     var date: TextView? = null
@@ -26,7 +24,6 @@ class MatchesViewHolder(inflater: LayoutInflater, val parent: ViewGroup, private
     var team2Recycler: RecyclerView? = null
 
     init {
-        expandable = itemView.findViewById(R.id.expansionLayout)
         date = itemView.findViewById(R.id.date)
         type = itemView.findViewById(R.id.type)
         map = itemView.findViewById(R.id.map)
