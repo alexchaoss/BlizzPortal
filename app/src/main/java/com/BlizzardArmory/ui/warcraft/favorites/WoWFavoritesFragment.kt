@@ -31,8 +31,9 @@ class WoWFavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val gson = GsonBuilder().create()
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val battlenetOAuth2Params: BattlenetOAuth2Params? = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        val battlenetOAuth2Params: BattlenetOAuth2Params? =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         val favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
             val favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)

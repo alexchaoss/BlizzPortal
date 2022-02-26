@@ -41,7 +41,10 @@ class SC2ViewModel(application: Application) : BaseViewModel(application) {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
             val response = RetroClient.getSc2Client(getApplication())
-                .getSc2Player(NavigationActivity.userInformation!!.userID, battlenetOAuth2Helper!!.accessToken)
+                .getSc2Player(
+                    NavigationActivity.userInformation.userID,
+                    battlenetOAuth2Helper!!.accessToken
+                )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     accountInformation.value = response.body()

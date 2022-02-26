@@ -4,64 +4,21 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.model.MenuItem
-import com.BlizzardArmory.util.events.MenuItemClickEvent
-import org.greenrobot.eventbus.EventBus
+import com.BlizzardArmory.model.menu.MenuItem
 
-class MenuAdapter(private val list: ArrayList<MenuItem>, private val context: Context)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MenuAdapter(private val list: List<MenuItem>, val context: Context) :
+    RecyclerView.Adapter<MenuViewHolder>() {
 
-    private val hiddenItems = mutableListOf<MenuItem>()
-
-    override fun getItemViewType(position: Int): Int {
-        return if (list[position].header) 0 else 1
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        when (viewType) {
-            0 -> return MenuHeaderViewHolder(inflater, parent, context)
-            1 -> return MenuSubViewHolder(inflater, parent, context)
-        }
-        return MenuHeaderViewHolder(inflater, parent, context)
+        return MenuViewHolder(inflater, parent, context)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         val menuItem: MenuItem = list[position]
-        holder.itemView.setOnClickListener {
-            EventBus.getDefault().post(MenuItemClickEvent(menuItem, position))
-        }
-        when (holder.itemViewType) {
-            0 -> (holder as MenuHeaderViewHolder).bind(menuItem, position)
-            1 -> (holder as MenuSubViewHolder).bind(menuItem)
-        }
+        holder.bind(menuItem, position)
     }
 
     override fun getItemCount(): Int = list.size
 
-    fun toggleSubMenu(toggle: Boolean, item: MenuItem) {
-        if (toggle) {
-            list.addAll(list.indexOf(list.find { it.title == item.title }) + 1, hiddenItems.filter { it.parent == item.title })
-            hiddenItems.removeAll {
-                it.parent == item.title
-            }
-            val first = list.indexOfFirst { it.parent == item.title }
-            val itemCount = list.filter { it.parent == item.title }.size
-            notifyItemRangeInserted(first, itemCount)
-        } else {
-            val first = list.indexOfFirst { it.parent == item.title }
-            val itemCount = list.filter { it.parent == item.title }.size
-            if (list.any { it.parent == item.title }) {
-                list.removeAll {
-                    val contains = it.parent == item.title
-                    if (contains) {
-                        hiddenItems.add(it)
-                    }
-                    contains
-                }
-                notifyItemRangeRemoved(first, itemCount)
-            }
-        }
-
-    }
 }

@@ -22,7 +22,6 @@ import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.MainActivityBinding
-import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
@@ -66,9 +65,6 @@ class MainActivity : LocalizationActivity() {
 
         setLoginButtonToBattlenet()
 
-        viewModel.getBattlenetOAuth2Params().observe(this, {
-            OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
-        })
     }
 
     override fun onResume() {
@@ -146,20 +142,27 @@ class MainActivity : LocalizationActivity() {
 
     private fun checkConnectionBeforeLogin() {
         if (ConnectionStatus.hasNetwork()) {
-            viewModel.openLoginToBattleNet()
+
         } else {
             val dialog = DialogPrompt(this)
             dialog.addTitle(getString(R.string.unstable_connection), 20F, "title")
                 .addMessage(getString(R.string.connected_network), 16F, "message")
                 .addButtons(
-                    dialog.Button(getString(R.string.yes), 16F, { viewModel.openLoginToBattleNet() }, "positive"),
+                    dialog.Button(getString(R.string.yes), 16F, { }, "positive"),
                     dialog.Button(
                         getString(R.string.no), 16F,
                         {
                             dialog.dismiss()
                             val confirmDialog = DialogPrompt(this)
                             confirmDialog.addMessage(getString(R.string.connection_required), 20F)
-                                .addButtons(dialog.Button(getString(R.string.ok), 16F, { confirmDialog.dismiss() }, "close"))
+                                .addButtons(
+                                    dialog.Button(
+                                        getString(R.string.ok),
+                                        16F,
+                                        { confirmDialog.dismiss() },
+                                        "close"
+                                    )
+                                )
                                 .show()
                         }, "negative"
                     )

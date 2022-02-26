@@ -28,7 +28,7 @@ class OWFavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val gson = GsonBuilder().create()
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 
         if (prefs.contains("ow-favorites")) {
             val profiles = gson.fromJson(prefs.getString("ow-favorites", "DEFAULT"), FavoriteProfiles::class.java)

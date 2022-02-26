@@ -215,7 +215,7 @@
     <string name="overwatch_league">Overwatch League</string>
 
     <string-array name="regions">
-        <item>Select Region</item>
+        <item>@string/select_region</item>
         <item>US</item>
         <item>EU</item>
         <item>KR</item>

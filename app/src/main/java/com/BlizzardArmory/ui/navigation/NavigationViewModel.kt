@@ -21,9 +21,12 @@ import java.util.*
 
 class NavigationViewModel(application: Application) : BaseViewModel(application) {
 
-    private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> = MutableLiveData()
+    private var signedIn: MutableLiveData<Boolean> = MutableLiveData()
+    private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
+        MutableLiveData()
     private var userInformation: MutableLiveData<UserInformation> = MutableLiveData()
     private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
+    var isReady = false
 
     data class ViewState(
         val startPanelState: PanelState,
@@ -39,7 +42,10 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
         )
 
     init {
+        signedIn.value = false
         wowConnectedRealms.value = mutableMapOf()
+        getConnectedRealms()
+        initWoWServer()
     }
 
     fun observeViewState(): Observable<ViewState> = viewStateSubject
@@ -62,18 +68,31 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
         return wowMediaCharacter
     }
 
+    fun getSignedInStatus(): LiveData<Boolean> {
+        return signedIn
+    }
+
+    fun isSignedIn(): Boolean? {
+        return signedIn.value
+    }
+
+    fun setSignedInStatus(value: Boolean) {
+        signedIn.value = value
+    }
 
     fun getWowConnectedRealms(): LiveData<MutableMap<String, ConnectedRealms>> {
         return wowConnectedRealms
     }
 
     fun downloadUserInfo() {
+        Log.i("TEST", "USERINFO token ${battlenetOAuth2Helper?.accessToken}")
         var downloadCount = 0
         val job = coroutineScope.launch {
-            val response = RetroClient.getGeneralClient(getApplication()).getUserInfo(
-                battlenetOAuth2Helper?.accessToken,
-                NetworkUtils.region
-            )
+            val response =
+                RetroClient.getGeneralClient(getApplication(), logsToggled = true).getUserInfo(
+                    battlenetOAuth2Helper?.accessToken,
+                    NetworkUtils.region
+                )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     userInformation.value = response.body()
@@ -102,13 +121,15 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     fun getConnectedRealms() {
         val query = Query()
         val jobUS = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
-                "dynamic-us",
-                query,
-                "us"
-            )
+            val response =
+                RetroClient.getWoWClient(getApplication(), logsToggled = false).getConnectedRealms(
+                    "dynamic-us",
+                    query,
+                    "us"
+                )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
+
                     wowConnectedRealms.value?.set("US", response.body()!!)
                 } else {
                     Log.e("Error", response.message())
@@ -167,8 +188,9 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient(getApplication()).getMedia(
-                characterClicked.lowercase(Locale.getDefault()), characterRealm.lowercase(Locale.getDefault()),
-                battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault()),
+                characterClicked.lowercase(Locale.getDefault()),
+                characterRealm.lowercase(Locale.getDefault()),
+                selectedRegion.lowercase(Locale.getDefault()),
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

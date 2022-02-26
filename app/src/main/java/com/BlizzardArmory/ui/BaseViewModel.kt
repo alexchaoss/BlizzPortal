@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.BlizzardArmory.network.NetworkUtils
+import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -17,7 +19,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application) {
+
     var jobs = arrayListOf<Job>()
+    private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("Error", throwable.localizedMessage, throwable)
@@ -41,6 +45,21 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getBnetParams(): MutableLiveData<BattlenetOAuth2Params> {
         return battlenetOAuth2Params
+    }
+
+    fun setBnetParams(bnetParams: BattlenetOAuth2Params) {
+        battlenetOAuth2Params.value = bnetParams
+    }
+
+    fun openLoginToBattleNet() {
+        battlenetOAuth2Params.value = BattlenetOAuth2Params(
+            clientID!!,
+            NetworkUtils.region,
+            NetworkUtils.CALLBACK_URL,
+            "BlizzPortal",
+            BattlenetConstants.SCOPE_WOW,
+            BattlenetConstants.SCOPE_SC2
+        )
     }
 
     fun getErrorCode(): LiveData<Int> {

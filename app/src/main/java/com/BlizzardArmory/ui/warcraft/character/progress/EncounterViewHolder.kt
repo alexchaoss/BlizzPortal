@@ -39,6 +39,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun findBanner(instances: Instances): String {
         when (instances.instance.id) {
+            1195L -> return "sepulcher-of-the-first-ones-small"
             1193L -> return "sanctum_of_domination_small"
             1190L -> return "castle_nathria_small"
             1031L -> return "uldir_small"

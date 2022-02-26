@@ -1,0 +1,127 @@
+{
+  "menu": [
+    {
+      "icon": "ic_baseline_home_24",
+      "string": "home",
+      "sub_menu": []
+    },
+    {
+      "icon": "wow_icon",
+      "string": "world_of_warcraft",
+      "sub_menu": [
+        {
+          "icon": "ic_baseline_account_circle_24",
+          "string": "account",
+          "parent": "world_of_warcraft",
+          "private": true
+        },
+        {
+          "icon": "rep_search",
+          "string": "search_character",
+          "parent": "world_of_warcraft"
+        },
+        {
+          "icon": "rep_search",
+          "string": "search_guild",
+          "parent": "world_of_warcraft"
+        },
+        {
+          "icon": "ic_baseline_leaderboard_24",
+          "string": "raid_leaderboards",
+          "parent": "world_of_warcraft"
+        },
+        {
+          "icon": "ic_baseline_leaderboard_24",
+          "string": "mplus_leaderboards",
+          "parent": "world_of_warcraft"
+        },
+        {
+          "icon": "ic_baseline_leaderboard_24",
+          "string": "pvp_leaderboards",
+          "parent": "world_of_warcraft"
+        },
+        {
+          "icon": "ic_star_black_24dp",
+          "string": "favorites",
+          "parent": "world_of_warcraft"
+        }
+      ]
+    },
+    {
+      "icon": "diablo3_icon",
+      "string": "diablo_3",
+      "sub_menu": [
+        {
+          "icon": "ic_baseline_account_circle_24",
+          "string": "account",
+          "parent": "diablo_3",
+          "private": true
+        },
+        {
+          "icon": "rep_search",
+          "string": "search_profile",
+          "parent": "diablo_3"
+        },
+        {
+          "icon": "ic_baseline_leaderboard_24",
+          "string": "leaderboards",
+          "parent": "diablo_3"
+        },
+        {
+          "icon": "ic_star_black_24dp",
+          "string": "favorites",
+          "parent": "diablo_3"
+        }
+      ]
+    },
+    {
+      "icon": "sc2_icon",
+      "string": "starcraft_2",
+      "sub_menu": [
+        {
+          "icon": "ic_baseline_account_circle_24",
+          "string": "account",
+          "parent": "starcraft_2",
+          "private": true
+        },
+        {
+          "icon": "ic_baseline_leaderboard_24",
+          "string": "leaderboards",
+          "parent": "starcraft_2"
+        }
+      ]
+    },
+    {
+      "icon": "overwatch_icon",
+      "string": "overwatch",
+      "sub_menu": [
+        {
+          "icon": "ic_baseline_account_circle_24",
+          "string": "account",
+          "parent": "overwatch",
+          "private": true
+        },
+        {
+          "icon": "rep_search",
+          "string": "search_profile",
+          "parent": "overwatch"
+        },
+        {
+          "icon": "ic_star_black_24dp",
+          "string": "favorites",
+          "parent": "overwatch"
+        }
+      ]
+    },
+    {
+      "icon": "settings",
+      "string": "settingsTitle",
+      "sub_menu": []
+    },
+    {
+      "icon": "logout_icon",
+      "string": "logout",
+      "sub_menu": []
+    }
+  ]
+}

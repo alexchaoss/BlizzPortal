@@ -276,7 +276,7 @@ class WoWCharacterFragment : Fragment() {
 
     private fun manageFavorite(characterSummary: CharacterSummary) {
         var favoriteCharacters = FavoriteCharacters()
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         val gson = GsonBuilder().create()
         val favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {

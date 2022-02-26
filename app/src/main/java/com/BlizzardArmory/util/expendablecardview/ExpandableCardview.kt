@@ -11,15 +11,20 @@ import android.view.animation.Transformation
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.view.get
+import kotlin.properties.Delegates
 
 
-class ExpandableCardview @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : CardView(context, attrs), View.OnClickListener {
+class ExpandableCardview(context: Context, attrs: AttributeSet? = null) : CardView(context, attrs),
+    View.OnClickListener {
 
-    private var currentState: ExpandableState = ExpandableState.CLOSED
-    private var headerRotationExpanded = 270F
-    private var headerRotationCollapsed = 90F
+    private var currentState: ExpandableState by Delegates.observable(ExpandableState.CLOSED) { prop, old, new ->
+        stateListener?.onChangeStateListener(new)
+    }
+    private var headerRotationExpanded = 180F
+    private var headerRotationCollapsed = 0F
+    private var canExpand = true
+
+    var stateListener: StateListener? = null
 
     init {
         setOnClickListener(this)
@@ -70,7 +75,6 @@ class ExpandableCardview @JvmOverloads constructor(
         v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
         val targetHeight: Int = v.measuredHeight
 
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
         v.layoutParams.height = 1
         v.visibility = View.VISIBLE
         val a: Animation = object : Animation() {
@@ -84,7 +88,6 @@ class ExpandableCardview @JvmOverloads constructor(
             }
         }
 
-        // Expansion speed of 1dp/ms
         a.duration = ((targetHeight / v.context.resources
             .displayMetrics.density) * 1.5).toInt().toLong()
         v.startAnimation(a)
@@ -107,13 +110,30 @@ class ExpandableCardview @JvmOverloads constructor(
             }
         }
 
-        // Collapse speed of 1dp/ms
         a.duration = ((initialHeight / v.context.resources
             .displayMetrics.density) * 1.5).toInt().toLong()
         v.startAnimation(a)
     }
 
-    override fun onClick(v: View?) {
-        expandCollapseAction()
+    fun setCanExpand(canExpand: Boolean) {
+        this.canExpand = canExpand
     }
+
+    fun isExpanded(): Boolean {
+        return currentState == ExpandableState.EXPANDED
+    }
+
+    fun registerStateListener(stateListener: StateListener) {
+        this.stateListener = stateListener
+    }
+
+    override fun onClick(v: View?) {
+        if (canExpand) {
+            expandCollapseAction()
+        }
+    }
+}
+
+interface StateListener {
+    fun onChangeStateListener(newState: ExpandableState)
 }

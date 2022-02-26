@@ -1,6 +1,6 @@
 package com.BlizzardArmory.network
 
-import com.BlizzardArmory.ui.main.MainActivity
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import java.util.*
 
 /**
@@ -16,7 +16,7 @@ object NetworkUtils {
     var HEROKU_API_BASE_URL = "https://blizzard-armory-server.herokuapp.com/"
     var AWS_PROXY_BASE_URL = "https://blizzportalproxy-env.eba-ykhzpmue.us-east-1.elasticbeanstalk.com/"
 
-    val logs = false
+    const val logs = false
 
     /**
      * The constant paypalURL.
@@ -100,10 +100,10 @@ object NetworkUtils {
      * @return the region
      */
     val region: String
-        get() = MainActivity.selectedRegion.lowercase(Locale.getDefault())
+        get() = NavigationActivity.selectedRegion.lowercase(Locale.getDefault())
 
     val locale: String
-        get() = MainActivity.locale
+        get() = NavigationActivity.locale
 
     /**
      * Gets ow profile.

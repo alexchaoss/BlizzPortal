@@ -26,7 +26,6 @@ import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
-import com.BlizzardArmory.ui.main.MainActivity.Companion.locale
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.account.OWFragment
@@ -40,8 +39,8 @@ import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
+import com.BlizzardArmory.util.state.FragmentTag
 import org.greenrobot.eventbus.EventBus
 
 class SettingsFragment : Fragment() {
@@ -62,7 +61,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 
         val languageAdapter = setAdapater(languageList)
         languageAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
@@ -107,7 +106,7 @@ class SettingsFragment : Fragment() {
                 if (position != 0) {
                     Log.i("lang", selectedLanguage)
                     setLocale()
-                    EventBus.getDefault().post(LocaleSelectedEvent(locale))
+                    EventBus.getDefault().post(LocaleSelectedEvent(NavigationActivity.locale))
                 }
                 if (view != null) {
                     (view as TextView).setTextColor(Color.WHITE)
@@ -157,7 +156,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setLocale() {
-        locale = when (selectedLanguage) {
+        NavigationActivity.locale = when (selectedLanguage) {
             "English" -> "en_US"
             "Spanish" -> "es_ES"
             "French" -> "fr_FR"
@@ -170,7 +169,7 @@ class SettingsFragment : Fragment() {
             "Taiwanese" -> "zh_TW"
             else -> "en_US"
         }
-        sharedPreferences!!.edit().putString("locale", locale).apply()
+        sharedPreferences!!.edit().putString("locale", NavigationActivity.locale).apply()
     }
 
     companion object {

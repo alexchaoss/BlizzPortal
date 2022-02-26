@@ -1,5 +1,6 @@
 package com.BlizzardArmory.network.oauth
 
+import android.util.Log
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow
 import com.google.api.client.auth.oauth2.StoredCredential
 import com.google.api.client.auth.oauth2.TokenResponse
@@ -20,6 +21,7 @@ class BattlenetOAuth2Helper(private val oauth2Params: BattlenetOAuth2Params) {
             .setScopes(convertScopesToString(oauth2Params.scope)).build()
 
     fun storeAccessToken(token: TokenResponse) {
+        Log.i("TOKEN", "$token")
         flow.createAndStoreCredential(token, oauth2Params.userId)
     }
 

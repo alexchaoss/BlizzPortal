@@ -1,7 +1,12 @@
 package com.BlizzardArmory.ui.navigation
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Rect
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,14 +17,15 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.NavigationActivityBarBinding
 import com.BlizzardArmory.databinding.NavigationActivityBinding
-import com.BlizzardArmory.model.MenuItem
 import com.BlizzardArmory.model.UserInformation
+import com.BlizzardArmory.model.menu.Menu
 import com.BlizzardArmory.model.news.UserNews
 import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.network.ErrorMessages
@@ -45,10 +51,12 @@ import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
+import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.ResourceNameToId.getStringIdFromString
 import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import com.BlizzardArmory.util.events.MenuItemClickEvent
+import com.BlizzardArmory.util.events.MenuItemEvent
 import com.BlizzardArmory.util.state.FavoriteState
 import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.state.RightPanelState
@@ -85,27 +93,40 @@ class NavigationActivity : LocalizationActivity(),
     private val viewModel: NavigationViewModel by viewModels()
     private var viewStateDisposable: Disposable? = null
 
-    private val menuList = arrayListOf<MenuItem>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener {
+            return@addOnPreDrawListener viewModel.isReady
+        }
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             handleUncaughtException(thread, throwable)
         }
+
         barBinding = NavigationActivityBarBinding.inflate(layoutInflater)
         binding = NavigationActivityBinding.inflate(layoutInflater)
         val view = binding.root
-        setContentView(view)
-
-        binding.fragment.addOnLayoutChangeListener(PanelsChildGestureRegionObserver.Provider.get())
 
         setOberservers()
+
+        setContentView(view)
+
+        startWiFiNetworkCallback()
+        startDataNetworkCallback()
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        initLocale()
+
+        viewModel.getConnectedRealms()
+        viewModel.initWoWServer()
+
+        binding.fragment.addOnLayoutChangeListener(PanelsChildGestureRegionObserver.Provider.get())
 
         favorite = binding.topBar.favorite
 
         errorMessage = ErrorMessages(this.resources)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        viewModel.getBnetParams().value = this.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         getUserNewsPreferences()
         setUserNews()
@@ -113,30 +134,70 @@ class NavigationActivity : LocalizationActivity(),
             openNewsFragment()
         }
 
-        viewModel.initWoWServer()
-
         setNavigation()
-
-        createMenuList()
-
+        val menu = Gson().fromJson(
+            resources.openRawResource(R.raw.menu_items).bufferedReader().use { it.readText() },
+            Menu::class.java
+        )
         binding.menu.apply {
-            adapter = MenuAdapter(menuList, context)
-            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }!!)
-            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.diablo_3) }!!)
-            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.overwatch) }!!)
-            (binding.menu.adapter as MenuAdapter).toggleSubMenu(false, menuList.find { it.title == resources.getString(R.string.starcraft_2) }!!)
+            adapter = MenuAdapter(menu.menuList, context)
         }
+    }
 
-        if (savedInstanceState == null) {
-            when (OauthFlowStarter.lastOpenedFragmentNeedingOAuth) {
-                "AccountFragment" -> {
-                    var fragment = AccountFragment()
-                    openWoWAccount(fragment)
-                }
-                FragmentTag.D3FRAGMENT.name -> {
-                    callD3Fragment(OauthFlowStarter.bundle?.getString("battletag")!!, OauthFlowStarter.bundle?.getString("region")!!)
-                }
+    private fun startWiFiNetworkCallback() {
+        val cm: ConnectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val builder: NetworkRequest.Builder =
+            NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+
+        cm.registerNetworkCallback(builder.build(), object : ConnectivityManager.NetworkCallback() {
+
+            override fun onAvailable(network: Network) {
+                ConnectionStatus.isWiFiNetworkConnected = true
             }
+
+            override fun onLost(network: Network) {
+                ConnectionStatus.isWiFiNetworkConnected = false
+            }
+        })
+    }
+
+    private fun startDataNetworkCallback() {
+        val cm: ConnectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val builder: NetworkRequest.Builder =
+            NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+
+        cm.registerNetworkCallback(builder.build(), object : ConnectivityManager.NetworkCallback() {
+
+            override fun onAvailable(network: Network) {
+                ConnectionStatus.isDataNetworkConnected = true
+            }
+
+            override fun onLost(network: Network) {
+                ConnectionStatus.isDataNetworkConnected = false
+            }
+        })
+    }
+
+    private fun initLocale() {
+        locale = if (!prefs?.contains("locale")!!) {
+            prefs?.edit()?.putString("locale", "en_US")?.apply()
+            "en_US"
+        } else {
+            prefs?.getString("locale", "en_US")!!
+        }
+        when (locale) {
+            "en_US" -> setLanguage("en")
+            "es_ES" -> setLanguage("es")
+            "fr_FR" -> setLanguage("fr")
+            "ru_RU" -> setLanguage("ru")
+            "de_DE" -> setLanguage("de")
+            "pt_BR" -> setLanguage("pt")
+            "it_IT" -> setLanguage("it")
+            "ko_KR" -> setLanguage("ko")
+            "zh_CN" -> setLanguage("zh", "CN")
+            "zh_TW" -> setLanguage("zh", "TW")
         }
     }
 
@@ -152,33 +213,6 @@ class NavigationActivity : LocalizationActivity(),
             }
         }
         webview.loadUrl(NetworkUtils.LOGOUT_URL)
-    }
-
-    private fun createMenuList() {
-        menuList.add(MenuItem(true, "", resources.getString(R.string.home), R.drawable.ic_baseline_home_24, false))
-        menuList.add(MenuItem(true, "", resources.getString(R.string.world_of_warcraft), R.drawable.wow_icon, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_character), R.drawable.rep_search, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.search_guild), R.drawable.rep_search, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.raid_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.mplus_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.pvp_leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.world_of_warcraft), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
-        menuList.add(MenuItem(true, "", resources.getString(R.string.diablo_3), R.drawable.diablo3_icon, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.search_profile), R.drawable.rep_search, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.diablo_3), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
-        menuList.add(MenuItem(true, "", resources.getString(R.string.starcraft_2), R.drawable.sc2_icon, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.starcraft_2), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.starcraft_2), resources.getString(R.string.leaderboards), R.drawable.ic_baseline_leaderboard_24, false))
-        menuList.add(MenuItem(true, "", resources.getString(R.string.overwatch), R.drawable.overwatch_icon, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.account), R.drawable.ic_baseline_account_circle_24, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.search_profile), R.drawable.rep_search, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.favorites), R.drawable.ic_star_black_24dp, false))
-        menuList.add(MenuItem(false, resources.getString(R.string.overwatch), resources.getString(R.string.overwatch_league), R.drawable.ic_baseline_leaderboard_24, false))
-        menuList.add(MenuItem(true, "", resources.getString(R.string.settingsTitle), R.drawable.settings, false))
-        menuList.add(MenuItem(true, "", resources.getString(R.string.logout), R.drawable.logout_icon, false))
     }
 
     private fun setNavigation() {
@@ -260,6 +294,10 @@ class NavigationActivity : LocalizationActivity(),
         PanelsChildGestureRegionObserver.Provider.get().remove(binding.fragment.id)
     }
 
+    fun setSignedInStatus(value: Boolean) {
+        viewModel.setSignedInStatus(value)
+    }
+
     fun toggleFavoriteButton(state: FavoriteState) {
         when (state) {
             FavoriteState.Hidden -> {
@@ -322,18 +360,69 @@ class NavigationActivity : LocalizationActivity(),
 
     private fun setOberservers() {
         viewModel.getBnetParams().observe(this, {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-            viewModel.getConnectedRealms()
-            viewModel.downloadUserInfo()
+            if (viewModel.isSignedIn() == true) {
+                viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
+                viewModel.downloadUserInfo()
+            } else {
+                val dialog = DialogPrompt(this)
+                dialog.addTitle("Select your region to login", 18F, "title")
+                    .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
+                    .addButtons(
+                        dialog.Button(
+                            "Login",
+                            16F,
+                            {
+                                selectedRegion =
+                                    (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                                OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
+                                dialog.dismiss()
+                            },
+                            "login_button"
+                        ),
+                        dialog.Button(
+                            "Cancel",
+                            16F,
+                            { dialog.dismiss() },
+                            "login_button"
+                        )
+                    ).show()
+            }
+        })
+
+        viewModel.getUserInformation().observe(this, {
+            when (OauthFlowStarter.lastOpenedFragmentNeedingOAuth) {
+                FragmentTag.WOWFRAGMENT.name -> {
+                    val fragment = AccountFragment()
+                    openWoWAccount(fragment)
+                }
+                FragmentTag.D3FRAGMENT.name -> {
+                    callD3Fragment(it.battleTag, selectedRegion)
+                }
+                FragmentTag.SC2FRAGMENT.name -> {
+                    val fragment = SC2Fragment()
+                    openSc2Fragment(fragment)
+                }
+                FragmentTag.OVERWATCHFRAGMENT.name -> {
+                    val fragment = OWFragment()
+                    openOverwatchFragment(fragment)
+                }
+            }
+        })
+
+        viewModel.getSignedInStatus().observe(this, {
+            if (it) {
+                viewModel.setBnetParams(intent.getParcelableExtra(BattlenetConstants.BUNDLE_BNPARAMS)!!)
+            }
         })
 
         viewModel.getWowConnectedRealms().observe(this, {
             realms = it
+            viewModel.isReady = true
         })
 
         viewModel.getUserInformation().observe(this, {
+            binding.topBar.barTitle.text = it?.battleTag
             userInformation = it
-            binding.topBar.barTitle.text = userInformation?.battleTag
         })
 
         viewModel.getErrorCode().observe(this, {
@@ -464,10 +553,11 @@ class NavigationActivity : LocalizationActivity(),
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun menuItemClickedReceived(menuItem: MenuItemClickEvent) {
+    public fun menuItemClickedReceived(menuItem: MenuItemEvent) {
+        OauthFlowStarter.lastOpenedFragmentNeedingOAuth = ""
         val fragment: Fragment
         val searchDialog = DialogPrompt(this)
-        when (menuItem.menuItem.title) {
+        when (this.resources.getString(getStringIdFromString(menuItem.menuItem.string, this))) {
             this.resources.getString(R.string.home) -> {
                 toggleFavoriteButton(FavoriteState.Hidden)
                 resetBackStack()
@@ -491,61 +581,64 @@ class NavigationActivity : LocalizationActivity(),
                                 searchDialog.dismiss()
                             },
                             "cancel_button",
-                        ))
+                        )
+                    )
                     .show()
-            }
-            resources.getString(R.string.diablo_3) -> {
-                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
-                menuList.find { it.title == resources.getString(R.string.diablo_3) }?.toggle = !menuItem.menuItem.toggle
-            }
-            resources.getString(R.string.overwatch) -> {
-                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
-                menuList.find { it.title == resources.getString(R.string.overwatch) }?.toggle = !menuItem.menuItem.toggle
-            }
-            resources.getString(R.string.world_of_warcraft) -> {
-                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
-                menuList.find { it.title == resources.getString(R.string.world_of_warcraft) }?.toggle = !menuItem.menuItem.toggle
-            }
-            resources.getString(R.string.starcraft_2) -> {
-                (binding.menu.adapter as MenuAdapter).toggleSubMenu(!menuItem.menuItem.toggle, menuItem.menuItem)
-                menuList.find { it.title == resources.getString(R.string.starcraft_2) }?.toggle = !menuItem.menuItem.toggle
             }
             resources.getString(R.string.account) -> {
                 toggleFavoriteButton(FavoriteState.Hidden)
-                when (menuItem.menuItem.parent) {
+                when (this.resources.getString(
+                    getStringIdFromString(
+                        menuItem.menuItem.parent,
+                        this
+                    )
+                )) {
                     resources.getString(R.string.world_of_warcraft) -> {
                         fragment = AccountFragment()
-                        openWoWAccount(fragment)
+                        if (viewModel.isSignedIn() == false) {
+                            OauthFlowStarter.lastOpenedFragmentNeedingOAuth =
+                                FragmentTag.WOWFRAGMENT.name
+                            viewModel.openLoginToBattleNet()
+                        } else {
+                            openWoWAccount(fragment)
+                        }
                     }
                     resources.getString(R.string.diablo_3) -> {
-                        callD3Fragment(userInformation?.battleTag!!, NetworkUtils.region)
+                        callD3Fragment(
+                            viewModel.getUserInformation().value?.battleTag,
+                            NetworkUtils.region
+                        )
                     }
                     resources.getString(R.string.overwatch) -> {
-                        val bundle = Bundle()
                         fragment = OWFragment()
-                        bundle.putString("username", userInformation?.battleTag)
-                        bundle.putString("platform", "pc")
-                        fragment.arguments = bundle
-                        resetBackStack()
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment, fragment, FragmentTag.OVERWATCHFRAGMENT.name)
-                            .addToBackStack("ow_account").commit()
-                        supportFragmentManager.executePendingTransactions()
+                        if (viewModel.isSignedIn() == false) {
+                            OauthFlowStarter.lastOpenedFragmentNeedingOAuth =
+                                FragmentTag.OVERWATCHFRAGMENT.name
+                            viewModel.openLoginToBattleNet()
+                        } else {
+                            openOverwatchFragment(fragment)
+                        }
                     }
                     resources.getString(R.string.starcraft_2) -> {
                         fragment = SC2Fragment()
-                        resetBackStack()
-                        supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment, fragment, FragmentTag.SC2FRAGMENT.name)
-                            .addToBackStack("sc2")
-                            .commit()
-                        binding.overlappingPanel.closePanels()
+                        if (viewModel.isSignedIn() == false) {
+                            OauthFlowStarter.lastOpenedFragmentNeedingOAuth =
+                                FragmentTag.SC2FRAGMENT.name
+                            viewModel.openLoginToBattleNet()
+                        } else {
+                            openSc2Fragment(fragment)
+                        }
                     }
                 }
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.search_profile) -> {
-                when (menuItem.menuItem.parent) {
+                when (this.resources.getString(
+                    getStringIdFromString(
+                        menuItem.menuItem.parent,
+                        this
+                    )
+                )) {
                     resources.getString(R.string.overwatch) -> {
                         OWPlatformChoiceDialog.overwatchPrompt(this, supportFragmentManager)
                     }
@@ -553,7 +646,14 @@ class NavigationActivity : LocalizationActivity(),
                         searchDialog.addTitle("Enter a BattleTag", 18F, "battletag")
                             .addEditText("btag_field")
                             .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                            .addButtons(searchDialog.Button("Search", 16F, { searchD3Profile(searchDialog) }, "search_button"))
+                            .addButtons(
+                                searchDialog.Button(
+                                    "Search",
+                                    16F,
+                                    { searchD3Profile(searchDialog) },
+                                    "search_button"
+                                )
+                            )
                             .show()
                     }
                 }
@@ -563,11 +663,21 @@ class NavigationActivity : LocalizationActivity(),
                 searchDialog.addTitle("Character Name", 18F, "character_label")
                     .addEditText("character_field")
                     .addMessage("Realm", 18F, "realm_label")
-                    .addAutoCompleteEditText("realm_field", viewModel.getWowConnectedRealms().value!!.values.flatMap { it.results }
-                        .flatMap { data -> data.connectedRealm.realms }.map { it.name }
-                        .flatMap { it.getAllNames() }.distinct())
+                    .addAutoCompleteEditText(
+                        "realm_field",
+                        viewModel.getWowConnectedRealms().value!!.values.flatMap { it.results }
+                            .flatMap { data -> data.connectedRealm.realms }.map { it.name }
+                            .flatMap { it.getAllNames() }.distinct()
+                    )
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                    .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWChracterFields(searchDialog) }, "search_button"))
+                    .addButtons(
+                        searchDialog.Button(
+                            "GO",
+                            16F,
+                            { validSearchedWoWChracterFields(searchDialog) },
+                            "search_button"
+                        )
+                    )
                     .setOnCancelListener {
                         binding.loadingCircle.visibility = View.GONE
                     }
@@ -578,11 +688,21 @@ class NavigationActivity : LocalizationActivity(),
                 searchDialog.addTitle("Guild Name", 18F, "guild_label")
                     .addEditText("guild_field")
                     .addMessage("Realm", 18F, "realm_label")
-                    .addAutoCompleteEditText("realm_field", viewModel.getWowConnectedRealms().value!!.values.flatMap { it.results }
-                        .flatMap { data -> data.connectedRealm.realms }.map { it.name }
-                        .flatMap { it.getAllNames() }.distinct())
+                    .addAutoCompleteEditText(
+                        "realm_field",
+                        viewModel.getWowConnectedRealms().value!!.values.flatMap { it.results }
+                            .flatMap { data -> data.connectedRealm.realms }.map { it.name }
+                            .flatMap { it.getAllNames() }.distinct()
+                    )
                     .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                    .addButtons(searchDialog.Button("GO", 16F, { validSearchedWoWGuildFields(searchDialog) }, "search_button"))
+                    .addButtons(
+                        searchDialog.Button(
+                            "GO",
+                            16F,
+                            { validSearchedWoWGuildFields(searchDialog) },
+                            "search_button"
+                        )
+                    )
                     .setOnCancelListener {
                         binding.loadingCircle.visibility = View.GONE
                     }
@@ -593,7 +713,12 @@ class NavigationActivity : LocalizationActivity(),
             resources.getString(R.string.favorites) -> {
                 resetBackStack()
                 toggleFavoriteButton(FavoriteState.Hidden)
-                when (menuItem.menuItem.parent) {
+                when (this.resources.getString(
+                    getStringIdFromString(
+                        menuItem.menuItem.parent,
+                        this
+                    )
+                )) {
                     resources.getString(R.string.world_of_warcraft) -> {
                         fragment = WoWFavoritesFragment()
                         supportFragmentManager.beginTransaction()
@@ -624,7 +749,12 @@ class NavigationActivity : LocalizationActivity(),
             resources.getString(R.string.leaderboards) -> {
                 resetBackStack()
                 toggleFavoriteButton(FavoriteState.Hidden)
-                when (menuItem.menuItem.parent) {
+                when (this.resources.getString(
+                    getStringIdFromString(
+                        menuItem.menuItem.parent,
+                        this
+                    )
+                )) {
                     resources.getString(R.string.diablo_3) -> {
                         fragment = D3LeaderboardFragment()
                         resetBackStack()
@@ -697,6 +827,31 @@ class NavigationActivity : LocalizationActivity(),
         }
     }
 
+    private fun openOverwatchFragment(fragment: OWFragment) {
+        val bundle = Bundle()
+        bundle.putString("username", viewModel.getUserInformation().value?.battleTag)
+        bundle.putString("platform", "pc")
+        fragment.arguments = bundle
+        resetBackStack()
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment,
+                fragment,
+                FragmentTag.OVERWATCHFRAGMENT.name
+            )
+            .addToBackStack("ow_account").commit()
+        supportFragmentManager.executePendingTransactions()
+    }
+
+    private fun openSc2Fragment(fragment: Fragment) {
+        resetBackStack()
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragment, fragment, FragmentTag.SC2FRAGMENT.name)
+            .addToBackStack("sc2")
+            .commit()
+        binding.overlappingPanel.closePanels()
+    }
+
     private fun openWoWAccount(fragment: Fragment) {
         resetBackStack()
         supportFragmentManager.beginTransaction()
@@ -719,12 +874,20 @@ class NavigationActivity : LocalizationActivity(),
         when {
             !(dialog.tagMap["btag_field"] as EditText).text.toString()
                 .matches(".+#[0-9]+".toRegex()) -> {
-                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter a BattleTag", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    dialog.tagMap["main_container"]!!,
+                    "Please enter a BattleTag",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 .equals("Select Region", ignoreCase = true) -> {
-                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the region", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    dialog.tagMap["main_container"]!!,
+                    "Please enter the region",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
             else -> {
@@ -740,12 +903,20 @@ class NavigationActivity : LocalizationActivity(),
     private fun validSearchedWoWChracterFields(dialog: DialogPrompt) {
         when {
             (dialog.tagMap["character_field"] as EditText).text.toString() == "" -> {
-                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the character name", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    dialog.tagMap["main_container"]!!,
+                    "Please enter the character name",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 .equals("Select Region", ignoreCase = true) -> {
-                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the region", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    dialog.tagMap["main_container"]!!,
+                    "Please enter the region",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
             else -> {
@@ -766,7 +937,11 @@ class NavigationActivity : LocalizationActivity(),
                     viewModel.downloadMedia(characterClicked, characterRealm, selectedRegion)
                     dialog.dismiss()
                 } else {
-                    Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter a valid realm for this region", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(
+                        dialog.tagMap["main_container"]!!,
+                        "Please enter a valid realm for this region",
+                        Snackbar.LENGTH_SHORT
+                    )
                         .show()
                 }
             }
@@ -776,12 +951,20 @@ class NavigationActivity : LocalizationActivity(),
     private fun validSearchedWoWGuildFields(dialog: DialogPrompt) {
         when {
             (dialog.tagMap["guild_field"] as EditText).text.toString() == "" -> {
-                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the character name", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    dialog.tagMap["main_container"]!!,
+                    "Please enter the character name",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
             (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
                 .equals("Select Region", ignoreCase = true) -> {
-                Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter the character name", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    dialog.tagMap["main_container"]!!,
+                    "Please enter the character name",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
             else -> {
@@ -789,7 +972,7 @@ class NavigationActivity : LocalizationActivity(),
                     .lowercase(Locale.getDefault())
                 val selectedRegion =
                     (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                var guildRealm: String
+                val guildRealm: String
                 if (viewModel.getWowConnectedRealms().value!![selectedRegion]!!.results.flatMap { data -> data.connectedRealm.realms }
                         .map { it.name }.flatMap { it.getAllNames() }
                         .any { it == (dialog.tagMap["realm_field"] as AutoCompleteTextView).text.toString() }) {
@@ -803,7 +986,11 @@ class NavigationActivity : LocalizationActivity(),
                     callWoWGuildFragment(guildName, selectedRegion, guildRealm, dialog)
                     dialog.dismiss()
                 } else {
-                    Snackbar.make(dialog.tagMap["main_container"]!!, "Please enter a valid realm for this region", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(
+                        dialog.tagMap["main_container"]!!,
+                        "Please enter a valid realm for this region",
+                        Snackbar.LENGTH_SHORT
+                    )
                         .show()
                 }
 
@@ -811,7 +998,12 @@ class NavigationActivity : LocalizationActivity(),
         }
     }
 
-    private fun callWoWGuildFragment(guildName: String, selectedRegion: String, guildRealm: String, dialog: DialogPrompt) {
+    private fun callWoWGuildFragment(
+        guildName: String,
+        selectedRegion: String,
+        guildRealm: String,
+        dialog: DialogPrompt
+    ) {
         val fragment = GuildNavFragment()
         val bundle = Bundle()
         bundle.putString("guildName", guildName)
@@ -827,28 +1019,43 @@ class NavigationActivity : LocalizationActivity(),
         dialog.dismiss()
     }
 
-    private fun callD3Fragment(battletag: String, region: String) {
+    private fun callD3Fragment(battletag: String?, region: String) {
         val fragment: Fragment = D3Fragment()
-        val bundle = Bundle()
-        bundle.putString("battletag", battletag)
-        bundle.putString("region", region)
-        fragment.arguments = bundle
-        resetBackStack()
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
-            .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
-            .addToBackStack("d3_account").commit()
-        supportFragmentManager.executePendingTransactions()
+        Log.i("Logged in", viewModel.isSignedIn().toString())
+        if (viewModel.isSignedIn() == false) {
+            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = FragmentTag.D3FRAGMENT.name
+            viewModel.openLoginToBattleNet()
+        } else {
+            val bundle = Bundle()
+            bundle.putString("battletag", battletag)
+            bundle.putString("region", region)
+            fragment.arguments = bundle
+            resetBackStack()
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
+                .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
+                .addToBackStack("d3_account").commit()
+            supportFragmentManager.executePendingTransactions()
+        }
     }
 
-    private fun callWoWCharacterFragment(characterClicked: String, characterRealm: String, selectedRegion: String) {
+    private fun callWoWCharacterFragment(
+        characterClicked: String,
+        characterRealm: String,
+        selectedRegion: String
+    ) {
         if (supportFragmentManager.primaryNavigationFragment != null && supportFragmentManager.primaryNavigationFragment!!.isVisible) {
             supportFragmentManager.beginTransaction()
                 .remove(supportFragmentManager.primaryNavigationFragment!!).commit()
         }
         val mediaString = Gson().toJson(viewModel.getMedia().value)
         val woWNavFragment =
-            WoWNavFragment.newInstance(characterClicked, characterRealm, mediaString, selectedRegion)
+            WoWNavFragment.newInstance(
+                characterClicked,
+                characterRealm,
+                mediaString,
+                selectedRegion
+            )
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
             .add(R.id.fragment, woWNavFragment, FragmentTag.NAVFRAGMENT.name)
@@ -886,7 +1093,9 @@ class NavigationActivity : LocalizationActivity(),
     }
 
     companion object {
-        var userInformation: UserInformation? = null
+        var selectedRegion = "US"
+        var locale = "en_US"
+        lateinit var userInformation: UserInformation
         lateinit var realms: MutableMap<String, ConnectedRealms>
         var userNews: UserNews? = null
     }

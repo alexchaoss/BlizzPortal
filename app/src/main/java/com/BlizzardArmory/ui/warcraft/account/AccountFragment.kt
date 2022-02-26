@@ -26,6 +26,7 @@ import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.state.FragmentTag
 import okhttp3.internal.toImmutableList
 
 class AccountFragment : Fragment() {
@@ -37,7 +38,13 @@ class AccountFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: AccountViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    private lateinit var navigationActivity: NavigationActivity
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = WowAccountFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -174,8 +181,12 @@ class AccountFragment : Fragment() {
         val dialog = DialogPrompt(requireActivity())
         dialog.setCancellable(false)
         if (responseCode == 401) {
-            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = this.javaClass.simpleName
-            OauthFlowStarter.startOauthFlow(viewModel.getBnetParams().value!!, requireActivity(), View.GONE)
+            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = FragmentTag.WOWFRAGMENT.name
+            OauthFlowStarter.startOauthFlow(
+                viewModel.getBnetParams().value!!,
+                requireActivity() as NavigationActivity,
+                View.GONE
+            )
         } else {
             dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")

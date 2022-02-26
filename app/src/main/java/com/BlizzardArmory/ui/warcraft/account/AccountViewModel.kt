@@ -26,7 +26,7 @@ class AccountViewModel(application: Application) : BaseViewModel(application) {
     fun downloadWoWCharacters() {
         NetworkUtils.loading = true
         val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
+            val response = RetroClient.getWoWClient(getApplication(), logsToggled = true)
                 .getAccount(battlenetOAuth2Helper!!.accessToken)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

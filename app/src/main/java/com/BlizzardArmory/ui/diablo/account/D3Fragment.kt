@@ -125,7 +125,7 @@ class D3Fragment : Fragment() {
 
     private fun manageFavorite(accountInformation: AccountInformation) {
         var favoriteProfiles = D3FavoriteProfiles()
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         val gson = GsonBuilder().create()
         val favoriteCharactersString = prefs.getString("d3-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "DEFAULT") {
@@ -293,9 +293,13 @@ class D3Fragment : Fragment() {
         dialog.setCancellable(false)
 
         if (responseCode == 401) {
-            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = this.javaClass.simpleName
+            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = FragmentTag.D3FRAGMENT.name
             OauthFlowStarter.bundle = arguments
-            OauthFlowStarter.startOauthFlow(viewModel.getBnetParams().value!!, requireActivity(), View.GONE)
+            OauthFlowStarter.startOauthFlow(
+                viewModel.getBnetParams().value!!,
+                navigationActivity,
+                View.GONE
+            )
         } else {
             dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")

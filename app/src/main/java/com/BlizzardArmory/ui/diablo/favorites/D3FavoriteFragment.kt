@@ -30,8 +30,9 @@ class D3FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val gson = GsonBuilder().create()
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val battlenetOAuth2Params: BattlenetOAuth2Params? = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        val battlenetOAuth2Params: BattlenetOAuth2Params? =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
 
         val favoriteProfileString = prefs.getString("d3-favorites", "DEFAULT")
         if (favoriteProfileString != null && favoriteProfileString != "DEFAULT") {
