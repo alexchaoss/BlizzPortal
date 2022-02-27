@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowMythicRaidLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
@@ -28,7 +28,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: WowMythicRaidLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: MRaidLeaderboardsViewModel by viewModels()
+    private val viewModel: MRaidLeaderboardsViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)

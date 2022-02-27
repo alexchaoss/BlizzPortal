@@ -1,17 +1,15 @@
 package com.BlizzardArmory.ui.news.list
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.databinding.NewsListFragmentBinding
-import com.BlizzardArmory.ui.main.MainActivity
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -21,7 +19,7 @@ import kotlinx.coroutines.withContext
 class NewsListFragment : Fragment() {
 
 
-    private val viewModel: NewsListViewModel by viewModels()
+    private val viewModel: NewsListViewModel by activityViewModels()
     private lateinit var binding: NewsListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -100,9 +98,7 @@ class NewsListFragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                val intent = Intent(activity, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                activity.startActivity(intent)
+                activity.finish()
             }
         }
     }

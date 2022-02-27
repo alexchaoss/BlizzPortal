@@ -15,7 +15,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowPvpLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
@@ -29,7 +29,7 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var _binding: WowPvpLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: PvpLeaderboardsViewModel by viewModels()
+    private val viewModel: PvpLeaderboardsViewModel by activityViewModels()
 
     private lateinit var navigationActivity: NavigationActivity
 

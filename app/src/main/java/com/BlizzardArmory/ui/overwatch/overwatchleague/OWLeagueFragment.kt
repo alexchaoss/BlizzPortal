@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.databinding.OverwatchLeagueFragmentBinding
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
@@ -17,7 +17,7 @@ class OWLeagueFragment : Fragment() {
     private var _binding: OverwatchLeagueFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: OWLeagueViewModel by viewModels()
+    private val viewModel: OWLeagueViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         addOnBackPressCallback(activity as NavigationActivity)

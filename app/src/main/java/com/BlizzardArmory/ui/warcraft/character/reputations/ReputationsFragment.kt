@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowRepFragmentBinding
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
@@ -42,7 +42,7 @@ class ReputationsFragment : Fragment() {
 
     private var _binding: WowRepFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ReputationsViewModel by viewModels()
+    private val viewModel: ReputationsViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

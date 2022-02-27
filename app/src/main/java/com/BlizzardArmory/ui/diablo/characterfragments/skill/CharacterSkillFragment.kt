@@ -14,7 +14,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3SkillFragmentBinding
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
@@ -39,7 +39,7 @@ class CharacterSkillFragment : Fragment() {
 
     private var _binding: D3SkillFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CharacterSkillViewModel by viewModels()
+    private val viewModel: CharacterSkillViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = D3SkillFragmentBinding.inflate(layoutInflater)

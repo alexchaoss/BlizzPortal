@@ -32,6 +32,7 @@ import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
@@ -65,6 +66,8 @@ import com.discord.panels.OverlappingPanelsLayout
 import com.discord.panels.PanelState
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -79,6 +82,8 @@ class NavigationActivity : LocalizationActivity(),
 
     private var prefs: SharedPreferences? = null
     private val gson = GsonBuilder().create()
+
+    private val REQUEST_CODE_IN_APP_UPDATE = 7500
 
     private var characterClicked: String = ""
     private var characterRealm: String = ""
@@ -112,6 +117,8 @@ class NavigationActivity : LocalizationActivity(),
 
         setContentView(view)
 
+        checkForAppUpdates()
+
         startWiFiNetworkCallback()
         startDataNetworkCallback()
 
@@ -141,6 +148,17 @@ class NavigationActivity : LocalizationActivity(),
         )
         binding.menu.apply {
             adapter = MenuAdapter(menu.menuList, context)
+        }
+    }
+
+    private fun checkForAppUpdates() {
+        val appUpdateManager = AppUpdateManagerFactory.create(this)
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            appUpdateManager.startUpdateFlowForResult(
+                appUpdateInfo,
+                AppUpdateType.IMMEDIATE, this, REQUEST_CODE_IN_APP_UPDATE
+            )
         }
     }
 
@@ -364,28 +382,7 @@ class NavigationActivity : LocalizationActivity(),
                 viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
                 viewModel.downloadUserInfo()
             } else {
-                val dialog = DialogPrompt(this)
-                dialog.addTitle("Select your region to login", 18F, "title")
-                    .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
-                    .addButtons(
-                        dialog.Button(
-                            "Login",
-                            16F,
-                            {
-                                selectedRegion =
-                                    (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
-                                OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
-                                dialog.dismiss()
-                            },
-                            "login_button"
-                        ),
-                        dialog.Button(
-                            "Cancel",
-                            16F,
-                            { dialog.dismiss() },
-                            "login_button"
-                        )
-                    ).show()
+                login(it)
             }
         })
 
@@ -412,6 +409,13 @@ class NavigationActivity : LocalizationActivity(),
         viewModel.getSignedInStatus().observe(this, {
             if (it) {
                 viewModel.setBnetParams(intent.getParcelableExtra(BattlenetConstants.BUNDLE_BNPARAMS)!!)
+                val menu = Gson().fromJson(
+                    resources.openRawResource(R.raw.menu_items_logged_in).bufferedReader()
+                        .use { file -> file.readText() }, Menu::class.java
+                )
+                binding.menu.apply {
+                    adapter = MenuAdapter(menu.menuList, context)
+                }
             }
         })
 
@@ -432,6 +436,43 @@ class NavigationActivity : LocalizationActivity(),
         viewModel.getMedia().observe(this, {
             callWoWCharacterFragment(characterClicked, characterRealm, selectedRegion)
         })
+    }
+
+    private fun login(it: BattlenetOAuth2Params) {
+        val dialog = DialogPrompt(this)
+        dialog.addTitle("Select your region to login", 18F, "title")
+            .addSpinner(resources.getStringArray(R.array.regions), "region_spinner")
+            .addButtons(
+                dialog.Button(
+                    "Login",
+                    16F,
+                    {
+                        selectedRegion =
+                            (dialog.tagMap["region_spinner"] as Spinner).selectedItem.toString()
+                        if (resources.getStringArray(R.array.regions)
+                                .slice(1 until resources.getStringArray(R.array.regions).size)
+                                .contains(selectedRegion)
+                        ) {
+                            OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
+                            dialog.dismiss()
+                        } else {
+                            Snackbar.make(
+                                dialog.tagMap["main_container"]!!,
+                                "Please select your region",
+                                Snackbar.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    },
+                    "login_button"
+                ),
+                dialog.Button(
+                    "Cancel",
+                    16F,
+                    { dialog.dismiss() },
+                    "login_button"
+                )
+            ).show()
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -561,6 +602,10 @@ class NavigationActivity : LocalizationActivity(),
             this.resources.getString(R.string.home) -> {
                 toggleFavoriteButton(FavoriteState.Hidden)
                 resetBackStack()
+                binding.overlappingPanel.closePanels()
+            }
+            resources.getString(R.string.login) -> {
+                viewModel.openLoginToBattleNet()
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.logout) -> {

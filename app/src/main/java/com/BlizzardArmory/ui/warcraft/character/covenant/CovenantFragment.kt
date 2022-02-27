@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowCovenantFragmentBinding
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.CharacterSoulbinds
@@ -38,7 +38,7 @@ class CovenantFragment : Fragment() {
 
     private var _binding: WowCovenantFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CovenantViewModel by viewModels()
+    private val viewModel: CovenantViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

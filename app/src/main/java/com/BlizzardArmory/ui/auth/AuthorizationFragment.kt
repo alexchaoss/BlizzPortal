@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.BlizzardArmory.databinding.AuthorizationFragmentBinding
 import com.BlizzardArmory.network.oauth.BattlenetConstants
@@ -24,7 +24,7 @@ class AuthorizationFragment : Fragment() {
 
     private var visibility: Int = 0
 
-    private val viewModel: AuthorizationTokenViewModel by viewModels()
+    private val viewModel: AuthorizationTokenViewModel by activityViewModels()
     private var _binding: AuthorizationFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var navigationActivity: NavigationActivity

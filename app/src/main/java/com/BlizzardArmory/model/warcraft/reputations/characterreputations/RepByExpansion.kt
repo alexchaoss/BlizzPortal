@@ -1,6 +1,11 @@
 package com.BlizzardArmory.model.warcraft.reputations.characterreputations
 
 enum class RepByExpansion(expansion: String, name: String, faction: String, id: Int) {
+    THE_ENLIGHTENED("Shadowlands", "The Enlightenedx", "sl base", 2478),
+    THE_ARCHIVISTS_CODEX("Shadowlands", "The Archivists' Codex", "sl base", 2472),
+    DEATHS_ADVANCE("Shadowlands", "Death's Advance", "sl base", 2470),
+    FRACTAL_LORE("Shadowlands", "Fractal Lore", "sl base", 2469),
+    COURT_OF_NIGHT("Shadowlands", "Court of Night", "Court of the Winter Queen", 2464),
     BARONESS_VASHJ("Shadowlands", "Baroness Vashj", "The Ember Court", 2446),
     LADY_MOONBERRY("Shadowlands", "Lady Moonberry", "The Ember Court", 2447),
     MIKANIKOS("Shadowlands", "Mikanikos", "The Ember Court", 2448),
@@ -21,10 +26,10 @@ enum class RepByExpansion(expansion: String, name: String, faction: String, id: 
     THE_EMBER_COURT("Shadowlands", "The Ember Court", "", 2445),
     VE_NARI("Shadowlands", "Ve'nari", "sl base", 2432),
     THE_WILD_HUNT("Shadowlands", "The Wild Hunt", "sl base", 2465),
-    THE_UNDYING_ARMY("Shadowlands", "The Undying Army", "sl base", 2410),
-    THE_ASCENDED("Shadowlands", "The Ascended", "sl base", 2407),
     THE_AVOWED("Shadowlands", "The Avowed", "sl base", 2439),
     COURT_OF_HARVESTERS("Shadowlands", "Court of Harvesters", "sl base", 2413),
+    THE_UNDYING_ARMY("Shadowlands", "The Undying Army", "sl base", 2410),
+    THE_ASCENDED("Shadowlands", "The Ascended", "sl base", 2407),
     RAJANI("Battle for Azeroth", "Rajani", "", 2415),
     HONEYBACK_HIVE("Battle for Azeroth", "Honeyback Hive", "", 2395),
     ULDUM_ACCORD("Battle for Azeroth", "Uldum Accord", "", 2417),

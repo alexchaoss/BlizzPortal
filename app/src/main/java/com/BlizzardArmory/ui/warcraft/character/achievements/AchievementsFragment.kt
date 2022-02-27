@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
@@ -43,7 +43,7 @@ class AchievementsFragment : Fragment() {
 
     private var _binding: WowAchievementsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AchievementViewModel by viewModels()
+    private val viewModel: AchievementViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

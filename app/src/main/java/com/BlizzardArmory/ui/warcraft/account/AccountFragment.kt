@@ -14,7 +14,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowAccountFragmentBinding
@@ -36,7 +36,7 @@ class AccountFragment : Fragment() {
 
     private var _binding: WowAccountFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AccountViewModel by viewModels()
+    private val viewModel: AccountViewModel by activityViewModels()
 
     private lateinit var navigationActivity: NavigationActivity
 

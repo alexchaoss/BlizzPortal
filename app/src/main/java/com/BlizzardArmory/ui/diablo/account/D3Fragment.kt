@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3FragmentBinding
@@ -46,7 +46,7 @@ class D3Fragment : Fragment() {
 
     private var _binding: D3FragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: D3ViewModel by viewModels()
+    private val viewModel: D3ViewModel by activityViewModels()
 
     private lateinit var navigationActivity: NavigationActivity
 

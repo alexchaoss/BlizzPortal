@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.network.NetworkUtils
@@ -25,7 +25,7 @@ class AchievementsFragment : Fragment() {
 
     private var _binding: WowAchievementsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AchievementViewModel by viewModels()
+    private val viewModel: AchievementViewModel by activityViewModels()
 
     private var realm: String? = null
     private var guildName: String? = null

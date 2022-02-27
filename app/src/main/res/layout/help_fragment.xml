@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#272931"
@@ -9,78 +10,29 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/can_t_connect"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/explications"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical|left|start"
-                android:text="@string/privacy_settings_enabled"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/privacy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:adjustViewBounds="true"
-                android:src="@drawable/battlenet_privacy_settings" />
-
-            <TextView
-                android:id="@+id/title2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:text="@string/still_can_t_connect"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/explications2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical|left|start"
-                android:text="@string/authorized_blizzportal"
-                android:textAlignment="center"
-                android:textColor="#FFF"
-                android:textSize="18sp" />
-
-
-            <ImageView
-                android:id="@+id/connections"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:adjustViewBounds="true"
-                android:src="@drawable/battlenet_privacy_settings" />
-
-        </LinearLayout>
+            android:padding="5dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:text="Help"
+        android:textAlignment="center"
+        android:textColor="#FFF"
+        android:textSize="25sp" />
 
     <ImageView
         android:id="@+id/close_button"

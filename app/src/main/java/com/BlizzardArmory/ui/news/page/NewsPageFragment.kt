@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.databinding.NewsFragmentBinding
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.list.NewsListFragment
@@ -22,7 +22,7 @@ class NewsPageFragment : Fragment() {
 
 
     private lateinit var binding: NewsFragmentBinding
-    private val viewModel: NewsPageViewModel by viewModels()
+    private val viewModel: NewsPageViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)

@@ -1,0 +1,14 @@
+{
+  "help": [
+    {
+      "title": "can_t_connect",
+      "contentText": "privacy_settings_enabled",
+      "imageSrc": "battlenet_privacy_settings"
+    },
+    {
+      "title": "still_can_t_connect",
+      "contentText": "authorized_blizzportal",
+      "imageSrc": "authorization_settings"
+    }
+  ]
+}

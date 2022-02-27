@@ -15,7 +15,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowMythicPlusLeaderboardsFragmentBinding
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.LeadingGroups
@@ -30,7 +30,7 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var _binding: WowMythicPlusLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: MPlusLeaderboardsViewModel by viewModels()
+    private val viewModel: MPlusLeaderboardsViewModel by activityViewModels()
 
     private lateinit var navigationActivity: NavigationActivity
 

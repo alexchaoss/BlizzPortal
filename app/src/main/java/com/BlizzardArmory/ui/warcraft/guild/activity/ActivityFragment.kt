@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowGuildActivityBinding
 import com.BlizzardArmory.model.warcraft.guild.Guild
@@ -21,10 +21,10 @@ import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.BlizzardArmory.util.events.RetryEvent
+import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
 
@@ -33,7 +33,7 @@ class ActivityFragment : Fragment() {
 
     private var _binding: WowGuildActivityBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ActivityViewModel by viewModels()
+    private val viewModel: ActivityViewModel by activityViewModels()
 
     lateinit var errorMessages: ErrorMessages
 

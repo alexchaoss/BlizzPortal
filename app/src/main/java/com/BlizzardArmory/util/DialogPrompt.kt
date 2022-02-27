@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import com.BlizzardArmory.R
-import com.BlizzardArmory.ui.HelpFragment
+import com.BlizzardArmory.ui.help.HelpFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.util.state.FragmentTag
 

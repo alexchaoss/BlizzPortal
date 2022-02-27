@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowProgressFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
@@ -38,7 +38,7 @@ class ProgressFragment : Fragment() {
 
     private var _binding: WowProgressFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ProgressViewModel by viewModels()
+    private val viewModel: ProgressViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

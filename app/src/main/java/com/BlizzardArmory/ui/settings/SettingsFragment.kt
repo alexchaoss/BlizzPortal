@@ -21,11 +21,11 @@ import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.SettingsBinding
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.ui.HelpFragment
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
 import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
+import com.BlizzardArmory.ui.help.HelpFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.account.OWFragment

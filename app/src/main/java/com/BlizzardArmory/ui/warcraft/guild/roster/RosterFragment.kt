@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowGuildRosterBinding
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
@@ -25,7 +25,7 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: WowGuildRosterBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: RosterViewModel by viewModels()
+    private val viewModel: RosterViewModel by activityViewModels()
 
     private var realm: String? = null
     private var guildName: String? = null

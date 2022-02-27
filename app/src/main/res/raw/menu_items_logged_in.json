@@ -120,7 +120,7 @@
     },
     {
       "icon": "logout_icon",
-      "string": "login",
+      "string": "logout",
       "sub_menu": []
     }
   ]

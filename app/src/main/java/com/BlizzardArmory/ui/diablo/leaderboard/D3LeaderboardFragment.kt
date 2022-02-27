@@ -15,7 +15,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3LeaderboardsFragmentBinding
@@ -38,7 +38,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var _binding: D3LeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: D3LeaderboardViewModel by viewModels()
+    private val viewModel: D3LeaderboardViewModel by activityViewModels()
 
     private lateinit var rightPanel: NavigationActivity
 

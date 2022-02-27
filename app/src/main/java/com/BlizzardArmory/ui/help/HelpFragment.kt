@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui
+package com.BlizzardArmory.ui.help
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.HelpFragmentBinding
+import com.BlizzardArmory.model.help.Help
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
 import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
@@ -26,8 +27,7 @@ import com.BlizzardArmory.ui.warcraft.mythicplusleaderboards.MPlusLeaderboardsFr
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.ui.warcraft.pvpleaderboards.PvpLeaderboardsFragment
 import com.BlizzardArmory.util.state.FragmentTag
-import com.bumptech.glide.Glide
-import com.stfalcon.imageviewer.StfalconImageViewer
+import com.google.gson.Gson
 
 
 class HelpFragment : Fragment() {
@@ -45,17 +45,12 @@ class HelpFragment : Fragment() {
             closeFragment(activity as NavigationActivity)
             requireActivity().supportFragmentManager.popBackStack()
         }
-        binding.privacy.setOnClickListener {
-            StfalconImageViewer.Builder(context, listOf(binding.privacy.resources)) { imageView, _ ->
-                Glide.with(requireActivity()).load(R.drawable.battlenet_privacy_settings)
-                    .into(imageView)
-            }.withTransitionFrom(binding.privacy).show()
-        }
-        binding.connections.setOnClickListener {
-            StfalconImageViewer.Builder(context, listOf(binding.privacy.resources)) { imageView, _ ->
-                Glide.with(requireActivity()).load(R.drawable.battlenet_privacy_settings)
-                    .into(imageView)
-            }.withTransitionFrom(binding.connections).show()
+        val helpItems = Gson().fromJson(
+            resources.openRawResource(R.raw.help_items).bufferedReader().use { it.readText() },
+            Help::class.java
+        )
+        binding.recycler.apply {
+            adapter = HelpAdapter(helpItems.helpItemList)
         }
     }
 

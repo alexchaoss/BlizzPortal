@@ -13,7 +13,7 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.OwFragmentBinding
@@ -28,8 +28,8 @@ import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.favorites.OWFavoritesFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.state.FavoriteState
+import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -51,7 +51,7 @@ class OWFragment : Fragment() {
 
     private var _binding: OwFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: OWViewModel by viewModels()
+    private val viewModel: OWViewModel by activityViewModels()
 
     private lateinit var navigationActivity: NavigationActivity
 
