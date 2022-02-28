@@ -67,6 +67,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         super.onDestroy()
         _binding = null
         rightPanel.selectRightPanel(RightPanelState.NewsSelection)
+        requireActivity().viewModelStore.clear()
         this.parentFragmentManager.removeOnBackStackChangedListener(this)
     }
 
@@ -245,6 +246,24 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             binding.loadingCircle.visibility = View.GONE
+            val dialog = DialogPrompt(requireActivity())
+            dialog.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+                .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
+                .addButtons(
+                    dialog.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                        dialog.dismiss()
+                        viewModel.downloadCurrentSeason(1, region)
+                        binding.loadingCircle.visibility = View.VISIBLE
+                        NetworkUtils.loading = true
+                    }, "retry"), dialog.Button(
+                        requireActivity().resources.getString(R.string.back), 18f,
+                        {
+                            dialog.dismiss()
+                            parentFragmentManager.popBackStack()
+                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
+                        }, "back"
+                    )
+                ).show()
         })
 
         viewModel.getLeaderboard().observe(viewLifecycleOwner, {

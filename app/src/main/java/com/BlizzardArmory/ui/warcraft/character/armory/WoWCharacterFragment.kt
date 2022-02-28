@@ -230,6 +230,7 @@ class WoWCharacterFragment : Fragment() {
         super.onDestroy()
         _binding = null
         navigationActivity.toggleFavoriteButton(FavoriteState.Hidden)
+        requireActivity().viewModelStore.clear()
     }
 
     override fun onStop() {

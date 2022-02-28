@@ -43,6 +43,7 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        requireActivity().viewModelStore.clear()
     }
 
     override fun onStop() {

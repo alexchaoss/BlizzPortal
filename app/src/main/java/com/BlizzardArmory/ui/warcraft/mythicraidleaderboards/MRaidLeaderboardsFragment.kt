@@ -20,6 +20,7 @@ import com.BlizzardArmory.databinding.WowMythicRaidLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
+import com.BlizzardArmory.util.DialogPrompt
 
 class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -59,6 +60,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        requireActivity().viewModelStore.clear()
     }
 
 
@@ -72,11 +74,30 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             binding.loadingCircle.visibility = View.GONE
+            val dialog = DialogPrompt(requireActivity())
+            dialog.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+                .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
+                .addButtons(
+                    dialog.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                        dialog.dismiss()
+                        viewModel.downloadBothLeaderboard(raidList[1])
+                        binding.loadingCircle.visibility = View.VISIBLE
+                        NetworkUtils.loading = true
+                    }, "retry"), dialog.Button(
+                        requireActivity().resources.getString(R.string.back), 18f,
+                        {
+                            dialog.dismiss()
+                            parentFragmentManager.popBackStack()
+                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
+                        }, "back"
+                    )
+                ).show()
         })
     }
 
     private fun addRaidsToList() {
         raidList.add("Raid")
+        raidList.add("Sepulcher of the First Ones")
         raidList.add("Sanctum of Domination")
         raidList.add("Castle Nathria")
         raidList.add("Ny'alotha The Waking City")

@@ -102,6 +102,14 @@ class NavigationActivity : LocalizationActivity(),
         super.onCreate(savedInstanceState)
         installSplashScreen()
         val content: View = findViewById(android.R.id.content)
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        if (prefs != null && prefs!!.getBoolean("signedIn", false)) {
+            selectedRegion = prefs?.getString("region", "us").toString()
+            viewModel.openLoginToBattleNet()
+        }
+
         content.viewTreeObserver.addOnPreDrawListener {
             return@addOnPreDrawListener viewModel.isReady
         }
@@ -133,7 +141,7 @@ class NavigationActivity : LocalizationActivity(),
         favorite = binding.topBar.favorite
 
         errorMessage = ErrorMessages(this.resources)
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
 
         getUserNewsPreferences()
         setUserNews()
@@ -227,7 +235,7 @@ class NavigationActivity : LocalizationActivity(),
             override fun onPageFinished(view: WebView, url: String) {
                 binding.loadingCircle.visibility = View.GONE
                 Snackbar.make(binding.root, "Logout Successful", Snackbar.LENGTH_SHORT).show()
-                finish()
+                viewModel.setSignedInStatus(false)
             }
         }
         webview.loadUrl(NetworkUtils.LOGOUT_URL)
@@ -382,7 +390,11 @@ class NavigationActivity : LocalizationActivity(),
                 viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
                 viewModel.downloadUserInfo()
             } else {
-                login(it)
+                if (prefs != null && !prefs!!.getBoolean("signedIn", false)) {
+                    login(it)
+                } else {
+                    OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
+                }
             }
         })
 
@@ -408,6 +420,7 @@ class NavigationActivity : LocalizationActivity(),
 
         viewModel.getSignedInStatus().observe(this, {
             if (it) {
+                prefs?.edit()?.putString("region", selectedRegion)?.apply()
                 viewModel.setBnetParams(intent.getParcelableExtra(BattlenetConstants.BUNDLE_BNPARAMS)!!)
                 val menu = Gson().fromJson(
                     resources.openRawResource(R.raw.menu_items_logged_in).bufferedReader()
@@ -417,6 +430,7 @@ class NavigationActivity : LocalizationActivity(),
                     adapter = MenuAdapter(menu.menuList, context)
                 }
             }
+            prefs?.edit()?.putBoolean("signedIn", it)?.apply()
         })
 
         viewModel.getWowConnectedRealms().observe(this, {

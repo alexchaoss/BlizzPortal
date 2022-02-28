@@ -64,6 +64,7 @@ class OWFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         navigationActivity.toggleFavoriteButton(FavoriteState.Hidden)
+        requireActivity().viewModelStore.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

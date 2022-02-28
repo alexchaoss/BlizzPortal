@@ -55,6 +55,7 @@ class NewsPageFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
+        requireActivity().viewModelStore.clear()
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

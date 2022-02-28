@@ -69,6 +69,7 @@ class D3Fragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        requireActivity().viewModelStore.clear()
         navigationActivity.toggleFavoriteButton(FavoriteState.Hidden)
     }
 

@@ -21,6 +21,7 @@ import com.BlizzardArmory.databinding.WowPvpLeaderboardsFragmentBinding
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
+import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.state.RightPanelState
 import com.google.android.material.snackbar.Snackbar
 
@@ -99,6 +100,7 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         super.onDestroy()
         _binding = null
         navigationActivity.selectRightPanel(RightPanelState.NewsSelection)
+        requireActivity().viewModelStore.clear()
         this.parentFragmentManager.removeOnBackStackChangedListener(this)
     }
 
@@ -119,6 +121,24 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             binding.loadingCircle.visibility = View.GONE
+            val dialog = DialogPrompt(requireActivity())
+            dialog.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+                .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
+                .addButtons(
+                    dialog.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                        dialog.dismiss()
+                        viewModel.downloadSeasonIndex()
+                        binding.loadingCircle.visibility = View.VISIBLE
+                        NetworkUtils.loading = true
+                    }, "retry"), dialog.Button(
+                        requireActivity().resources.getString(R.string.back), 18f,
+                        {
+                            dialog.dismiss()
+                            parentFragmentManager.popBackStack()
+                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
+                        }, "back"
+                    )
+                ).show()
         })
     }
 

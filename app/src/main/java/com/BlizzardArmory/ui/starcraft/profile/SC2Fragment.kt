@@ -192,6 +192,7 @@ class SC2Fragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        requireActivity().viewModelStore.clear()
     }
 
     private fun getRaceImage(imageView: ImageView, name: String) {

@@ -44,6 +44,7 @@ class ActivityFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        requireActivity().viewModelStore.clear()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
