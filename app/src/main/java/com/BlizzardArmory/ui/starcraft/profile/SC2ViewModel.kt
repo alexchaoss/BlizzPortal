@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
 
 class SC2ViewModel(application: Application) : BaseViewModel(application) {
 
@@ -42,7 +41,7 @@ class SC2ViewModel(application: Application) : BaseViewModel(application) {
         val job = coroutineScope.launch {
             val response = RetroClient.getSc2Client(getApplication())
                 .getSc2Player(
-                    NavigationActivity.userInformation.userID,
+                    NavigationActivity.userInformation?.userID,
                     battlenetOAuth2Helper!!.accessToken
                 )
             withContext(Dispatchers.Main) {

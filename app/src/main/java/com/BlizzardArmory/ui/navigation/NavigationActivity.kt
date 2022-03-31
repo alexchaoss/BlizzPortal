@@ -93,7 +93,7 @@ class NavigationActivity : LocalizationActivity(),
 
     var favorite: ImageView? = null
 
-    lateinit var barBinding: NavigationActivityBarBinding
+    private lateinit var barBinding: NavigationActivityBarBinding
     lateinit var binding: NavigationActivityBinding
     private val viewModel: NavigationViewModel by viewModels()
     private var viewStateDisposable: Disposable? = null
@@ -236,6 +236,7 @@ class NavigationActivity : LocalizationActivity(),
                 binding.loadingCircle.visibility = View.GONE
                 Snackbar.make(binding.root, "Logout Successful", Snackbar.LENGTH_SHORT).show()
                 viewModel.setSignedInStatus(false)
+                resetBackStack()
             }
         }
         webview.loadUrl(NetworkUtils.LOGOUT_URL)
@@ -385,7 +386,7 @@ class NavigationActivity : LocalizationActivity(),
     }
 
     private fun setOberservers() {
-        viewModel.getBnetParams().observe(this, {
+        viewModel.getBnetParams().observe(this) {
             if (viewModel.isSignedIn() == true) {
                 viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
                 viewModel.downloadUserInfo()
@@ -396,16 +397,16 @@ class NavigationActivity : LocalizationActivity(),
                     OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
                 }
             }
-        })
+        }
 
-        viewModel.getUserInformation().observe(this, {
+        viewModel.getUserInformation().observe(this) {
             when (OauthFlowStarter.lastOpenedFragmentNeedingOAuth) {
                 FragmentTag.WOWFRAGMENT.name -> {
                     val fragment = AccountFragment()
                     openWoWAccount(fragment)
                 }
                 FragmentTag.D3FRAGMENT.name -> {
-                    callD3Fragment(it.battleTag, selectedRegion)
+                    callD3Fragment(it?.battleTag, selectedRegion)
                 }
                 FragmentTag.SC2FRAGMENT.name -> {
                     val fragment = SC2Fragment()
@@ -416,9 +417,9 @@ class NavigationActivity : LocalizationActivity(),
                     openOverwatchFragment(fragment)
                 }
             }
-        })
+        }
 
-        viewModel.getSignedInStatus().observe(this, {
+        viewModel.getSignedInStatus().observe(this) {
             if (it) {
                 prefs?.edit()?.putString("region", selectedRegion)?.apply()
                 viewModel.setBnetParams(intent.getParcelableExtra(BattlenetConstants.BUNDLE_BNPARAMS)!!)
@@ -429,27 +430,36 @@ class NavigationActivity : LocalizationActivity(),
                 binding.menu.apply {
                     adapter = MenuAdapter(menu.menuList, context)
                 }
+            } else {
+                viewModel.setUserInfirmation(null)
+                val menu = Gson().fromJson(
+                    resources.openRawResource(R.raw.menu_items).bufferedReader()
+                        .use { file -> file.readText() }, Menu::class.java
+                )
+                binding.menu.apply {
+                    adapter = MenuAdapter(menu.menuList, context)
+                }
             }
             prefs?.edit()?.putBoolean("signedIn", it)?.apply()
-        })
+        }
 
-        viewModel.getWowConnectedRealms().observe(this, {
+        viewModel.getWowConnectedRealms().observe(this) {
             realms = it
             viewModel.isReady = true
-        })
+        }
 
-        viewModel.getUserInformation().observe(this, {
+        viewModel.getUserInformation().observe(this) {
             binding.topBar.barTitle.text = it?.battleTag
             userInformation = it
-        })
+        }
 
-        viewModel.getErrorCode().observe(this, {
+        viewModel.getErrorCode().observe(this) {
             callErrorAlertDialog(it)
-        })
+        }
 
-        viewModel.getMedia().observe(this, {
+        viewModel.getMedia().observe(this) {
             callWoWCharacterFragment(characterClicked, characterRealm, selectedRegion)
-        })
+        }
     }
 
     private fun login(it: BattlenetOAuth2Params) {
@@ -623,12 +633,14 @@ class NavigationActivity : LocalizationActivity(),
                 binding.overlappingPanel.closePanels()
             }
             resources.getString(R.string.logout) -> {
+                binding.overlappingPanel.closePanels()
                 searchDialog.addTitle("Logout", 18F, "title")
                     .addMessage("Do you want to log out?", 16F, "message")
                     .addButtons(
                         searchDialog.Button(
                             "Ok", 16F,
                             {
+                                searchDialog.dismiss()
                                 binding.loadingCircle.visibility = View.VISIBLE
                                 clearCredentials()
                             },
@@ -643,6 +655,7 @@ class NavigationActivity : LocalizationActivity(),
                         )
                     )
                     .show()
+
             }
             resources.getString(R.string.account) -> {
                 toggleFavoriteButton(FavoriteState.Hidden)
@@ -1154,7 +1167,7 @@ class NavigationActivity : LocalizationActivity(),
     companion object {
         var selectedRegion = "US"
         var locale = "en_US"
-        lateinit var userInformation: UserInformation
+        var userInformation: UserInformation? = null
         lateinit var realms: MutableMap<String, ConnectedRealms>
         var userNews: UserNews? = null
     }

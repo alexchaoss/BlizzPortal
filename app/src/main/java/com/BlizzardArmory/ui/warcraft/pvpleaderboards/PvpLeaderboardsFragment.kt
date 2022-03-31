@@ -44,6 +44,8 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
     private val bracketList = mutableListOf("Bracket", "2v2", "3v3", "RBG")
     private val seasonList = mutableListOf("Season")
 
+    private var dialog: DialogPrompt? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = WowPvpLeaderboardsFragmentBinding.inflate(layoutInflater)
@@ -121,21 +123,19 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             binding.loadingCircle.visibility = View.GONE
-            val dialog = DialogPrompt(requireActivity())
-            dialog.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+            dialog = DialogPrompt(requireActivity())
+            dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
                 .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
                 .addButtons(
-                    dialog.Button(requireActivity().resources.getString(R.string.retry), 18f, {
-                        dialog.dismiss()
+                    dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                        dialog!!.dismiss()
                         viewModel.downloadSeasonIndex()
                         binding.loadingCircle.visibility = View.VISIBLE
                         NetworkUtils.loading = true
-                    }, "retry"), dialog.Button(
+                    }, "retry"), dialog!!.Button(
                         requireActivity().resources.getString(R.string.back), 18f,
                         {
-                            dialog.dismiss()
-                            parentFragmentManager.popBackStack()
-                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
+                            dialog!!.dismiss()
                         }, "back"
                     )
                 ).show()

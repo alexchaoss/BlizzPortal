@@ -30,6 +30,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     private var _binding: WowMythicRaidLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MRaidLeaderboardsViewModel by activityViewModels()
+    private var dialog: DialogPrompt? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         addOnBackPressCallback(activity as NavigationActivity)
@@ -73,22 +74,21 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
         })
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
+            Log.e("Error", "Error code $it occured")
             binding.loadingCircle.visibility = View.GONE
-            val dialog = DialogPrompt(requireActivity())
-            dialog.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+            dialog = DialogPrompt(requireActivity())
+            dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
                 .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
                 .addButtons(
-                    dialog.Button(requireActivity().resources.getString(R.string.retry), 18f, {
-                        dialog.dismiss()
+                    dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                        dialog!!.dismiss()
                         viewModel.downloadBothLeaderboard(raidList[1])
                         binding.loadingCircle.visibility = View.VISIBLE
                         NetworkUtils.loading = true
-                    }, "retry"), dialog.Button(
+                    }, "retry"), dialog!!.Button(
                         requireActivity().resources.getString(R.string.back), 18f,
                         {
-                            dialog.dismiss()
-                            parentFragmentManager.popBackStack()
-                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
+                            dialog!!.dismiss()
                         }, "back"
                     )
                 ).show()

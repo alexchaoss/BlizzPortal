@@ -38,8 +38,6 @@ class AccountFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: AccountViewModel by activityViewModels()
 
-    private lateinit var navigationActivity: NavigationActivity
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,20 +59,20 @@ class AccountFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+        viewModel.getBnetParams().observe(viewLifecycleOwner) {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             viewModel.downloadWoWCharacters()
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             showNoConnectionMessage(it)
-        })
+        }
 
-        viewModel.getCharacters().observe(viewLifecycleOwner, { account ->
+        viewModel.getCharacters().observe(viewLifecycleOwner) { account ->
             setAdapter(account.wowAccounts.flatMap { it.characters }.map { it.realm.name }
                 .distinct().sorted().toMutableList(), binding.realmSpinner)
             binding.loadingCircle.visibility = View.GONE
-        })
+        }
     }
 
     override fun onDestroy() {

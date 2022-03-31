@@ -33,7 +33,7 @@ class AuthorizationFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = AuthorizationFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -69,7 +69,9 @@ class AuthorizationFragment : Fragment() {
                         }
                     }
                 } else {
-                    binding.webview.visibility = View.VISIBLE
+                    if (_binding != null) {
+                        binding.webview.visibility = View.VISIBLE
+                    }
                 }
             }
         }
@@ -77,14 +79,14 @@ class AuthorizationFragment : Fragment() {
     }
 
     private fun setOberservers() {
-        viewModel.getBnetParams().observe(this, {
+        viewModel.getBnetParams().observe(viewLifecycleOwner) {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             initWebView()
-        })
+        }
 
-        viewModel.startActivity().observe(this, {
+        viewModel.startActivity().observe(viewLifecycleOwner) {
             onTokenProcessed(it)
-        })
+        }
     }
 
     override fun onResume() {

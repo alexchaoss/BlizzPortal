@@ -24,7 +24,7 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     private var signedIn: MutableLiveData<Boolean> = MutableLiveData()
     private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
         MutableLiveData()
-    private var userInformation: MutableLiveData<UserInformation> = MutableLiveData()
+    private var userInformation: MutableLiveData<UserInformation?> = MutableLiveData()
     private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
     var isReady = false
 
@@ -60,8 +60,12 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
         viewStateSubject.onNext(viewState.copy(endPanelState = panelState))
     }
 
-    fun getUserInformation(): LiveData<UserInformation> {
+    fun getUserInformation(): LiveData<UserInformation?> {
         return userInformation
+    }
+
+    fun setUserInfirmation(userInformation: UserInformation?) {
+        this.userInformation.value = userInformation
     }
 
     fun getMedia(): LiveData<Media> {
