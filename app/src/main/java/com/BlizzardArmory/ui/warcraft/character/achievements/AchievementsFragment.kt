@@ -4,7 +4,6 @@ package com.BlizzardArmory.ui.warcraft.character.achievements
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -175,7 +174,6 @@ class AchievementsFragment : Fragment() {
     }
 
     private fun setAchievementRecycler(id: Long) {
-        Log.i("achiev size", id.toString())
         binding.achievementsRecycler.apply {
             adapter = AchievementsAdapter(
                 viewModel.getMappedAchievements().value!![id]!!.sortedWith(compareByDescending<DetailedAchievement> {

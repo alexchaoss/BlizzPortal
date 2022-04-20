@@ -1,6 +1,5 @@
 package com.BlizzardArmory.ui.warcraft.guild.achievements
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ProgressBar
@@ -58,7 +57,6 @@ class CategoriesViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
                     ?.sumOf { it.points }!!
         }
 
-        Log.i("points", currentPoints.toString())
         progressBar?.max = 100
 
         categoryName?.text = category.name

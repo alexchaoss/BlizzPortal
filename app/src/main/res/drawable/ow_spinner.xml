@@ -5,13 +5,11 @@
             <item>
                 <shape>
 
-                    <stroke android:width="2px" android:color="#888888" />
+                    <stroke android:width="2px" android:color="#CCCCCC" />
                     <corners android:radius="3dp" />
                 </shape>
             </item>
-            <item>
-                <bitmap android:gravity="center|right" android:src="@drawable/drop_down_arrow_ow" />
-            </item>
+            <item android:gravity="center|right" android:drawable="@drawable/ic_baseline_arrow_drop_down_24" />
         </layer-list>
     </item>
 </selector>

@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.starcraft.leaderboard
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -31,7 +30,6 @@ class LeaderboardAdapter(private val list: List<List<LadderMembers>>, private va
     override fun getItemCount(): Int = fullLeaderboardList.size
 
     fun filter(constraint: String) {
-        Log.i("Filter", constraint)
         fullLeaderboardList.clear()
         if (constraint.lowercase(Locale.getDefault()).isEmpty()) {
             fullLeaderboardList.addAll(list)

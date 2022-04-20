@@ -89,7 +89,6 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     }
 
     fun downloadUserInfo() {
-        Log.i("TEST", "USERINFO token ${battlenetOAuth2Helper?.accessToken}")
         var downloadCount = 0
         val job = coroutineScope.launch {
             val response =

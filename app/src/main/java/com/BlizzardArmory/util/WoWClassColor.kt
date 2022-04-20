@@ -18,6 +18,7 @@ object WoWClassColor {
             10 -> ClassColor.MONK.color
             11 -> ClassColor.DRUID.color
             12 -> ClassColor.DEMON_HUNTER.color
+            13 -> ClassColor.EVOKER.color
             else -> "#000000"
         }
     }

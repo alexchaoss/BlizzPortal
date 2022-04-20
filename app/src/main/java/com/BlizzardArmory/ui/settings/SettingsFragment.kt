@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -104,7 +103,6 @@ class SettingsFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedLanguage = parent.getItemAtPosition(position) as String
                 if (position != 0) {
-                    Log.i("lang", selectedLanguage)
                     setLocale()
                     EventBus.getDefault().post(LocaleSelectedEvent(NavigationActivity.locale))
                 }

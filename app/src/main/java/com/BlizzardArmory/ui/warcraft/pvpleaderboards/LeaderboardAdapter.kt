@@ -1,14 +1,12 @@
 package com.BlizzardArmory.ui.warcraft.pvpleaderboards
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.model.warcraft.pvp.leaderboards.Entries
 import java.util.*
-import kotlin.collections.ArrayList
 
 class LeaderboardAdapter(private val list: List<Entries>, private val context: Context, val region: String) :
     RecyclerView.Adapter<LeaderboardViewHolder>() {
@@ -62,7 +60,6 @@ class LeaderboardAdapter(private val list: List<Entries>, private val context: C
                     if (constraint.matches("rating[=<>][0-9].*".toRegex())) {
                         val delimiter = constraint.last { !it.isLetterOrDigit() }
                         val rating = constraint.substringAfter(delimiter)
-                        Log.i("Rating", rating)
                         if (constraint.contains("=") && search(entry.rating.toString(), rating)) {
                             match = true
                         } else if (constraint.contains(">") && entry.rating > rating.toInt()) {

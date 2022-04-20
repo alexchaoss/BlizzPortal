@@ -317,7 +317,6 @@ class NavigationActivity : LocalizationActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.i("REMOVED GESTURE", "REMOVED")
         PanelsChildGestureRegionObserver.Provider.get().remove(binding.fragment.id)
     }
 
@@ -1093,7 +1092,6 @@ class NavigationActivity : LocalizationActivity(),
 
     private fun callD3Fragment(battletag: String?, region: String) {
         val fragment: Fragment = D3Fragment()
-        Log.i("Logged in", viewModel.isSignedIn().toString())
         if (viewModel.isSignedIn() == false) {
             OauthFlowStarter.lastOpenedFragmentNeedingOAuth = FragmentTag.D3FRAGMENT.name
             viewModel.openLoginToBattleNet()

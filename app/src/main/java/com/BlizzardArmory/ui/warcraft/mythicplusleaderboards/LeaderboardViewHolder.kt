@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.mythicplusleaderboards
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -41,7 +40,6 @@ class LeaderboardViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
         team?.apply {
             adapter = PlayerAdapter(group.members, context, specialization, region)
         }
-        Log.i("Affixes", affixesList.toString())
         affixes?.apply {
             adapter = AffixesAdapter(affixesList, context)
         }

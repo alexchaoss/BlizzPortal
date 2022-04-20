@@ -249,7 +249,6 @@ class CovenantFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun classEventReceived(classEvent: ClassEvent) {
-        Log.i("class", "received")
         characterClass = classEvent.data
     }
 

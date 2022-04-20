@@ -42,7 +42,6 @@ class AchievementViewModel(application: Application) : BaseViewModel(application
     }
 
     fun downloadGuildAchivements(realm: String, name: String, region: String) {
-        Log.i("TEST", "GUILD ACHIEVS")
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient(getApplication())
                 .getGuildAchievements(realm, name,

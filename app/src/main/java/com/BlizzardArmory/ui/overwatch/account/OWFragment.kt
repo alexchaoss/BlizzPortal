@@ -88,7 +88,7 @@ class OWFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getProfile().observe(viewLifecycleOwner, {
+        viewModel.getProfile().observe(viewLifecycleOwner) {
             manageFavorite()
             downloadAvatar()
             setName()
@@ -97,19 +97,23 @@ class OWFragment : Fragment() {
             setRatingInformation()
             setTopButtons()
             binding.loadingCircle.visibility = View.GONE
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             binding.gamesWon.text = privateProfile
             binding.gamesWon.textSize = 18f
             binding.loadingCircle.visibility = View.GONE
             NetworkUtils.loading = false
             navigationActivity.favorite!!.setOnClickListener {
-                Snackbar.make(binding.root, "Can't add private profile to favorites", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    binding.root,
+                    "Can't add private profile to favorites",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
             showNoConnectionMessage(it)
-        })
+        }
 
         viewModel.getCompToggle().observe(viewLifecycleOwner, {
             if (!it) {
@@ -117,13 +121,19 @@ class OWFragment : Fragment() {
                 binding.quickplay.setTextColor(Color.parseColor("#000000"))
                 binding.competitive.setTextColor(Color.parseColor("#FFFFFF"))
                 binding.competitive.setBackgroundColor(0)
-                updateList(viewModel.getTopHeroesQuickPlay().value!!, viewModel.getCareerQuickPlay().value!!)
+                updateList(
+                    viewModel.getTopHeroesQuickPlay().value!!,
+                    viewModel.getCareerQuickPlay().value!!
+                )
             } else {
                 binding.competitive.background = switchCompQuickRadius
                 binding.competitive.setTextColor(Color.parseColor("#000000"))
                 binding.quickplay.setBackgroundColor(0)
                 binding.quickplay.setTextColor(Color.parseColor("#FFFFFF"))
-                updateList(viewModel.getTopHeroesCompetitive().value!!, viewModel.getCareerCompetitive().value!!)
+                updateList(
+                    viewModel.getTopHeroesCompetitive().value!!,
+                    viewModel.getCareerCompetitive().value!!
+                )
             }
         })
     }
@@ -215,17 +225,20 @@ class OWFragment : Fragment() {
         val arrayAdapter: ArrayAdapter<String> = object :
             ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, viewModel.getSortList()) {
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
+                Log.i("TEST", "$position, $convertView, $parent")
                 try {
+                    val view = super.getDropDownView(position, convertView, parent)
                     val tv = view as TextView
                     tv.isAllCaps = true
                     tv.setBackgroundColor(Color.WHITE)
                     tv.textSize = 15f
+                    tv.setTextColor(Color.BLACK)
                     tv.gravity = Gravity.CENTER
+                    return view
                 } catch (e: Exception) {
                     Log.e("Dropdown", "error", e)
                 }
-                return view
+                return View(requireContext())
             }
         }
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
@@ -262,7 +275,7 @@ class OWFragment : Fragment() {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
                 tv.isAllCaps = true
-                tv.setBackgroundColor(Color.WHITE)
+                tv.setBackgroundColor(Color.BLACK)
                 tv.textSize = 15f
                 tv.gravity = Gravity.CENTER
                 return view
@@ -350,8 +363,7 @@ class OWFragment : Fragment() {
             value.setPadding(10, 10, 10, 10)
             value.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
             value.gravity = Gravity.END
-            value.layoutParams =
-                LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            value.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             val text = TextView(requireActivity())
             text.text = key
             text.setPadding(10, 10, 10, 10)
@@ -362,6 +374,8 @@ class OWFragment : Fragment() {
                 text.setBackgroundColor(Color.parseColor("#f6f6f6"))
                 value.setBackgroundColor(Color.parseColor("#f6f6f6"))
             }
+            text.setTextColor(Color.parseColor("#807f8c"))
+            value.setTextColor(Color.parseColor("#807f8c"))
             linearLayout.addView(text)
             linearLayout.addView(value)
             parentLayout!!.addView(linearLayout)

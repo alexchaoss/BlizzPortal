@@ -3,10 +3,8 @@ package com.BlizzardArmory.ui.overwatch.overwatchleague
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.statslab.*
 import com.BlizzardArmory.ui.BaseViewModel
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,7 +53,7 @@ class OWLeagueViewModel(application: Application) : BaseViewModel(application) {
 
     fun parseCSV() {
         val job = coroutineScope.launch {
-            csvReader().openAsync(getApplication<Application>().resources.openRawResource(R.raw.phs_2018_playoffs)) {
+            /*csvReader().openAsync(getApplication<Application>().resources.openRawResource(R.raw.phs_2018_playoffs)) {
                 readAllAsSequence().forEach {
                     if (it[START_TIME] == "start_time") {
                         setPreviousData(it)
@@ -64,7 +62,7 @@ class OWLeagueViewModel(application: Application) : BaseViewModel(application) {
                     }
                     setPreviousData(it)
                 }
-            }
+            }*/
             tempTeam2 = Team(previousTeam, tempListPlayers.toList())
             tempMatchesList.add(Match(previousStartTime, previousStage, previousMapType, previousMapName, tempTeam1, tempTeam2))
             _matchesList.add(Matches(previousMatch.toLong(), tempMatchesList.toList()))

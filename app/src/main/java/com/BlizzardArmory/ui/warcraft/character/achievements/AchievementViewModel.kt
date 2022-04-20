@@ -95,9 +95,6 @@ class AchievementViewModel(application: Application) : BaseViewModel(application
     }
 
     private fun createAchievementsMap() {
-        Log.i("IS NULL", allAchievements.value.isNullOrEmpty()
-            .toString() + " " + categories.value.isNullOrEmpty()
-            .toString() + " " + (characterAchievements.value != null).toString())
         mappedAchievements.value = categories.value?.groupBy { it.id }
             ?.mapValues { map ->
                 allAchievements.value?.filter { a ->

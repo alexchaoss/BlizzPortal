@@ -3,7 +3,6 @@ package com.BlizzardArmory.util
 import android.content.Context
 import android.graphics.Color
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -23,8 +22,16 @@ class HTMLtoViewsConverter(val context: Context) {
     val linearLayout = LinearLayout(context)
 
     init {
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        params.setMargins(0, MetricConversion.getDPMetric(10, context), 0, MetricConversion.getDPMetric(5, context))
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.setMargins(
+            0,
+            MetricConversion.getDPMetric(10, context),
+            0,
+            MetricConversion.getDPMetric(5, context)
+        )
         linearLayout.layoutParams = params
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.tag = "content_layout"
@@ -68,22 +75,22 @@ class HTMLtoViewsConverter(val context: Context) {
                     val textView = TextView(context)
                     textView.setTextColor(Color.parseColor("#888888"))
                     component.info =
-                        component.info?.replace("<a href", "</font><font color=#2788b5><a href")
-                    component.info = component.info?.replace("</a>", "</a></font>")
-                    Log.i("TEST", component.info!!)
+                        component.info.replace("<a href", "</font><font color=#2788b5><a href")
+                    component.info = component.info.replace("</a>", "</a></font>")
                     textView.text =
-                        HtmlCompat.fromHtml(component.info!!, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                        HtmlCompat.fromHtml(component.info, HtmlCompat.FROM_HTML_MODE_COMPACT)
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     linearLayout.addView(textView)
                 }
                 2 -> {
                     val textView = TextView(context)
                     textView.text = HtmlCompat.fromHtml(
-                        "<font color=#2788b5>" + component.info!! + "</font>",
+                        "<font color=#2788b5>" + component.info + "</font>",
                         HtmlCompat.FROM_HTML_MODE_COMPACT
                     )
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     linearLayout.addView(textView)
+
                 }
                 3 -> {
                     val params = LinearLayout.LayoutParams(
@@ -95,12 +102,16 @@ class HTMLtoViewsConverter(val context: Context) {
                     val newImageView = ImageView(context)
                     newImageView.adjustViewBounds = true
                     relativeLayout.addView(newImageView, params)
-                    val p = Pattern.compile("https?.+?\\.png|https?.+?\\.jpg|https?.+?\\.jpeg|https?.+?\\.gif|https?.+?\\.svg|https?.+?\\.webp|https?.+?\\.ico|https?.+?\\.bmp")
-                    val m: Matcher = p.matcher(component.info!!)
+                    val p =
+                        Pattern.compile("https?.+?\\.png|https?.+?\\.jpg|https?.+?\\.jpeg|https?.+?\\.gif|https?.+?\\.svg|https?.+?\\.webp|https?.+?\\.ico|https?.+?\\.bmp")
+                    val m: Matcher = p.matcher(component.info)
                     if (m.find()) {
                         Glide.with(context).load(m.group()).into(newImageView)
                         newImageView.setOnClickListener {
-                            StfalconImageViewer.Builder(context, listOf(m.group())) { imageView, _ ->
+                            StfalconImageViewer.Builder(
+                                context,
+                                listOf(m.group())
+                            ) { imageView, _ ->
                                 Glide.with(context).load(m.group()).into(imageView)
                             }.withTransitionFrom(newImageView).show()
                         }
@@ -116,7 +127,7 @@ class HTMLtoViewsConverter(val context: Context) {
                         override fun onReady(youTubePlayer: YouTubePlayer) {
                             var videoId = ""
                             val p = Pattern.compile("embed/(\\w+)")
-                            val m: Matcher = p.matcher(component.info!!)
+                            val m: Matcher = p.matcher(component.info)
                             if (m.find()) {
                                 videoId = m.group(1)!!
                             }
@@ -139,5 +150,5 @@ class HTMLtoViewsConverter(val context: Context) {
 
 internal class Component {
     var type = 0
-    var info: String? = null
+    var info: String = ""
 }

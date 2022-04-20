@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.overwatch.account
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.overwatch.account.Profile
@@ -14,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
-import java.util.*
 
 class OWViewModel(application: Application) : BaseViewModel(application) {
 
@@ -99,8 +97,6 @@ class OWViewModel(application: Application) : BaseViewModel(application) {
     fun setCareerLists() {
         careerQuickPlay.value = profile.value?.quickPlayStats?.careerStats?.getFullHeroList()!!
         careerCompetitive.value = profile.value?.competitiveStats?.careerStats?.getFullHeroList()!!
-
-        Log.i("TEST", careerQuickPlay.value!!.size.toString() + " + " + careerCompetitive.value!!.size.toString())
     }
 
     fun setSpinnerCareerList(career: ArrayList<Hero>) {

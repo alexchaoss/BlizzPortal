@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.overwatch.overwatchleague
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +32,6 @@ class OWLeagueFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.getMatches().observe(viewLifecycleOwner, {
-            Log.i("TEST", it.toString())
             binding.leaderboardRecycler.apply {
                 adapter = MatchesAdapter(it[0].matches, context)
             }

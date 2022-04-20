@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.guild.achievements
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +12,6 @@ class AchievementsAdapter(private val list: List<DetailedAchievement>, private v
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AcheivementsViewHolder {
-        Log.i("Achiev size", list.size.toString())
         val inflater = LayoutInflater.from(parent.context)
         return AcheivementsViewHolder(inflater, parent)
     }

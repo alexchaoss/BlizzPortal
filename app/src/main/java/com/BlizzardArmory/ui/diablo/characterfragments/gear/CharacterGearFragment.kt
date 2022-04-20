@@ -32,7 +32,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.DecimalFormat
 import java.text.NumberFormat
-import java.util.*
 import kotlin.math.roundToInt
 
 private const val BATTLETAG = "battletag"
@@ -206,7 +205,6 @@ class CharacterGearFragment : Fragment() {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 EventBus.getDefault().post(D3ItemShownEvent(false))
                 v.performClick()
-                Log.i("CLOSE", "CLICKED")
                 binding.itemScrollView.visibility = View.GONE
                 binding.itemStats.removeView(primarystats)
                 binding.itemStats.removeView(secondarystats)

@@ -2,7 +2,6 @@ package com.BlizzardArmory.ui.warcraft.guild.roster
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -49,7 +48,6 @@ class RosterAdapter(private val activities: List<Members>, private val context: 
     override fun getItemCount(): Int = fullActivitiesList.size
 
     fun filter(constraint: String) {
-        Log.i("Filter", constraint)
         fullActivitiesList.clear()
         if (constraint.lowercase(Locale.getDefault()).isEmpty()) {
             fullActivitiesList.addAll(activities)
@@ -85,7 +83,6 @@ class RosterAdapter(private val activities: List<Members>, private val context: 
                 fullActivitiesList.add(entry)
             }
         }
-        Log.i("TEST", fullActivitiesList.size.toString())
     }
 
     private fun getClassNameFromId(id: Int): String {

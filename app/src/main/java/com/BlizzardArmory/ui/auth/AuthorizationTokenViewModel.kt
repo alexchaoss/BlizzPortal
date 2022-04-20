@@ -47,7 +47,6 @@ class AuthorizationTokenViewModel(application: Application) : BaseViewModel(appl
                     val token = retrieveToken(authorizationCode)
                     battlenetOAuth2Helper!!.storeAccessToken(token)
                     startActivity.value = true
-                    Log.i("GOT HERE", "LOGIN")
                     hasLoggedIn.value = true
                 } else if (url.contains("error=") || battlenetOAuth2Helper?.accessToken == null) {
                     startActivity.value = false

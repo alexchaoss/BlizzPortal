@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -329,9 +328,7 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setSnapshotIcons(league: String?, rank: Int, icon: ImageView) {
-
         if (league != null) {
-            Log.i("LEAGUE", league)
             when (league) {
                 "GRANDMASTER" -> when {
                     rank <= 16 -> {

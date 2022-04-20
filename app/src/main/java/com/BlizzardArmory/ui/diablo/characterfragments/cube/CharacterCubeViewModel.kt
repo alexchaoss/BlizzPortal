@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.diablo.characterfragments.cube
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.diablo.character.CharacterInformation
@@ -15,7 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
 
 class CharacterCubeViewModel(application: Application) : BaseViewModel(application) {
 
@@ -29,7 +27,6 @@ class CharacterCubeViewModel(application: Application) : BaseViewModel(applicati
     fun downloadCubeItems(characterInformation: CharacterInformation) {
         this.characterInformation = characterInformation
         for (i in characterInformation.legendaryPowers.indices) {
-            Log.i("Cube", characterInformation.legendaryPowers[i].tooltipParams)
             val endpoint = characterInformation.legendaryPowers[i].tooltipParams.replace("/item/", "")
             val job = coroutineScope.launch {
                 val response = RetroClient.getD3Client(getApplication()).getItem(endpoint)

@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.news.list
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.news.NewsMetaData
@@ -13,7 +12,9 @@ import com.BlizzardArmory.util.events.FilterNewsEvent
 import com.BlizzardArmory.util.events.LoadNewsEvent
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.MoreNewsClickEvent
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -54,7 +55,6 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
     fun downloadNews() {
         val job = coroutineScope.launch {
             WebNewsScrapper.parseNewsList("https://news.blizzard.com/${NetworkUtils.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
-            Log.i("Page $pageNumber", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 downloaded.value = true
             }
@@ -130,7 +130,6 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
     private fun downloadMore(pageNumber: Int) {
         val job = coroutineScope.launch {
             WebNewsScrapper.parseMoreNews("https://news.blizzard.com/${NetworkUtils.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
-            Log.i("Page $pageNumber", WebNewsScrapper.newsList.toString())
             withContext(Dispatchers.Main) {
                 showMore.value = true
                 EventBus.getDefault().post(LoadNewsEvent())
