@@ -78,6 +78,9 @@ class CareerStats {
     @SerializedName("sigma")
     var sigma: Sigma? = null
 
+    @SerializedName("sojourn")
+    var sojourn: Sojourn? = null
+
     @SerializedName("soldier76")
     var soldier76: Soldier76? = null
 
@@ -135,6 +138,7 @@ class CareerStats {
         reinhardt?.let { heroList.add(it) }
         roadhog?.let { heroList.add(it) }
         sigma?.let { heroList.add(it) }
+        sojourn?.let { heroList.add(it) }
         soldier76?.let { heroList.add(it) }
         sombra?.let { heroList.add(it) }
         symmetra?.let { heroList.add(it) }

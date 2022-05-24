@@ -115,7 +115,7 @@ class OWFragment : Fragment() {
             showNoConnectionMessage(it)
         }
 
-        viewModel.getCompToggle().observe(viewLifecycleOwner, {
+        viewModel.getCompToggle().observe(viewLifecycleOwner) {
             if (!it) {
                 binding.quickplay.background = switchCompQuickRadius
                 binding.quickplay.setTextColor(Color.parseColor("#000000"))
@@ -135,7 +135,7 @@ class OWFragment : Fragment() {
                     viewModel.getCareerCompetitive().value!!
                 )
             }
-        })
+        }
     }
 
     private fun updateList(heroList: ArrayList<TopHero>, careerList: ArrayList<Hero>) {
@@ -272,13 +272,19 @@ class OWFragment : Fragment() {
         val arrayAdapter: ArrayAdapter<String> = object :
             ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, viewModel.getCareerSortList()) {
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val tv = view as TextView
-                tv.isAllCaps = true
-                tv.setBackgroundColor(Color.BLACK)
-                tv.textSize = 15f
-                tv.gravity = Gravity.CENTER
-                return view
+                try {
+                    val view = super.getDropDownView(position, convertView, parent)
+                    val tv = view as TextView
+                    tv.isAllCaps = true
+                    tv.setBackgroundColor(Color.WHITE)
+                    tv.textSize = 15f
+                    tv.setTextColor(Color.BLACK)
+                    tv.gravity = Gravity.CENTER
+                    return view
+                } catch (e: Exception) {
+                    Log.e("Dropdown", "error", e)
+                }
+                return View(requireContext())
             }
         }
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)

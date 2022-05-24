@@ -50,14 +50,14 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
     }
 
     private fun setName(hero: TopHero) {
-        val tempName: String = when {
-            hero.javaClass.simpleName == "WreckingBall" -> {
+        val tempName: String = when (hero.javaClass.simpleName) {
+            "WreckingBall" -> {
                 "Wrecking Ball "
             }
-            hero.javaClass.simpleName == "Dva" -> {
+            "Dva" -> {
                 "D.Va "
             }
-            hero.javaClass.simpleName == "Soldier76" -> {
+            "Soldier76" -> {
                 "Soldier: 76 "
             }
             else -> {
@@ -160,6 +160,7 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
             "Reinhardt" -> Color.parseColor("#929da3")
             "Roadhog" -> Color.parseColor("#54515a")
             "Sigma" -> Color.parseColor("#33bbaa")
+            "Sojourn" -> Color.parseColor("#ffffff")
             "Soldier76" -> Color.parseColor("#525d9b")
             "Sombra" -> Color.parseColor("#9762ec")
             "Symmetra" -> Color.parseColor("#3e90b5")

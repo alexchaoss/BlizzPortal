@@ -325,7 +325,7 @@
                     android:background="@drawable/ow_spinner"
                     android:hint="@string/time_played"
                     android:paddingEnd="25dp"
-                    android:spinnerMode="dialog"
+
                     android:textAlignment="viewStart"
                     android:textSize="25sp" />
 
@@ -381,7 +381,7 @@
                     android:background="@drawable/ow_spinner"
                     android:hint="@string/time_played"
                     android:paddingEnd="25dp"
-                    android:spinnerMode="dialog"
+
                     android:textAlignment="viewStart"
                     android:textSize="25sp" />
 
