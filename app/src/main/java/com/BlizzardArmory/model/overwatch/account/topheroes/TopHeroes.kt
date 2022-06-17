@@ -34,6 +34,9 @@ class TopHeroes {
     @SerializedName("hanzo")
     var hanzo: Hanzo? = null
 
+    @SerializedName("junkerQueen")
+    var junkerQueen: JunkerQueen? = null
+
     @SerializedName("junkrat")
     var junkrat: Junkrat? = null
 
@@ -116,6 +119,7 @@ class TopHeroes {
         doomfist?.let { heroList.add(it) }
         genji?.let { heroList.add(it) }
         hanzo?.let { heroList.add(it) }
+        junkerQueen?.let { heroList.add(it) }
         junkrat?.let { heroList.add(it) }
         lucio?.let { heroList.add(it) }
         mccree?.let { heroList.add(it) }
