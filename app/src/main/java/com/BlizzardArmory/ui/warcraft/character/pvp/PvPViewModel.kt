@@ -66,7 +66,7 @@ class PvPViewModel(application: Application) : BaseViewModel(application) {
                 if (response.isSuccessful) {
                     pvpRBG = response.body()!!
                     val url =
-                        pvpRBG.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
+                        pvpRBG.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
                     downloadBracket(url, "rbg")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -89,7 +89,7 @@ class PvPViewModel(application: Application) : BaseViewModel(application) {
                 if (response.isSuccessful) {
                     pvp3v3 = response.body()!!
                     val url =
-                        pvp3v3.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
+                        pvp3v3.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
                     downloadBracket(url, "3v3")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
@@ -112,7 +112,7 @@ class PvPViewModel(application: Application) : BaseViewModel(application) {
                 if (response.isSuccessful) {
                     pvp2v2 = response.body()!!
                     val url =
-                        pvp2v2.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
+                        pvp2v2.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
                     downloadBracket(url, "2v2")
                 } else {
                     Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")

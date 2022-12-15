@@ -221,8 +221,12 @@ class ProgressFragment : Fragment() {
                 binding.progressLayout.setBackgroundColor(Color.parseColor("#1a0407"))
                 bgName = "warrior_bg"
             }
+            13 -> {
+                binding.progressLayout.setBackgroundColor(Color.parseColor("#07060C"))
+                bgName = "evoker_bg"
+            }
         }
-        Glide.with(this).load(NetworkUtils.getWoWAsset(bgName)).into(binding.backgroundProgress)
+        Glide.with(this).load(NetworkUtils.getWoWAsset("class/$bgName")).into(binding.backgroundProgress)
         EventBus.getDefault().unregister(this)
     }
 }

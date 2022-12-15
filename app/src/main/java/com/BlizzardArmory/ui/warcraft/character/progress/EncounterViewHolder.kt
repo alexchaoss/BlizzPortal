@@ -28,7 +28,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     fun bind(instances: Instances, level: String) {
-        Glide.with(itemView.context).load(NetworkUtils.getWoWAsset(findBanner(instances)))
+        Glide.with(itemView.context).load(NetworkUtils.getWoWAsset("raids/" + findBanner(instances)))
             .into(banner!!)
         raidName?.text = instances.instance.name
         raidLevel?.text = level
@@ -39,7 +39,8 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun findBanner(instances: Instances): String {
         when (instances.instance.id) {
-            1195L -> return "sepulcher-of-the-first-ones-small"
+            1200L -> return "vault_of_the_incarnates_small"
+            1195L -> return "sepulcher_of_the_first_ones_small"
             1193L -> return "sanctum_of_domination_small"
             1190L -> return "castle_nathria_small"
             1031L -> return "uldir_small"

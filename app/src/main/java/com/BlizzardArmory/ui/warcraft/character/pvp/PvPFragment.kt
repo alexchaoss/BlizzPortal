@@ -237,8 +237,12 @@ class PvPFragment : Fragment() {
                 binding.layoutPvp.setBackgroundColor(Color.parseColor("#1a0407"))
                 bgName = "warrior_bg"
             }
+            13 -> {
+                binding.layoutPvp.setBackgroundColor(Color.parseColor("#07060C"))
+                bgName = "evoker_bg"
+            }
         }
-        Glide.with(this).load(NetworkUtils.getWoWAsset(bgName)).into(binding.backgroundPvp)
+        Glide.with(this).load(NetworkUtils.getWoWAsset("class/$bgName")).into(binding.backgroundPvp)
         EventBus.getDefault().unregister(this)
     }
 

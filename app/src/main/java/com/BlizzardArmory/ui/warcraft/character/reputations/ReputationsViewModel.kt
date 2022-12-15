@@ -99,6 +99,7 @@ class ReputationsViewModel(application: Application) : BaseViewModel(application
                         "Legion" -> repsByExpac[6].add(reps)
                         "Battle for Azeroth" -> repsByExpac[7].add(reps)
                         "Shadowlands" -> repsByExpac[8].add(reps)
+                        "Dragonflight" -> repsByExpac[9].add(reps)
                     }
                 }
             }

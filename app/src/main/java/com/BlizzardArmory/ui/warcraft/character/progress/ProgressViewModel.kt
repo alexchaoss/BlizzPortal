@@ -61,6 +61,7 @@ class ProgressViewModel(application: Application) : BaseViewModel(application) {
             395L -> "Level 45"
             396L -> "Level 50"
             397L -> "Level 60"
+            503L -> "Level 70"
             else -> ""
         }
     }

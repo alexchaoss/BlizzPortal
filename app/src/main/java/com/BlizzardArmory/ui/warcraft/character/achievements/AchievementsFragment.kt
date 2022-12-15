@@ -102,32 +102,38 @@ class AchievementsFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getAllAchievements().observe(viewLifecycleOwner, {
+        viewModel.getAllAchievements().observe(viewLifecycleOwner) {
             val savedAchievs = Pair(System.currentTimeMillis(), it)
             prefs!!.edit()
-                .putString("detailed_achievements_${NetworkUtils.locale}", gson?.toJson(savedAchievs))
+                .putString(
+                    "detailed_achievements_${NetworkUtils.locale}",
+                    gson?.toJson(savedAchievs)
+                )
                 .apply()
             needToUpdate = false
             viewModel.downloadCharacterAchievements()
-        })
+        }
 
-        viewModel.getCharacterAchievements().observe(viewLifecycleOwner, {
+        viewModel.getCharacterAchievements().observe(viewLifecycleOwner) {
             setCategories()
-        })
+        }
 
-        viewModel.getCategories().observe(viewLifecycleOwner, {
+        viewModel.getCategories().observe(viewLifecycleOwner) {
             val savedCategories = Pair(System.currentTimeMillis(), it)
             prefs!!.edit()
-                .putString("achievement_categories_${NetworkUtils.locale}", gson!!.toJson(savedCategories))
+                .putString(
+                    "achievement_categories_${NetworkUtils.locale}",
+                    gson!!.toJson(savedCategories)
+                )
                 .apply()
             needToUpdate = false
-        })
+        }
 
-        viewModel.getMappedAchievements().observe(viewLifecycleOwner, {
+        viewModel.getMappedAchievements().observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 setRecyclerViewToParentCategories()
             }
-        })
+        }
     }
 
     private fun backArrow() {
@@ -289,8 +295,12 @@ class AchievementsFragment : Fragment() {
                 binding.achievLayout.setBackgroundColor(Color.parseColor("#1a0407"))
                 bgName = "warrior_bg"
             }
+            13 -> {
+                binding.achievLayout.setBackgroundColor(Color.parseColor("#07060C"))
+                bgName = "evoker_bg"
+            }
         }
-        Glide.with(this).load(NetworkUtils.getWoWAsset(bgName)).into(binding.backgroundAchieves)
+        Glide.with(this).load(NetworkUtils.getWoWAsset("class/$bgName")).into(binding.backgroundAchieves)
     }
 
     companion object {

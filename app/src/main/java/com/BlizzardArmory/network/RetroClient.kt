@@ -45,7 +45,7 @@ object RetroClient {
         val gson = GsonBuilder().create()
 
         return Retrofit.Builder()
-            .baseUrl(NetworkUtils.HEROKU_PROXY_BASE_URL)
+            .baseUrl(NetworkUtils.PROXY_BASE_URL)
             .client(getClient(context, logsToggled, cacheTime))
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
@@ -55,7 +55,7 @@ object RetroClient {
         val gson = GsonBuilder().create()
 
         return Retrofit.Builder()
-            .baseUrl(NetworkUtils.HEROKU_API_BASE_URL)
+            .baseUrl(NetworkUtils.API_BASE_URL)
             .client(getClient(context, logsToggled, cacheTime))
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

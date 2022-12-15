@@ -38,7 +38,8 @@ class ReputationsFragment : Fragment() {
 
     private var media: String? = null
 
-    private val expansionsId = listOf(1118L, 980L, 1097L, 1162L, 1245L, 1444L, 1834L, 2104L, 2414L)
+    private val expansionsId =
+        listOf(1118L, 980L, 1097L, 1162L, 1245L, 1444L, 1834L, 2104L, 2414L, 2506L)
 
     private var _binding: WowRepFragmentBinding? = null
     private val binding get() = _binding!!
@@ -70,7 +71,11 @@ class ReputationsFragment : Fragment() {
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = WowRepFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -82,26 +87,35 @@ class ReputationsFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getReputations().observe(viewLifecycleOwner, {
-            val xpacs = viewModel.getReputationsWithParentInfo().value!!.filter { expansionsId.contains(it.id) }
+        viewModel.getReputations().observe(viewLifecycleOwner) {
+            val xpacs = viewModel.getReputationsWithParentInfo().value!!
+                .filter { expansionsId.contains(it.id) }
                 .sortedBy { expansionsId.indexOf(it.id) }.map { it.name }
             setAdapter(xpacs.toMutableList(), binding.repSpinner)
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             showOutdatedTextView()
-        })
+        }
     }
 
     private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {
         spinnerList.add(0, "Select Expansion")
         val arrayAdapter: ArrayAdapter<*> = object :
-            ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
+            ArrayAdapter<String?>(
+                requireActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerList.toImmutableList()
+            ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
 
@@ -120,7 +134,12 @@ class ReputationsFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 18f
@@ -140,7 +159,10 @@ class ReputationsFragment : Fragment() {
 
     private fun populateRecyclerView() {
         binding.repRecycler.apply {
-            adapter = ReputationsAdapter(viewModel.repsByExpac[binding.repSpinner.selectedItemPosition - 1].sortedBy { RepByExpansion.getFaction(it.faction.name) }, context)
+            adapter =
+                ReputationsAdapter(viewModel.repsByExpac[binding.repSpinner.selectedItemPosition - 1].sortedBy {
+                    RepByExpansion.getFaction(it.faction.name)
+                }, context)
             adapter!!.notifyDataSetChanged()
         }
     }
@@ -221,8 +243,12 @@ class ReputationsFragment : Fragment() {
                 binding.reputationLayout.setBackgroundColor(Color.parseColor("#1a0407"))
                 bgName = "warrior_bg"
             }
+            13 -> {
+                binding.reputationLayout.setBackgroundColor(Color.parseColor("#07060C"))
+                bgName = "evoker_bg"
+            }
         }
-        Glide.with(this).load(NetworkUtils.getWoWAsset(bgName)).into(binding.backgroundRep)
+        Glide.with(this).load(NetworkUtils.getWoWAsset("class/$bgName")).into(binding.backgroundRep)
         EventBus.getDefault().unregister(this)
     }
 }

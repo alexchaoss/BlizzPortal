@@ -193,7 +193,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
             )
         }
         url =
-            url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.HEROKU_PROXY_BASE_URL)
+            url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
 
         val job = coroutineScope.launch {
             val response = RetroClient.getWoWClient(getApplication())

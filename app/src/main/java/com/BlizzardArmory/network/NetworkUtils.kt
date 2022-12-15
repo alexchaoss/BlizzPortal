@@ -12,8 +12,8 @@ object NetworkUtils {
      */
     @JvmField
     var loading = false
-    var HEROKU_PROXY_BASE_URL = "https://blizzardgamesprofiles.herokuapp.com/"
-    var HEROKU_API_BASE_URL = "https://blizzard-armory-server.herokuapp.com/"
+    var PROXY_BASE_URL = "https://blizz-api.onrender.com/"
+    var API_BASE_URL = "https://blizzportal-api.onrender.com/"
     var AWS_PROXY_BASE_URL = "https://blizzportalproxy-env.eba-ykhzpmue.us-east-1.elasticbeanstalk.com/"
 
     const val logs = false
@@ -28,16 +28,6 @@ object NetworkUtils {
      */
     const val CALLBACK_URL = "https://alexchaoss.github.io/BnetAuthorize"
     const val LOGOUT_URL = "https://battle.net/login/logout"
-
-    /**
-     * The constant BASE_URL_USER_INFO.
-     */
-    const val BASE_URL_USER_INFO = "https://zone.battle.net/"
-
-    /**
-     * The constant BASE_URL_CN_USER_INFO.
-     */
-    const val BASE_URL_CN_USER_INFO = "https://www.battlenet.com.cn"
 
     /**
      * The constant NOT_FOUND_URL_AVATAR.
@@ -80,19 +70,6 @@ object NetworkUtils {
     const val WOW_ASSETS = "https://alexchaoss.github.io/BnetAuthorize/img/wow/image.jpg"
 
     const val WOW_SERVER = "https://blizzard-armory-server.herokuapp.com/"
-
-    /**
-     * Gets base url for user information.
-     *
-     * @return the base url for user information
-     */
-    @JvmStatic
-    val baseURLforUserInformation: String
-        get() = if (NetworkUtils.region.equals("cn", ignoreCase = true)) {
-            BASE_URL_CN_USER_INFO
-        } else {
-            BASE_URL_USER_INFO.replace("zone", NetworkUtils.region.lowercase(Locale.getDefault()))
-        }
 
     /**
      * Gets region.

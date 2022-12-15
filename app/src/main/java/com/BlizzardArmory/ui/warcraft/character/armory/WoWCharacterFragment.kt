@@ -129,20 +129,20 @@ class WoWCharacterFragment : Fragment() {
     }
 
     fun setObservers() {
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             callErrorAlertDialog(it)
-        })
+        }
 
-        viewModel.getTalentsInfo().observe(viewLifecycleOwner, {
+        viewModel.getTalentsInfo().observe(viewLifecycleOwner) {
             viewModel.downloadTalentIconsInfo()
-        })
+        }
 
-        viewModel.getTalentsIcons().observe(viewLifecycleOwner, {
+        viewModel.getTalentsIcons().observe(viewLifecycleOwner) {
             binding.tabLayout.clearOnTabSelectedListeners()
             setTalentInformation()
-        })
+        }
 
-        viewModel.getCharacterSummary().observe(viewLifecycleOwner, {
+        viewModel.getCharacterSummary().observe(viewLifecycleOwner) {
             viewModel.downloadTalents()
             setBackgroundColor()
             binding.characterName.text = it.name
@@ -172,9 +172,9 @@ class WoWCharacterFragment : Fragment() {
             EventBus.getDefault().post(ClassEvent(it.characterClass.id))
             setTopCharacterStrings(it)
             viewModel.downloadEquipment()
-        })
+        }
 
-        viewModel.getMedia().observe(viewLifecycleOwner, { media ->
+        viewModel.getMedia().observe(viewLifecycleOwner) { media ->
             if (media != null) {
                 Glide.with(this).load(media.assets?.first { it.key == "main" }?.value)
                     .placeholder(R.color.colorPrimaryDark).override(1080, 1440).centerCrop()
@@ -182,21 +182,21 @@ class WoWCharacterFragment : Fragment() {
             } else {
                 viewModel.downloadBackground()
             }
-        })
+        }
 
-        viewModel.getCharacterStats().observe(viewLifecycleOwner, {
+        viewModel.getCharacterStats().observe(viewLifecycleOwner) {
             setCharacterInformationTextviews(it)
-        })
+        }
 
-        viewModel.getEquipment().observe(viewLifecycleOwner, {
+        viewModel.getEquipment().observe(viewLifecycleOwner) {
             for (i in it.equippedItems.indices) {
                 viewModel.downloadIcons(it.equippedItems[i])
                 viewModel.setCharacterItemsInformation(it.equippedItems[i])
                 setOnPressItemInformation(it.equippedItems[i])
             }
-        })
+        }
 
-        viewModel.getIconURLs().observe(viewLifecycleOwner, {
+        viewModel.getIconURLs().observe(viewLifecycleOwner) {
             val equippedItems = viewModel.getEquipment().value!!.equippedItems
             binding.loadingCircle.visibility = View.GONE
             val errorIcon =
@@ -211,7 +211,7 @@ class WoWCharacterFragment : Fragment() {
                     setIcon(item, null)
                 }
             }
-        })
+        }
     }
 
     private fun startDownloads() {
@@ -384,6 +384,9 @@ class WoWCharacterFragment : Fragment() {
             }
             1 -> {
                 binding.itemFragment.setBackgroundColor(Color.parseColor("#1a0407"))
+            }
+            13 -> {
+                binding.itemFragment.setBackgroundColor(Color.parseColor("#07060C"))
             }
         }
     }
