@@ -32,7 +32,11 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     private val viewModel: MRaidLeaderboardsViewModel by activityViewModels()
     private var dialog: DialogPrompt? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = WowMythicRaidLeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -66,19 +70,23 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
 
     private fun setObservers() {
-        viewModel.getEntries().observe(viewLifecycleOwner, {
+        viewModel.getEntries().observe(viewLifecycleOwner) {
             binding.leaderboardRecycler.apply {
                 adapter = LeaderboardAdapter(it, context)
                 binding.loadingCircle.visibility = View.GONE
             }
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             Log.e("Error", "Error code $it occured")
             binding.loadingCircle.visibility = View.GONE
             dialog = DialogPrompt(requireActivity())
             dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
+                .addMessage(
+                    requireActivity().resources.getString(R.string.unexpected),
+                    18f,
+                    "message"
+                )
                 .addButtons(
                     dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
                         dialog!!.dismiss()
@@ -92,11 +100,12 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
                         }, "back"
                     )
                 ).show()
-        })
+        }
     }
 
     private fun addRaidsToList() {
         raidList.add("Raid")
+        raidList.add("Vault of The Incarnates")
         raidList.add("Sepulcher of the First Ones")
         raidList.add("Sanctum of Domination")
         raidList.add("Castle Nathria")
@@ -109,12 +118,20 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
         val arrayAdapter: ArrayAdapter<*> = object :
-            ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
+            ArrayAdapter<String?>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerList
+            ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
                 tv.textSize = 20f
@@ -131,7 +148,12 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 20f
@@ -155,7 +177,10 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
             if (binding.faction.selectedItem.toString() == factionList[1]) {
                 viewModel.downloadBothLeaderboard(binding.raid.selectedItem.toString())
             } else {
-                viewModel.downloadLeaderboard(binding.raid.selectedItem.toString(), binding.faction.selectedItem.toString())
+                viewModel.downloadLeaderboard(
+                    binding.raid.selectedItem.toString(),
+                    binding.faction.selectedItem.toString()
+                )
             }
         }
     }
@@ -163,10 +188,8 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack()
-                }
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

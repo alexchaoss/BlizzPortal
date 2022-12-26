@@ -1,7 +1,19 @@
 package com.BlizzardArmory.model.warcraft.reputations.characterreputations
 
 enum class RepByExpansion(expansion: String, name: String, faction: String, id: Int) {
-    THE_ENLIGHTENED("Shadowlands", "The Enlightenedx", "sl base", 2478),
+    ARTISAN_S_CONSORTIUM_DRAGON_ISLES_BRANCH("Dragonflight","Artisan's Consortium - Dragon Isles Branch", "Valdrakken Accord", 2544),
+    COBALT_ASSEMBLY("Dragonflight", "Cobalt Assembly", "Valdrakken Accord", 2548),
+    VALDRAKKEN_ACCORD_RENOWN("Dragonflight", "Valdrakken Accord (Renown)", "df base", 2548),
+    WINTERPELT_FURBOLG("Dragonflight", "Winterpelt Furbolg", "df base", 2526),
+    OBSIDIAN_WARDENS("Dragonflight", "Obsidian Warders", "df base", 2524),
+    DARK_TALONS("Dragonflight", "Dark Talons", "df base", 2523),
+    DRAGONSCALE_EXPEDITION("Dragonflight", "Dragonscale Expedition", "df base", 2507),
+    SABELLIAN("Dragonflight", "Sabellian", "Valdrakken Accord", 2518),
+    WRATHION("Dragonflight", "Wrathion", "Valdrakken Accord", 2517),
+    ISKAARA_TUSKARR("Dragonflight", "Iskaara Tuskarr", "df base", 2511),
+    VALDRAKKEN_ACCORD("Dragonflight", "Valdrakken Accord", "df base", 2510),
+    MARUUK_CENTAUR("Dragonflight", "Maruuk Centaur", "df base", 2503),
+    THE_ENLIGHTENED("Shadowlands", "The Enlightened", "sl base", 2478),
     THE_ARCHIVISTS_CODEX("Shadowlands", "The Archivists' Codex", "sl base", 2472),
     DEATHS_ADVANCE("Shadowlands", "Death's Advance", "sl base", 2470),
     FRACTAL_LORE("Shadowlands", "Fractal Lore", "sl base", 2469),

@@ -30,7 +30,16 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     FragmentManager.OnBackStackChangedListener {
 
     private var seasonList = arrayListOf<String>()
-    private var leagueList = arrayListOf("Select League", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster")
+    private var leagueList = arrayListOf(
+        "Select League",
+        "Bronze",
+        "Silver",
+        "Gold",
+        "Platinum",
+        "Diamond",
+        "Master",
+        "Grandmaster"
+    )
 
     private var regionId: Int = 1
     private var region: String = NetworkUtils.region
@@ -59,7 +68,11 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var dialog: DialogPrompt? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = Sc2LeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -83,7 +96,10 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         if (!prefs?.contains("leaderboard_pulled_sc2")!!) {
             val dialog = DialogPrompt(requireContext())
             dialog.addTitle("New Feature!", 20F)
-                .addMessage("Welcome to the Starcraft 2 Leaderboards!\nPull from the right to open the Leaderboard menu!", 18F)
+                .addMessage(
+                    "Welcome to the Starcraft 2 Leaderboards!\nPull from the right to open the Leaderboard menu!",
+                    18F
+                )
                 .addButtons(dialog.Button("Close", 16F, { dialog.dismiss() })).show()
             prefs.edit()?.putString("leaderboard_pulled_sc2", "done")?.apply()
         }
@@ -93,8 +109,10 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         setPageNavButtons()
 
         setAdapter(leagueList, rightPanel.binding.rightPanelSc2.league)
-        setAdapter(resources.getStringArray(R.array.regions)
-            .asList(), rightPanel.binding.rightPanelSc2.region)
+        setAdapter(
+            resources.getStringArray(R.array.regions)
+                .asList(), rightPanel.binding.rightPanelSc2.region
+        )
         setQueueIdButtons()
         setTeamTypeButtons()
         setSearchButton()
@@ -156,8 +174,11 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         binding.leaderboardRecycler.apply {
             adapter = LeaderboardAdapter(listOf(), requireContext(), currentPlayerCountRank)
         }
-        viewModel.downloadLeaderboard(regionId,
-            viewModel.getLeague().value!!.tier[currentTier].division[currentDivision].ladder_id, region)
+        viewModel.downloadLeaderboard(
+            regionId,
+            viewModel.getLeague().value!!.tier[currentTier].division[currentDivision].ladder_id,
+            region
+        )
     }
 
     private fun setTeamTypeButtons() {
@@ -243,14 +264,22 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
             prevCount = 0
             currentPlayerCountRank = 1
             backPage = false
-            viewModel.downloadLeaderboard(regionId, it.tier[currentTier].division[currentDivision].ladder_id, region)
+            viewModel.downloadLeaderboard(
+                regionId,
+                it.tier[currentTier].division[currentDivision].ladder_id,
+                region
+            )
         })
 
         viewModel.getErrorCode().observe(viewLifecycleOwner, {
             binding.loadingCircle.visibility = View.GONE
             dialog = DialogPrompt(requireActivity())
             dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
+                .addMessage(
+                    requireActivity().resources.getString(R.string.unexpected),
+                    18f,
+                    "message"
+                )
                 .addButtons(
                     dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
                         dialog!!.dismiss()
@@ -292,12 +321,17 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
             } else if (rightPanel.binding.rightPanelSc2.league.selectedItemPosition == 0) {
                 Snackbar.make(binding.root, "Please select a league", Snackbar.LENGTH_SHORT).show()
             } else if (rightPanel.binding.rightPanelSc2.league.selectedItem == "Grandmaster" && !v1Toggle) {
-                Snackbar.make(binding.root, "Grandmaster league can only be 1v1", Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    binding.root,
+                    "Grandmaster league can only be 1v1",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             } else {
                 viewModel.seasonId = rightPanel.binding.rightPanelSc2.season.selectedItem.toString()
                     .toInt()
-                viewModel.leagueString = rightPanel.binding.rightPanelSc2.league.selectedItem.toString()
+                viewModel.leagueString =
+                    rightPanel.binding.rightPanelSc2.league.selectedItem.toString()
                 when (rightPanel.binding.rightPanelSc2.region.selectedItem) {
                     "US" -> regionId = 1
                     "EU" -> regionId = 2
@@ -326,12 +360,20 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
         val arrayAdapter: ArrayAdapter<*> = object :
-            ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
+            ArrayAdapter<String?>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerList
+            ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
                 tv.textSize = 20f
@@ -348,7 +390,12 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
 
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
@@ -391,10 +438,8 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack()
-                }
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

@@ -93,7 +93,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
         jobs.add(job)
     }
 
-    fun parseRaidName(name: String): String {
+    private fun parseRaidName(name: String): String {
         return name.replace("'", "").replace(" ", "-").lowercase(Locale.getDefault())
     }
 

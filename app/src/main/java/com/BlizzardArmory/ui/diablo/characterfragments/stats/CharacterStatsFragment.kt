@@ -45,7 +45,11 @@ class CharacterStatsFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: CharacterStatsViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = D3CharacterFragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -82,7 +86,8 @@ class CharacterStatsFragment : Fragment() {
         binding.loadingCircle.visibility = View.VISIBLE
         setObservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
     }
 
     private fun setObservers() {
@@ -107,17 +112,30 @@ class CharacterStatsFragment : Fragment() {
 
     private fun setStats() {
         val primaryStats = DecimalFormat("#0")
-        binding.strengthText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.strength?.roundToInt())
-            .toString()
-        binding.dexterityText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.dexterity?.roundToInt())
-            .toString()
-        binding.intelligenceText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.intelligence?.roundToInt())
-            .toString()
-        binding.vitalityText.text = primaryStats.format(viewModel.getCharacterInformation().value?.stats?.vitality?.roundToInt())
-            .toString()
-        binding.damage.text = HtmlCompat.fromHtml("<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.damage) + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.toughness.text = HtmlCompat.fromHtml("Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.toughness) + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.recovery.text = HtmlCompat.fromHtml("Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.healing) + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.strengthText.text =
+            primaryStats.format(viewModel.getCharacterInformation().value?.stats?.strength?.roundToInt())
+                .toString()
+        binding.dexterityText.text =
+            primaryStats.format(viewModel.getCharacterInformation().value?.stats?.dexterity?.roundToInt())
+                .toString()
+        binding.intelligenceText.text =
+            primaryStats.format(viewModel.getCharacterInformation().value?.stats?.intelligence?.roundToInt())
+                .toString()
+        binding.vitalityText.text =
+            primaryStats.format(viewModel.getCharacterInformation().value?.stats?.vitality?.roundToInt())
+                .toString()
+        binding.damage.text = HtmlCompat.fromHtml(
+            "<br><br>Damage<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.damage) + "</font>",
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+        binding.toughness.text = HtmlCompat.fromHtml(
+            "Toughness<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.toughness) + "</font>",
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+        binding.recovery.text = HtmlCompat.fromHtml(
+            "Recovery<br><font color=\"#FFFFFF\">" + primaryStats.format(viewModel.getCharacterInformation().value?.stats?.healing) + "</font>",
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
 
     }
 
@@ -156,14 +174,15 @@ class CharacterStatsFragment : Fragment() {
             viewModel.getCharacterInformation().value!!.stats.life.roundToInt().toString()
         }
         binding.totalLife.text = life
-        val ressourceText: String = if (viewModel.getCharacterInformation().value!!.class_ == "demon-hunter") {
-            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt()
-                .toString() + "\n" + viewModel.getCharacterInformation().value!!.stats.secondaryResource.roundToInt()
-                .toString()
-        } else {
-            viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt()
-                .toString()
-        }
+        val ressourceText: String =
+            if (viewModel.getCharacterInformation().value!!.class_ == "demon-hunter") {
+                viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt()
+                    .toString() + "\n" + viewModel.getCharacterInformation().value!!.stats.secondaryResource.roundToInt()
+                    .toString()
+            } else {
+                viewModel.getCharacterInformation().value!!.stats.primaryResource.roundToInt()
+                    .toString()
+            }
         binding.ressource.text = ressourceText
         when (viewModel.getCharacterInformation().value!!.class_) {
             "barbarian" -> binding.ressourceGlobe.setImageResource(R.drawable.d3_fury)
@@ -183,8 +202,9 @@ class CharacterStatsFragment : Fragment() {
     }
 
     private fun setName() {
-        val levelClass = ("<font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.level + "</font>" + "<font color=#555da5> (" + viewModel.getCharacterInformation().value!!.paragonLevel
-                + ")</font> <font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.class_)
+        val levelClass =
+            ("<font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.level + "</font>" + "<font color=#555da5> (" + viewModel.getCharacterInformation().value!!.paragonLevel
+                    + ")</font> <font color=#d4a94e>" + viewModel.getCharacterInformation().value!!.class_)
         binding.levelClass.text = HtmlCompat.fromHtml(levelClass, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
         if (viewModel.getCharacterInformation().value!!.name.length in 8..9) {
@@ -251,7 +271,10 @@ class CharacterStatsFragment : Fragment() {
                     {
                         dialog.dismiss()
                         EventBus.getDefault().post(NetworkEvent(true))
-                        parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        parentFragmentManager.popBackStack(
+                            null,
+                            FragmentManager.POP_BACK_STACK_INCLUSIVE
+                        )
                     }, "back"
                 )
             ).show()
@@ -272,13 +295,11 @@ class CharacterStatsFragment : Fragment() {
         private var spellPanelShown = false
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    if (!itemPanelShown && !spellPanelShown) {
-                        D3Fragment.addOnBackPressCallback(activity)
-                        activity.supportFragmentManager.popBackStack()
-                    } else {
-                        EventBus.getDefault().post(D3ClosePanelEvent())
-                    }
+                if (!itemPanelShown && !spellPanelShown) {
+                    D3Fragment.addOnBackPressCallback(activity)
+                    activity.supportFragmentManager.popBackStack()
+                } else {
+                    EventBus.getDefault().post(D3ClosePanelEvent())
                 }
             }
         }

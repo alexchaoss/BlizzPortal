@@ -47,7 +47,11 @@ class SC2Fragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: SC2ViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = Sc2FragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -153,9 +157,15 @@ class SC2Fragment : Fragment() {
 
     private fun createCustomButton(layout: LinearLayout, player: Player, dialog: DialogPrompt) {
         val params =
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         val paramsButton =
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         val paramsIcon = LinearLayout.LayoutParams(80, 80)
         paramsIcon.gravity = Gravity.CENTER_VERTICAL.and(Gravity.END)
         paramsIcon.weight = 1F
@@ -197,7 +207,10 @@ class SC2Fragment : Fragment() {
     private fun getRaceImage(imageView: ImageView, name: String) {
         Glide.with(this).load(NetworkUtils.getSC2Asset(name))
             .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
                     imageView.background = resource
                 }
 
@@ -286,21 +299,35 @@ class SC2Fragment : Fragment() {
         binding.careerPlayed.text =
             viewModel.getProfile().value!!.career.totalCareerGames.toString()
         if (viewModel.getProfile().value!!.career.best1v1Finish.leagueName != null) {
-            setSnapshotIcons(viewModel.getProfile().value!!.career.best1v1Finish.leagueName, 500, binding.bestOneIcon)
+            setSnapshotIcons(
+                viewModel.getProfile().value!!.career.best1v1Finish.leagueName,
+                500,
+                binding.bestOneIcon
+            )
             var temp = viewModel.getProfile().value!!.career.best1v1Finish.leagueName?.substring(1)
                 ?.lowercase(Locale.getDefault())
             temp =
-                viewModel.getProfile().value!!.career.best1v1Finish.leagueName?.substring(0, 1) + temp
+                viewModel.getProfile().value!!.career.best1v1Finish.leagueName?.substring(
+                    0,
+                    1
+                ) + temp
             binding.bestOne.text = temp
         } else {
             binding.bestOne.visibility = View.GONE
         }
         if (viewModel.getProfile().value!!.career.bestTeamFinish.leagueName != null) {
-            setSnapshotIcons(viewModel.getProfile().value!!.career.bestTeamFinish.leagueName, 500, binding.bestTeamIcon)
+            setSnapshotIcons(
+                viewModel.getProfile().value!!.career.bestTeamFinish.leagueName,
+                500,
+                binding.bestTeamIcon
+            )
             var temp = viewModel.getProfile().value!!.career.bestTeamFinish.leagueName?.substring(1)
                 ?.lowercase(Locale.getDefault())
             temp =
-                viewModel.getProfile().value!!.career.bestTeamFinish.leagueName?.substring(0, 1) + temp
+                viewModel.getProfile().value!!.career.bestTeamFinish.leagueName?.substring(
+                    0,
+                    1
+                ) + temp
             binding.bestTeam.text = temp
         } else {
             binding.bestTeam.visibility = View.GONE
@@ -308,16 +335,56 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setSnapshotInformation() {
-        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.rank, binding.oneOne)
-        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.rank, binding.archon)
-        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.rank, binding.twoTwo)
-        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.rank, binding.threeThree)
-        setSnapshotIcons(viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.leagueName, viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.rank, binding.fourFour)
-        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.totalWins, binding.oneOneText)
-        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.totalWins, binding.archonText)
-        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.totalWins, binding.twoTwoText)
-        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.totalWins, binding.threeThreeText)
-        setSnapshotText(viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.totalGames, viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.totalWins, binding.fourFourText)
+        setSnapshotIcons(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.leagueName,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.rank,
+            binding.oneOne
+        )
+        setSnapshotIcons(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.leagueName,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.rank,
+            binding.archon
+        )
+        setSnapshotIcons(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.leagueName,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.rank,
+            binding.twoTwo
+        )
+        setSnapshotIcons(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.leagueName,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.rank,
+            binding.threeThree
+        )
+        setSnapshotIcons(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.leagueName,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.rank,
+            binding.fourFour
+        )
+        setSnapshotText(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.totalGames,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.oneVone.totalWins,
+            binding.oneOneText
+        )
+        setSnapshotText(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.totalGames,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.archon.totalWins,
+            binding.archonText
+        )
+        setSnapshotText(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.totalGames,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.twoVtwo.totalWins,
+            binding.twoTwoText
+        )
+        setSnapshotText(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.totalGames,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.threeVthree.totalWins,
+            binding.threeThreeText
+        )
+        setSnapshotText(
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.totalGames,
+            viewModel.getProfile().value!!.snapshot.seasonSnapshot.fourVfour.totalWins,
+            binding.fourFourText
+        )
     }
 
     private fun setSnapshotText(totalGames: Int, totalWins: Int, text: TextView?) {
@@ -448,20 +515,28 @@ class SC2Fragment : Fragment() {
             binding.clan.visibility = View.GONE
         }
         binding.achievementPoints.text =
-            HtmlCompat.fromHtml("<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints, HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
-                val resourceId =
-                    resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
-                val drawable =
-                    ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
-                drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                drawable
-            }, null)
+            HtmlCompat.fromHtml(
+                "<img src=\"achievement_sc2\">" + viewModel.getProfile().value!!.summary.totalAchievementPoints,
+                HtmlCompat.FROM_HTML_MODE_LEGACY,
+                { source: String? ->
+                    val resourceId =
+                        resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                    val drawable =
+                        ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
+                    drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                    drawable
+                },
+                null
+            )
     }
 
     private fun downloadAvatar() {
         Glide.with(this).load(viewModel.getProfile().value!!.summary.portrait)
             .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
                     binding.avatar.background = resource
                     binding.loadingCircle.visibility = View.GONE
                     NetworkUtils.loading = false
@@ -537,10 +612,8 @@ class SC2Fragment : Fragment() {
         fun addOnBackPressCallback(activity: NavigationActivity) {
 
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack()
-                }
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

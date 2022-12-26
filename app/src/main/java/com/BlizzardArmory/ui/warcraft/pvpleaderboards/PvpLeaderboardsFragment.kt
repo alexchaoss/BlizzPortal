@@ -46,7 +46,11 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var dialog: DialogPrompt? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = WowPvpLeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -60,8 +64,10 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         navigationActivity.selectRightPanel(RightPanelState.WoWPvPLeaderboard)
         this.parentFragmentManager.addOnBackStackChangedListener(this)
 
-        setAdapter(resources.getStringArray(R.array.regions)
-            .asList(), navigationActivity.binding.rightPanelWowPvp.region)
+        setAdapter(
+            resources.getStringArray(R.array.regions)
+                .asList(), navigationActivity.binding.rightPanelWowPvp.region
+        )
 
         binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
@@ -125,7 +131,11 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
             binding.loadingCircle.visibility = View.GONE
             dialog = DialogPrompt(requireActivity())
             dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
+                .addMessage(
+                    requireActivity().resources.getString(R.string.unexpected),
+                    18f,
+                    "message"
+                )
                 .addButtons(
                     dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
                         dialog!!.dismiss()
@@ -167,17 +177,25 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                     if (navigationActivity.binding.rightPanelWowPvp.season.selectedItem.toString()
                             .toInt() == selectedSeason &&
                         navigationActivity.binding.rightPanelWowPvp.bracket.selectedItem.toString() == selectedBracket &&
-                        navigationActivity.binding.rightPanelWowPvp.region.selectedItem.toString() == region) {
+                        navigationActivity.binding.rightPanelWowPvp.region.selectedItem.toString() == region
+                    ) {
                         updateRecyclerViewFactionSpecific()
                     } else {
-                        selectedSeason = navigationActivity.binding.rightPanelWowPvp.season.selectedItem.toString()
-                            .toInt()
-                        selectedBracket = navigationActivity.binding.rightPanelWowPvp.bracket.selectedItem.toString()
-                        region = navigationActivity.binding.rightPanelWowPvp.region.selectedItem.toString()
+                        selectedSeason =
+                            navigationActivity.binding.rightPanelWowPvp.season.selectedItem.toString()
+                                .toInt()
+                        selectedBracket =
+                            navigationActivity.binding.rightPanelWowPvp.bracket.selectedItem.toString()
+                        region =
+                            navigationActivity.binding.rightPanelWowPvp.region.selectedItem.toString()
 
                         binding.loadingCircle.visibility = View.VISIBLE
                         navigationActivity.binding.overlappingPanel.closePanels()
-                        viewModel.downloadLeaderboard(selectedSeason, selectedBracket.lowercase(), region.lowercase())
+                        viewModel.downloadLeaderboard(
+                            selectedSeason,
+                            selectedBracket.lowercase(),
+                            region.lowercase()
+                        )
                     }
                 }
             }
@@ -187,17 +205,29 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
     private fun updateRecyclerViewFactionSpecific() {
         if (allianceToggle && !hordeToggle) {
             binding.leaderboardRecycler.apply {
-                adapter = LeaderboardAdapter(viewModel.getPvpLeaderboard().value!!.entries.filter { it.faction.type.lowercase() == "alliance" }, context, region)
+                adapter = LeaderboardAdapter(
+                    viewModel.getPvpLeaderboard().value!!.entries.filter { it.faction.type.lowercase() == "alliance" },
+                    context,
+                    region
+                )
                 adapter?.notifyDataSetChanged()
             }
         } else if (!allianceToggle && hordeToggle) {
             binding.leaderboardRecycler.apply {
-                adapter = LeaderboardAdapter(viewModel.getPvpLeaderboard().value!!.entries.filter { it.faction.type.lowercase() == "horde" }, context, region)
+                adapter = LeaderboardAdapter(
+                    viewModel.getPvpLeaderboard().value!!.entries.filter { it.faction.type.lowercase() == "horde" },
+                    context,
+                    region
+                )
                 adapter?.notifyDataSetChanged()
             }
         } else {
             binding.leaderboardRecycler.apply {
-                adapter = LeaderboardAdapter(viewModel.getPvpLeaderboard().value!!.entries, context, region)
+                adapter = LeaderboardAdapter(
+                    viewModel.getPvpLeaderboard().value!!.entries,
+                    context,
+                    region
+                )
                 adapter?.notifyDataSetChanged()
             }
         }
@@ -205,12 +235,20 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
         val arrayAdapter: ArrayAdapter<*> = object :
-            ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
+            ArrayAdapter<String?>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerList
+            ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
                 tv.textSize = 20f
@@ -227,7 +265,12 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 20f
@@ -268,10 +311,8 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack()
-                }
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

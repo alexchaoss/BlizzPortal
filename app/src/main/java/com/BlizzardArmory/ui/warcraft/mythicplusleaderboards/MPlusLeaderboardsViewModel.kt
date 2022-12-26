@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.warcraft.mythicplusleaderboards
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.expansion.Expansion
@@ -23,7 +24,7 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
 
     private var seasonIndex: MutableLiveData<SeasonsIndex> = MutableLiveData()
     private var season: MutableLiveData<Season> = MutableLiveData()
-    private var mythicKeystoneLeaderboard: MutableLiveData<List<Leaderboard>> = MutableLiveData()
+    private var mythicKeystoneLeaderboard: MutableLiveData<List<Leaderboard?>> = MutableLiveData()
     private var mythicKeystoneLeaderboardIndex: MutableLiveData<LeaderboardsIndex> = MutableLiveData()
     private var expansions: MutableLiveData<List<Expansion>> = MutableLiveData()
     private var specs: MutableLiveData<List<Specialization>> = MutableLiveData()
@@ -44,7 +45,7 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
         return season
     }
 
-    fun getMythicKeystoneLeaderboard(): LiveData<List<Leaderboard>> {
+    fun getMythicKeystoneLeaderboard(): LiveData<List<Leaderboard?>> {
         return mythicKeystoneLeaderboard
     }
 
@@ -65,15 +66,16 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
 
     fun downloadInstances() {
         val expansions = mutableListOf<Expansion>()
-        for (expansionId in 6..8) {
+        for (expansionId in 6..9) {
             val job = coroutineScope.launch {
                 val response = RetroClient.getAPIClient(getApplication())
                     .getExpansion(NetworkUtils.getExpansionFromRIO(expansionId))
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         expansions.add(response.body()!!)
-                        if (expansions.size == 3) {
+                        if (expansions.size == 4) {
                             this@MPlusLeaderboardsViewModel.expansions.value = expansions.sortedBy { it.dungeons[0].id }
+                            Log.i("EXPANSIONS", this@MPlusLeaderboardsViewModel.expansions.value?.last().toString())
                         }
                     } else {
                         errorCode.value = response.code()
@@ -133,7 +135,7 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     }
 
     fun downloadMythicKeystoneLeaderboard(connectedRealm: Int, dungeonId: Long, periods: List<Periods>, region: String) {
-        val tempLeaderboards = mutableListOf<Leaderboard>()
+        val tempLeaderboards = mutableListOf<Leaderboard?>()
         for (period in periods) {
             val job = coroutineScope.launch {
                 val response = RetroClient.getWoWClient(getApplication())
@@ -147,8 +149,7 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
                             mythicKeystoneLeaderboard.value = tempLeaderboards
                         }
                     } else {
-                        NetworkUtils.loading = false
-                        errorCode.value = response.code()
+                        tempLeaderboards.add(null)
                     }
                 }
 

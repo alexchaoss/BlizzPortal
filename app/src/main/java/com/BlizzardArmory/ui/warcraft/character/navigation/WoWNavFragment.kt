@@ -38,7 +38,7 @@ class WoWNavFragment : Fragment() {
     private var _binding: WowNavbarFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val tabsText = listOf(R.string.character, R.string.covenant, R.string.reputation, R.string.progress2, R.string.pvp, R.string.achievements)
+    private val tabsText = listOf(R.string.character, /*R.string.talents,*/ R.string.reputation, R.string.progress2, R.string.pvp, R.string.achievements)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

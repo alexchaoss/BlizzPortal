@@ -79,16 +79,16 @@ class ProgressFragment : Fragment() {
 
 
     private fun setObservers() {
-        viewModel.getEncounters().observe(viewLifecycleOwner, { encounters ->
+        viewModel.getEncounters().observe(viewLifecycleOwner) { encounters ->
             if (encounters.expansions != null) {
-                setAdapter(encounters.expansions.map { it.expansion.name }
+                setAdapter(encounters.expansions.map { it.expansion.name }.filter { !it.contains("Mythic+ Dungeons") }
                     .toMutableList(), binding.progSpinner)
             }
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             showOutdatedTextView()
-        })
+        }
     }
 
     private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {

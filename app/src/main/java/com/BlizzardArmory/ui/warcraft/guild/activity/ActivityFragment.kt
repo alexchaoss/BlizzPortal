@@ -47,7 +47,11 @@ class ActivityFragment : Fragment() {
         requireActivity().viewModelStore.clear()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = WowGuildActivityBinding.inflate(layoutInflater)
         return binding.root
@@ -116,12 +120,27 @@ class ActivityFragment : Fragment() {
             val bgColor = it.crest.background.color.rgba
             val bg = GradientDrawable()
             bg.colors =
-                intArrayOf(Color.rgb(bgColor.r, bgColor.g, bgColor.b), Color.rgb(bgColor.r, bgColor.g, bgColor.b))
+                intArrayOf(
+                    Color.rgb(bgColor.r, bgColor.g, bgColor.b),
+                    Color.rgb(bgColor.r, bgColor.g, bgColor.b)
+                )
             bg.setStroke(5, Color.parseColor("#BBBBBB"))
             binding.crest.background = bg
 
-            binding.crestBorder.setColorFilter(Color.rgb(it.crest.border.color.rgba.r, it.crest.border.color.rgba.g, it.crest.border.color.rgba.b))
-            binding.crestIcon.setColorFilter(Color.rgb(it.crest.emblem.color.rgba.r, it.crest.emblem.color.rgba.g, it.crest.emblem.color.rgba.b))
+            binding.crestBorder.setColorFilter(
+                Color.rgb(
+                    it.crest.border.color.rgba.r,
+                    it.crest.border.color.rgba.g,
+                    it.crest.border.color.rgba.b
+                )
+            )
+            binding.crestIcon.setColorFilter(
+                Color.rgb(
+                    it.crest.emblem.color.rgba.r,
+                    it.crest.emblem.color.rgba.g,
+                    it.crest.emblem.color.rgba.b
+                )
+            )
         } catch (e: Exception) {
             if (it.faction.type == "ALLIANCE") {
                 binding.crestBorder.setImageResource(R.drawable.alliance_logo)
@@ -162,73 +181,73 @@ class ActivityFragment : Fragment() {
 
     private fun callErrorAlertDialog(responseCode: Int) {
         var dialog = DialogPrompt(requireActivity())
-        if (NetworkUtils.loading) {
-            binding.loadingCircle.visibility = View.GONE
-            NetworkUtils.loading = false
+        binding.loadingCircle.visibility = View.GONE
+        NetworkUtils.loading = false
 
-            if (responseCode == 404) {
-                dialog.setCancellable(false)
-                dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
-                    .addMessage(getErrorMessage(responseCode), 18f, "message")
-                    .addButtons(
-                        dialog.Button(errorMessages.OK, 18f, {
+        if (responseCode == 404) {
+            dialog.setCancellable(false)
+            dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+                .addMessage(getErrorMessage(responseCode), 18f, "message")
+                .addButtons(
+                    dialog.Button(errorMessages.OK, 18f, {
+                        dialog.dismiss()
+                    }, "retry"), dialog.Button(
+                        errorMessages.BACK, 18f,
+
+                        {
                             dialog.dismiss()
-                        }, "retry"), dialog.Button(
-                            errorMessages.BACK, 18f,
+                            EventBus.getDefault().post(NetworkEvent(true))
+                        }, "back"
+                    )
+                ).show()
+        } else {
+            dialog = DialogPrompt(requireActivity())
+            dialog.setCancellable(false)
+            dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+                .addMessage(getErrorMessage(responseCode), 18f, "message")
+                .addButtons(
+                    dialog.Button(errorMessages.RETRY, 18f, {
+                        dialog.dismiss()
+                        viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
+                        viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
+                        EventBus.getDefault().post(RetryEvent(true))
+                        binding.loadingCircle.visibility = View.VISIBLE
+                        NetworkUtils.loading = true
+                    }, "retry"), dialog.Button(
+                        errorMessages.BACK, 18f,
 
-                            {
-                                dialog.dismiss()
-                                EventBus.getDefault().post(NetworkEvent(true))
-                            }, "back"
-                        )
-                    ).show()
-            } else {
-                dialog = DialogPrompt(requireActivity())
-                dialog.setCancellable(false)
-                dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
-                    .addMessage(getErrorMessage(responseCode), 18f, "message")
-                    .addButtons(
-                        dialog.Button(errorMessages.RETRY, 18f, {
+                        {
                             dialog.dismiss()
-                            viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
-                            viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
-                            EventBus.getDefault().post(RetryEvent(true))
-                            binding.loadingCircle.visibility = View.VISIBLE
-                            NetworkUtils.loading = true
-                        }, "retry"), dialog.Button(
-                            errorMessages.BACK, 18f,
-
-                            {
-                                dialog.dismiss()
-                                EventBus.getDefault().post(NetworkEvent(true))
-                            }, "back"
-                        )
-                    ).show()
-            }
+                            EventBus.getDefault().post(NetworkEvent(true))
+                        }, "back"
+                    )
+                ).show()
         }
     }
 
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    when {
-                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.NAVFRAGMENT.name) != null -> {
-                            WoWCharacterFragment.addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack()
-                        }
-                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWRAIDLEADERBOARD.name) != null -> {
-                            MRaidLeaderboardsFragment.addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack()
-                        }
-                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
-                            addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack()
-                        }
-                        else -> {
-                            NewsListFragment.addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                        }
+
+                when {
+                    activity.supportFragmentManager.findFragmentByTag(FragmentTag.NAVFRAGMENT.name) != null -> {
+                        WoWCharacterFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    }
+                    activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWRAIDLEADERBOARD.name) != null -> {
+                        MRaidLeaderboardsFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    }
+                    activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
+                        addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    }
+                    else -> {
+                        NewsListFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack(
+                            null,
+                            FragmentManager.POP_BACK_STACK_INCLUSIVE
+                        )
                     }
                 }
             }

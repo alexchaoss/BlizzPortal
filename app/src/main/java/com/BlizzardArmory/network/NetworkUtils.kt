@@ -14,7 +14,6 @@ object NetworkUtils {
     var loading = false
     var PROXY_BASE_URL = "https://blizz-api.onrender.com/"
     var API_BASE_URL = "https://blizzportal-api.onrender.com/"
-    var AWS_PROXY_BASE_URL = "https://blizzportalproxy-env.eba-ykhzpmue.us-east-1.elasticbeanstalk.com/"
 
     const val logs = false
 

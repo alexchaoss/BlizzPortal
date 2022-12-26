@@ -32,8 +32,6 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     lateinit var realm: String
     lateinit var region: String
 
-    private var talentsInfo: MutableLiveData<Talents> = MutableLiveData()
-    private var talentsIcons: MutableLiveData<List<TalentsIcons>> = MutableLiveData()
     private var characterSummary: MutableLiveData<CharacterSummary> = MutableLiveData()
     private var statistic: MutableLiveData<Statistic> = MutableLiveData()
     private var equipment: MutableLiveData<Equipment> = MutableLiveData()
@@ -43,14 +41,6 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     val stats = HashMap<String, String>()
     val nameList = HashMap<String, String>()
     private val imageURLsTemp = hashMapOf<String, String>()
-
-    fun getTalentsInfo(): LiveData<Talents> {
-        return talentsInfo
-    }
-
-    fun getTalentsIcons(): LiveData<List<TalentsIcons>> {
-        return talentsIcons
-    }
 
     fun getCharacterSummary(): LiveData<CharacterSummary> {
         return characterSummary
@@ -89,39 +79,6 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
             }
             if (!EventBus.getDefault().isRegistered(this@WoWCharacterViewModel)) {
                 EventBus.getDefault().register(this@WoWCharacterViewModel)
-            }
-        }
-        jobs.add(job)
-    }
-
-    fun downloadTalents() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getSpecs(
-                character.lowercase(Locale.getDefault()),
-                realm.lowercase(Locale.getDefault()),
-                region.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    talentsInfo.value = response.body()!!
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
-    }
-
-    fun downloadTalentIconsInfo() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication())
-                .getTalentsWithIcon(characterSummary.value!!.characterClass.id)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    talentsIcons.value = response.body()!!
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
             }
         }
         jobs.add(job)
@@ -542,7 +499,6 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
         super.localeSelectedReceived(LocaleSelectedEvent)
         downloadCharacterSummary()
         downloadStats()
-        downloadTalents()
         downloadEquipment()
     }
 }

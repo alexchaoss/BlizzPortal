@@ -213,6 +213,7 @@
     <string name="need_help">Need Help?</string>
     <string name="connection_guide">Connection Guide</string>
     <string name="overwatch_league">Overwatch League</string>
+    <string name="talents">Talents</string>
 
     <string-array name="regions">
         <item>@string/select_region</item>

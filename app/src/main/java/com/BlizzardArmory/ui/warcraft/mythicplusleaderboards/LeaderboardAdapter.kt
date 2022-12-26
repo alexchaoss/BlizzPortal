@@ -11,7 +11,7 @@ import com.BlizzardArmory.model.warcraft.specialization.Specialization
 import java.util.*
 import kotlin.collections.ArrayList
 
-class LeaderboardAdapter(private val list: List<LeadingGroups>, private val context: Context, private val specialization: List<Specialization>, private val leaderboard: List<Leaderboard>, val region: String) :
+class LeaderboardAdapter(private val list: List<LeadingGroups>, private val context: Context, private val specialization: List<Specialization>, private val leaderboard: List<Leaderboard?>, val region: String) :
     RecyclerView.Adapter<LeaderboardViewHolder>() {
 
     private var fullLeaderboardList = ArrayList<LeadingGroups>()
@@ -30,7 +30,7 @@ class LeaderboardAdapter(private val list: List<LeadingGroups>, private val cont
         val newPosition = list.indexOfFirst {
             Triple(it.completed_timestamp, it.keystone_levelstone_level, it.duration) == Triple(group.completed_timestamp, group.keystone_levelstone_level, group.duration)
         }
-        val entryAffixes = leaderboard.find { it.period_end_timestamp >= group.completed_timestamp && it.period_start_timestamp <= group.completed_timestamp }!!.keystone_affixesstone_affixes
+        val entryAffixes = leaderboard.find { it !== null && it.period_end_timestamp >= group.completed_timestamp && it.period_start_timestamp <= group.completed_timestamp }!!.keystone_affixesstone_affixes
         holder.bind(group, 1 + newPosition, entryAffixes, region)
     }
 

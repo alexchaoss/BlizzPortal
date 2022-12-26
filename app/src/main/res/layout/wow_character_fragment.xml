@@ -407,14 +407,14 @@
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="8dp">
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:weightSum="2"
                         android:gravity="center">
 
                         <TextView
@@ -422,6 +422,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
 
@@ -429,8 +432,10 @@
                             android:id="@+id/power"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:gravity="start"
+                            android:gravity="end"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -438,13 +443,17 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:weightSum="2">
 
                         <TextView
                             android:id="@+id/strength"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
 
@@ -452,8 +461,10 @@
                             android:id="@+id/agility"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:gravity="start"
+                            android:gravity="end"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -461,13 +472,18 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center">
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:weightSum="2">
 
                         <TextView
                             android:id="@+id/intellect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
 
@@ -475,8 +491,10 @@
                             android:id="@+id/stamina"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
+                            android:gravity="end"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
 
@@ -485,13 +503,17 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:weightSum="2">
 
                         <TextView
                             android:id="@+id/crit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
 
@@ -499,8 +521,10 @@
                             android:id="@+id/haste"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
+                            android:gravity="end"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
@@ -508,13 +532,17 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:weightSum="2">
 
                         <TextView
                             android:id="@+id/mastery"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
 
@@ -522,72 +550,15 @@
                             android:id="@+id/versatility"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:gravity="start"
+                            android:layout_span="1"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
+                            android:gravity="end"
                             android:textColor="@color/owBackgroundColor"
                             android:textSize="15sp" />
                     </TableRow>
                 </TableLayout>
 
-                <TextView
-                    android:id="@+id/specialization"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:text="@string/spec"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="18sp" />
-
-                <View
-                    android:id="@+id/view4"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@color/owBackgroundColor" />
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:tabIndicatorColor="#FFFFFF"
-                    app:tabTextColor="@color/owBackgroundColor">
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/spec1" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/spec2" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/spec3" />
-                </com.google.android.material.tabs.TabLayout>
-
-                <TextView
-                    android:id="@+id/no_talent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"
-                    android:text="@string/talent_information_not_available"
-                    android:textColor="@color/owBackgroundColor"
-                    android:textSize="15sp"
-                    android:visibility="gone" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/talent_recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             </LinearLayout>
 

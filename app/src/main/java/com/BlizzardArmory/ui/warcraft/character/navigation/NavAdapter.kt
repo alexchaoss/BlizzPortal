@@ -27,27 +27,27 @@ class NavAdapter(fm: FragmentManager, lifecycle: Lifecycle, private var totalTab
                 wowCharacterFragment.arguments = bundle
                 return wowCharacterFragment
             }
-            1 -> {
+            /*1 -> {
                 val covenantFragment = CovenantFragment()
                 covenantFragment.arguments = bundle
                 return covenantFragment
-            }
-            2 -> {
+            }*/
+            1 -> {
                 val reputationsFragment = ReputationsFragment()
                 reputationsFragment.arguments = bundle
                 return reputationsFragment
             }
-            3 -> {
+            2 -> {
                 val progressFragment = ProgressFragment()
                 progressFragment.arguments = bundle
                 return progressFragment
             }
-            4 -> {
+            3 -> {
                 val pvpFragment = PvPFragment()
                 pvpFragment.arguments = bundle
                 return pvpFragment
             }
-            5 -> {
+            4 -> {
                 val categoriesFragment = AchievementsFragment()
                 categoriesFragment.arguments = bundle
                 return categoriesFragment

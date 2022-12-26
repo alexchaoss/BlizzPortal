@@ -55,7 +55,11 @@ class OWFragment : Fragment() {
 
     private lateinit var navigationActivity: NavigationActivity
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = OwFragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -188,7 +192,12 @@ class OWFragment : Fragment() {
         }
     }
 
-    private fun removeFavorite(profiles: FavoriteProfiles, prefs: SharedPreferences, gson: Gson, index: Int) {
+    private fun removeFavorite(
+        profiles: FavoriteProfiles,
+        prefs: SharedPreferences,
+        gson: Gson,
+        index: Int
+    ) {
         if (navigationActivity.favorite!!.tag as Int == R.drawable.ic_star_black_24dp && index != -1) {
             navigationActivity.favorite!!.setOnClickListener {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
@@ -201,7 +210,12 @@ class OWFragment : Fragment() {
         }
     }
 
-    private fun addToFavorites(profiles: FavoriteProfiles, prefs: SharedPreferences, gson: Gson, index: Int) {
+    private fun addToFavorites(
+        profiles: FavoriteProfiles,
+        prefs: SharedPreferences,
+        gson: Gson,
+        index: Int
+    ) {
         val containsProfiles = AtomicBoolean(false)
         navigationActivity.favorite!!.setOnClickListener {
             for (profile in profiles.profiles) {
@@ -212,7 +226,13 @@ class OWFragment : Fragment() {
             }
             if (!containsProfiles.get()) {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Full)
-                profiles.profiles.add(FavoriteProfile(platform!!, username!!, viewModel.getProfile().value!!))
+                profiles.profiles.add(
+                    FavoriteProfile(
+                        platform!!,
+                        username!!,
+                        viewModel.getProfile().value!!
+                    )
+                )
                 prefs.edit().putString("ow-favorites", gson.toJson(profiles)).apply()
                 Snackbar.make(binding.root, "Profile added to favorites", Snackbar.LENGTH_SHORT)
                     .show()
@@ -223,8 +243,16 @@ class OWFragment : Fragment() {
 
     private fun setSpinnerTopHeroes(spinner: Spinner?) {
         val arrayAdapter: ArrayAdapter<String> = object :
-            ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, viewModel.getSortList()) {
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            ArrayAdapter<String>(
+                requireActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                viewModel.getSortList()
+            ) {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 Log.i("TEST", "$position, $convertView, $parent")
                 try {
                     val view = super.getDropDownView(position, convertView, parent)
@@ -244,20 +272,39 @@ class OWFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner!!.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 if (view != null) {
                     (view as TextView).setTextColor(Color.parseColor("#CCCCCC"))
                     view.textSize = 15f
                     view.gravity = Gravity.CENTER_VERTICAL
                 }
                 if (viewModel.getCompToggle().value!!) {
-                    viewModel.sortList(viewModel.getTopHeroesCompetitive().value, viewModel.getSortList()[position])
+                    viewModel.sortList(
+                        viewModel.getTopHeroesCompetitive().value,
+                        viewModel.getSortList()[position]
+                    )
                     binding.topHeroRecycler.adapter =
-                        OWProgressAdapter(viewModel.getTopHeroesCompetitive().value!!, requireActivity(), viewModel.getSortList()[position])
+                        OWProgressAdapter(
+                            viewModel.getTopHeroesCompetitive().value!!,
+                            requireActivity(),
+                            viewModel.getSortList()[position]
+                        )
                 } else {
-                    viewModel.sortList(viewModel.getTopHeroesQuickPlay().value, viewModel.getSortList()[position])
+                    viewModel.sortList(
+                        viewModel.getTopHeroesQuickPlay().value,
+                        viewModel.getSortList()[position]
+                    )
                     binding.topHeroRecycler.adapter =
-                        OWProgressAdapter(viewModel.getTopHeroesQuickPlay().value!!, requireActivity(), viewModel.getSortList()[position])
+                        OWProgressAdapter(
+                            viewModel.getTopHeroesQuickPlay().value!!,
+                            requireActivity(),
+                            viewModel.getSortList()[position]
+                        )
                 }
             }
 
@@ -270,8 +317,16 @@ class OWFragment : Fragment() {
 
     private fun setSpinnerCareer(spinner: Spinner?) {
         val arrayAdapter: ArrayAdapter<String> = object :
-            ArrayAdapter<String>(requireActivity(), android.R.layout.simple_dropdown_item_1line, viewModel.getCareerSortList()) {
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            ArrayAdapter<String>(
+                requireActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                viewModel.getCareerSortList()
+            ) {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 try {
                     val view = super.getDropDownView(position, convertView, parent)
                     val tv = view as TextView
@@ -290,7 +345,12 @@ class OWFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner!!.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 if (view != null) {
                     (view as TextView).setTextColor(Color.parseColor("#CCCCCC"))
                     view.textSize = 15f
@@ -355,13 +415,20 @@ class OWFragment : Fragment() {
         }
     }
 
-    private fun setSpecificCareerList(list: HashMap<String, String>, parentLayout: LinearLayout?, marginStart: Int) {
+    private fun setSpecificCareerList(
+        list: HashMap<String, String>,
+        parentLayout: LinearLayout?,
+        marginStart: Int
+    ) {
         val scale = requireActivity().resources.displayMetrics.density
         for ((i, key) in list.keys.withIndex()) {
             val linearLayout = LinearLayout(requireActivity())
             linearLayout.orientation = LinearLayout.HORIZONTAL
             val layoutParams =
-                LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             layoutParams.setMargins((marginStart * scale + 0.5f).toInt(), 0, 0, 0)
             linearLayout.layoutParams = layoutParams
             val value = TextView(requireActivity())
@@ -369,7 +436,10 @@ class OWFragment : Fragment() {
             value.setPadding(10, 10, 10, 10)
             value.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
             value.gravity = Gravity.END
-            value.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            value.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
             val text = TextView(requireActivity())
             text.text = key
             text.setPadding(10, 10, 10, 10)
@@ -399,8 +469,14 @@ class OWFragment : Fragment() {
                 if (viewModel.getProfile().value!!.ratings[i].role == "tank" && viewModel.getProfile().value!!.ratings[i].level > 0) {
                     binding.ratingTank.text =
                         viewModel.getProfile().value!!.ratings[i].level.toString()
-                    downloadRatingIcon(viewModel.getProfile().value!!.ratings[i].roleIcon, binding.ratingIconTank)
-                    downloadRatingIcon(viewModel.getProfile().value!!.ratings[i].rankIcon, binding.ratingIconRankTank)
+                    downloadRatingIcon(
+                        viewModel.getProfile().value!!.ratings[i].roleIcon,
+                        binding.ratingIconTank
+                    )
+                    downloadRatingIcon(
+                        viewModel.getProfile().value!!.ratings[i].rankIcon,
+                        binding.ratingIconRankTank
+                    )
                 } else {
                     if (viewModel.getProfile().value!!.ratings[i].level == 0) {
                         binding.ratingIconTank.visibility = View.GONE
@@ -411,8 +487,14 @@ class OWFragment : Fragment() {
                 if (viewModel.getProfile().value!!.ratings[i].role == "damage" && viewModel.getProfile().value!!.ratings[i].level > 0) {
                     binding.ratingDamage.text =
                         viewModel.getProfile().value!!.ratings[i].level.toString()
-                    downloadRatingIcon(viewModel.getProfile().value!!.ratings[i].roleIcon, binding.ratingIconDamage)
-                    downloadRatingIcon(viewModel.getProfile().value!!.ratings[i].rankIcon, binding.ratingIconRankDamage)
+                    downloadRatingIcon(
+                        viewModel.getProfile().value!!.ratings[i].roleIcon,
+                        binding.ratingIconDamage
+                    )
+                    downloadRatingIcon(
+                        viewModel.getProfile().value!!.ratings[i].rankIcon,
+                        binding.ratingIconRankDamage
+                    )
                 } else {
                     if (viewModel.getProfile().value!!.ratings[i].level == 0) {
                         binding.ratingIconDamage.visibility = View.GONE
@@ -423,8 +505,14 @@ class OWFragment : Fragment() {
                 if (viewModel.getProfile().value!!.ratings[i].role == "support" && viewModel.getProfile().value!!.ratings[i].level > 0) {
                     binding.ratingSupport.text =
                         viewModel.getProfile().value!!.ratings[i].level.toString()
-                    downloadRatingIcon(viewModel.getProfile().value!!.ratings[i].roleIcon, binding.ratingIconSupport)
-                    downloadRatingIcon(viewModel.getProfile().value!!.ratings[i].rankIcon, binding.ratingIconRankSupport)
+                    downloadRatingIcon(
+                        viewModel.getProfile().value!!.ratings[i].roleIcon,
+                        binding.ratingIconSupport
+                    )
+                    downloadRatingIcon(
+                        viewModel.getProfile().value!!.ratings[i].rankIcon,
+                        binding.ratingIconRankSupport
+                    )
                 } else {
                     if (viewModel.getProfile().value!!.ratings[i].level == 0) {
                         binding.ratingIconSupport.visibility = View.GONE
@@ -532,14 +620,12 @@ class OWFragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    if (activity.supportFragmentManager.findFragmentByTag(FragmentTag.OWFAVORITES.name) != null) {
-                        OWFavoritesFragment.addOnBackPressCallback(activity)
-                        activity.supportFragmentManager.popBackStack()
-                    } else {
-                        NewsPageFragment.addOnBackPressCallback(activity)
-                        activity.supportFragmentManager.popBackStack()
-                    }
+                if (activity.supportFragmentManager.findFragmentByTag(FragmentTag.OWFAVORITES.name) != null) {
+                    OWFavoritesFragment.addOnBackPressCallback(activity)
+                    activity.supportFragmentManager.popBackStack()
+                } else {
+                    NewsPageFragment.addOnBackPressCallback(activity)
+                    activity.supportFragmentManager.popBackStack()
                 }
             }
         }

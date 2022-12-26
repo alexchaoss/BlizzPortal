@@ -95,12 +95,20 @@ class AccountFragment : Fragment() {
     private fun setAdapter(spinnerList: MutableList<String>, spinner: Spinner) {
         spinnerList.add(0, "Select Realm")
         val arrayAdapter: ArrayAdapter<*> = object :
-            ArrayAdapter<String?>(requireActivity(), android.R.layout.simple_dropdown_item_1line, spinnerList.toImmutableList()) {
+            ArrayAdapter<String?>(
+                requireActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerList.toImmutableList()
+            ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
 
@@ -119,7 +127,12 @@ class AccountFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
                     view.textSize = 18f
@@ -210,10 +223,8 @@ class AccountFragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack()
-                }
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

@@ -99,6 +99,10 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     userInformation.value = response.body()
+                    if(userInformation.value?.battleTag?.contains("#") == false) {
+                        downloadCount++
+                        downloadUserInfo()
+                    }
                 } else {
                     downloadCount++
                     if (downloadCount <= 5) {
@@ -113,7 +117,7 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     fun initWoWServer() {
         val job = coroutineScope.launch {
             val response = RetroClient.getGeneralClient(getApplication())
-                .initWoWServer(NetworkUtils.WOW_SERVER)
+                .initWoWServer(NetworkUtils.API_BASE_URL)
             withContext(Dispatchers.Main) {
                 Log.i("init wow server", response.message())
             }

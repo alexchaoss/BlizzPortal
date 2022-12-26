@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.warcraft.character.reputations
+package com.BlizzardArmory.ui.warcraft.character.talents
 
 import android.app.Application
 import android.util.Log
@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
-class ReputationsViewModel(application: Application) : BaseViewModel(application) {
+class TalentsViewModel(application: Application) : BaseViewModel(application) {
 
     lateinit var character: String
     lateinit var realm: String
@@ -74,8 +74,8 @@ class ReputationsViewModel(application: Application) : BaseViewModel(application
                     errorCode.value = response.code()
                 }
             }
-            if (!EventBus.getDefault().isRegistered(this@ReputationsViewModel)) {
-                EventBus.getDefault().register(this@ReputationsViewModel)
+            if (!EventBus.getDefault().isRegistered(this@TalentsViewModel)) {
+                EventBus.getDefault().register(this@TalentsViewModel)
             }
         }
         jobs.add(job)

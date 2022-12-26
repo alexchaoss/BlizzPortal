@@ -50,7 +50,11 @@ class D3Fragment : Fragment() {
 
     private lateinit var navigationActivity: NavigationActivity
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = D3FragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -80,7 +84,8 @@ class D3Fragment : Fragment() {
         battleTag = arguments?.getString("battletag")
         selectedRegion = arguments?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value =
+            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
         setObservers()
     }
@@ -97,11 +102,13 @@ class D3Fragment : Fragment() {
             setProgression()
             setTimePlayed()
             binding.characterFrameRecycler.apply {
-                adapter = D3CharacterFrameAdapter(viewModel.getProfile().value?.heroes!!.sortedByDescending { hero -> hero.lastUpdated })
+                adapter =
+                    D3CharacterFrameAdapter(viewModel.getProfile().value?.heroes!!.sortedByDescending { hero -> hero.lastUpdated })
             }
             if (viewModel.getProfile().value?.fallenHeroes != null) {
                 binding.characterDeadRecycler.apply {
-                    adapter = D3DeadCharacterAdapter(viewModel.getProfile().value?.fallenHeroes!!.sortedBy { hero -> hero.death.time })
+                    adapter =
+                        D3DeadCharacterAdapter(viewModel.getProfile().value?.fallenHeroes!!.sortedBy { hero -> hero.death.time })
                 }
             }
             manageFavorite(it)
@@ -130,14 +137,16 @@ class D3Fragment : Fragment() {
         val gson = GsonBuilder().create()
         val favoriteCharactersString = prefs.getString("d3-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "DEFAULT") {
-            favoriteProfiles = gson.fromJson(favoriteCharactersString, D3FavoriteProfiles::class.java)
+            favoriteProfiles =
+                gson.fromJson(favoriteCharactersString, D3FavoriteProfiles::class.java)
             var indexOfProfile = -1
             var indexTemp = 0
             for (profile in favoriteProfiles.profiles) {
                 if (hasCharacter(profile)) {
                     indexOfProfile = indexTemp
                     navigationActivity.toggleFavoriteButton(FavoriteState.Full)
-                    favoriteProfiles.profiles[indexOfProfile] = D3FavoriteProfile(accountInformation, selectedRegion!!, battleTag!!)
+                    favoriteProfiles.profiles[indexOfProfile] =
+                        D3FavoriteProfile(accountInformation, selectedRegion!!, battleTag!!)
                     prefs.edit().putString("d3-favorites", gson.toJson(favoriteProfiles)).apply()
                     break
                 } else {
@@ -155,7 +164,13 @@ class D3Fragment : Fragment() {
         return battleTag == profile.battletag && selectedRegion == profile.region
     }
 
-    private fun deleteFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, indexOfProfile: Int, gson: Gson, prefs: SharedPreferences) {
+    private fun deleteFavorite(
+        profiles: D3FavoriteProfiles,
+        accountInformation: AccountInformation,
+        indexOfProfile: Int,
+        gson: Gson,
+        prefs: SharedPreferences
+    ) {
         if (navigationActivity.favorite!!.tag == R.drawable.ic_star_black_24dp && indexOfProfile != -1) {
             navigationActivity.favorite!!.setOnClickListener {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
@@ -168,7 +183,12 @@ class D3Fragment : Fragment() {
         }
     }
 
-    private fun addToFavorite(profiles: D3FavoriteProfiles, accountInformation: AccountInformation, gson: Gson, prefs: SharedPreferences) {
+    private fun addToFavorite(
+        profiles: D3FavoriteProfiles,
+        accountInformation: AccountInformation,
+        gson: Gson,
+        prefs: SharedPreferences
+    ) {
         navigationActivity.favorite!!.setOnClickListener {
             var containsProfile = false
             var indexOfProfile = 0
@@ -181,7 +201,13 @@ class D3Fragment : Fragment() {
             }
             if (!containsProfile) {
                 navigationActivity.toggleFavoriteButton(FavoriteState.Full)
-                profiles.profiles.add(D3FavoriteProfile(accountInformation, selectedRegion!!, battleTag!!))
+                profiles.profiles.add(
+                    D3FavoriteProfile(
+                        accountInformation,
+                        selectedRegion!!,
+                        battleTag!!
+                    )
+                )
                 prefs.edit().putString("d3-favorites", gson.toJson(profiles)).apply()
                 Snackbar.make(binding.root, "Profile added to favorites", Snackbar.LENGTH_SHORT)
                     .show()
@@ -191,13 +217,20 @@ class D3Fragment : Fragment() {
     }
 
     private fun setTimePlayed() {
-        binding.barbProgress.progress = (viewModel.getProfile().value?.timePlayed?.barbarian?.times(100))?.toInt()!!
-        binding.crusaderProgress.progress = (viewModel.getProfile().value?.timePlayed?.crusader?.times(100))?.toInt()!!
-        binding.dhProgress.progress = (viewModel.getProfile().value?.timePlayed?.demonHunter?.times(100))?.toInt()!!
-        binding.monkProgress.progress = (viewModel.getProfile().value?.timePlayed?.monk?.times(100))?.toInt()!!
-        binding.necroProgress.progress = (viewModel.getProfile().value?.timePlayed?.necromancer?.times(100))?.toInt()!!
-        binding.wdProgress.progress = (viewModel.getProfile().value?.timePlayed?.witchDoctor?.times(100))?.toInt()!!
-        binding.wizardProgress.progress = (viewModel.getProfile().value?.timePlayed?.wizard?.times(100))?.toInt()!!
+        binding.barbProgress.progress =
+            (viewModel.getProfile().value?.timePlayed?.barbarian?.times(100))?.toInt()!!
+        binding.crusaderProgress.progress =
+            (viewModel.getProfile().value?.timePlayed?.crusader?.times(100))?.toInt()!!
+        binding.dhProgress.progress =
+            (viewModel.getProfile().value?.timePlayed?.demonHunter?.times(100))?.toInt()!!
+        binding.monkProgress.progress =
+            (viewModel.getProfile().value?.timePlayed?.monk?.times(100))?.toInt()!!
+        binding.necroProgress.progress =
+            (viewModel.getProfile().value?.timePlayed?.necromancer?.times(100))?.toInt()!!
+        binding.wdProgress.progress =
+            (viewModel.getProfile().value?.timePlayed?.witchDoctor?.times(100))?.toInt()!!
+        binding.wizardProgress.progress =
+            (viewModel.getProfile().value?.timePlayed?.wizard?.times(100))?.toInt()!!
     }
 
 
@@ -326,20 +359,18 @@ class D3Fragment : Fragment() {
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    when {
-                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.D3LEADERBOARD.name) != null -> {
-                            D3LeaderboardFragment.addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack()
-                        }
-                        activity.supportFragmentManager.findFragmentByTag(FragmentTag.D3FAVORITES.name) != null -> {
-                            D3FavoriteFragment.addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack()
-                        }
-                        else -> {
-                            NewsPageFragment.addOnBackPressCallback(activity)
-                            activity.supportFragmentManager.popBackStack()
-                        }
+                when {
+                    activity.supportFragmentManager.findFragmentByTag(FragmentTag.D3LEADERBOARD.name) != null -> {
+                        D3LeaderboardFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    }
+                    activity.supportFragmentManager.findFragmentByTag(FragmentTag.D3FAVORITES.name) != null -> {
+                        D3FavoriteFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    }
+                    else -> {
+                        NewsPageFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
                     }
                 }
             }

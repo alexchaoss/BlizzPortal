@@ -12,10 +12,10 @@ android {
     compileSdkVersion 32
     defaultConfig {
         applicationId "com.BlizzardArmory"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 32
-        versionCode 127
-        versionName "5.08"
+        versionCode 128
+        versionName "5.09"
         multiDexEnabled true
     }
     buildTypes {
@@ -88,7 +88,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     implementation "com.github.bumptech.glide:glide:4.11.0"
-    implementation 'com.github.stfalcon-studio:StfalconImageViewer:master-SNAPSHOT'
+    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'

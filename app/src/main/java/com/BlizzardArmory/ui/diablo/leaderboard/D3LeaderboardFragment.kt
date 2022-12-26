@@ -29,7 +29,19 @@ import com.google.android.material.snackbar.Snackbar
 class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     FragmentManager.OnBackStackChangedListener {
 
-    private var leaderboardList = arrayListOf("Category", "Barbarian", "Crusader", "Demon Hunter", "Monk", "Necromancer", "Witch Doctor", "Wizard", "2 Player", "3 Player", "4 Player")
+    private var leaderboardList = arrayListOf(
+        "Category",
+        "Barbarian",
+        "Crusader",
+        "Demon Hunter",
+        "Monk",
+        "Necromancer",
+        "Witch Doctor",
+        "Wizard",
+        "2 Player",
+        "3 Player",
+        "4 Player"
+    )
 
     private var hardcoreToggle = false
     private var seasonToggle = true
@@ -44,7 +56,11 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private var dialog: DialogPrompt? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         addOnBackPressCallback(activity as NavigationActivity)
         _binding = D3LeaderboardsFragmentBinding.inflate(layoutInflater)
         return binding.root
@@ -68,7 +84,10 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         if (!prefs?.contains("leaderboard_pulled")!!) {
             val dialog = DialogPrompt(requireContext())
             dialog.addTitle("New Feature!", 20F)
-                .addMessage("Welcome to the Diablo 3 Leaderboards!\nPull from the right to open the Leaderboard menu!", 18F)
+                .addMessage(
+                    "Welcome to the Diablo 3 Leaderboards!\nPull from the right to open the Leaderboard menu!",
+                    18F
+                )
                 .addButtons(dialog.Button("Close", 16F, { dialog.dismiss() })).show()
             prefs.edit()?.putString("leaderboard_pulled", "done")?.apply()
         }
@@ -86,8 +105,10 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         }
 
         setAdapter(leaderboardList, rightPanel.binding.rightPanelD3.leaderboard)
-        setAdapter(resources.getStringArray(R.array.regions)
-            .asList(), rightPanel.binding.rightPanelD3.region)
+        setAdapter(
+            resources.getStringArray(R.array.regions)
+                .asList(), rightPanel.binding.rightPanelD3.region
+        )
 
         setSearchButton()
 
@@ -109,7 +130,11 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
             binding.loadingCircle.visibility = View.GONE
             dialog = DialogPrompt(requireActivity())
             dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(requireActivity().resources.getString(R.string.unexpected), 18f, "message")
+                .addMessage(
+                    requireActivity().resources.getString(R.string.unexpected),
+                    18f,
+                    "message"
+                )
                 .addButtons(
                     dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
                         dialog!!.dismiss()
@@ -138,7 +163,10 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         viewModel.getSeasonIndex().observe(viewLifecycleOwner, {
             rightPanel.binding.rightPanelD3.seasonButton.setOnClickListener {
                 seasonToggle = true
-                setAdapter(viewModel.getSeasonIndexList(), rightPanel.binding.rightPanelD3.spinnerId)
+                setAdapter(
+                    viewModel.getSeasonIndexList(),
+                    rightPanel.binding.rightPanelD3.spinnerId
+                )
                 rightPanel.binding.rightPanelD3.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
                 rightPanel.binding.rightPanelD3.eraButton.setBackgroundResource(R.drawable.leaderboards_button)
             }
@@ -147,10 +175,17 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         viewModel.getLeaderboard().observe(viewLifecycleOwner, {
             if (!updatedSpinners) {
                 updatedSpinners = true
-                setAdapter(viewModel.getSeasonIndexList(), rightPanel.binding.rightPanelD3.spinnerId)
+                setAdapter(
+                    viewModel.getSeasonIndexList(),
+                    rightPanel.binding.rightPanelD3.spinnerId
+                )
             }
             binding.leaderboardRecycler.apply {
-                adapter = LeaderboardAdapter(viewModel.getLeaderboard().value?.row!!, region, requireActivity())
+                adapter = LeaderboardAdapter(
+                    viewModel.getLeaderboard().value?.row!!,
+                    region,
+                    requireActivity()
+                )
             }
             binding.loadingCircle.visibility = View.GONE
         })
@@ -184,9 +219,17 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
                 }
                 region = rightPanel.binding.rightPanelD3.region.selectedItem.toString()
                 if (seasonToggle) {
-                    viewModel.downloadSeason(rightPanel.binding.rightPanelD3.spinnerId.selectedItem.toString(), leaderboard, region)
+                    viewModel.downloadSeason(
+                        rightPanel.binding.rightPanelD3.spinnerId.selectedItem.toString(),
+                        leaderboard,
+                        region
+                    )
                 } else {
-                    viewModel.downloadEra(rightPanel.binding.rightPanelD3.spinnerId.selectedItem.toString(), leaderboard, region)
+                    viewModel.downloadEra(
+                        rightPanel.binding.rightPanelD3.spinnerId.selectedItem.toString(),
+                        leaderboard,
+                        region
+                    )
                 }
                 NetworkUtils.loading = true
                 binding.loadingCircle.visibility = View.VISIBLE
@@ -200,12 +243,20 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
         val arrayAdapter: ArrayAdapter<*> = object :
-            ArrayAdapter<String?>(requireContext(), android.R.layout.simple_dropdown_item_1line, spinnerList) {
+            ArrayAdapter<String?>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerList
+            ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
                 tv.textSize = 20f
@@ -222,7 +273,12 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
 
                 try {
                     (view as TextView).setTextColor(Color.WHITE)
@@ -265,10 +321,8 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     companion object {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
-                if (!NetworkUtils.loading) {
-                    NewsPageFragment.addOnBackPressCallback(activity)
-                    activity.supportFragmentManager.popBackStack()
-                }
+                NewsPageFragment.addOnBackPressCallback(activity)
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }
