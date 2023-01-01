@@ -35,7 +35,7 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
     private lateinit var navigationActivity: NavigationActivity
 
-    private var selectedConnectedRealm = 0
+    private var selectedConnectedRealm: Int? = 0
     private var region = "US"
     private var selectedDungeon = 0L
     private var selectedSeason = 0

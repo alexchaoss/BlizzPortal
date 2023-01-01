@@ -61,26 +61,29 @@ class CovenantFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getSoulbinds().observe(viewLifecycleOwner, {
+        viewModel.getSoulbinds().observe(viewLifecycleOwner) {
             setHeader(it)
             setAvatars(it)
             viewModel.downloadCovenantSpell(it.chosenCovenant.id)
             viewModel.downloadCovenantClassSpell(characterClass)
 
-        })
+        }
 
-        viewModel.getcovenantClassSpells().observe(viewLifecycleOwner, {
+        viewModel.getcovenantClassSpells().observe(viewLifecycleOwner) {
             Glide.with(requireContext())
                 .load(it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }?.icon)
                 .into(binding.covenantClassSpell)
             try {
-                setOnSpellTouched(binding.covenantClassSpell, it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!)
+                setOnSpellTouched(
+                    binding.covenantClassSpell,
+                    it.find { covenantSpell -> covenantSpell.covenant_id == viewModel.getSoulbinds().value?.chosenCovenant?.id }!!
+                )
             } catch (e: Exception) {
                 binding.classSpellContainer.visibility = View.GONE
                 Log.e("Error", "Covenant Class Spell", e)
             }
-        })
-        viewModel.getTechTalents().observe(viewLifecycleOwner, {
+        }
+        viewModel.getTechTalents().observe(viewLifecycleOwner) {
             val soulbind = viewModel.getSoulbinds().value!!.soulbinds[0]
             val talents = it[soulbind.soulbind.id]?.groupBy { talent -> talent.tier }
             if (!talents.isNullOrEmpty()) {
@@ -89,9 +92,9 @@ class CovenantFragment : Fragment() {
                 }
             }
             setOnAvatarClickListeners(it)
-        })
+        }
 
-        viewModel.getcovenantSpell().observe(viewLifecycleOwner, {
+        viewModel.getcovenantSpell().observe(viewLifecycleOwner) {
             try {
                 //Glide.with(requireContext()).load(it[0].icon).into(binding.covenantSpell)
                 //setOnSpellTouched(binding.covenantSpell, it[0])
@@ -99,10 +102,10 @@ class CovenantFragment : Fragment() {
                 Log.e("Error", "no icon", e)
             }
 
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
-        })
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
+        }
     }
 
     private fun setOnAvatarClickListeners(mutableMap: MutableMap<Long, List<TechTalent>>) {

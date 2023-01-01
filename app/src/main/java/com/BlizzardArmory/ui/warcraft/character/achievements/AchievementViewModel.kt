@@ -45,53 +45,28 @@ class AchievementViewModel(application: Application) : BaseViewModel(application
     }
 
     fun downloadAchievementInformation() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication()).getAllAchievements()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    allAchievements.value = response.body()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getAPIClient(getApplication()).getAllAchievements() }, { allAchievements.value = it.body() })
     }
 
     fun downloadCharacterAchievements() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getCharacterAchievements(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication()).getCharacterAchievements(
                 character,
                 realm,
                 region,
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    characterAchievements.value = response.body()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        }, { characterAchievements.value = it.body() })
     }
 
     fun downloadCategories() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication()).getAchievementCategories()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    categories.value = response.body()
-                    val tempCats = categories.value?.filter { it.id != 15076L }
-                    categories.value?.clear()
-                    categories.value?.addAll(tempCats!!)
-                    createAchievementsMap()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getAPIClient(getApplication()).getAchievementCategories() },
+            {
+                categories.value = it.body()
+                val tempCats = categories.value?.filter { cat -> cat.id != 15076L }
+                categories.value?.clear()
+                categories.value?.addAll(tempCats!!)
+                createAchievementsMap()
+            })
     }
 
     private fun createAchievementsMap() {

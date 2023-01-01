@@ -27,7 +27,6 @@ object RetroClient {
                 get() = ConnectionStatus.hasNetwork()
         }
 
-
         val client = OkCacheControl.on(OkHttpClient.Builder())
             .overrideServerCachePolicy(cacheTime, TimeUnit.DAYS)
             .forceCacheWhenOffline(networkMonitor)
@@ -38,6 +37,10 @@ object RetroClient {
         }
 
         client.cache(cache).connectTimeout(Duration.ofSeconds(30))
+
+        if (cacheTime == 0L) {
+            return OkHttpClient.Builder().build()
+        }
 
         return client.build()
     }

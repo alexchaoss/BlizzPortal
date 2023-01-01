@@ -44,41 +44,30 @@ class ReputationsViewModel(application: Application) : BaseViewModel(application
     }
 
     fun downloadReputationsPlusParentInfo() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication()).getReputationPlusParentInfo()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    reputationsWithParentInfo.value = response.body()
-                    downloadReputations()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getAPIClient(getApplication()).getReputationPlusParentInfo() },
+            {
+                reputationsWithParentInfo.value = it.body()
+                downloadReputations()
+            })
     }
 
     private fun downloadReputations() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getReputations(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication()).getReputations(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    reputations.value = response.body()
-                    sortRepsByExpansions(reputations.value!!)
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    errorCode.value = response.code()
+        },
+            {
+                reputations.value = it.body()
+                sortRepsByExpansions(reputations.value!!)
+            }, onComplete = {
+                if (!EventBus.getDefault().isRegistered(this@ReputationsViewModel)) {
+                    EventBus.getDefault().register(this@ReputationsViewModel)
                 }
-            }
-            if (!EventBus.getDefault().isRegistered(this@ReputationsViewModel)) {
-                EventBus.getDefault().register(this@ReputationsViewModel)
-            }
-        }
-        jobs.add(job)
+            })
+
     }
 
 

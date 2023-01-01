@@ -10,6 +10,7 @@ import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.AutoCompleteTextView
@@ -88,7 +89,7 @@ class NavigationActivity : LocalizationActivity(),
     private var characterClicked: String = ""
     private var characterRealm: String = ""
     private var selectedRegion: String = ""
-
+    private var newsOpened = false
     private lateinit var errorMessage: ErrorMessages
 
     var favorite: ImageView? = null
@@ -100,30 +101,40 @@ class NavigationActivity : LocalizationActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setObservers()
         installSplashScreen()
         val content: View = findViewById(android.R.id.content)
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (viewModel.getIsReady().value == true) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        )
 
-        if (prefs != null && prefs!!.getBoolean("signedIn", false)) {
-            selectedRegion = prefs?.getString("region", "us").toString()
-            viewModel.openLoginToBattleNet()
-        }
-
-        content.viewTreeObserver.addOnPreDrawListener {
-            return@addOnPreDrawListener viewModel.isReady
-        }
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             handleUncaughtException(thread, throwable)
         }
 
         barBinding = NavigationActivityBarBinding.inflate(layoutInflater)
         binding = NavigationActivityBinding.inflate(layoutInflater)
+    }
+
+    private fun initActivity() {
         val view = binding.root
-
-        setOberservers()
-
         setContentView(view)
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        if (prefs != null && prefs!!.getBoolean("signedIn", false)) {
+            selectedRegion = prefs?.getString("region", "us").toString()
+            viewModel.openLoginToBattleNet()
+        }
 
         checkForAppUpdates()
 
@@ -133,18 +144,15 @@ class NavigationActivity : LocalizationActivity(),
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         initLocale()
 
-        viewModel.getConnectedRealms()
-        viewModel.initWoWServer()
-
         binding.fragment.addOnLayoutChangeListener(PanelsChildGestureRegionObserver.Provider.get())
 
         favorite = binding.topBar.favorite
 
         errorMessage = ErrorMessages(this.resources)
 
-
         getUserNewsPreferences()
         setUserNews()
+
         if (supportFragmentManager.backStackEntryCount == 0) {
             openNewsFragment()
         }
@@ -317,7 +325,7 @@ class NavigationActivity : LocalizationActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        PanelsChildGestureRegionObserver.Provider.get().remove(binding.fragment.id)
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.fragment)
     }
 
     fun setSignedInStatus(value: Boolean) {
@@ -384,7 +392,15 @@ class NavigationActivity : LocalizationActivity(),
         }
     }
 
-    private fun setOberservers() {
+    private fun setObservers() {
+        viewModel.getIsReady().observe(this) {
+            if (it!!) {
+                viewModel.getConnectedRealms()
+                viewModel.initWoWServer()
+                initActivity()
+            }
+        }
+
         viewModel.getBnetParams().observe(this) {
             if (viewModel.isSignedIn() == true) {
                 viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
@@ -399,6 +415,8 @@ class NavigationActivity : LocalizationActivity(),
         }
 
         viewModel.getUserInformation().observe(this) {
+            binding.topBar.barTitle.text = it?.battleTag
+            userInformation = it
             when (OauthFlowStarter.lastOpenedFragmentNeedingOAuth) {
                 FragmentTag.WOWFRAGMENT.name -> {
                     val fragment = AccountFragment()
@@ -420,6 +438,10 @@ class NavigationActivity : LocalizationActivity(),
 
         viewModel.getSignedInStatus().observe(this) {
             if (it) {
+                if(!newsOpened) {
+                    openNewsFragment()
+                }
+                newsOpened = true
                 prefs?.edit()?.putString("region", selectedRegion)?.apply()
                 viewModel.setBnetParams(intent.getParcelableExtra(BattlenetConstants.BUNDLE_BNPARAMS)!!)
                 val menu = Gson().fromJson(
@@ -443,13 +465,8 @@ class NavigationActivity : LocalizationActivity(),
         }
 
         viewModel.getWowConnectedRealms().observe(this) {
+            Log.i("TEST REALMS", it.toString())
             realms = it
-            viewModel.isReady = true
-        }
-
-        viewModel.getUserInformation().observe(this) {
-            binding.topBar.barTitle.text = it?.battleTag
-            userInformation = it
         }
 
         viewModel.getErrorCode().observe(this) {
@@ -1136,24 +1153,6 @@ class NavigationActivity : LocalizationActivity(),
 
 
     override fun onGestureRegionsUpdate(gestureRegions: List<Rect>) {
-        when (supportFragmentManager.fragments.last().tag) {
-            FragmentTag.NAVFRAGMENT.name,
-            FragmentTag.OVERWATCHFRAGMENT.name,
-            FragmentTag.WOWGUILDNAVFRAGMENT.name -> {
-                for (rect in gestureRegions) {
-                    rect.set(
-                        (resources.displayMetrics.widthPixels * 0.25).toInt(), rect.top,
-                        (resources.displayMetrics.widthPixels * 0.75).toInt(), rect.bottom
-                    )
-                }
-            }
-            else -> {
-                for (rect in gestureRegions) {
-                    rect.set(resources.displayMetrics.widthPixels, rect.top, 0, rect.bottom)
-                }
-            }
-        }
-
         binding.overlappingPanel.setChildGestureRegions(gestureRegions)
     }
 

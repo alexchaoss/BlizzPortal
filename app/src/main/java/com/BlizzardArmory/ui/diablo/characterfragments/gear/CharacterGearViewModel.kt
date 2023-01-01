@@ -57,27 +57,19 @@ class CharacterGearViewModel(application: Application) : BaseViewModel(applicati
         this.battletag = battletag
         this.id = id
         this.selectedRegion = selectedRegion
-        val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client(getApplication(), true)
-                .getHeroItems(battletag, id, battlenetOAuth2Helper!!.accessToken,
-                    selectedRegion.lowercase(Locale.getDefault()))
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    itemsInformation.value = response.body()
-                    itemInformation
-                    items.forEachIndexed { index, item ->
-                        setItemInformation(item!!, index)
-                    }
-                    if (!EventBus.getDefault().isRegistered(this@CharacterGearViewModel)) {
-                        EventBus.getDefault().register(this@CharacterGearViewModel)
-                    }
-                    itemsInfoSetup.value = true
-                } else {
-                    errorCode.value = response.code()
+        executeAPICall({ RetroClient.getD3Client(getApplication(), true)
+            .getHeroItems(battletag, id, battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault())) },
+            {
+                itemsInformation.value = it.body()
+                itemInformation
+                items.forEachIndexed { index, item ->
+                    setItemInformation(item!!, index)
                 }
-            }
-        }
-        jobs.add(job)
+                if (!EventBus.getDefault().isRegistered(this@CharacterGearViewModel)) {
+                    EventBus.getDefault().register(this@CharacterGearViewModel)
+                }
+                itemsInfoSetup.value = true
+            })
     }
 
     private val itemInformation: Unit

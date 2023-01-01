@@ -31,6 +31,7 @@ import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.state.FavoriteState
 import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
+import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -89,6 +90,7 @@ class OWFragment : Fragment() {
         username = this.arguments?.getString("username")
         platform = this.arguments?.getString("platform")
         viewModel.downloadAccountInformation(username!!, platform!!)
+        PanelsChildGestureRegionObserver.Provider.get().register(binding.careerLists)
     }
 
     private fun setObservers() {

@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3NavbarFragmentBinding
+import com.BlizzardArmory.ui.warcraft.character.navigation.NavAdapter
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayoutMediator
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -53,6 +55,7 @@ class D3CharacterNav : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = D3NavbarFragmentBinding.inflate(layoutInflater)
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.wowPager)
         return binding.root
     }
 
@@ -65,11 +68,18 @@ class D3CharacterNav : Fragment() {
         bundle.putString(REGION, region)
         bundle.putInt(GENDER, gender)
         bundle.putString(CHAR_CLASS, charClass)
-        binding.wowPager.adapter = MyAdapter(childFragmentManager, this.lifecycle, binding.navBar.tabCount, bundle)
+        binding.wowPager.apply {
+            adapter = MyAdapter(childFragmentManager, this@D3CharacterNav.lifecycle, binding.navBar.tabCount, bundle)
+            PanelsChildGestureRegionObserver.Provider.get().register(this)
+        }
         TabLayoutMediator(binding.navBar, binding.wowPager) { tab, position ->
             tab.text = resources.getString(tabsText[position])
             binding.wowPager.currentItem = tab.position
         }.attach()
+
+        binding.navBar.apply {
+            PanelsChildGestureRegionObserver.Provider.get().register(this)
+        }
     }
 
     override fun onStart() {

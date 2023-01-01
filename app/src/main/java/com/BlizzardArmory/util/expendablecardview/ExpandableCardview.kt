@@ -127,6 +127,10 @@ class ExpandableCardview(context: Context, attrs: AttributeSet? = null) : CardVi
         this.stateListener = stateListener
     }
 
+    fun unregisterStateListener() {
+        this.stateListener = null
+    }
+
     override fun onClick(v: View?) {
         if (canExpand) {
             expandCollapseAction()

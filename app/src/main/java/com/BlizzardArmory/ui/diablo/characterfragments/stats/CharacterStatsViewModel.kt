@@ -32,27 +32,14 @@ class CharacterStatsViewModel(application: Application) : BaseViewModel(applicat
         this.id = id
         this.selectedRegion = selectedRegion
         NetworkUtils.loading = true
-        val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client(getApplication()).getD3Hero(
-                battletag,
-                id,
-                battlenetOAuth2Helper!!.accessToken,
-                selectedRegion.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    characterInformation.value = response.body()
-                    NetworkUtils.loading = false
-                } else {
-                    errorCode.value = response.code()
-                    NetworkUtils.loading = false
-                }
+        executeAPICall({ RetroClient.getD3Client(getApplication()).getD3Hero(battletag, id, battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault())) },
+            { characterInformation.value = it.body() },
+            onComplete = {
+                NetworkUtils.loading = false
                 if (!EventBus.getDefault().isRegistered(this@CharacterStatsViewModel)) {
                     EventBus.getDefault().register(this@CharacterStatsViewModel)
                 }
-            }
-        }
-        jobs.add(job)
+            })
     }
 
     @Subscribe

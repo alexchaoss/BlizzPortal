@@ -58,121 +58,73 @@ class CovenantViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun downloadCharacterSoulbinds() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication(), true).getSoulbinds(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication(), true).getSoulbinds(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    soulbinds.value = response.body()
-                    for (soulbind in soulbinds.value?.soulbinds!!) {
-                        downloadSoulbind(soulbind.soulbind.id)
-                    }
-
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+        },
+            {
+                soulbinds.value = it.body()
+                for (soulbind in soulbinds.value?.soulbinds!!) {
+                    downloadSoulbind(soulbind.soulbind.id)
                 }
-            }
-        }
-        jobs.add(job)
+            })
     }
 
     fun downloadSoulbind(id: Long) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication(), true).getSoulbind(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication(), true).getSoulbind(
                 id,
                 "static-${region.lowercase()}",
                 region.lowercase(Locale.getDefault())
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    soulbind.value?.set(id, response.body()!!)
-                    downloadTechTree(soulbind.value?.get(id)!!.techtalentTree.id, id)
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        },
+            {
+                soulbind.value?.set(id, it.body()!!)
+                downloadTechTree(soulbind.value?.get(id)!!.techtalentTree.id, id)
+            })
     }
 
-    fun downloadTechTree(techTreeIndex: Long, soulbindId: Long) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication(), true)
-                .getTechTree(techTreeIndex, region.lowercase())
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    techTrees.value?.set(techTreeIndex, response.body()!!)
-                    downloadTechTalents(techTrees.value?.get(techTreeIndex)!!.id, soulbindId)
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+    private fun downloadTechTree(techTreeIndex: Long, soulbindId: Long) {
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getTechTree(techTreeIndex, region.lowercase()) },
+            {
+                techTrees.value?.set(techTreeIndex, it.body()!!)
+                downloadTechTalents(techTrees.value?.get(techTreeIndex)!!.id, soulbindId)
+            })
     }
 
-    fun downloadTechTalents(id: Long, soulbindId: Long) {
+    private fun downloadTechTalents(id: Long, soulbindId: Long) {
         val tempTalents = mutableListOf<TechTalent>()
         for (talent in techTrees.value?.get(id)!!.talents) {
-            val job = coroutineScope.launch {
-                val response = RetroClient.getWoWClient(getApplication(), true)
-                    .getTechTalent(talent.id, region.lowercase())
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        if (tempTalents.size == techTrees.value?.get(id)!!.talents.size - 1) {
-                            if (techTalentsTemp.size == soulbind.value!!.size - 1) {
-                                techTalentsTemp.set(soulbindId, tempTalents.sortedBy { it.tier })
-                                techTalents.value = techTalentsTemp
-                            } else {
-                                tempTalents.add(response.body()!!)
-                                techTalentsTemp.set(soulbindId, tempTalents.sortedBy { it.tier })
-                            }
+            executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getTechTalent(talent.id, region.lowercase()) },
+                {
+                    if (tempTalents.size == techTrees.value?.get(id)!!.talents.size - 1) {
+                        if (techTalentsTemp.size == soulbind.value!!.size - 1) {
+                            techTalentsTemp[soulbindId] = tempTalents.sortedBy { talent -> talent.tier }
+                            techTalents.value = techTalentsTemp
                         } else {
-                            tempTalents.add(response.body()!!)
+                            tempTalents.add(it.body()!!)
+                            techTalentsTemp[soulbindId] = tempTalents.sortedBy { talent -> talent.tier }
                         }
-
                     } else {
-                        Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                        tempTalents.add(it.body()!!)
                     }
-                }
-                if (!EventBus.getDefault().isRegistered(this@CovenantViewModel)) {
-                    EventBus.getDefault().register(this@CovenantViewModel)
-                }
-            }
-            jobs.add(job)
+                }, onComplete = {
+                    if (!EventBus.getDefault().isRegistered(this@CovenantViewModel)) {
+                        EventBus.getDefault().register(this@CovenantViewModel)
+                    }
+                })
+
         }
     }
 
     fun downloadCovenantClassSpell(characterClass: Int) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication(), true)
-                .getCovenantClassSpells(characterClass)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    covenantClassSpells.value = response.body()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getAPIClient(getApplication(), true).getCovenantClassSpells(characterClass) }, { covenantClassSpells.value = it.body() })
     }
 
     fun downloadCovenantSpell(covenantId: Int) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication(), true)
-                .getCovenantSpells(covenantId)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    covenantSpell.value = response.body()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getAPIClient(getApplication(), true).getCovenantSpells(covenantId) }, { covenantSpell.value = it.body() })
     }
 }

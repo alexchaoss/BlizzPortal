@@ -4,12 +4,12 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
-import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
-import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputations
-import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
+import com.BlizzardArmory.model.warcraft.covenant.techtalent.TalentTree
+import com.BlizzardArmory.model.warcraft.talents.playerspec.PlayerSpecializations
+import com.BlizzardArmory.model.warcraft.talents.trees.TalentTrees
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
+import com.BlizzardArmory.util.WoWClassName
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,91 +24,68 @@ class TalentsViewModel(application: Application) : BaseViewModel(application) {
     lateinit var realm: String
     lateinit var region: String
 
-    val repsByExpac = arrayListOf<ArrayList<Reputations>>()
 
-    private var reputations: MutableLiveData<Reputation> = MutableLiveData()
-    private var reputationsWithParentInfo: MutableLiveData<List<ReputationPlusParentInfo>> = MutableLiveData()
+    private var talentTrees: MutableLiveData<TalentTrees> = MutableLiveData()
+    private var talentTree: MutableLiveData<TalentTree> = MutableLiveData()
+    private var playerSpecialization: MutableLiveData<PlayerSpecializations> = MutableLiveData()
+    private var playerClass: MutableLiveData<String> = MutableLiveData()
 
-    init {
-        for (i in 0..9) {
-            repsByExpac.add(arrayListOf())
-        }
+    fun getTalentTrees(): LiveData<TalentTrees> {
+        return talentTrees
     }
 
-    fun getReputations(): LiveData<Reputation> {
-        return reputations
+    fun getTalentTree(): LiveData<TalentTree> {
+        return talentTree
     }
 
-    fun getReputationsWithParentInfo(): LiveData<List<ReputationPlusParentInfo>> {
-        return reputationsWithParentInfo
+    fun getPlayerSpecialization(): LiveData<PlayerSpecializations> {
+        return playerSpecialization
     }
 
-    fun downloadReputationsPlusParentInfo() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication()).getReputationPlusParentInfo()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    reputationsWithParentInfo.value = response.body()
-                    downloadReputations()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+    fun getPlayerClass(): LiveData<String> {
+        return playerClass
+    }
+
+    fun setPlayerClass(plClass: Int) {
+        playerClass.value = WoWClassName.get(plClass)
+    }
+
+    fun downloadCharacterSpecialization() {
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getSpecs(character, realm) }, { playerSpecialization.value = it.body() },
+            onComplete = {
+                if (!EventBus.getDefault().isRegistered(this@TalentsViewModel)) {
+                    EventBus.getDefault().register(this@TalentsViewModel)
                 }
-            }
-        }
-        jobs.add(job)
+            })
     }
 
-    private fun downloadReputations() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getReputations(
-                character.lowercase(Locale.getDefault()),
-                realm.lowercase(Locale.getDefault()),
-                region.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    reputations.value = response.body()
-                    sortRepsByExpansions(reputations.value!!)
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    errorCode.value = response.code()
-                }
-            }
-            if (!EventBus.getDefault().isRegistered(this@TalentsViewModel)) {
-                EventBus.getDefault().register(this@TalentsViewModel)
-            }
-        }
-        jobs.add(job)
+    fun downloadTalentTreesIndex() {
+        executeAPICall(
+            { RetroClient.getWoWClient(getApplication()).getTalentTrees() },
+            {
+                talentTrees.value = it.body()
+                downloadTalentTree()
+            })
     }
 
+    private fun downloadTalentTree() {
+        val classId = talentTrees.value?.classTalentTrees
+            ?.find { it.name.lowercase(Locale.getDefault()) == playerClass.value?.lowercase(Locale.getDefault()) }
+            ?.key?.href?.split("/")
+            ?.last()
+            ?.split("?")
+            ?.first()
 
-    private fun sortRepsByExpansions(reputation: Reputation) {
-        repsByExpac.forEach {
-            it.clear()
-        }
-        for (reps in reputation.reputations) {
-            for (enumRep in RepByExpansion.values()) {
-                if (reps.faction.id == enumRep.id) {
-                    when (enumRep.xpac) {
-                        "Classic" -> repsByExpac[0].add(reps)
-                        "Burning Crusade" -> repsByExpac[1].add(reps)
-                        "Wrath of the Lich King" -> repsByExpac[2].add(reps)
-                        "Cataclysm" -> repsByExpac[3].add(reps)
-                        "Mists of Pandaria" -> repsByExpac[4].add(reps)
-                        "Warlords of Draenor" -> repsByExpac[5].add(reps)
-                        "Legion" -> repsByExpac[6].add(reps)
-                        "Battle for Azeroth" -> repsByExpac[7].add(reps)
-                        "Shadowlands" -> repsByExpac[8].add(reps)
-                        "Dragonflight" -> repsByExpac[9].add(reps)
-                    }
-                }
-            }
-        }
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getTalentTree(classId!!.toLong(), playerSpecialization.value?.active_specialization?.id!!.toLong()) },
+            { response ->
+                talentTree.value = response.body()
+                downloadTalentTree()
+            }, { response -> errorCode.value = response.code() })
     }
 
     @Subscribe
     override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         super.localeSelectedReceived(LocaleSelectedEvent)
-        downloadReputationsPlusParentInfo()
+        downloadCharacterSpecialization()
     }
 }

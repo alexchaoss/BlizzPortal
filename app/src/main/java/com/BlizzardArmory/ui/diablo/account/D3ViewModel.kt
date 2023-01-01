@@ -29,27 +29,16 @@ class D3ViewModel(application: Application) : BaseViewModel(application) {
         this.battleTag = battleTag
         this.selectedRegion = selectedRegion
         NetworkUtils.loading = true
-        val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client(getApplication()).getD3Profile(
-                battleTag,
-                battlenetOAuth2Helper!!.accessToken,
-                selectedRegion.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    profile.value = response.body()
-                    sortHeroes()
-                    NetworkUtils.loading = false
-                } else {
-                    errorCode.value = response.code()
-                    NetworkUtils.loading = false
+        executeAPICall({ RetroClient.getD3Client(getApplication()).getD3Profile(battleTag, battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault())) },
+            {
+                profile.value = it.body()
+                sortHeroes()
+            }, onComplete = {
+                NetworkUtils.loading = false
+                if (!EventBus.getDefault().isRegistered(this@D3ViewModel)) {
+                    EventBus.getDefault().register(this@D3ViewModel)
                 }
-            }
-            if (!EventBus.getDefault().isRegistered(this@D3ViewModel)) {
-                EventBus.getDefault().register(this@D3ViewModel)
-            }
-        }
-        jobs.add(job)
+            })
     }
 
     private fun sortHeroes() {

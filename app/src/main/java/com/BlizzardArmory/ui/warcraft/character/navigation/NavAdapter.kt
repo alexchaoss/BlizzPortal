@@ -8,10 +8,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.BlizzardArmory.ui.warcraft.character.achievements.AchievementsFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
-import com.BlizzardArmory.ui.warcraft.character.covenant.CovenantFragment
 import com.BlizzardArmory.ui.warcraft.character.progress.ProgressFragment
 import com.BlizzardArmory.ui.warcraft.character.pvp.PvPFragment
 import com.BlizzardArmory.ui.warcraft.character.reputations.ReputationsFragment
+import com.BlizzardArmory.ui.warcraft.character.talents.TalentsFragment
 
 class NavAdapter(fm: FragmentManager, lifecycle: Lifecycle, private var totalTabs: Int, internal var bundle: Bundle) :
     FragmentStateAdapter(fm, lifecycle) {
@@ -27,27 +27,27 @@ class NavAdapter(fm: FragmentManager, lifecycle: Lifecycle, private var totalTab
                 wowCharacterFragment.arguments = bundle
                 return wowCharacterFragment
             }
-            /*1 -> {
-                val covenantFragment = CovenantFragment()
-                covenantFragment.arguments = bundle
-                return covenantFragment
-            }*/
             1 -> {
+                val talentsFragment = TalentsFragment()
+                talentsFragment.arguments = bundle
+                return talentsFragment
+            }
+            2 -> {
                 val reputationsFragment = ReputationsFragment()
                 reputationsFragment.arguments = bundle
                 return reputationsFragment
             }
-            2 -> {
+            3 -> {
                 val progressFragment = ProgressFragment()
                 progressFragment.arguments = bundle
                 return progressFragment
             }
-            3 -> {
+            4 -> {
                 val pvpFragment = PvPFragment()
                 pvpFragment.arguments = bundle
                 return pvpFragment
             }
-            4 -> {
+            5 -> {
                 val categoriesFragment = AchievementsFragment()
                 categoriesFragment.arguments = bundle
                 return categoriesFragment

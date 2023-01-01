@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
-import com.BlizzardArmory.model.warcraft.talents.Talent
-import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
+import com.BlizzardArmory.model.warcraft.talentold.Talent
+import com.BlizzardArmory.model.warcraft.talentold.TalentsIcons
 import com.BlizzardArmory.util.events.TalentClickedEvent
 import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus

@@ -75,23 +75,15 @@ class OWViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadAccountInformation(username: String, platform: String) {
         NetworkUtils.loading = true
-        val job = coroutineScope.launch {
-            val response = RetroClient.getOWClient(getApplication())
-                .getOWProfile(NetworkUtils.getOWProfile(username, platform))
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    profile.value = response.body()
-                    NetworkUtils.loading = false
-                    setTopHeroesLists()
-                    setCareerLists()
-                    setSpinnerCareerList(careerQuickPlay.value!!)
-                    comp.value = false
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getOWClient(getApplication()).getOWProfile(NetworkUtils.getOWProfile(username, platform)) },
+            {
+                profile.value = it.body()
+                NetworkUtils.loading = false
+                setTopHeroesLists()
+                setCareerLists()
+                setSpinnerCareerList(careerQuickPlay.value!!)
+                comp.value = false
+            })
     }
 
     fun setCareerLists() {

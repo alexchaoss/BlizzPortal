@@ -34,7 +34,7 @@ class AffixesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
         downloadSpecializations(affix.keystone_affixstone_affix.id)
     }
 
-    fun downloadSpecializations(id: Int) {
+    private fun downloadSpecializations(id: Int) {
         CoroutineScope(Dispatchers.Default).launch {
             val response = RetroClient.getWoWClient(context)
                 .getMythicKeystoneAffixMedia(id, "static-${NetworkUtils.region}")

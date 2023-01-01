@@ -86,30 +86,30 @@ class PvPFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.geterrorBracket().observe(viewLifecycleOwner, {
+        viewModel.geterrorBracket().observe(viewLifecycleOwner) {
             when (it) {
                 "rbg" -> binding.layoutrbg.alpha = 0.4f
                 "2v2" -> binding.layout2v2.alpha = 0.4f
                 "3v3" -> binding.layout3v3.alpha = 0.4f
             }
-        })
+        }
 
-        viewModel.getTier2v2().observe(viewLifecycleOwner, {
+        viewModel.getTier2v2().observe(viewLifecycleOwner) {
             setTierImage(binding.tierimage2v2, it)
             showBracketInformationOnTouch(binding.layout2v2, it, viewModel.pvp2v2)
-        })
+        }
 
-        viewModel.getTier3v3().observe(viewLifecycleOwner, {
+        viewModel.getTier3v3().observe(viewLifecycleOwner) {
             setTierImage(binding.tierimage3v3, it)
             showBracketInformationOnTouch(binding.layout3v3, it, viewModel.pvp3v3)
-        })
+        }
 
-        viewModel.getTierRBG().observe(viewLifecycleOwner, {
+        viewModel.getTierRBG().observe(viewLifecycleOwner) {
             setTierImage(binding.tierimagerbg, it)
             showBracketInformationOnTouch(binding.layoutrbg, it, viewModel.pvpRBG)
-        })
+        }
 
-        viewModel.getSummary().observe(viewLifecycleOwner, {
+        viewModel.getSummary().observe(viewLifecycleOwner) {
             binding.kills.text = it.honorable_kills.toString()
             binding.level.text = "LEVEL ${it.honor_level}"
             setHonorRankIcon(it)
@@ -119,7 +119,7 @@ class PvPFragment : Fragment() {
                     adapter = BattlegroundAdapter(it.pvp_map_statistics, context)
                 }
             }
-        })
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

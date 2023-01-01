@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.BlizzardArmory.model.warcraft.talents.Talent
-import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
+import com.BlizzardArmory.model.warcraft.talentold.Talent
+import com.BlizzardArmory.model.warcraft.talentold.TalentsIcons
 
 class TalentAdapter(private val list: List<Talent>, private val talentsIcons: List<TalentsIcons>, private val context: Context)
     : RecyclerView.Adapter<TalentViewHolder>() {

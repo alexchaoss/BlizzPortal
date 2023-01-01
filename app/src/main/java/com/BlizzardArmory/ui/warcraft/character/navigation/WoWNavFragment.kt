@@ -1,11 +1,13 @@
 package com.BlizzardArmory.ui.warcraft.character.navigation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.viewpager2.widget.ViewPager2
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.NavigationActivity
@@ -34,11 +36,10 @@ class WoWNavFragment : Fragment() {
     private var realm: String? = null
     private var media: String? = null
     private var region: String? = null
-
     private var _binding: WowNavbarFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val tabsText = listOf(R.string.character, /*R.string.talents,*/ R.string.reputation, R.string.progress2, R.string.pvp, R.string.achievements)
+    private val tabsText = listOf(R.string.character, R.string.talents, R.string.reputation, R.string.progress2, R.string.pvp, R.string.achievements)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,13 +65,22 @@ class WoWNavFragment : Fragment() {
         bundle.putString("media", media)
         bundle.putString("region", region)
 
-        binding.wowPager.offscreenPageLimit = 5
-        binding.wowPager.adapter = NavAdapter(childFragmentManager, this.lifecycle, binding.navBar.tabCount, bundle)
+        binding.wowPager.apply {
+            adapter = NavAdapter(childFragmentManager, this@WoWNavFragment.lifecycle, binding.navBar.tabCount, bundle)
+            offscreenPageLimit = 5
+            PanelsChildGestureRegionObserver.Provider.get().register(this)
+        }
+
         TabLayoutMediator(binding.navBar, binding.wowPager) { tab, position ->
             tab.text = resources.getString(tabsText[position])
             binding.wowPager.setCurrentItem(tab.position, true)
         }.attach()
+
+        binding.navBar.apply {
+            PanelsChildGestureRegionObserver.Provider.get().register(this)
+        }
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -79,7 +89,7 @@ class WoWNavFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        PanelsChildGestureRegionObserver.Provider.get().remove(binding.wowPager.id)
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.wowPager)
         _binding = null
     }
 

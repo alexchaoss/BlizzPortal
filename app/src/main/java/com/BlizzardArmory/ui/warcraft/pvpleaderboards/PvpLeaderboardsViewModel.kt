@@ -28,35 +28,13 @@ class PvpLeaderboardsViewModel(application: Application) : BaseViewModel(applica
     }
 
     fun downloadSeasonIndex() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getPvPSeasonIndex("dynamic-" + NetworkUtils.region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    seasonIndex.value = response.body()
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPSeasonIndex("dynamic-" + NetworkUtils.region) },
+            { seasonIndex.value = it.body() })
     }
 
     fun downloadLeaderboard(seasonId: Int, bracket: String, region: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getPvPLeaderboard(seasonId, bracket, "dynamic-$region", region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    pvpLeaderboard.value = response.body()
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
-                }
-            }
-
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPLeaderboard(seasonId, bracket, "dynamic-$region", region) },
+            { pvpLeaderboard.value = it.body() })
     }
 
 

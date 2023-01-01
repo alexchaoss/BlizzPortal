@@ -51,7 +51,7 @@ class GuildNavFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        PanelsChildGestureRegionObserver.Provider.get().remove(binding.wowPager.id)
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.wowPager)
         _binding = null
     }
 

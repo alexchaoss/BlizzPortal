@@ -29,24 +29,15 @@ class ProgressViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun downloadEncounterInformation() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getEncounters(
-                character.lowercase(Locale.getDefault()),
-                realm.lowercase(Locale.getDefault()),
-                region.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    encounters.value = response.body()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getEncounters(
+            character.lowercase(Locale.getDefault()),
+            realm.lowercase(Locale.getDefault()),
+            region.lowercase(Locale.getDefault()),
+        ) }, { encounters.value = it.body() }, onComplete = {
             if (!EventBus.getDefault().isRegistered(this@ProgressViewModel)) {
                 EventBus.getDefault().register(this@ProgressViewModel)
             }
-        }
-        jobs.add(job)
+        })
     }
 
 

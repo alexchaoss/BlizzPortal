@@ -39,55 +39,20 @@ class SC2LeaderboardViewModel(application: Application) : BaseViewModel(applicat
     }
 
     fun downloadLeaderboard(regionId: Int, ladderId: Int, region: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client(getApplication())
-                .getSc2LadderLeaderboard(parseRegionId(regionId), ladderId, region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    val board = response.body()
-                    leaderboard.value = board!!.ladderMembers.groupBy { Triple(it.joinTimestamp, it.wins, it.losses) }
-                        .map { it.value }
-                    NetworkUtils.loading = false
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getSc2Client(getApplication()).getSc2LadderLeaderboard(parseRegionId(regionId), ladderId, region) },
+            {
+                val board = it.body()
+                leaderboard.value = board!!.ladderMembers.groupBy { team -> Triple(team.joinTimestamp, team.wins, team.losses) }
+                    .map { team -> team.value }
+            }, onComplete = { NetworkUtils.loading = false })
     }
 
     fun downloadLeague(region: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client(getApplication())
-                .getSc2League(seasonId, getQueueAsInt(), teamType, getLeagueAsInt(), region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    league.value = response.body()
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getSc2Client(getApplication()).getSc2League(seasonId, getQueueAsInt(), teamType, getLeagueAsInt(), region) }, {league.value = it.body()}, { NetworkUtils.loading = false })
     }
 
     fun downloadCurrentSeason(regionId: Int, region: String) {
-        val job = coroutineScope.launch {
-            val response =
-                RetroClient.getSc2Client(getApplication())
-                    .getSc2CurrentSeason(parseRegionId(regionId), region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    season.value = response.body()
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({  RetroClient.getSc2Client(getApplication()).getSc2CurrentSeason(parseRegionId(regionId), region) }, {season.value = it.body()}, { NetworkUtils.loading = false })
     }
 
     @Subscribe

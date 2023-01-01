@@ -47,78 +47,41 @@ class D3LeaderboardViewModel(application: Application) : BaseViewModel(applicati
     }
 
     fun downloadSeasonIndex() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client(getApplication()).getSeasonIndex()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    seasonIndex.value = response.body()
-                    seasonIndex.value?.season?.forEachIndexed { index, _ ->
-                        seasonIndexList.add((index + 1).toString())
-                    }
-                    downloadSeason(seasonIndexList.last(), "rift-barbarian", NetworkUtils.region)
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
+        executeAPICall({ RetroClient.getD3Client(getApplication()).getSeasonIndex() },
+            {
+                seasonIndex.value = it.body()
+                seasonIndex.value?.season?.forEachIndexed { index, _ ->
+                    seasonIndexList.add((index + 1).toString())
                 }
-            }
-        }
-        jobs.add(job)
+                downloadSeason(seasonIndexList.last(), "rift-barbarian", NetworkUtils.region)
+            }, { NetworkUtils.loading = false })
     }
 
     fun downloadSeason(id: String, leaderboardString: String, region: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client(getApplication())
-                .getSeasonLeaderboard(id.toInt(), leaderboardString, region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    leaderboard.value = response.body()
-                    NetworkUtils.loading = false
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
-                }
+        executeAPICall({ RetroClient.getD3Client(getApplication()).getSeasonLeaderboard(id.toInt(), leaderboardString, region) }, { leaderboard.value = it.body() },
+            onComplete = {
+                NetworkUtils.loading = false
                 if (!EventBus.getDefault().isRegistered(this@D3LeaderboardViewModel)) {
                     EventBus.getDefault().register(this@D3LeaderboardViewModel)
                 }
-            }
-        }
-        jobs.add(job)
+            })
     }
 
     fun downloadEraIndex() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client(getApplication())
-                .getEraIndex()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    eraIndex.value = response.body()
-                    eraIndex.value?.era?.forEachIndexed { index, _ ->
-                        eraIndexList.add((index + 1).toString())
-                    }
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
+        executeAPICall({ RetroClient.getD3Client(getApplication()).getEraIndex() },
+            {
+                eraIndex.value = it.body()
+                eraIndex.value?.era?.forEachIndexed { index, _ ->
+                    eraIndexList.add((index + 1).toString())
                 }
-            }
-        }
-        jobs.add(job)
+            }, { NetworkUtils.loading = false })
     }
 
     fun downloadEra(id: String, leaderboardString: String, region: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getD3Client(getApplication())
-                .getEraLeaderboard(id.toInt(), leaderboardString, region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    leaderboard.value = response.body()
-                    NetworkUtils.loading = false
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getD3Client(getApplication()).getEraLeaderboard(id.toInt(), leaderboardString, region) },
+            {
+                leaderboard.value = it.body()
+            }, onComplete = { NetworkUtils.loading = false })
     }
 
     @Subscribe

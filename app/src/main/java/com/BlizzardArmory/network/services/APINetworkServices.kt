@@ -7,7 +7,7 @@ import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.expansion.Expansion
 import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
 import com.BlizzardArmory.model.warcraft.specialization.Specialization
-import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
+import com.BlizzardArmory.model.warcraft.talentold.TalentsIcons
 import com.BlizzardArmory.network.NetworkUtils
 import retrofit2.Response
 import retrofit2.http.GET

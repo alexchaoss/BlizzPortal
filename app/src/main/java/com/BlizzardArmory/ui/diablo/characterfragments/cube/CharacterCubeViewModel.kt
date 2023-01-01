@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.util.*
 
 class CharacterCubeViewModel(application: Application) : BaseViewModel(application) {
 
@@ -28,21 +29,16 @@ class CharacterCubeViewModel(application: Application) : BaseViewModel(applicati
         this.characterInformation = characterInformation
         for (i in characterInformation.legendaryPowers.indices) {
             val endpoint = characterInformation.legendaryPowers[i].tooltipParams.replace("/item/", "")
-            val job = coroutineScope.launch {
-                val response = RetroClient.getD3Client(getApplication()).getItem(endpoint)
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        singleItem.value = response.body()!!
-                        if (i == characterInformation.legendaryPowers.size - 1) {
-                            NetworkUtils.loading = false
-                            if (!EventBus.getDefault().isRegistered(this@CharacterCubeViewModel)) {
-                                EventBus.getDefault().register(this@CharacterCubeViewModel)
-                            }
+            executeAPICall({ RetroClient.getD3Client(getApplication()).getItem(endpoint) },
+                {
+                    singleItem.value = it.body()!!
+                    if (i == characterInformation.legendaryPowers.size - 1) {
+                        NetworkUtils.loading = false
+                        if (!EventBus.getDefault().isRegistered(this@CharacterCubeViewModel)) {
+                            EventBus.getDefault().register(this@CharacterCubeViewModel)
                         }
                     }
-                }
-            }
-            jobs.add(job)
+                })
         }
     }
 

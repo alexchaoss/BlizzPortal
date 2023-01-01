@@ -11,6 +11,7 @@ import com.google.api.client.auth.oauth2.TokenResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 import java.net.URLDecoder
 import java.util.*
 
@@ -62,33 +63,28 @@ class AuthorizationTokenViewModel(application: Application) : BaseViewModel(appl
     private suspend fun retrieveToken(authorizationCode: String): TokenResponse {
         Log.i(BattlenetConstants.TAG, "retrieveAndStoreAccessToken for code $authorizationCode")
         val token = TokenResponse()
-        val job = coroutineScope.launch {
-            val response = RetroClient.getGeneralClient(getApplication()).getAccessToken(
+        val job = executeAPICall({
+            RetroClient.getGeneralClient(getApplication()).getAccessToken(
                 authorizationCode,
                 getBnetParams().value!!.zone.lowercase(Locale.getDefault()),
                 getBnetParams().value!!.rederictUri
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    val tokenResponse = response.body()
-                    token.expiresInSeconds = tokenResponse?.expiresIn
-                    token.accessToken = tokenResponse?.accessToken
-                    token.scope = tokenResponse?.scope
-                    token.tokenType = tokenResponse?.tokenType
-                    Log.i(BattlenetConstants.TAG, "Found tokenResponse: " + token.accessToken)
-                    if (null != token.accessToken) {
-                        Log.i(BattlenetConstants.TAG, "Access Token : " + token.accessToken)
-                    }
-                    if (null != token.refreshToken) {
-                        Log.i(BattlenetConstants.TAG, "Refresh Token : " + token.refreshToken)
-                    }
-                    Log.i("TOKEN", tokenResponse.toString())
-                } else {
-                    startActivity.value = false
+        },
+            {
+                val tokenResponse = it.body()
+                token.expiresInSeconds = tokenResponse?.expiresIn
+                token.accessToken = tokenResponse?.accessToken
+                token.scope = tokenResponse?.scope
+                token.tokenType = tokenResponse?.tokenType
+                Log.i(BattlenetConstants.TAG, "Found tokenResponse: " + token.accessToken)
+                if (null != token.accessToken) {
+                    Log.i(BattlenetConstants.TAG, "Access Token : " + token.accessToken)
                 }
-            }
-        }
-        jobs.add(job)
+                if (null != token.refreshToken) {
+                    Log.i(BattlenetConstants.TAG, "Refresh Token : " + token.refreshToken)
+                }
+                Log.i("TOKEN", tokenResponse.toString())
+            }, { startActivity.value = false })
         job.join()
         return token
     }

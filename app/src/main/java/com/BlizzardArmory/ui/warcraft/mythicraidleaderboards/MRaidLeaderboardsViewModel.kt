@@ -26,44 +26,28 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     fun downloadBothLeaderboard(raid: String) {
         tempEntries.clear()
         val job = coroutineScope.launch {
-            val job1 = coroutineScope.launch {
-                val response = RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(
-                    parseRaidName(raid), "horde",
-                    "dynamic-" + NetworkUtils.region
-                )
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        if (response.body()?.entries != null) {
-                            val list = response.body()?.entries?.toMutableList()!!
-                            tempEntries.addAll(list)
-                        }
-                    } else {
-                        NetworkUtils.loading = false
-                        errorCode.value = response.code()
+            val job1 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(parseRaidName(raid), "horde", "dynamic-" + NetworkUtils.region) },
+                {
+                    if (it.body()?.entries != null) {
+                        val list = it.body()?.entries?.toMutableList()!!
+                        tempEntries.addAll(list)
                     }
-                }
-            }
-            jobs.add(job1)
+                },
+                {
+                    NetworkUtils.loading = false
+                })
             job1.join()
 
-            val job2 = coroutineScope.launch {
-                val response = RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(
-                    parseRaidName(raid), "alliance",
-                    "dynamic-" + NetworkUtils.region
-                )
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        if (response.body()?.entries != null) {
-                            val list = response.body()?.entries?.toMutableList()!!
-                            tempEntries.addAll(list)
-                        }
-                    } else {
-                        NetworkUtils.loading = false
-                        errorCode.value = response.code()
+            val job2 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(parseRaidName(raid), "alliance", "dynamic-" + NetworkUtils.region) },
+                {
+                    if (it.body()?.entries != null) {
+                        val list = it.body()?.entries?.toMutableList()!!
+                        tempEntries.addAll(list)
                     }
-                }
-            }
-            jobs.add(job2)
+                },
+                { response ->
+                    NetworkUtils.loading = false
+                })
             job2.join()
             withContext(Dispatchers.Main) {
                 tempEntries.sortBy { it.timestamp }
@@ -75,22 +59,12 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     }
 
     fun downloadLeaderboard(raid: String, faction: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(
-                parseRaidName(raid), faction.lowercase(Locale.getDefault()),
-                "dynamic-" + NetworkUtils.region
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    entries.value = response.body()?.entries
-                    NetworkUtils.loading = false
-                } else {
-                    NetworkUtils.loading = false
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(parseRaidName(raid), faction.lowercase(Locale.getDefault()), "dynamic-" + NetworkUtils.region) },
+            {
+                entries.value = it.body()?.entries
+                NetworkUtils.loading = false
+            },
+            { NetworkUtils.loading = false })
     }
 
     private fun parseRaidName(name: String): String {

@@ -6,6 +6,7 @@ import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
 import com.BlizzardArmory.model.warcraft.covenant.character.soulbind.CharacterSoulbinds
 import com.BlizzardArmory.model.warcraft.covenant.conduit.Conduit
 import com.BlizzardArmory.model.warcraft.covenant.soulbind.Soulbind
+import com.BlizzardArmory.model.warcraft.covenant.techtalent.TalentTree
 import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalent
 import com.BlizzardArmory.model.warcraft.covenant.techtalenttree.TechTalentTree
 import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
@@ -29,7 +30,9 @@ import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
-import com.BlizzardArmory.model.warcraft.talents.Talents
+import com.BlizzardArmory.model.warcraft.talentold.Talents
+import com.BlizzardArmory.model.warcraft.talents.playerspec.PlayerSpecializations
+import com.BlizzardArmory.model.warcraft.talents.trees.TalentTrees
 import com.BlizzardArmory.network.NetworkUtils
 import retrofit2.Response
 import retrofit2.http.*
@@ -64,6 +67,20 @@ interface WoWNetworkServices {
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Tier>
+
+    @GET("/data/wow/talent-tree/index")
+    suspend fun getTalentTrees(
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<TalentTrees>
+
+    @GET("/data/wow/talent-tree/{treeId}/playable-specialization/{specId}")
+    suspend fun getTalentTree(
+        @Path("treeId") treeId: Long,
+        @Path("specId") specId: Long,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<TalentTree>
 
     @GET("/data/wow/tech-talent-tree/{id}")
     suspend fun getTechTree(
@@ -276,7 +293,7 @@ interface WoWNetworkServices {
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
-    ): Response<Talents>
+    ): Response<PlayerSpecializations>
 
 
     @GET("profile/wow/character/{realm}/{character}")

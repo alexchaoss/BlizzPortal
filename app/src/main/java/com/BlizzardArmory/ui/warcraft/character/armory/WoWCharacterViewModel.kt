@@ -12,8 +12,6 @@ import com.BlizzardArmory.model.warcraft.equipment.Set
 import com.BlizzardArmory.model.warcraft.equipment.Socket
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
-import com.BlizzardArmory.model.warcraft.talents.Talents
-import com.BlizzardArmory.model.warcraft.talents.TalentsIcons
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
@@ -63,79 +61,48 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     fun downloadCharacterSummary() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getCharacter(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication()).getCharacter(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    characterSummary.value = response.body()!!
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    errorCode.value = response.code()
-                }
-            }
+        }, { characterSummary.value = it.body() }, onComplete = {
             if (!EventBus.getDefault().isRegistered(this@WoWCharacterViewModel)) {
                 EventBus.getDefault().register(this@WoWCharacterViewModel)
             }
-        }
-        jobs.add(job)
+        })
+
     }
 
     fun downloadStats() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getStats(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication()).getStats(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    statistic.value = response.body()!!
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        }, { statistic.value = it.body() })
     }
 
     fun downloadEquipment() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getEquippedItems(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication()).getEquippedItems(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    equipment.value = response.body()!!
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        }, { equipment.value = it.body() })
     }
 
     fun downloadBackground() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getMedia(
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication()).getMedia(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    media.value = response.body()!!
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-            }
-        }
-        jobs.add(job)
+        }, { media.value = it.body() })
     }
 
     fun downloadIcons(equippedItem: EquippedItem) {
@@ -149,26 +116,18 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                     .toRegex()).toRegex(), "static-" + region.lowercase(Locale.getDefault())
             )
         }
-        url =
-            url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
-
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getDynamicEquipmentMedia(url, region.lowercase(Locale.getDefault()))
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    val mediaItem = response.body()!!
-                    imageURLsTemp[equippedItem.slot.type] = mediaItem.assets[0].value
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    imageURLsTemp[equippedItem.slot.type] = "empty"
-                }
-                if (imageURLsTemp.size == equipment.value!!.equippedItems.size) {
-                    imageURLs.value = imageURLsTemp
-                }
-            }
+        url = url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getDynamicEquipmentMedia(url, region.lowercase(Locale.getDefault())) },
+            {
+                val mediaItem = it.body()!!
+                imageURLsTemp[equippedItem.slot.type] = mediaItem.assets[0].value
+            },
+            {
+                imageURLsTemp[equippedItem.slot.type] = "empty"
+            })
+        if (imageURLsTemp.size == equipment.value!!.equippedItems.size) {
+            imageURLs.value = imageURLsTemp
         }
-        jobs.add(job)
         NetworkUtils.loading = false
     }
 

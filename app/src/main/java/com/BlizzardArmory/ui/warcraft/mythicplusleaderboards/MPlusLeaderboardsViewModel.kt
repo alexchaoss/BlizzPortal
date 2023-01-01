@@ -50,111 +50,49 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     }
 
     fun downloadSpecializations() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getAPIClient(getApplication())
-                .getAllPlayableSpecializations()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    specs.value = response.body()!!
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getAPIClient(getApplication()).getAllPlayableSpecializations() }, { specs.value = it.body() })
     }
 
     fun downloadInstances() {
         val expansions = mutableListOf<Expansion>()
         for (expansionId in 6..9) {
-            val job = coroutineScope.launch {
-                val response = RetroClient.getAPIClient(getApplication())
-                    .getExpansion(NetworkUtils.getExpansionFromRIO(expansionId))
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        expansions.add(response.body()!!)
-                        if (expansions.size == 4) {
-                            this@MPlusLeaderboardsViewModel.expansions.value = expansions.sortedBy { it.dungeons[0].id }
-                            Log.i("EXPANSIONS", this@MPlusLeaderboardsViewModel.expansions.value?.last().toString())
-                        }
-                    } else {
-                        errorCode.value = response.code()
+            executeAPICall({ RetroClient.getAPIClient(getApplication()).getExpansion(NetworkUtils.getExpansionFromRIO(expansionId)) },
+                {
+                    expansions.add(it.body()!!)
+                    if (expansions.size == 4) {
+                        this@MPlusLeaderboardsViewModel.expansions.value = expansions.sortedBy { xpac -> xpac.dungeons[0].id }
+                        Log.i("EXPANSIONS", this@MPlusLeaderboardsViewModel.expansions.value?.last().toString())
                     }
-                }
-            }
-            jobs.add(job)
+                })
         }
     }
 
     fun downloadSeasonIndex() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getMythicKeystoneSeasonsIndex("dynamic-" + NetworkUtils.region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    seasonIndex.value = response.body()
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneSeasonsIndex("dynamic-" + NetworkUtils.region) }, { seasonIndex.value = it.body() })
     }
 
     fun downloadSeason(seasonId: Int) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getMythicKeystoneSeason(seasonId, "dynamic-" + NetworkUtils.region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    season.value = response.body()
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneSeason(seasonId, "dynamic-" + NetworkUtils.region) }, { season.value = it.body() })
     }
 
     fun downloadMythicKeystoneLeaderboardIndex(connectedRealm: Int) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getMythicKeystoneLeaderboardsIndex(connectedRealm, "dynamic-" + NetworkUtils.region, NetworkUtils.region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    mythicKeystoneLeaderboardIndex.value = response.body()
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-
-        }
-        jobs.add(job)
+        executeAPICall(
+            { RetroClient.getWoWClient(getApplication()).getMythicKeystoneLeaderboardsIndex(connectedRealm, "dynamic-" + NetworkUtils.region, NetworkUtils.region) },
+            { mythicKeystoneLeaderboardIndex.value = it.body() })
     }
 
-    fun downloadMythicKeystoneLeaderboard(connectedRealm: Int, dungeonId: Long, periods: List<Periods>, region: String) {
+    fun downloadMythicKeystoneLeaderboard(connectedRealm: Int?, dungeonId: Long, periods: List<Periods>, region: String) {
         val tempLeaderboards = mutableListOf<Leaderboard?>()
         for (period in periods) {
-            val job = coroutineScope.launch {
-                val response = RetroClient.getWoWClient(getApplication())
-                    .getMythicKeystoneLeaderboard(connectedRealm, dungeonId, period.id, "dynamic-${region.lowercase()}", region.lowercase())
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        tempLeaderboards.add(response.body()!!)
+            executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneLeaderboard(connectedRealm!!, dungeonId, period.id, "dynamic-${region.lowercase()}", region.lowercase()) },
+                {
+                    tempLeaderboards.add(it.body())
 
-                        if (tempLeaderboards.size == periods.size) {
-                            NetworkUtils.loading = false
-                            mythicKeystoneLeaderboard.value = tempLeaderboards
-                        }
-                    } else {
-                        tempLeaderboards.add(null)
+                    if (tempLeaderboards.size == periods.size) {
+                        NetworkUtils.loading = false
+                        mythicKeystoneLeaderboard.value = tempLeaderboards
                     }
-                }
-
-            }
-            jobs.add(job)
+                }, { tempLeaderboards.add(null) })
         }
     }
 

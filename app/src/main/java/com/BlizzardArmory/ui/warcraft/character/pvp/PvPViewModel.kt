@@ -55,113 +55,68 @@ class PvPViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun downloadRBGInfo() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getPvPBrackets(
-                character.lowercase(Locale.getDefault()),
-                realm.lowercase(Locale.getDefault()),
-                "rbg",
-                region.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    pvpRBG = response.body()!!
-                    val url =
-                        pvpRBG.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
-                    downloadBracket(url, "rbg")
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    errorBracket.value = "rbg"
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPBrackets(
+            character.lowercase(Locale.getDefault()),
+            realm.lowercase(Locale.getDefault()),
+            "rbg",
+            region.lowercase(Locale.getDefault()),
+        ) },
+            {
+            pvpRBG = it.body()!!
+            val url = pvpRBG.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
+            downloadBracket(url, "rbg")
+        }, { errorBracket.value = "rbg" })
     }
 
     fun download3v3Info() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getPvPBrackets(
-                character.lowercase(Locale.getDefault()),
-                realm.lowercase(Locale.getDefault()),
-                "3v3",
-                region.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    pvp3v3 = response.body()!!
-                    val url =
-                        pvp3v3.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
-                    downloadBracket(url, "3v3")
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    errorBracket.value = "3v3"
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPBrackets(
+            character.lowercase(Locale.getDefault()),
+            realm.lowercase(Locale.getDefault()),
+            "3v3",
+            region.lowercase(Locale.getDefault()),
+        ) },
+            {
+                pvp3v3 = it.body()!!
+                val url = pvp3v3.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
+                downloadBracket(url, "3v3")
+            }, { errorBracket.value = "3v3" })
     }
 
     fun download2v2Info() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getPvPBrackets(
-                character.lowercase(Locale.getDefault()),
-                realm.lowercase(Locale.getDefault()),
-                "2v2",
-                region.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    pvp2v2 = response.body()!!
-                    val url =
-                        pvp2v2.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
-                    downloadBracket(url, "2v2")
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    errorBracket.value = "2v2"
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPBrackets(
+            character.lowercase(Locale.getDefault()),
+            realm.lowercase(Locale.getDefault()),
+            "2v2",
+            region.lowercase(Locale.getDefault()),
+        ) },
+            {
+                pvp2v2 = it.body()!!
+                val url = pvp2v2.tier.key.href.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
+                downloadBracket(url, "2v2")
+            }, { errorBracket.value = "2v2" })
     }
 
     private fun downloadBracket(url: String, bracket: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication())
-                .getDynamicTier(url, region.lowercase(Locale.getDefault()))
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    when (bracket) {
-                        "rbg" -> tierRBG.value = response.body()
-                        "2v2" -> tier2v2.value = response.body()
-                        "3v3" -> tier3v3.value = response.body()
-                    }
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                    errorBracket.value = bracket
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getDynamicTier(url, region.lowercase(Locale.getDefault())) },
+            {
+                when (bracket) {
+                    "rbg" -> tierRBG.value = it.body()
+                    "2v2" -> tier2v2.value = it.body()
+                    "3v3" -> tier3v3.value = it.body()
                 }
-            }
-        }
-        jobs.add(job)
+            }, { errorBracket.value = bracket })
     }
 
     fun downloadPvPSummary() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getPvPSummary(
-                character.lowercase(Locale.getDefault()),
-                realm.lowercase(Locale.getDefault()),
-                region.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    summary.value = response.body()
-                } else {
-                    Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
-                }
-                if (!EventBus.getDefault().isRegistered(this@PvPViewModel)) {
-                    EventBus.getDefault().register(this@PvPViewModel)
-                }
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPSummary(
+            character.lowercase(Locale.getDefault()),
+            realm.lowercase(Locale.getDefault()),
+            region.lowercase(Locale.getDefault()),
+        ) }, {summary.value = it.body()}, onComplete = {
+            if (!EventBus.getDefault().isRegistered(this@PvPViewModel)) {
+                EventBus.getDefault().register(this@PvPViewModel)
             }
-        }
-        jobs.add(job)
+        })
     }
 
     @Subscribe

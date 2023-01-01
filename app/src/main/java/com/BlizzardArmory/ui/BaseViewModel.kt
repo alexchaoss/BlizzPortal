@@ -10,13 +10,11 @@ import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import retrofit2.Response
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -64,6 +62,35 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getErrorCode(): LiveData<Int> {
         return errorCode
+    }
+
+    fun <T> executeAPICall(
+        call: suspend () -> Response<T>,
+        onResponse: (response: Response<T>) -> Unit = {},
+        onError: (response: Response<T>) -> Unit = {},
+        onCatch: (exception: Exception) -> Unit = {},
+        onComplete: () -> Unit = {}
+    ): Job {
+        val job = coroutineScope.launch {
+            try {
+                val response = call()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        onResponse(response)
+                    } else {
+                        errorCode.value = response.code()
+                        onError(response)
+                        Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Exception", "Stack trace: ${e.stackTrace} \nMessage: ${e.message}")
+                onCatch(e)
+            }
+        }
+        jobs.add(job)
+        job.invokeOnCompletion { onComplete() }
+        return job
     }
 
     override fun onCleared() {

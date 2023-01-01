@@ -38,46 +38,31 @@ class SC2ViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadAccountInformation() {
         NetworkUtils.loading = true
-        val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client(getApplication())
+        executeAPICall({
+            RetroClient.getSc2Client(getApplication())
                 .getSc2Player(
                     NavigationActivity.userInformation?.userID,
                     battlenetOAuth2Helper!!.accessToken
                 )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    accountInformation.value = response.body()
-                    NetworkUtils.loading = false
-                } else {
-                    Log.e("Error", response.message())
-                    errorCode.value = response.code()
-                    NetworkUtils.loading = false
-                }
-            }
-        }
-        jobs.add(job)
+        },
+            {
+                accountInformation.value = it.body()
+                NetworkUtils.loading = false
+            }, onComplete = { NetworkUtils.loading = false })
     }
 
     fun downloadProfile(regionId: Int, realmId: Int, profileId: String) {
         NetworkUtils.loading = true
-        val job = coroutineScope.launch {
-            val response = RetroClient.getSc2Client(getApplication())
-                .getSc2Profile(parseRegionId(regionId), realmId, profileId, battlenetOAuth2Helper!!.accessToken)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    profile.value = response.body()
-                    NetworkUtils.loading = false
-                } else {
-                    Log.e("Error", response.message())
-                    errorCode.value = response.code()
-                    NetworkUtils.loading = false
+        executeAPICall({ RetroClient.getSc2Client(getApplication()).getSc2Profile(parseRegionId(regionId), realmId, profileId, battlenetOAuth2Helper!!.accessToken) },
+            {
+                profile.value = it.body()
+            }, onComplete = {
+                NetworkUtils.loading = false
+                if (!EventBus.getDefault().isRegistered(this@SC2ViewModel)) {
+                    EventBus.getDefault().register(this@SC2ViewModel)
                 }
-            }
-            if (!EventBus.getDefault().isRegistered(this@SC2ViewModel)) {
-                EventBus.getDefault().register(this@SC2ViewModel)
-            }
-        }
-        jobs.add(job)
+            })
+
     }
 
     fun parseRegionId(regionId: Int): String {

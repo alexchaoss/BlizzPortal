@@ -15,6 +15,7 @@ import com.discord.panels.PanelState
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -25,8 +26,8 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
         MutableLiveData()
     private var userInformation: MutableLiveData<UserInformation?> = MutableLiveData()
-    private var wowMediaCharacter: MutableLiveData<Media> = MutableLiveData()
-    var isReady = false
+    private var wowMediaCharacter: MutableLiveData<Media?> = MutableLiveData()
+    private var isReady: MutableLiveData<Boolean> = MutableLiveData()
 
     data class ViewState(
         val startPanelState: PanelState,
@@ -42,10 +43,10 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
         )
 
     init {
+        isReady.value = false
         signedIn.value = false
         wowConnectedRealms.value = mutableMapOf()
-        getConnectedRealms()
-        initWoWServer()
+        initProxy()
     }
 
     fun observeViewState(): Observable<ViewState> = viewStateSubject
@@ -60,6 +61,10 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
         viewStateSubject.onNext(viewState.copy(endPanelState = panelState))
     }
 
+    fun getIsReady(): LiveData<Boolean?> {
+        return isReady
+    }
+
     fun getUserInformation(): LiveData<UserInformation?> {
         return userInformation
     }
@@ -68,7 +73,7 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
         this.userInformation.value = userInformation
     }
 
-    fun getMedia(): LiveData<Media> {
+    fun getMedia(): LiveData<Media?> {
         return wowMediaCharacter
     }
 
@@ -88,126 +93,57 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
         return wowConnectedRealms
     }
 
-    fun downloadUserInfo() {
-        var downloadCount = 0
+    private fun initProxy() {
         val job = coroutineScope.launch {
-            val response =
-                RetroClient.getGeneralClient(getApplication(), logsToggled = true).getUserInfo(
-                    battlenetOAuth2Helper?.accessToken,
-                    NetworkUtils.region
-                )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    userInformation.value = response.body()
-                    if(userInformation.value?.battleTag?.contains("#") == false) {
-                        downloadCount++
-                        downloadUserInfo()
-                    }
-                } else {
-                    downloadCount++
-                    if (downloadCount <= 5) {
-                        downloadUserInfo()
-                    }
-                }
+            while (isReady.value == false) {
+                executeAPICall({ RetroClient.getGeneralClient(getApplication(), true, 0).getRoot() },
+                    {
+                        val status = it.body()
+                        if (status?.status == "Running") {
+                            isReady.value = true
+                        }
+                    })
+                delay(1000)
             }
         }
         jobs.add(job)
     }
 
+    fun downloadUserInfo() {
+        var downloadCount = 0
+        executeAPICall({ RetroClient.getGeneralClient(getApplication()).getUserInfo(battlenetOAuth2Helper?.accessToken, NetworkUtils.region) },
+            {
+                userInformation.value = it.body()
+                if (userInformation.value?.battleTag?.contains("#") == false) {
+                    downloadCount++
+                    downloadUserInfo()
+                }
+            },
+            {
+                downloadCount++
+                if (downloadCount <= 5) {
+                    downloadUserInfo()
+                }
+            })
+    }
+
     fun initWoWServer() {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getGeneralClient(getApplication())
-                .initWoWServer(NetworkUtils.API_BASE_URL)
-            withContext(Dispatchers.Main) {
-                Log.i("init wow server", response.message())
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getGeneralClient(getApplication()).initWoWServer(NetworkUtils.API_BASE_URL) }, { Log.i("init wow server", it.message()) })
     }
 
     fun getConnectedRealms() {
         val query = Query()
-        val jobUS = coroutineScope.launch {
-            val response =
-                RetroClient.getWoWClient(getApplication(), logsToggled = false).getConnectedRealms(
-                    "dynamic-us",
-                    query,
-                    "us"
-                )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-
-                    wowConnectedRealms.value?.set("US", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobUS)
-        val jobEU = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
-                "dynamic-eu",
-                query,
-                "eu",
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowConnectedRealms.value?.set("EU", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobEU)
-        val jobKR = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
-                "dynamic-kr",
-                query,
-                "kr"
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowConnectedRealms.value?.set("KR", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobKR)
-        val jobTW = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getConnectedRealms(
-                "dynamic-tw",
-                query,
-                "tw"
-
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowConnectedRealms.value?.set("TW", response.body()!!)
-                } else {
-                    Log.e("Error", response.message())
-                }
-            }
-        }
-        jobs.add(jobTW)
+        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-us", query,"us") }, { wowConnectedRealms.value?.set("US", it.body()!!) })
+        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-eu", query,"eu") }, { wowConnectedRealms.value?.set("EU", it.body()!!) })
+        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-kr", query,"kr") }, { wowConnectedRealms.value?.set("KR", it.body()!!) })
+        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-tw", query,"tw") }, { wowConnectedRealms.value?.set("TW", it.body()!!) })
     }
 
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getMedia(
-                characterClicked.lowercase(Locale.getDefault()),
-                characterRealm.lowercase(Locale.getDefault()),
-                selectedRegion.lowercase(Locale.getDefault()),
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    wowMediaCharacter.value = response.body()
-                } else {
-                    Log.e("Error", response.message())
-                    wowMediaCharacter.value = null
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMedia(
+            characterClicked.lowercase(Locale.getDefault()),
+            characterRealm.lowercase(Locale.getDefault()),
+            selectedRegion.lowercase(Locale.getDefault()),
+        ) }, { wowMediaCharacter.value = it.body() }, { wowMediaCharacter.value = null })
     }
 }

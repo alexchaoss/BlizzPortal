@@ -39,68 +39,20 @@ class ActivityViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun downloadGuildSummary(realm: String, name: String, region: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getGuildSummary(
-                realm, name, "profile-$region", region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    guildSummary.value = response.body()
-                    downloadGuildCrest()
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getGuildSummary(realm, name, "profile-$region", region) },
+            {
+                guildSummary.value = it.body()
+                downloadGuildCrest()
+            })
     }
 
     private fun downloadGuildCrest() {
-
-        val job1 = coroutineScope.launch {
-            try {
-                val response = RetroClient.getWoWClient(getApplication())
-                    .getGuildCrestBorder(guildSummary.value?.crest?.border?.id!!)
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        guildCrestBorder.value = response.body()
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("Error", "No Crest", e)
-            }
-        }
-        jobs.add(job1)
-        val job2 = coroutineScope.launch {
-            try {
-                val response = RetroClient.getWoWClient(getApplication())
-                    .getGuildCrestEmblem(guildSummary.value?.crest?.emblem?.id!!)
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        guildCrestEmblem.value = response.body()
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("Error", "No Crest", e)
-            }
-        }
-        jobs.add(job2)
-
-
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getGuildCrestBorder(guildSummary.value?.crest?.border?.id!!) }, { guildCrestBorder.value = it.body() })
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getGuildCrestEmblem(guildSummary.value?.crest?.emblem?.id!!) }, { guildCrestEmblem.value = it.body() })
     }
 
     fun downloadGuildActivity(realm: String, name: String, region: String) {
-        val job = coroutineScope.launch {
-            val response = RetroClient.getWoWClient(getApplication()).getGuildActivity(
-                realm, name, "profile-$region", region)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    guildActivity.value = response.body()
-                } else {
-                    errorCode.value = response.code()
-                }
-            }
-        }
-        jobs.add(job)
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getGuildActivity(realm, name, "profile-$region", region) }, { guildActivity.value = it.body() })
     }
 
     @Subscribe
