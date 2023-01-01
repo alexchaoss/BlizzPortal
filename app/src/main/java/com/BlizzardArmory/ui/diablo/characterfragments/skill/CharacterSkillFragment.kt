@@ -172,7 +172,7 @@ class CharacterSkillFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun characterEventReceived(woWCharacterEvent: WoWCharacterEvent) {
+    fun characterEventReceived(woWCharacterEvent: WoWCharacterEvent) {
         characterInformation = woWCharacterEvent.data
         binding.skills.apply {
             adapter = SkillAdapter(characterInformation!!.skills.active)
@@ -183,17 +183,17 @@ class CharacterSkillFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun skillClickedEvent(skillEvent: D3SkillEvent) {
+    fun skillClickedEvent(skillEvent: D3SkillEvent) {
         openSkillToolTip(skillEvent.skill)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun passiveClickedEvent(passiveEvent: D3PassiveEvent) {
+    fun passiveClickedEvent(passiveEvent: D3PassiveEvent) {
         openPassiveToolTip(passiveEvent.skill)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
+    fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
         closeViewsWithoutButton()
     }
 }

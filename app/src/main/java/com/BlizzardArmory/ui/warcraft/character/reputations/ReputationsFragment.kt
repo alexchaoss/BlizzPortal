@@ -185,14 +185,14 @@ class ReputationsFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(retryEvent: RetryEvent) {
+    fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
             viewModel.downloadReputationsPlusParentInfo()
         }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun classEventReceived(classEvent: ClassEvent) {
+    fun classEventReceived(classEvent: ClassEvent) {
         var bgName = ""
         when (classEvent.data) {
             6 -> {

@@ -6,9 +6,10 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
@@ -35,7 +36,10 @@ import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.WoWClassColor
-import com.BlizzardArmory.util.events.*
+import com.BlizzardArmory.util.events.ClassEvent
+import com.BlizzardArmory.util.events.FactionEvent
+import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.events.RetryEvent
 import com.BlizzardArmory.util.state.FavoriteState
 import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
@@ -196,8 +200,7 @@ class WoWCharacterFragment : Fragment() {
         viewModel.getIconURLs().observe(viewLifecycleOwner) {
             val equippedItems = viewModel.getEquipment().value!!.equippedItems
             binding.loadingCircle.visibility = View.GONE
-            val errorIcon =
-                ResourcesCompat.getDrawable(resources, R.drawable.error_icon, context?.theme)
+            val errorIcon = ResourcesCompat.getDrawable(resources, R.drawable.error_icon, context?.theme)
             for (item in equippedItems) {
                 Glide.with(this).load(it[item.slot.type])
                     .placeholder(R.drawable.loading_placeholder)
@@ -218,19 +221,11 @@ class WoWCharacterFragment : Fragment() {
         viewModel.downloadStats()
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
         navigationActivity.toggleFavoriteButton(FavoriteState.Hidden)
         requireActivity().viewModelStore.clear()
-    }
-
-    override fun onStop() {
-        super.onStop()
     }
 
     @SuppressLint("ClickableViewAccessibility")

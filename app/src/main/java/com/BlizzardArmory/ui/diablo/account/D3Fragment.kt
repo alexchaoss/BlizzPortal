@@ -263,7 +263,7 @@ class D3Fragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun d3CharacterEventReceived(d3CharacterEvent: D3CharacterEvent) {
+    fun d3CharacterEventReceived(d3CharacterEvent: D3CharacterEvent) {
         displayFragment(d3CharacterEvent.hero)
     }
 

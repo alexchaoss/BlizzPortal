@@ -4,7 +4,6 @@ package com.BlizzardArmory.ui.warcraft.character.talents
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -13,12 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.databinding.WowTalentsFragmentBinding
 import com.BlizzardArmory.model.warcraft.talents.playerspec.PlayerSpecializations
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.ui.warcraft.character.covenant.SoulbindAdapter
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.RetryEvent
 import com.BlizzardArmory.util.events.TalentClickedEvent
-import com.BlizzardArmory.util.events.TechTalentClickedEvent
 import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -146,7 +143,7 @@ class TalentsFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun talentTouchedEvent(talentClickedEvent: TalentClickedEvent) {
+    fun talentTouchedEvent(talentClickedEvent: TalentClickedEvent) {
 
         if (talentClickedEvent.touch && binding.classTalents.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
             binding.spellTooltip.visibility = View.VISIBLE
@@ -161,14 +158,14 @@ class TalentsFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(retryEvent: RetryEvent) {
+    fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
             viewModel.downloadCharacterSpecialization()
         }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun classEventReceived(classEvent: ClassEvent) {
+    fun classEventReceived(classEvent: ClassEvent) {
         viewModel.setPlayerClass(classEvent.data)
         var bgName = ""
         when (classEvent.data) {

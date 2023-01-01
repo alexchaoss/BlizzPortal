@@ -613,7 +613,7 @@ class CharacterGearFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(retryEvent: RetryEvent) {
+    fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
             addImageViewItemsToList()
             viewModel.downloadItemInformation(battletag, id, selectedRegion)
@@ -621,7 +621,7 @@ class CharacterGearFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
+    fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
         closeViewsWithoutButton()
     }
 }

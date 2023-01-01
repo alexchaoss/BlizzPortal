@@ -72,24 +72,28 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         onComplete: () -> Unit = {}
     ): Job {
         val job = coroutineScope.launch {
-            try {
-                val response = call()
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        onResponse(response)
-                    } else {
-                        errorCode.value = response.code()
-                        onError(response)
-                        Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+            coroutineScope.launch {
+                try {
+                    val response = call()
+                    withContext(Dispatchers.Main) {
+                        if (response.isSuccessful) {
+                            onResponse(response)
+                        } else {
+                            errorCode.value = response.code()
+                            onError(response)
+                            Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e("Exception", "Stack trace: ${e.stackTrace} \nMessage: ${e.message}")
+                    onCatch(e)
                 }
-            } catch (e: Exception) {
-                Log.e("Exception", "Stack trace: ${e.stackTrace} \nMessage: ${e.message}")
-                onCatch(e)
+            }.join()
+            withContext(Dispatchers.Main) {
+                onComplete()
             }
         }
-        jobs.add(job)
-        job.invokeOnCompletion { onComplete() }
+
         return job
     }
 

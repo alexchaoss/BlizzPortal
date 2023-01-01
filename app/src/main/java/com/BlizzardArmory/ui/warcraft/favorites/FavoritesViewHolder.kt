@@ -125,7 +125,7 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun networkEventReceived(networkEvent: NetworkEvent) {
+    fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
             downloadMedia()
         }

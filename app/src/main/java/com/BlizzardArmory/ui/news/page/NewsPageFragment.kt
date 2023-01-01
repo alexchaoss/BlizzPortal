@@ -59,7 +59,7 @@ class NewsPageFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+    fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
         activity?.supportFragmentManager?.popBackStack()
     }
 

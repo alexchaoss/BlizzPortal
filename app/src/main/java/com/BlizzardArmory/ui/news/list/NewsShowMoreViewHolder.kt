@@ -36,7 +36,7 @@ class NewsShowMoreViewHolder(inflater: LayoutInflater, parent: ViewGroup, val co
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun loadNewsEventReceived(loadNewsEvent: LoadNewsEvent) {
+    fun loadNewsEventReceived(loadNewsEvent: LoadNewsEvent) {
         showMore?.visibility = View.VISIBLE
         loading?.visibility = View.GONE
     }

@@ -8,6 +8,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
@@ -22,6 +23,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
+import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.NavigationActivityBarBinding
 import com.BlizzardArmory.databinding.NavigationActivityBinding
@@ -101,8 +103,15 @@ class NavigationActivity : LocalizationActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.enableDefaults()
+        }
+
         setObservers()
+
         installSplashScreen()
+
         val content: View = findViewById(android.R.id.content)
 
         content.viewTreeObserver.addOnPreDrawListener(
@@ -516,7 +525,7 @@ class NavigationActivity : LocalizationActivity(),
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
+    fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
         if (!localeSelectedEvent.locale.contains((getCurrentLanguage().language + "_" + getCurrentLanguage().country))) {
             when (localeSelectedEvent.locale) {
                 "en_US" -> setLanguage("en")
@@ -634,7 +643,7 @@ class NavigationActivity : LocalizationActivity(),
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun menuItemClickedReceived(menuItem: MenuItemEvent) {
+    fun menuItemClickedReceived(menuItem: MenuItemEvent) {
         OauthFlowStarter.lastOpenedFragmentNeedingOAuth = ""
         val fragment: Fragment
         val searchDialog = DialogPrompt(this)

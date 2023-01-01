@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3NavbarFragmentBinding
-import com.BlizzardArmory.ui.warcraft.character.navigation.NavAdapter
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.discord.panels.PanelsChildGestureRegionObserver
@@ -107,14 +106,14 @@ class D3CharacterNav : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun networkEventReceived(networkEvent: NetworkEvent) {
+    fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
             parentFragmentManager.popBackStack()
         }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
+    fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
 
     }
 

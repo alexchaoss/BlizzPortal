@@ -251,12 +251,12 @@ class CovenantFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun classEventReceived(classEvent: ClassEvent) {
+    fun classEventReceived(classEvent: ClassEvent) {
         characterClass = classEvent.data
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun techTalentTouchedEvent(techTalentClickedEvent: TechTalentClickedEvent) {
+    fun techTalentTouchedEvent(techTalentClickedEvent: TechTalentClickedEvent) {
         if (techTalentClickedEvent.touch) {
             binding.spellCost.visibility = View.GONE
             binding.spellCd.visibility = View.GONE

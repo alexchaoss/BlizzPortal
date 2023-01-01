@@ -61,7 +61,7 @@ class GuildNavFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun networkEventReceived(networkEvent: NetworkEvent) {
+    fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
             when {
                 requireActivity().supportFragmentManager.findFragmentByTag(FragmentTag.NAVFRAGMENT.name) != null -> {

@@ -27,7 +27,6 @@ import com.bumptech.glide.Glide
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 
 
 private const val CHARACTER = "character"
@@ -167,7 +166,7 @@ class PvPFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(retryEvent: RetryEvent) {
+    fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
             viewModel.downloadPvPSummary()
             viewModel.download2v2Info()
@@ -177,7 +176,7 @@ class PvPFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public fun factionEventReceived(factionEvent: FactionEvent) {
+    fun factionEventReceived(factionEvent: FactionEvent) {
         if (factionEvent.data == "horde") {
             binding.factionicon.setImageResource(R.drawable.horde_pvp_logo)
         } else {
@@ -186,7 +185,7 @@ class PvPFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun classEventReceived(classEvent: ClassEvent) {
+    fun classEventReceived(classEvent: ClassEvent) {
         var bgName = ""
         when (classEvent.data) {
             6 -> {

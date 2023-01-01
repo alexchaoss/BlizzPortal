@@ -31,10 +31,6 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
     private var guildName: String? = null
     private var region: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -83,14 +79,14 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(retryEvent: RetryEvent) {
+    fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
             viewModel.downloadGuildRoster(realm!!, guildName!!, region!!)
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun factionEventReceived(factionEvent: FactionEvent) {
+    fun factionEventReceived(factionEvent: FactionEvent) {
         setBackground(factionEvent.data)
         EventBus.getDefault().unregister(this)
     }

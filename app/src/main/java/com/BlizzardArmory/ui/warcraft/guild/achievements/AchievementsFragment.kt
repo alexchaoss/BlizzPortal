@@ -34,10 +34,6 @@ class AchievementsFragment : Fragment() {
     private var currentCategory = 0L
     private var subCurrentCategory = -1L
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -179,7 +175,7 @@ class AchievementsFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun factionEventReceived(factionEvent: FactionEvent) {
+    fun factionEventReceived(factionEvent: FactionEvent) {
         faction = factionEvent.data
         binding.loading.visibility = View.VISIBLE
         setBackground(faction!!)
@@ -196,14 +192,14 @@ class AchievementsFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun parentCategoryEventReceived(parentCategoryEvent: ParentCategoryEvent) {
+    fun parentCategoryEventReceived(parentCategoryEvent: ParentCategoryEvent) {
         currentCategory = parentCategoryEvent.data
         setRecyclerViewToSubCategory(currentCategory)
         binding.subCategoryLayout.visibility = View.VISIBLE
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun subCategoryEventReceived(subCategoryEvent: SubCategoryEvent) {
+    fun subCategoryEventReceived(subCategoryEvent: SubCategoryEvent) {
         subCurrentCategory = subCategoryEvent.data
         binding.categoriesRecycler.visibility = View.GONE
         binding.achievementsRecycler.visibility = View.VISIBLE
@@ -217,7 +213,7 @@ class AchievementsFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(retryEvent: RetryEvent) {
+    fun retryEventReceived(retryEvent: RetryEvent) {
         if (retryEvent.data) {
             setAchievementInformation()
         }

@@ -131,7 +131,7 @@ class CharacterCubeFragment : Fragment() {
         }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun retryEventReceived(woWCharacterEvent: WoWCharacterEvent) {
+    fun retryEventReceived(woWCharacterEvent: WoWCharacterEvent) {
         characterInformation = woWCharacterEvent.data
         cubeIcons
         viewModel.downloadCubeItems(characterInformation!!)

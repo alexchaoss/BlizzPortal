@@ -32,10 +32,12 @@ class LeaderboardViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
     fun bind(group: LeadingGroups, position: Int, affixesList: List<KeystoneAffixes>, region: String) {
         rank?.text = position.toString()
         level?.text = group.keystone_levelstone_level.toString()
-        time?.text = String.format("%02d:%02d:%02d",
+        time?.text = String.format(
+            "%02d:%02d:%02d",
             TimeUnit.MILLISECONDS.toHours(group.duration),
             TimeUnit.MILLISECONDS.toMinutes(group.duration) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(group.duration)), // The change is in this line
-            TimeUnit.MILLISECONDS.toSeconds(group.duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(group.duration)));
+            TimeUnit.MILLISECONDS.toSeconds(group.duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(group.duration))
+        )
 
         team?.apply {
             adapter = PlayerAdapter(group.members, context, specialization, region)

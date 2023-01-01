@@ -122,7 +122,7 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun showMoreEventClicked(moreNewsClickEvent: MoreNewsClickEvent) {
+    fun showMoreEventClicked(moreNewsClickEvent: MoreNewsClickEvent) {
         pageNumber++
         downloadMore(pageNumber)
     }
@@ -139,7 +139,7 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun filterEventReceived(filterNewsEvent: FilterNewsEvent) {
+    fun filterEventReceived(filterNewsEvent: FilterNewsEvent) {
         downloaded.value = true
     }
 }

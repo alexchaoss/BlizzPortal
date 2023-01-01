@@ -281,12 +281,12 @@ class CharacterStatsFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun itemShownReceived(itemShownEvent: D3ItemShownEvent) {
+    fun itemShownReceived(itemShownEvent: D3ItemShownEvent) {
         itemPanelShown = itemShownEvent.data
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun spellShownReceived(spellShownEvent: D3SpellShownEvent) {
+    fun spellShownReceived(spellShownEvent: D3SpellShownEvent) {
         spellPanelShown = spellShownEvent.data
     }
 

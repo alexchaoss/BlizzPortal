@@ -1,13 +1,11 @@
 package com.BlizzardArmory.ui.warcraft.character.navigation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.viewpager2.widget.ViewPager2
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
 import com.BlizzardArmory.ui.navigation.NavigationActivity
@@ -99,7 +97,7 @@ class WoWNavFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public fun networkEventReceived(networkEvent: NetworkEvent) {
+    fun networkEventReceived(networkEvent: NetworkEvent) {
         if (networkEvent.data) {
             when {
                 activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {

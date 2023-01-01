@@ -2,7 +2,6 @@ package com.BlizzardArmory.ui.warcraft.character.armory
 
 import android.app.Application
 import android.graphics.Color
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
@@ -16,13 +15,9 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
-import kotlin.collections.HashMap
 
 class WoWCharacterViewModel(application: Application) : BaseViewModel(application) {
 
@@ -117,6 +112,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
             )
         }
         url = url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
+
         executeAPICall({ RetroClient.getWoWClient(getApplication()).getDynamicEquipmentMedia(url, region.lowercase(Locale.getDefault())) },
             {
                 val mediaItem = it.body()!!
@@ -124,10 +120,11 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
             },
             {
                 imageURLsTemp[equippedItem.slot.type] = "empty"
+            }, onComplete = {
+                if (imageURLsTemp.size == equipment.value!!.equippedItems.size) {
+                    imageURLs.value = imageURLsTemp
+                }
             })
-        if (imageURLsTemp.size == equipment.value!!.equippedItems.size) {
-            imageURLs.value = imageURLsTemp
-        }
         NetworkUtils.loading = false
     }
 
