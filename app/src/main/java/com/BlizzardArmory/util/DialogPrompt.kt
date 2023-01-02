@@ -20,7 +20,7 @@ import com.BlizzardArmory.util.state.FragmentTag
 class DialogPrompt(val context: Context) {
 
     private val builder = AlertDialog.Builder(context, R.style.DialogBlizzPortal)
-    private var dialog: AlertDialog? = null
+    private var dialog: AlertDialog
     private val wrapperParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
     private val containerParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
     private val buttonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -49,8 +49,8 @@ class DialogPrompt(val context: Context) {
         containerParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         container.layoutParams = containerParams
         dialog = builder.create()
-        dialog!!.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog!!.setCancelable(true)
+        dialog.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog.setCancelable(true)
         container.orientation = LinearLayout.VERTICAL
         container.gravity = Gravity.CENTER
         container.setPadding(30, 30, 30, 30)
@@ -226,25 +226,31 @@ class DialogPrompt(val context: Context) {
         }
     }
 
+    fun isVisible(): Boolean {
+        return dialog.isShowing
+    }
+
     fun show() {
-        dialog!!.show()
-        dialog!!.window?.setGravity(Gravity.CENTER)
-        dialog!!.window?.setLayout(MetricConversion.getDPMetric(320, context), WindowManager.LayoutParams.WRAP_CONTENT)
-        dialog!!.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
-        dialog!!.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-        dialog!!.addContentView(wrapper, wrapperParams)
+        if (!dialog.isShowing) {
+            dialog.show()
+            dialog.window?.setGravity(Gravity.CENTER)
+            dialog.window?.setLayout(MetricConversion.getDPMetric(320, context), WindowManager.LayoutParams.WRAP_CONTENT)
+            dialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+            dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            dialog.addContentView(wrapper, wrapperParams)
+        }
     }
 
     fun dismiss() {
-        dialog?.dismiss()
+        dialog.dismiss()
     }
 
     fun setCancellable(cancellable: Boolean) {
-        dialog?.setCancelable(cancellable)
+        dialog.setCancelable(cancellable)
     }
 
     fun setOnCancelListener(cancelListerner: () -> Unit): DialogPrompt {
-        dialog?.setOnCancelListener { cancelListerner() }
+        dialog.setOnCancelListener { cancelListerner() }
         return this
     }
 }

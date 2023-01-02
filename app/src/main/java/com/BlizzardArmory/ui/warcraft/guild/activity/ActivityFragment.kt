@@ -41,6 +41,8 @@ class ActivityFragment : Fragment() {
     private var guildName: String? = null
     private var region: String? = null
 
+    private var dialog: DialogPrompt? = null
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -76,15 +78,15 @@ class ActivityFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getGuildSummary().observe(viewLifecycleOwner, {
+        viewModel.getGuildSummary().observe(viewLifecycleOwner) {
             binding.name.text = it.name
             binding.realm.text = it.realm.name
             EventBus.getDefault().post(FactionEvent(it.faction.type))
             setBackground(it)
             setCrest(it)
-        })
+        }
 
-        viewModel.getGuildActivity().observe(viewLifecycleOwner, {
+        viewModel.getGuildActivity().observe(viewLifecycleOwner) {
             NetworkUtils.loading = false
             if (!it.activities.isNullOrEmpty()) {
                 binding.activityRecycler.apply {
@@ -92,19 +94,21 @@ class ActivityFragment : Fragment() {
                 }
             }
             binding.loadingCircle.visibility = View.GONE
-        })
+        }
 
-        viewModel.getGuildCrestBorder().observe(viewLifecycleOwner, {
+        viewModel.getGuildCrestBorder().observe(viewLifecycleOwner) {
             Glide.with(this).load(it.assets[0].value).into(binding.crestBorder)
-        })
+        }
 
-        viewModel.getGuildCrestEmblem().observe(viewLifecycleOwner, {
+        viewModel.getGuildCrestEmblem().observe(viewLifecycleOwner) {
             Glide.with(this).load(it.assets[0].value).into(binding.crestIcon)
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
-            callErrorAlertDialog(it)
-        })
+        viewModel.getShowErrorDialog().observe(viewLifecycleOwner) {
+            if (dialog == null) {
+                callErrorAlertDialog(viewModel.errorCode.value!!)
+            }
+        }
     }
 
     private fun setBackground(it: Guild) {
@@ -180,44 +184,43 @@ class ActivityFragment : Fragment() {
     }
 
     private fun callErrorAlertDialog(responseCode: Int) {
-        var dialog = DialogPrompt(requireActivity())
         binding.loadingCircle.visibility = View.GONE
+        dialog = DialogPrompt(requireActivity())
         NetworkUtils.loading = false
-
         if (responseCode == 404) {
-            dialog.setCancellable(false)
-            dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+            dialog!!.setCancellable(false)
+            dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addButtons(
-                    dialog.Button(errorMessages.OK, 18f, {
-                        dialog.dismiss()
-                    }, "retry"), dialog.Button(
+                    dialog!!.Button(errorMessages.OK, 18f, {
+                        dialog!!.dismiss()
+                    }, "retry"), dialog!!.Button(
                         errorMessages.BACK, 18f,
 
                         {
-                            dialog.dismiss()
+                            dialog!!.dismiss()
                             EventBus.getDefault().post(NetworkEvent(true))
                         }, "back"
                     )
                 ).show()
         } else {
             dialog = DialogPrompt(requireActivity())
-            dialog.setCancellable(false)
-            dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
+            dialog!!.setCancellable(false)
+            dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
                 .addMessage(getErrorMessage(responseCode), 18f, "message")
                 .addButtons(
-                    dialog.Button(errorMessages.RETRY, 18f, {
-                        dialog.dismiss()
+                    dialog!!.Button(errorMessages.RETRY, 18f, {
+                        dialog!!.dismiss()
                         viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
                         viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
                         EventBus.getDefault().post(RetryEvent(true))
                         binding.loadingCircle.visibility = View.VISIBLE
                         NetworkUtils.loading = true
-                    }, "retry"), dialog.Button(
+                    }, "retry"), dialog!!.Button(
                         errorMessages.BACK, 18f,
 
                         {
-                            dialog.dismiss()
+                            dialog!!.dismiss()
                             EventBus.getDefault().post(NetworkEvent(true))
                         }, "back"
                     )

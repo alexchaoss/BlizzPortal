@@ -70,12 +70,12 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun setObservers() {
-        viewModel.getGuildRoster().observe(viewLifecycleOwner, {
+        viewModel.getGuildRoster().observe(viewLifecycleOwner) {
             binding.rosterRecyclerview.apply {
                 adapter =
                     RosterAdapter(it.members.sortedWith(compareBy<Members> { it.rank }.thenByDescending { it.character.level }), requireContext(), region!!)
             }
-        })
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

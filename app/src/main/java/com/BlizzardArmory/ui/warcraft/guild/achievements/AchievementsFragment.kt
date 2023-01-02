@@ -82,22 +82,19 @@ class AchievementsFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getAllAchievements().observe(viewLifecycleOwner, {
+        viewModel.getAllAchievements().observe(viewLifecycleOwner) {
             viewModel.downloadGuildAchivements(realm!!, guildName!!, region!!)
-        })
+        }
 
-        viewModel.getGuildAchievements().observe(viewLifecycleOwner, {
+        viewModel.getGuildAchievements().observe(viewLifecycleOwner) {
             setCategories()
-        })
+        }
 
-        viewModel.getCategories().observe(viewLifecycleOwner, {
-        })
-
-        viewModel.getMappedAchievements().observe(viewLifecycleOwner, {
+        viewModel.getMappedAchievements().observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 setRecyclerViewToParentCategories()
             }
-        })
+        }
     }
 
     private fun backArrow() {

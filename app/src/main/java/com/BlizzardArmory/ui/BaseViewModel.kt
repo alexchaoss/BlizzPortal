@@ -31,6 +31,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     private var battlenetOAuth2Params: MutableLiveData<BattlenetOAuth2Params> = MutableLiveData()
 
     var errorCode: MutableLiveData<Int> = MutableLiveData()
+    var showErrorDialog: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         EventBus.getDefault().register(this)
@@ -64,6 +65,10 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         return errorCode
     }
 
+    fun getShowErrorDialog(): LiveData<Boolean> {
+        return showErrorDialog
+    }
+
     fun <T> executeAPICall(
         call: suspend () -> Response<T>,
         onResponse: (response: Response<T>) -> Unit = {},
@@ -81,11 +86,11 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
                         } else {
                             errorCode.value = response.code()
                             onError(response)
-                            Log.e("Error", "Code: ${response.code()} Message: ${response.message()}")
+                            Log.e("Error", "Code: ${response.code()} Message: ${response.message()}, ${response.body()}")
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("Exception", "Stack trace: ${e.stackTrace} \nMessage: ${e.message}")
+                    Log.e("Exception", "Message: ${e.message}")
                     onCatch(e)
                 }
             }.join()

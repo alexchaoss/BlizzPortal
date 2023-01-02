@@ -114,20 +114,19 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
 
     private fun setObservers() {
-
-        viewModel.getSeasonIndex().observe(viewLifecycleOwner, {
+        viewModel.getSeasonIndex().observe(viewLifecycleOwner) {
             seasonList.addAll(it.seasons.map { season -> season.id.toString() })
             selectedSeason = seasonList.last().toInt()
             setAdapter(seasonList, navigationActivity.binding.rightPanelWowPvp.season)
             viewModel.downloadLeaderboard(it.current_season.id, "3v3", region.lowercase())
-        })
+        }
 
-        viewModel.getPvpLeaderboard().observe(viewLifecycleOwner, {
+        viewModel.getPvpLeaderboard().observe(viewLifecycleOwner) {
             updateRecyclerViewFactionSpecific()
             binding.loadingCircle.visibility = View.GONE
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             binding.loadingCircle.visibility = View.GONE
             dialog = DialogPrompt(requireActivity())
             dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
@@ -149,7 +148,7 @@ class PvpLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                         }, "back"
                     )
                 ).show()
-        })
+        }
     }
 
     private fun setSearch() {

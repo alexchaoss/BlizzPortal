@@ -63,16 +63,22 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
                         this@MPlusLeaderboardsViewModel.expansions.value = expansions.sortedBy { xpac -> xpac.dungeons[0].id }
                         Log.i("EXPANSIONS", this@MPlusLeaderboardsViewModel.expansions.value?.last().toString())
                     }
+                }, {
+                    showErrorDialog.value = true
                 })
         }
     }
 
     fun downloadSeasonIndex() {
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneSeasonsIndex("dynamic-" + NetworkUtils.region) }, { seasonIndex.value = it.body() })
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneSeasonsIndex("dynamic-" + NetworkUtils.region) }, { seasonIndex.value = it.body() }, {
+            showErrorDialog.value = true
+        })
     }
 
     fun downloadSeason(seasonId: Int) {
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneSeason(seasonId, "dynamic-" + NetworkUtils.region) }, { season.value = it.body() })
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneSeason(seasonId, "dynamic-" + NetworkUtils.region) }, { season.value = it.body() }, {
+            showErrorDialog.value = true
+        })
     }
 
     fun downloadMythicKeystoneLeaderboardIndex(connectedRealm: Int) {
@@ -84,15 +90,22 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     fun downloadMythicKeystoneLeaderboard(connectedRealm: Int?, dungeonId: Long, periods: List<Periods>, region: String) {
         val tempLeaderboards = mutableListOf<Leaderboard?>()
         for (period in periods) {
-            executeAPICall({ RetroClient.getWoWClient(getApplication()).getMythicKeystoneLeaderboard(connectedRealm!!, dungeonId, period.id, "dynamic-${region.lowercase()}", region.lowercase()) },
+            executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicKeystoneLeaderboard(connectedRealm!!, dungeonId, period.id, "dynamic-${region.lowercase()}", region.lowercase()) },
                 {
                     tempLeaderboards.add(it.body())
-
                     if (tempLeaderboards.size == periods.size) {
                         NetworkUtils.loading = false
                         mythicKeystoneLeaderboard.value = tempLeaderboards
                     }
-                }, { tempLeaderboards.add(null) })
+                }, {
+                    tempLeaderboards.add(null)
+                    if (tempLeaderboards.size == periods.size) {
+                        val temps = tempLeaderboards.filterNotNull()
+                        if (temps.isEmpty()) {
+                            showErrorDialog.value = true
+                        }
+                    }
+                })
         }
     }
 

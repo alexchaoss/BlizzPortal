@@ -140,8 +140,10 @@ class WoWCharacterFragment : Fragment() {
     }
 
     fun setObservers() {
-        viewModel.getErrorCode().observe(viewLifecycleOwner) {
-            callErrorAlertDialog(it)
+        viewModel.getShowErrorDialog().observe(viewLifecycleOwner) {
+            if (dialog == null) {
+                callErrorAlertDialog(viewModel.errorCode.value!!)
+            }
         }
 
         viewModel.getCharacterSummary().observe(viewLifecycleOwner) {

@@ -62,7 +62,9 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-        }, { characterSummary.value = it.body() }, onComplete = {
+        }, { characterSummary.value = it.body() }, {
+            showErrorDialog.value = true
+        }, onComplete = {
             if (!EventBus.getDefault().isRegistered(this@WoWCharacterViewModel)) {
                 EventBus.getDefault().register(this@WoWCharacterViewModel)
             }
@@ -77,7 +79,9 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-        }, { statistic.value = it.body() })
+        }, { statistic.value = it.body() }, {
+            showErrorDialog.value = true
+        })
     }
 
     fun downloadEquipment() {
@@ -87,7 +91,9 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-        }, { equipment.value = it.body() })
+        }, { equipment.value = it.body() }, {
+            showErrorDialog.value = true
+        })
     }
 
     fun downloadBackground() {
@@ -97,6 +103,8 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
+        }, {
+            showErrorDialog.value = true
         }, { media.value = it.body() })
     }
 

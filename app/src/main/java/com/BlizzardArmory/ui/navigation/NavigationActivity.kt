@@ -104,9 +104,9 @@ class NavigationActivity : LocalizationActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (BuildConfig.DEBUG) {
+        /*if (BuildConfig.DEBUG) {
             StrictMode.enableDefaults()
-        }
+        }*/
 
         setObservers()
 
@@ -478,8 +478,8 @@ class NavigationActivity : LocalizationActivity(),
             realms = it
         }
 
-        viewModel.getErrorCode().observe(this) {
-            callErrorAlertDialog(it)
+        viewModel.getShowErrorDialog().observe(this) {
+            callErrorAlertDialog(viewModel.errorCode.value!!)
         }
 
         viewModel.getMedia().observe(this) {
@@ -1011,7 +1011,7 @@ class NavigationActivity : LocalizationActivity(),
                 .equals("Select Region", ignoreCase = true) -> {
                 Snackbar.make(
                     dialog.tagMap["main_container"]!!,
-                    "Please enter the region",
+                    "Please select the region",
                     Snackbar.LENGTH_SHORT
                 )
                     .show()
@@ -1050,7 +1050,7 @@ class NavigationActivity : LocalizationActivity(),
             (dialog.tagMap["guild_field"] as EditText).text.toString() == "" -> {
                 Snackbar.make(
                     dialog.tagMap["main_container"]!!,
-                    "Please enter the character name",
+                    "Please enter the guild name",
                     Snackbar.LENGTH_SHORT
                 )
                     .show()
@@ -1059,7 +1059,7 @@ class NavigationActivity : LocalizationActivity(),
                 .equals("Select Region", ignoreCase = true) -> {
                 Snackbar.make(
                     dialog.tagMap["main_container"]!!,
-                    "Please enter the character name",
+                    "Please select the region",
                     Snackbar.LENGTH_SHORT
                 )
                     .show()
@@ -1114,6 +1114,7 @@ class NavigationActivity : LocalizationActivity(),
             .addToBackStack("wow_guild").commit()
         supportFragmentManager.executePendingTransactions()
         dialog.dismiss()
+        binding.loadingCircle.visibility = View.GONE
     }
 
     private fun callD3Fragment(battletag: String?, region: String) {
@@ -1133,13 +1134,10 @@ class NavigationActivity : LocalizationActivity(),
                 .addToBackStack("d3_account").commit()
             supportFragmentManager.executePendingTransactions()
         }
+        binding.loadingCircle.visibility = View.GONE
     }
 
-    private fun callWoWCharacterFragment(
-        characterClicked: String,
-        characterRealm: String,
-        selectedRegion: String
-    ) {
+    private fun callWoWCharacterFragment(characterClicked: String, characterRealm: String, selectedRegion: String) {
         if (supportFragmentManager.primaryNavigationFragment != null && supportFragmentManager.primaryNavigationFragment!!.isVisible) {
             supportFragmentManager.beginTransaction()
                 .remove(supportFragmentManager.primaryNavigationFragment!!).commit()

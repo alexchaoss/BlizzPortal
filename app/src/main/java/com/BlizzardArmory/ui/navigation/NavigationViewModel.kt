@@ -123,6 +123,8 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
                 downloadCount++
                 if (downloadCount <= 5) {
                     downloadUserInfo()
+                } else {
+                    showErrorDialog.value = true
                 }
             })
     }

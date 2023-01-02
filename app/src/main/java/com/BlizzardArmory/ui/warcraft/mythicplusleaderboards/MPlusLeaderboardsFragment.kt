@@ -115,6 +115,7 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         }
 
         viewModel.getSeasonIndex().observe(viewLifecycleOwner) {
+            seasonList.removeAll { index -> index != "Season" }
             seasonList.addAll(it.seasons.map { season -> season.id.toString() })
             setAdapter(seasonList, navigationActivity.binding.rightPanelWowMplus.season)
             selectedSeason = it.current_season.id
@@ -154,28 +155,32 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
             }
         }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner) {
-            binding.loadingCircle.visibility = View.GONE
-            dialog = DialogPrompt(requireActivity())
-            dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(
-                    requireActivity().resources.getString(R.string.unexpected),
-                    18f,
-                    "message"
-                )
-                .addButtons(
-                    dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
-                        dialog!!.dismiss()
-                        viewModel.downloadSpecializations()
-                        binding.loadingCircle.visibility = View.VISIBLE
-                        NetworkUtils.loading = true
-                    }, "retry"), dialog!!.Button(
-                        requireActivity().resources.getString(R.string.back), 18f,
-                        {
-                            dialog!!.dismiss()
-                        }, "back"
+        viewModel.getShowErrorDialog().observe(viewLifecycleOwner) {
+            if (dialog == null) {
+                binding.loadingCircle.visibility = View.GONE
+                dialog = DialogPrompt(requireActivity())
+                dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+                    .addMessage(
+                        requireActivity().resources.getString(R.string.unexpected),
+                        18f,
+                        "message"
                     )
-                ).show()
+                    .addButtons(
+                        dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                            dialog!!.dismiss()
+                            dialog = null
+                            viewModel.downloadSpecializations()
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            NetworkUtils.loading = true
+                        }, "retry"), dialog!!.Button(
+                            requireActivity().resources.getString(R.string.back), 18f,
+                            {
+                                dialog!!.dismiss()
+                                dialog = null
+                            }, "back"
+                        )
+                    ).show()
+            }
         }
     }
 
@@ -211,15 +216,13 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                             .contains(navigationActivity.binding.rightPanelWowMplus.realm.text.toString())
                     }?.connectedRealm?.id!!
 
-                    region =
-                        NavigationActivity.realms.entries.find { it.value.results.any { it.connectedRealm.id == selectedConnectedRealm } }!!.key
+                    region = NavigationActivity.realms.entries.find { it.value.results.any { it.connectedRealm.id == selectedConnectedRealm } }!!.key
 
-                    selectedSeason =
-                        navigationActivity.binding.rightPanelWowMplus.season.selectedItem.toString()
-                            .toInt()
+                    selectedSeason = navigationActivity.binding.rightPanelWowMplus.season.selectedItem.toString().toInt()
 
                     selectedDungeon = viewModel.getExpansions().value?.flatMap { it.dungeons }
-                        ?.find { it.name.contains(navigationActivity.binding.rightPanelWowMplus.dungeon.selectedItem as String) }?.challenge_mode_id!!
+                        ?.find { it.name.contains(navigationActivity.binding.rightPanelWowMplus.dungeon.selectedItem as String) }
+                        ?.challenge_mode_id!!
                     binding.loadingCircle.visibility = View.VISIBLE
                     viewModel.downloadSeason(selectedSeason)
                     navigationActivity.binding.overlappingPanel.closePanels()
@@ -274,6 +277,9 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
                     if (parent.getItemAtPosition(0) == "Season") {
                         dungeonList = dungeonList.subList(0, 1)
+                        dungeonList.forEach {
+
+                        }
                         when (position) {
                             1, 2, 3, 4 -> {
                                 dungeonList.addAll(viewModel.getExpansions().value!![1].dungeons.map { it.name })
@@ -282,8 +288,15 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                                     navigationActivity.binding.rightPanelWowMplus.dungeon
                                 )
                             }
-                            5, 6 -> {
+                            5, 6, 7, 8 -> {
                                 dungeonList.addAll(viewModel.getExpansions().value!![2].dungeons.map { it.name })
+                                setAdapter(
+                                    dungeonList,
+                                    navigationActivity.binding.rightPanelWowMplus.dungeon
+                                )
+                            }
+                            9, 10, 11, 12 -> {
+                                dungeonList.addAll(viewModel.getExpansions().value!![3].dungeons.map { it.name })
                                 setAdapter(
                                     dungeonList,
                                     navigationActivity.binding.rightPanelWowMplus.dungeon

@@ -43,6 +43,8 @@ class ActivityViewModel(application: Application) : BaseViewModel(application) {
             {
                 guildSummary.value = it.body()
                 downloadGuildCrest()
+            }, {
+                showErrorDialog.value = true
             })
     }
 
