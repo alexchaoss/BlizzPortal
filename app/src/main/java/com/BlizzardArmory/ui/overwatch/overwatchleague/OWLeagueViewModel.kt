@@ -70,7 +70,7 @@ class OWLeagueViewModel(application: Application) : BaseViewModel(application) {
                 matchesList.value = _matchesList
             }
         }
-        jobs.add(job)
+        jobs["parseCSV"] = job
     }
 
     private fun parseMatch(it: List<String>) {

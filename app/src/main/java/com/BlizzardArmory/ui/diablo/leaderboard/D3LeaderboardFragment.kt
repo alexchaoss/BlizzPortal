@@ -126,41 +126,45 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     }
 
     private fun setObservers() {
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             binding.loadingCircle.visibility = View.GONE
-            dialog = DialogPrompt(requireActivity())
-            dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(
-                    requireActivity().resources.getString(R.string.unexpected),
-                    18f,
-                    "message"
-                )
-                .addButtons(
-                    dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
-                        dialog!!.dismiss()
-                        viewModel.downloadEraIndex()
-                        viewModel.downloadSeasonIndex()
-                        binding.loadingCircle.visibility = View.VISIBLE
-                        NetworkUtils.loading = true
-                    }, "retry"), dialog!!.Button(
-                        requireActivity().resources.getString(R.string.back), 18f,
-                        {
-                            dialog!!.dismiss()
-                        }, "back"
+            if (dialog == null) {
+                dialog = DialogPrompt(requireActivity())
+                dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+                    .addMessage(
+                        requireActivity().resources.getString(R.string.unexpected),
+                        18f,
+                        "message"
                     )
-                ).show()
-        })
+                    .addButtons(
+                        dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                            dialog!!.dismiss()
+                            dialog = null
+                            viewModel.downloadEraIndex()
+                            viewModel.downloadSeasonIndex()
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            NetworkUtils.loading = true
+                        }, "retry"), dialog!!.Button(
+                            requireActivity().resources.getString(R.string.back), 18f,
+                            {
+                                dialog!!.dismiss()
+                                dialog = null
+                            }, "back"
+                        )
+                    ).show()
+            }
+        }
 
-        viewModel.getEraIndex().observe(viewLifecycleOwner, {
+        viewModel.getEraIndex().observe(viewLifecycleOwner) {
             rightPanel.binding.rightPanelD3.eraButton.setOnClickListener {
                 seasonToggle = false
                 setAdapter(viewModel.getEraIndexList(), rightPanel.binding.rightPanelD3.spinnerId)
                 rightPanel.binding.rightPanelD3.eraButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
                 rightPanel.binding.rightPanelD3.seasonButton.setBackgroundResource(R.drawable.leaderboards_button)
             }
-        })
+        }
 
-        viewModel.getSeasonIndex().observe(viewLifecycleOwner, {
+        viewModel.getSeasonIndex().observe(viewLifecycleOwner) {
             rightPanel.binding.rightPanelD3.seasonButton.setOnClickListener {
                 seasonToggle = true
                 setAdapter(
@@ -170,9 +174,9 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
                 rightPanel.binding.rightPanelD3.seasonButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
                 rightPanel.binding.rightPanelD3.eraButton.setBackgroundResource(R.drawable.leaderboards_button)
             }
-        })
+        }
 
-        viewModel.getLeaderboard().observe(viewLifecycleOwner, {
+        viewModel.getLeaderboard().observe(viewLifecycleOwner) {
             if (!updatedSpinners) {
                 updatedSpinners = true
                 setAdapter(
@@ -188,7 +192,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
                 )
             }
             binding.loadingCircle.visibility = View.GONE
-        })
+        }
     }
 
     private fun setSearchButton() {

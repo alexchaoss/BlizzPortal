@@ -417,7 +417,7 @@ class NavigationActivity : LocalizationActivity(),
             } else {
                 if (prefs != null && !prefs!!.getBoolean("signedIn", false)) {
                     login(it)
-                } else {
+                } else if (!OauthFlowStarter.started) {
                     OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
                 }
             }

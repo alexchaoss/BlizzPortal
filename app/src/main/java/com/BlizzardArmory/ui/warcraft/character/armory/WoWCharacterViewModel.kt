@@ -2,6 +2,8 @@ package com.BlizzardArmory.ui.warcraft.character.armory
 
 import android.app.Application
 import android.graphics.Color
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
@@ -12,6 +14,7 @@ import com.BlizzardArmory.model.warcraft.equipment.Socket
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.network.NetworkUtils
+import com.BlizzardArmory.network.NetworkUtils.replaceUriParameter
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -112,16 +115,10 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
         if (imageURLs.value == null) {
             imageURLs.value = hashMapOf()
         }
-        var url = equippedItem.media.key.href
-        if (url.contains("static")) {
-            url = url.replace(
-                ("static-[0-9].[0-9].[0-9]_[0-9]*-" + region.lowercase(Locale.getDefault())
-                    .toRegex()).toRegex(), "static-" + region.lowercase(Locale.getDefault())
-            )
-        }
-        url = url.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL)
+        var uri = replaceUriParameter(Uri.parse(equippedItem.media.key.href), "namespace", "static-${region.lowercase(Locale.getDefault())}")
+        uri = uri?.buildUpon()?.path(uri.path?.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL))?.build()
 
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getDynamicEquipmentMedia(url, region.lowercase(Locale.getDefault())) },
+        executeAPICall({ RetroClient.getWoWClient(getApplication()).getDynamicEquipmentMedia(uri?.path!!) },
             {
                 val mediaItem = it.body()!!
                 imageURLsTemp[equippedItem.slot.type] = mediaItem.assets[0].value

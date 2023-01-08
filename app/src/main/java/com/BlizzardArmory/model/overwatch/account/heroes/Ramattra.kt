@@ -3,8 +3,8 @@ package com.BlizzardArmory.model.overwatch.account.heroes
 /**
  * The type Mccree.
  */
-class Mccree : Hero() {
+class Ramattra : Hero() {
     override fun getName(): String {
-        return "McCree"
+        return "Ramattra"
     }
 }

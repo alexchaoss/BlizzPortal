@@ -1,10 +1,10 @@
 package com.BlizzardArmory.model.overwatch.account.topheroes
 
 /**
- * The type Mccree.
+ * The type Bastion.
  */
-class Mccree : TopHero() {
+class Kiriko : TopHero() {
     override fun getName(): String {
-        return "Mccree"
+        return "Kiriko"
     }
 }

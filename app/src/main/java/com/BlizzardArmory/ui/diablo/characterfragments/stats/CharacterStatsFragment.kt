@@ -35,7 +35,7 @@ import kotlin.math.roundToInt
 class CharacterStatsFragment : Fragment() {
     private var prefs: SharedPreferences? = null
 
-    private var dialog: AlertDialog? = null
+    private var dialog: DialogPrompt? = null
     private var battletag = ""
     private var selectedRegion = ""
     private var id = 0L
@@ -78,11 +78,9 @@ class CharacterStatsFragment : Fragment() {
         id = bundle.getLong("id")
         battletag = bundle.getString("battletag")!!
         selectedRegion = bundle.getString("region")!!
-        dialog = null
         val skillTooltipBG = GradientDrawable()
         skillTooltipBG.setStroke(6, Color.parseColor("#2e2a27"))
         skillTooltipBG.setColor(Color.BLACK)
-        //setChatGem()
         binding.loadingCircle.visibility = View.VISIBLE
         setObservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
@@ -91,23 +89,23 @@ class CharacterStatsFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+        viewModel.getBnetParams().observe(viewLifecycleOwner) {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             viewModel.downloadCharacterInformation(battletag, id, selectedRegion)
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getShowErrorDialog().observe(viewLifecycleOwner) {
             binding.loadingCircle.visibility = View.GONE
-            showNoConnectionMessage(it)
-        })
+            showNoConnectionMessage(viewModel.errorCode.value!!)
+        }
 
-        viewModel.getCharacterInformation().observe(viewLifecycleOwner, {
+        viewModel.getCharacterInformation().observe(viewLifecycleOwner) {
             EventBus.getDefault().post(WoWCharacterEvent(it))
             setGlobes()
             setName()
             setStats()
             binding.loadingCircle.visibility = View.GONE
-        })
+        }
     }
 
     private fun setStats() {
@@ -254,30 +252,33 @@ class CharacterStatsFragment : Fragment() {
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
         NetworkUtils.loading = false
+        if (dialog == null) {
+            dialog = DialogPrompt(requireActivity())
+            dialog!!.setCancellable(false)
+            dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
+                .addMessage(getErrorMessage(responseCode), 18f, "message")
+                .addButtons(
+                    dialog!!.Button(errorMessages.RETRY, 18f, {
+                        dialog!!.dismiss()
+                        dialog = null
+                        viewModel.downloadCharacterInformation(battletag, id, selectedRegion)
+                        EventBus.getDefault().post(RetryEvent(true))
+                        binding.loadingCircle.visibility = View.VISIBLE
+                    }, "retry"), dialog!!.Button(
+                        errorMessages.BACK, 18f,
 
-        val dialog = DialogPrompt(requireActivity())
-        dialog.setCancellable(false)
-        dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
-            .addMessage(getErrorMessage(responseCode), 18f, "message")
-            .addButtons(
-                dialog.Button(errorMessages.RETRY, 18f, {
-                    dialog.dismiss()
-                    viewModel.downloadCharacterInformation(battletag, id, selectedRegion)
-                    EventBus.getDefault().post(RetryEvent(true))
-                    binding.loadingCircle.visibility = View.VISIBLE
-                }, "retry"), dialog.Button(
-                    errorMessages.BACK, 18f,
-
-                    {
-                        dialog.dismiss()
-                        EventBus.getDefault().post(NetworkEvent(true))
-                        parentFragmentManager.popBackStack(
-                            null,
-                            FragmentManager.POP_BACK_STACK_INCLUSIVE
-                        )
-                    }, "back"
-                )
-            ).show()
+                        {
+                            dialog!!.dismiss()
+                            dialog = null
+                            EventBus.getDefault().post(NetworkEvent(true))
+                            parentFragmentManager.popBackStack(
+                                null,
+                                FragmentManager.POP_BACK_STACK_INCLUSIVE
+                            )
+                        }, "back"
+                    )
+                ).show()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

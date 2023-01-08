@@ -40,11 +40,14 @@ class TopHeroes {
     @SerializedName("junkrat")
     var junkrat: Junkrat? = null
 
+    @SerializedName("kiriko")
+    var kirko: Kiriko? = null
+
     @SerializedName("lucio")
     var lucio: Lúcio? = null
 
-    @SerializedName("mccree")
-    var mccree: Mccree? = null
+    @SerializedName("cassidy")
+    var cassidy: Cassidy? = null
 
     @SerializedName("mei")
     var mei: Mei? = null
@@ -60,6 +63,9 @@ class TopHeroes {
 
     @SerializedName("pharah")
     var pharah: Pharah? = null
+
+    @SerializedName("ramattra")
+    var ramattra: Ramattra? = null
 
     @SerializedName("reaper")
     var reaper: Reaper? = null
@@ -121,13 +127,15 @@ class TopHeroes {
         hanzo?.let { heroList.add(it) }
         junkerQueen?.let { heroList.add(it) }
         junkrat?.let { heroList.add(it) }
+        kirko?.let { heroList.add(it) }
         lucio?.let { heroList.add(it) }
-        mccree?.let { heroList.add(it) }
+        cassidy?.let { heroList.add(it) }
         mei?.let { heroList.add(it) }
         mercy?.let { heroList.add(it) }
         moira?.let { heroList.add(it) }
         orisa?.let { heroList.add(it) }
         pharah?.let { heroList.add(it) }
+        ramattra?.let { heroList.add(it) }
         reaper?.let { heroList.add(it) }
         reinhardt?.let { heroList.add(it) }
         roadhog?.let { heroList.add(it) }

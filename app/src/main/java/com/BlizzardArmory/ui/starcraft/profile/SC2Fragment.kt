@@ -42,7 +42,7 @@ class SC2Fragment : Fragment() {
     private var realmId: Int? = null
     private var profileId: String? = null
 
-
+    private var dialog: DialogPrompt? = null
     private var _binding: Sc2FragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SC2ViewModel by activityViewModels()
@@ -110,7 +110,7 @@ class SC2Fragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+        viewModel.getBnetParams().observe(viewLifecycleOwner) {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             if (profileId == null || realmId == null || profileId == null) {
                 viewModel.downloadAccountInformation()
@@ -118,9 +118,9 @@ class SC2Fragment : Fragment() {
                 viewModel.downloadProfile(regionId!!, realmId!!, profileId!!)
             }
 
-        })
+        }
 
-        viewModel.getAccount().observe(viewLifecycleOwner, {
+        viewModel.getAccount().observe(viewLifecycleOwner) {
             if (it.size > 1) {
                 binding.loadingCircle.visibility = View.GONE
                 val dialog = DialogPrompt(requireContext())
@@ -139,20 +139,20 @@ class SC2Fragment : Fragment() {
             } else {
                 viewModel.downloadProfile(it[0].regionId, it[0].realmId, it[0].profileId)
             }
-        })
+        }
 
-        viewModel.getProfile().observe(viewLifecycleOwner, {
+        viewModel.getProfile().observe(viewLifecycleOwner) {
             setSummaryInformation()
             setSnapshotInformation()
             setStatisticsInformation()
             setRaceLevelInformation()
             setCampaignInformation()
             downloadAvatar()
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             showNoConnectionMessage(it)
-        })
+        }
     }
 
     private fun createCustomButton(layout: LinearLayout, player: Player, dialog: DialogPrompt) {
@@ -584,28 +584,31 @@ class SC2Fragment : Fragment() {
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
         NetworkUtils.loading = false
+        if (dialog == null) {
+            dialog = DialogPrompt(requireActivity())
+            dialog!!.setCancellable(false)
 
-        val dialog = DialogPrompt(requireActivity())
-        dialog.setCancellable(false)
+            dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
+                .addMessage(getErrorMessage(responseCode), 18f, "message")
+                .addButtons(
+                    dialog!!.Button(errorMessages.RETRY, 18f, {
+                        dialog!!.dismiss()
+                        dialog = null
+                        viewModel.downloadAccountInformation()
+                        binding.loadingCircle.visibility = View.VISIBLE
+                    }, "retry"), dialog!!.Button(
+                        errorMessages.BACK, 18f,
 
-        dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
-            .addMessage(getErrorMessage(responseCode), 18f, "message")
-            .addButtons(
-                dialog.Button(errorMessages.RETRY, 18f, {
-                    dialog.dismiss()
-                    viewModel.downloadAccountInformation()
-                    binding.loadingCircle.visibility = View.VISIBLE
-                }, "retry"), dialog.Button(
-                    errorMessages.BACK, 18f,
-
-                    {
-                        dialog.dismiss()
-                        NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
-                        parentFragmentManager.popBackStack()
-                    },
-                    "back"
-                )
-            ).show()
+                        {
+                            dialog!!.dismiss()
+                            dialog = null
+                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
+                            parentFragmentManager.popBackStack()
+                        },
+                        "back"
+                    )
+                ).show()
+        }
     }
 
     companion object {

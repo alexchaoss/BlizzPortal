@@ -57,18 +57,21 @@ class CharacterGearViewModel(application: Application) : BaseViewModel(applicati
         this.battletag = battletag
         this.id = id
         this.selectedRegion = selectedRegion
-        executeAPICall({ RetroClient.getD3Client(getApplication(), true)
+        executeAPICall({ RetroClient.getD3Client(getApplication())
             .getHeroItems(battletag, id, battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault())) },
             {
                 itemsInformation.value = it.body()
                 itemInformation
                 items.forEachIndexed { index, item ->
-                    setItemInformation(item!!, index)
+                    if (item != null) {
+                       setItemInformation(item, index)
+                    }
                 }
+                itemsInfoSetup.value = true
+            }, onComplete = {
                 if (!EventBus.getDefault().isRegistered(this@CharacterGearViewModel)) {
                     EventBus.getDefault().register(this@CharacterGearViewModel)
                 }
-                itemsInfoSetup.value = true
             })
     }
 

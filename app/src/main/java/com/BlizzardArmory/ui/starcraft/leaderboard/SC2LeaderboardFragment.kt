@@ -246,7 +246,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
     }
 
     private fun setObservers() {
-        viewModel.getCurrentSeason().observe(viewLifecycleOwner, {
+        viewModel.getCurrentSeason().observe(viewLifecycleOwner) {
             seasonList.add("Select Season")
             for (i in 28..it.seasonId) {
                 seasonList.add(i.toString())
@@ -256,8 +256,8 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
             viewModel.leagueString = leagueList.last()
             viewModel.seasonId = it.seasonId
             viewModel.downloadLeague(region)
-        })
-        viewModel.getLeague().observe(viewLifecycleOwner, {
+        }
+        viewModel.getLeague().observe(viewLifecycleOwner) {
             if (it.tier.size == 1 && !it.tier[0].division.isNullOrEmpty() && it.tier[0].division.size == 1) {
                 binding.nextPage.visibility = View.INVISIBLE
             }
@@ -269,33 +269,37 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
                 it.tier[currentTier].division[currentDivision].ladder_id,
                 region
             )
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             binding.loadingCircle.visibility = View.GONE
-            dialog = DialogPrompt(requireActivity())
-            dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(
-                    requireActivity().resources.getString(R.string.unexpected),
-                    18f,
-                    "message"
-                )
-                .addButtons(
-                    dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
-                        dialog!!.dismiss()
-                        viewModel.downloadCurrentSeason(1, region)
-                        binding.loadingCircle.visibility = View.VISIBLE
-                        NetworkUtils.loading = true
-                    }, "retry"), dialog!!.Button(
-                        requireActivity().resources.getString(R.string.back), 18f,
-                        {
-                            dialog!!.dismiss()
-                        }, "back"
+            if (dialog == null) {
+                dialog = DialogPrompt(requireActivity())
+                dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+                    .addMessage(
+                        requireActivity().resources.getString(R.string.unexpected),
+                        18f,
+                        "message"
                     )
-                ).show()
-        })
+                    .addButtons(
+                        dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                            dialog!!.dismiss()
+                            dialog = null
+                            viewModel.downloadCurrentSeason(1, region)
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            NetworkUtils.loading = true
+                        }, "retry"), dialog!!.Button(
+                            requireActivity().resources.getString(R.string.back), 18f,
+                            {
+                                dialog!!.dismiss()
+                                dialog = null
+                            }, "back"
+                        )
+                    ).show()
+            }
+        }
 
-        viewModel.getLeaderboard().observe(viewLifecycleOwner, {
+        viewModel.getLeaderboard().observe(viewLifecycleOwner) {
             if (!firstPage) {
                 if (backPage) {
                     currentPlayerCountRank -= it.size
@@ -309,7 +313,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
                 adapter = LeaderboardAdapter(it, context, currentPlayerCountRank)
                 binding.loadingCircle.visibility = View.GONE
             }
-        })
+        }
     }
 
     private fun setSearchButton() {

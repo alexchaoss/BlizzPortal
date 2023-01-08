@@ -25,6 +25,6 @@ class NewsPageViewModel(application: Application) : BaseViewModel(application) {
                 newsPage.value = response
             }
         }
-        jobs.add(job)
+        jobs["downloadNewsPage"] = job
     }
 }

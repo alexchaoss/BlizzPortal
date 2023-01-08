@@ -47,11 +47,11 @@ class CharacterCubeFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+        viewModel.getBnetParams().observe(viewLifecycleOwner) {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
-        })
+        }
 
-        viewModel.getItem().observe(viewLifecycleOwner, { item ->
+        viewModel.getItem().observe(viewLifecycleOwner) { item ->
             cubeMap[item.icon.lowercase(Locale.getDefault())]?.setOnClickListener {
                 for (attributes in item.attributes.secondary) {
                     if (attributes.textHtml.contains("d3-color-ffff8000")) {
@@ -64,7 +64,7 @@ class CharacterCubeFragment : Fragment() {
                 binding.cubeText.visibility = View.VISIBLE
                 binding.cubeText.text = HtmlCompat.fromHtml(cubeText, HtmlCompat.FROM_HTML_MODE_LEGACY)
             }
-        })
+        }
     }
 
     override fun onStart() {

@@ -53,12 +53,16 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
 
     fun onStartPanelStateChange(panelState: PanelState) {
         val viewState = viewStateSubject.value
-        viewStateSubject.onNext(viewState.copy(startPanelState = panelState))
+        if (viewState != null) {
+            viewStateSubject.onNext(viewState.copy(startPanelState = panelState))
+        }
     }
 
     fun onEndPanelStateChange(panelState: PanelState) {
         val viewState = viewStateSubject.value
-        viewStateSubject.onNext(viewState.copy(endPanelState = panelState))
+        if (viewState != null) {
+            viewStateSubject.onNext(viewState.copy(endPanelState = panelState))
+        }
     }
 
     fun getIsReady(): LiveData<Boolean?> {
@@ -94,38 +98,33 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     }
 
     private fun initProxy() {
+        var count = 0
         val job = coroutineScope.launch {
             while (isReady.value == false) {
                 executeAPICall({ RetroClient.getGeneralClient(getApplication(), true, 0).getRoot() },
                     {
                         val status = it.body()
-                        if (status?.status == "Running") {
+                        if (status?.status == "Running" && isReady.value == false) {
                             isReady.value = true
+                            jobs.filter { job -> job.key.contains("initProxy") }.forEach { job -> job.value.cancel() }
+                        } else {
+                            count++
                         }
                     })
                 delay(1000)
             }
         }
-        jobs.add(job)
+        jobs["initProxy-$count"] = job
     }
 
     fun downloadUserInfo() {
-        var downloadCount = 0
         executeAPICall({ RetroClient.getGeneralClient(getApplication()).getUserInfo(battlenetOAuth2Helper?.accessToken, NetworkUtils.region) },
             {
+                Log.i("USER INFO", it.body().toString())
                 userInformation.value = it.body()
-                if (userInformation.value?.battleTag?.contains("#") == false) {
-                    downloadCount++
-                    downloadUserInfo()
-                }
             },
             {
-                downloadCount++
-                if (downloadCount <= 5) {
-                    downloadUserInfo()
-                } else {
-                    showErrorDialog.value = true
-                }
+                showErrorDialog.value = true
             })
     }
 

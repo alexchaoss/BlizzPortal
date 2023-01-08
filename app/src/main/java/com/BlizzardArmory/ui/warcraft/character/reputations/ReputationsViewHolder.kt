@@ -39,16 +39,17 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
             1, 2 -> repTier?.setTextColor(Color.parseColor("#cc3609"))
             0 -> repTier?.setTextColor(Color.parseColor("#d90e03"))
         }
-        Log.i("TEST REGEX STANDING", reputations.standing.name + renownTierRegex.containsMatchIn(reputations.standing.name).toString())
         if (renownTierRegex.containsMatchIn(reputations.standing.name)) {
             repTier?.setTextColor(Color.parseColor("#01b2f1"))
+        } else if (reputations.standing.name == "Exalted") {
+            repTier?.setTextColor(Color.parseColor("#28a586"))
         }
         setTextViewsText(reputations)
         setBarColor(reputations)
     }
 
     private fun setTextViewsText(reputations: Reputations) {
-        if (reputations.standing.tier >= 7) {
+        if (reputations.standing.tier >= 7 || (reputations.standing.max == 0 && reputations.standing.value >= reputations.standing.max)) {
             progressBar?.max = 1000
             progressBar?.progress = 1000
             progressCount?.text = ""
@@ -72,6 +73,8 @@ class ReputationsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
         }
         if (renownTierRegex.containsMatchIn(reputations.standing.name)) {
             progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.rep_progress_blue)
+        } else if (reputations.standing.name == "Exalted") {
+            progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.rep_progress_teal)
         }
     }
 }

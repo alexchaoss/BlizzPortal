@@ -80,26 +80,30 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
         viewModel.getErrorCode().observe(viewLifecycleOwner) {
             Log.e("Error", "Error code $it occured")
             binding.loadingCircle.visibility = View.GONE
-            dialog = DialogPrompt(requireActivity())
-            dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
-                .addMessage(
-                    requireActivity().resources.getString(R.string.unexpected),
-                    18f,
-                    "message"
-                )
-                .addButtons(
-                    dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
-                        dialog!!.dismiss()
-                        viewModel.downloadBothLeaderboard(raidList[1])
-                        binding.loadingCircle.visibility = View.VISIBLE
-                        NetworkUtils.loading = true
-                    }, "retry"), dialog!!.Button(
-                        requireActivity().resources.getString(R.string.back), 18f,
-                        {
-                            dialog!!.dismiss()
-                        }, "back"
+            if (dialog == null) {
+                dialog = DialogPrompt(requireActivity())
+                dialog!!.addTitle(requireActivity().resources.getString(R.string.error), 20f, "title")
+                    .addMessage(
+                        requireActivity().resources.getString(R.string.unexpected),
+                        18f,
+                        "message"
                     )
-                ).show()
+                    .addButtons(
+                        dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
+                            dialog!!.dismiss()
+                            dialog = null
+                            viewModel.downloadBothLeaderboard(raidList[1])
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            NetworkUtils.loading = true
+                        }, "retry"), dialog!!.Button(
+                            requireActivity().resources.getString(R.string.back), 18f,
+                            {
+                                dialog!!.dismiss()
+                                dialog = null
+                            }, "back"
+                        )
+                    ).show()
+            }
         }
     }
 

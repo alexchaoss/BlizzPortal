@@ -106,10 +106,6 @@ class TalentsFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getTalentTree().observe(viewLifecycleOwner) {
-
-        }
-
         viewModel.getPlayerSpecialization().observe(viewLifecycleOwner) {
             setTabClickListeners(it)
             binding.specText.text = it.active_specialization.name
@@ -123,9 +119,6 @@ class TalentsFragment : Fragment() {
 
         viewModel.getPlayerClass().observe(viewLifecycleOwner) {
             binding.classText.text = it.lowercase(Locale.getDefault()).split("_").joinToString(separator = " ") { word -> word.replaceFirstChar(Char::titlecase) }
-        }
-
-        viewModel.getErrorCode().observe(viewLifecycleOwner) {
         }
     }
 

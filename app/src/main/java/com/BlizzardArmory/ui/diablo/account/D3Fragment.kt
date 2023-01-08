@@ -50,6 +50,8 @@ class D3Fragment : Fragment() {
 
     private lateinit var navigationActivity: NavigationActivity
 
+    private var dialog: DialogPrompt? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -91,13 +93,13 @@ class D3Fragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+        viewModel.getBnetParams().observe(viewLifecycleOwner) {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             binding.loadingCircle.visibility = View.VISIBLE
             viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
-        })
+        }
 
-        viewModel.getProfile().observe(viewLifecycleOwner, {
+        viewModel.getProfile().observe(viewLifecycleOwner) {
             setHeaderData()
             setProgression()
             setTimePlayed()
@@ -113,11 +115,11 @@ class D3Fragment : Fragment() {
             }
             manageFavorite(it)
             binding.loadingCircle.visibility = View.GONE
-        })
+        }
 
-        viewModel.getErrorCode().observe(viewLifecycleOwner, {
+        viewModel.getErrorCode().observe(viewLifecycleOwner) {
             showNoConnectionMessage(it)
-        })
+        }
     }
 
     private fun setHeaderData() {
@@ -322,37 +324,40 @@ class D3Fragment : Fragment() {
     private fun showNoConnectionMessage(responseCode: Int) {
         binding.loadingCircle.visibility = View.GONE
         NetworkUtils.loading = false
+        if (dialog == null) {
+            dialog = DialogPrompt(requireActivity())
+            dialog?.setCancellable(false)
 
-        val dialog = DialogPrompt(requireActivity())
-        dialog.setCancellable(false)
+            if (responseCode == 401) {
+                OauthFlowStarter.lastOpenedFragmentNeedingOAuth = FragmentTag.D3FRAGMENT.name
+                OauthFlowStarter.bundle = arguments
+                OauthFlowStarter.startOauthFlow(
+                    viewModel.getBnetParams().value!!,
+                    navigationActivity,
+                    View.GONE
+                )
+            } else {
+                dialog!!.addTitle(getErrorTitle(responseCode), 20f, "title")
+                    .addMessage(getErrorMessage(responseCode), 18f, "message")
+                    .addButtons(
+                        dialog!!.Button(errorMessages.RETRY, 18f, {
+                            dialog!!.dismiss()
+                            viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
+                            binding.loadingCircle.visibility = View.VISIBLE
+                            NetworkUtils.loading = true
+                            dialog = null
+                        }, "retry"), dialog!!.Button(
+                            errorMessages.BACK, 18f,
 
-        if (responseCode == 401) {
-            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = FragmentTag.D3FRAGMENT.name
-            OauthFlowStarter.bundle = arguments
-            OauthFlowStarter.startOauthFlow(
-                viewModel.getBnetParams().value!!,
-                navigationActivity,
-                View.GONE
-            )
-        } else {
-            dialog.addTitle(getErrorTitle(responseCode), 20f, "title")
-                .addMessage(getErrorMessage(responseCode), 18f, "message")
-                .addButtons(
-                    dialog.Button(errorMessages.RETRY, 18f, {
-                        dialog.dismiss()
-                        viewModel.downloadAccountInformation(battleTag!!, selectedRegion!!)
-                        binding.loadingCircle.visibility = View.VISIBLE
-                        NetworkUtils.loading = true
-                    }, "retry"), dialog.Button(
-                        errorMessages.BACK, 18f,
-
-                        {
-                            dialog.dismiss()
-                            parentFragmentManager.popBackStack()
-                            NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
-                        }, "back"
-                    )
-                ).show()
+                            {
+                                dialog!!.dismiss()
+                                dialog = null
+                                parentFragmentManager.popBackStack()
+                                NewsPageFragment.addOnBackPressCallback(activity as NavigationActivity)
+                            }, "back"
+                        )
+                    ).show()
+            }
         }
     }
 

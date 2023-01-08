@@ -85,11 +85,19 @@ class AchievementsFragment : Fragment() {
         }
 
         binding.subCategoryTab.setOnClickListener {
+            binding.achievementTab.setTextColor(Color.parseColor("#555555"))
+            binding.achievementTab.setBackgroundColor(Color.parseColor("#10ffffff"))
+            binding.subCategoryTab.setTextColor(Color.parseColor("#ffffff"))
+            binding.subCategoryTab.setBackgroundColor(Color.parseColor("#000000"))
             binding.categoriesRecycler.visibility = View.VISIBLE
             binding.achievementsRecycler.visibility = View.GONE
         }
 
         binding.achievementTab.setOnClickListener {
+            binding.subCategoryTab.setTextColor(Color.parseColor("#555555"))
+            binding.subCategoryTab.setBackgroundColor(Color.parseColor("#10ffffff"))
+            binding.achievementTab.setTextColor(Color.parseColor("#ffffff"))
+            binding.achievementTab.setBackgroundColor(Color.parseColor("#000000"))
             setAchievementRecycler(currentCategory)
             binding.categoriesRecycler.visibility = View.GONE
             binding.achievementsRecycler.visibility = View.VISIBLE
@@ -140,7 +148,6 @@ class AchievementsFragment : Fragment() {
         if (subCurrentCategory != -1L) {
             binding.achievementTab.visibility = View.VISIBLE
             binding.subCategoryTab.visibility = View.VISIBLE
-            binding.separator.visibility = View.VISIBLE
             if (subCurrentCategory == 92L) {
                 binding.subCategoryLayout.visibility = View.GONE
             }
@@ -230,9 +237,8 @@ class AchievementsFragment : Fragment() {
         if (subCategoryEvent.data == 92L) {
             binding.subCategoryLayout.visibility = View.VISIBLE
         }
-        binding.achievementTab.visibility = View.GONE
-        binding.subCategoryTab.visibility = View.GONE
-        binding.separator.visibility = View.GONE
+        binding.achievementTab.visibility = View.INVISIBLE
+        binding.subCategoryTab.visibility = View.INVISIBLE
         setAchievementRecycler(subCurrentCategory)
     }
 

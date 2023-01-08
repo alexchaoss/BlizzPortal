@@ -70,6 +70,7 @@ class OWFragment : Fragment() {
         super.onDestroy()
         navigationActivity.toggleFavoriteButton(FavoriteState.Hidden)
         requireActivity().viewModelStore.clear()
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.careerLists)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

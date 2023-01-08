@@ -14,6 +14,7 @@ import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.OnFragmentResume
 import com.BlizzardArmory.util.state.FragmentTag
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayoutMediator
@@ -36,12 +37,18 @@ class GuildNavFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val tabsText = listOf("Activity", "Roster", resources.getString(R.string.achievements))
         val bundle = requireArguments()
-        binding.wowPager.offscreenPageLimit = 2
-        binding.wowPager.adapter = NavAdapter(childFragmentManager, this.lifecycle, binding.navBar.tabCount, bundle)
+        binding.wowPager.apply {
+            offscreenPageLimit = 2
+            adapter = NavAdapter(childFragmentManager, this@GuildNavFragment.lifecycle, binding.navBar.tabCount, bundle)
+            PanelsChildGestureRegionObserver.Provider.get().register(this)
+        }
         TabLayoutMediator(binding.navBar, binding.wowPager) { tab, position ->
             tab.text = tabsText[position]
             binding.wowPager.setCurrentItem(tab.position, true)
         }.attach()
+        binding.navBar.apply {
+            PanelsChildGestureRegionObserver.Provider.get().register(this)
+        }
     }
 
     override fun onStart() {
@@ -51,6 +58,7 @@ class GuildNavFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.navBar)
         PanelsChildGestureRegionObserver.Provider.get().unregister(binding.wowPager)
         _binding = null
     }

@@ -166,12 +166,12 @@ class CharacterGearFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getBnetParams().observe(viewLifecycleOwner, {
+        viewModel.getBnetParams().observe(viewLifecycleOwner) {
             viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
             viewModel.downloadItemInformation(battletag, id, selectedRegion)
-        })
+        }
 
-        viewModel.getItemsInfoSetup().observe(viewLifecycleOwner, {
+        viewModel.getItemsInfoSetup().observe(viewLifecycleOwner) {
             viewModel.getItems().forEachIndexed { index, item ->
                 if (item != null) {
                     getItemIconURL(item)
@@ -180,7 +180,7 @@ class CharacterGearFragment : Fragment() {
                 }
             }
             itemIcons
-        })
+        }
     }
 
     override fun onStart() {

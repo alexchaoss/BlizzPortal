@@ -1,5 +1,6 @@
 package com.BlizzardArmory.network
 
+import android.net.Uri
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import java.util.*
 
@@ -138,6 +139,18 @@ object NetworkUtils {
 
     fun getExpansionFromRIO(expansionId: Int): String {
         return "https://raider.io/api/v1/mythic-plus/static-data?expansion_id=$expansionId"
+    }
+
+    fun replaceUriParameter(uri: Uri, key: String, newValue: String): Uri? {
+        val params: Set<String> = uri.queryParameterNames
+        val newUri: Uri.Builder = uri.buildUpon().clearQuery()
+        for (param in params) {
+            newUri.appendQueryParameter(
+                param,
+                if (param == key) newValue else uri.getQueryParameter(param)
+            )
+        }
+        return newUri.build()
     }
 
 }

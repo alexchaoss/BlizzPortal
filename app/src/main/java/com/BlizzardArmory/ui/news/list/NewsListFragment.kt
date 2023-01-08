@@ -83,7 +83,7 @@ class NewsListFragment : Fragment() {
                     binding.newsRecycler.scrollToPosition(0)
                 }
             }
-            viewModel.jobs.add(job)
+            viewModel.jobs["newsScroll"] = job
             binding.backToTop.visibility = View.GONE
         }
     }

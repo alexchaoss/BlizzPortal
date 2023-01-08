@@ -59,7 +59,7 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
                 downloaded.value = true
             }
         }
-        jobs.add(job)
+        jobs["downloadNews"] = job
     }
 
     fun filterList() {
@@ -135,7 +135,7 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
                 EventBus.getDefault().post(LoadNewsEvent())
             }
         }
-        jobs.add(job)
+        jobs["downloadMore"] = job
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

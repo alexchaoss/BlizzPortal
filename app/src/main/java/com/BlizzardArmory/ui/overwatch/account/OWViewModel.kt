@@ -75,7 +75,7 @@ class OWViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadAccountInformation(username: String, platform: String) {
         NetworkUtils.loading = true
-        executeAPICall({ RetroClient.getOWClient(getApplication()).getOWProfile(NetworkUtils.getOWProfile(username, platform)) },
+        executeAPICall({ RetroClient.getOWClient(getApplication(), true).getOWProfile(NetworkUtils.getOWProfile(username, platform)) },
             {
                 profile.value = it.body()
                 NetworkUtils.loading = false

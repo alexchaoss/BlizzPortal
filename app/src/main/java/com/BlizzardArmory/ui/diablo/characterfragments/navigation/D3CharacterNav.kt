@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.diablo.characterfragments.navigation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,8 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3NavbarFragmentBinding
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.OnFragmentResume
+import com.BlizzardArmory.util.state.FragmentTag
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayoutMediator
 import org.greenrobot.eventbus.EventBus
@@ -49,6 +52,8 @@ class D3CharacterNav : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.wowPager)
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.navBar)
         _binding = null
     }
 

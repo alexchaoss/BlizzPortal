@@ -57,6 +57,9 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
             "Dva" -> {
                 "D.Va "
             }
+            "JunkerQueen" -> {
+                "Junker Queen "
+            }
             "Soldier76" -> {
                 "Soldier: 76 "
             }
@@ -138,39 +141,42 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
 
     private fun setBackgroundColor(topCharacterName: String) {
         val color = when (topCharacterName) {
-            "Ana" -> Color.parseColor("#9c978a")
-            "Ashe" -> Color.parseColor("#b3a05f")
-            "Baptiste" -> Color.parseColor("#2892a8")
-            "Bastion" -> Color.parseColor("#24f9f8")
-            "Brigitte" -> Color.parseColor("#efb016")
-            "DVa" -> Color.parseColor("#ee4bb5")
+            "Ana" -> Color.parseColor("#859ABE")
+            "Ashe" -> Color.parseColor("#7E7D7E")
+            "Baptiste" -> Color.parseColor("#70C1D6")
+            "Bastion" -> Color.parseColor("#91A18C")
+            "Brigitte" -> Color.parseColor("#A07873")
+            "DVa" -> Color.parseColor("#F9A4D2")
             "Echo" -> Color.parseColor("#89c8ff")
-            "Doomfist" -> Color.parseColor("#762c21")
-            "Genji" -> Color.parseColor("#abe50b")
-            "Hanzo" -> Color.parseColor("#837c46")
-            "Junkrat" -> Color.parseColor("#fbd73a")
-            "Lúcio" -> Color.parseColor("#aaf531")
-            "Mccree" -> Color.parseColor("#c23f46")
-            "Mei" -> Color.parseColor("#87d7f6")
-            "Mercy" -> Color.parseColor("#fcd849")
-            "Moira" -> Color.parseColor("#7112f4")
-            "Orisa" -> Color.parseColor("#468c43")
-            "Pharah" -> Color.parseColor("#3461a4")
-            "Reaper" -> Color.parseColor("#333333")
-            "Reinhardt" -> Color.parseColor("#929da3")
-            "Roadhog" -> Color.parseColor("#54515a")
-            "Sigma" -> Color.parseColor("#33bbaa")
-            "Sojourn" -> Color.parseColor("#ffffff")
-            "Soldier76" -> Color.parseColor("#525d9b")
+            "Doomfist" -> Color.parseColor("#986A62")
+            "Genji" -> Color.parseColor("#A8F858")
+            "Hanzo" -> Color.parseColor("#C8C399")
+            "JunkerQueen" -> Color.parseColor("#8EBDDE")
+            "Junkrat" -> Color.parseColor("#F6CA67")
+            "Kiriko" -> Color.parseColor("#E8C6EF")
+            "Lúcio" -> Color.parseColor("#99D568")
+            "Cassidy" -> Color.parseColor("#C17171")
+            "Mei" -> Color.parseColor("#83BAF3")
+            "Mercy" -> Color.parseColor("#F7F3C8")
+            "Moira" -> Color.parseColor("#A987EC")
+            "Orisa" -> Color.parseColor("#609F5B")
+            "Pharah" -> Color.parseColor("#8FD1FD")
+            "Ramattra" -> Color.parseColor("#A78DD9")
+            "Reaper" -> Color.parseColor("#935769")
+            "Reinhardt" -> Color.parseColor("#A5B0B3")
+            "Roadhog" -> Color.parseColor("#C69E6A")
+            "Sigma" -> Color.parseColor("#A5B0B3")
+            "Sojourn" -> Color.parseColor("#E17F74")
+            "Soldier76" -> Color.parseColor("#CBD5E3")
             "Sombra" -> Color.parseColor("#9762ec")
-            "Symmetra" -> Color.parseColor("#3e90b5")
-            "Torbjörn" -> Color.parseColor("#b04a33")
-            "Tracer" -> Color.parseColor("#ffcf35")
-            "Widowmaker" -> Color.parseColor("#af5e9e")
-            "Winston" -> Color.parseColor("#595959")
-            "WreckingBall" -> Color.parseColor("#4a575f")
-            "Zarya" -> Color.parseColor("#ff73c1")
-            "Zenyatta" -> Color.parseColor("#e1c931")
+            "Symmetra" -> Color.parseColor("#A2CADA")
+            "Torbjörn" -> Color.parseColor("#CE8781")
+            "Tracer" -> Color.parseColor("#E6A658")
+            "Widowmaker" -> Color.parseColor("#B07FB5")
+            "Winston" -> Color.parseColor("#B1B3C8")
+            "WreckingBall" -> Color.parseColor("#E8A55E")
+            "Zarya" -> Color.parseColor("#F493C3")
+            "Zenyatta" -> Color.parseColor("#F9F092")
             else -> 0
         }
         progress?.progressTintList = ColorStateList.valueOf(color)

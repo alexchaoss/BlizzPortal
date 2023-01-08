@@ -37,7 +37,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:weightSum="2">
-
                 <TextView
                     android:id="@+id/classText"
                     android:layout_weight="1"
@@ -47,7 +46,6 @@
                     android:textSize="20sp"
                     android:gravity="center"
                     />
-
                 <TextView
                     android:id="@+id/specText"
                     android:layout_weight="1"
@@ -57,9 +55,7 @@
                     android:textColor="#555"
                     android:textSize="20sp"
                     android:gravity="center"
-                    android:text="test"
                     />
-
             </LinearLayout>
 
             <View

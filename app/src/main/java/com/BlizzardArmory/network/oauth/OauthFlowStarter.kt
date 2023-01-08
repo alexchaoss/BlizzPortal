@@ -11,12 +11,14 @@ object OauthFlowStarter {
 
     var lastOpenedFragmentNeedingOAuth: String = ""
     var bundle: Bundle? = null
+    var started: Boolean = false
 
     fun startOauthFlow(
         battlenetOAuth2Params: BattlenetOAuth2Params,
         context: NavigationActivity,
         visible: Int
     ) {
+        started = true
         Log.i("OAuth2", "START OAUTH")
         val fragment = AuthorizationFragment()
         if (bundle == null) {

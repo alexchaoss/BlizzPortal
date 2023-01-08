@@ -19,7 +19,7 @@ import com.google.android.material.snackbar.Snackbar
  */
 object OWPlatformChoiceDialog {
     private var username = ""
-    private var platform = ""
+    private var platform = "pc"
 
     /**
      * The My profile chosen.

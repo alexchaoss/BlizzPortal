@@ -21,6 +21,7 @@ import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
 import com.BlizzardArmory.ui.warcraft.mythicraidleaderboards.MRaidLeaderboardsFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.OnFragmentResume
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.NetworkEvent
 import com.BlizzardArmory.util.events.RetryEvent
@@ -74,7 +75,6 @@ class ActivityFragment : Fragment() {
         setObservers()
         viewModel.downloadGuildSummary(realm!!, guildName!!, region!!)
         viewModel.downloadGuildActivity(realm!!, guildName!!, region!!)
-
     }
 
     private fun setObservers() {

@@ -29,7 +29,7 @@ class CharacterCubeViewModel(application: Application) : BaseViewModel(applicati
         this.characterInformation = characterInformation
         for (i in characterInformation.legendaryPowers.indices) {
             val endpoint = characterInformation.legendaryPowers[i].tooltipParams.replace("/item/", "")
-            executeAPICall({ RetroClient.getD3Client(getApplication()).getItem(endpoint) },
+            executeAPICall({ RetroClient.getD3Client(getApplication(), true).getItem(endpoint) },
                 {
                     singleItem.value = it.body()!!
                     if (i == characterInformation.legendaryPowers.size - 1) {

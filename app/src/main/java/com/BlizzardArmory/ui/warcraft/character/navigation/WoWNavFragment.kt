@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.warcraft.character.navigation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.util.events.NetworkEvent
+import com.BlizzardArmory.util.OnFragmentResume
 import com.BlizzardArmory.util.state.FragmentTag
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayoutMediator
@@ -79,7 +81,6 @@ class WoWNavFragment : Fragment() {
         }
     }
 
-
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -88,6 +89,7 @@ class WoWNavFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         PanelsChildGestureRegionObserver.Provider.get().unregister(binding.wowPager)
+        PanelsChildGestureRegionObserver.Provider.get().unregister(binding.navBar)
         _binding = null
     }
 

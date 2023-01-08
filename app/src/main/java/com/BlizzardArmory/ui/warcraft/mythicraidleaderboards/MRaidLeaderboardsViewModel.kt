@@ -45,7 +45,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
                         tempEntries.addAll(list)
                     }
                 },
-                { response ->
+                {
                     NetworkUtils.loading = false
                 })
             job2.join()
@@ -55,7 +55,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
             }
             NetworkUtils.loading = false
         }
-        jobs.add(job)
+        jobs["downloadBothLeaderboards"] = job
     }
 
     fun downloadLeaderboard(raid: String, faction: String) {

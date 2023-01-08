@@ -9,6 +9,7 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.util.IdGenarator
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
@@ -18,7 +19,7 @@ import retrofit2.Response
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application) {
 
-    var jobs = arrayListOf<Job>()
+    var jobs = mutableMapOf<String, Job>()
     private var clientID: String? = "339a9ad89d9f4acf889b025ccb439567"
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -74,8 +75,11 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         onResponse: (response: Response<T>) -> Unit = {},
         onError: (response: Response<T>) -> Unit = {},
         onCatch: (exception: Exception) -> Unit = {},
-        onComplete: () -> Unit = {}
+        onComplete: () -> Unit = {},
+        tries: Int = 0,
+        jobName: String = "",
     ): Job {
+        val currentJobName = jobName.ifEmpty { IdGenarator.generate(10) }
         val job = coroutineScope.launch {
             coroutineScope.launch {
                 try {
@@ -91,20 +95,26 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
                     }
                 } catch (e: Exception) {
                     Log.e("Exception", "Message: ${e.message}")
-                    onCatch(e)
+                    if(e.message?.lowercase() == "timeout" && tries < 5) {
+                        delay(1000)
+                        executeAPICall(call, onResponse, onError, onCatch, onComplete, tries + 1, currentJobName + tries + 1)
+                    } else {
+                        jobs.filter { it.key.contains(currentJobName) }.forEach { it.value.cancel() }
+                        onCatch(e)
+                    }
                 }
             }.join()
             withContext(Dispatchers.Main) {
                 onComplete()
             }
         }
-
+        jobs[currentJobName] = job
         return job
     }
 
     override fun onCleared() {
         super.onCleared()
         EventBus.getDefault().unregister(this)
-        jobs.forEach { it.cancel() }
+        jobs.forEach { it.value.cancel() }
     }
 }

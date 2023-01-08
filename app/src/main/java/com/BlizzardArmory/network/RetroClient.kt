@@ -36,7 +36,7 @@ object RetroClient {
             client.addInterceptor(interceptor)
         }
 
-        client.cache(cache).connectTimeout(Duration.ofSeconds(30))
+        client.cache(cache).callTimeout(Duration.ofSeconds(20))
 
         if (cacheTime == 0L) {
             return OkHttpClient.Builder().build()
