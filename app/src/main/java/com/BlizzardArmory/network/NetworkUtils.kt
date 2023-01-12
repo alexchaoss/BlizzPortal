@@ -2,6 +2,7 @@ package com.BlizzardArmory.network
 
 import android.net.Uri
 import com.BlizzardArmory.ui.navigation.NavigationActivity
+import com.BlizzardArmory.util.Version
 import java.util.*
 
 /**
@@ -111,11 +112,11 @@ object NetworkUtils {
 
     @JvmStatic
     fun getOWPortraitImage(character: String): String {
-        return OW_ASSETS.replace("image", character + "_portrait")
+        return OW_ASSETS.replace("image", character + "_portrait") + "?version=${Version.code()}"
     }
 
     fun getOWIconImage(character: String): String {
-        return OW_ASSETS.replace("image", character + "_icon")
+        return OW_ASSETS.replace("image", character + "_icon") + "?version=${Version.code()}"
     }
 
     fun getD3Asset(name: String): String {

@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.apache.commons.lang3.StringUtils
 import java.util.*
+import kotlin.math.roundToInt
 
 
 class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -71,52 +72,47 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
     }
 
     private fun downloadIcon(hero: TopHero) {
-
-        Glide.with(itemView)
-            .load(NetworkUtils.getOWIconImage(hero.javaClass.simpleName.lowercase(Locale.getDefault())))
-            .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                    icon?.background = resource
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
+        Glide.with(itemView).load(NetworkUtils.getOWIconImage(hero.javaClass.simpleName.lowercase(Locale.getDefault()))).into(icon!!)
     }
 
     private fun chooseCategory(sortedBy: String, hero: TopHero, topHero: TopHero) {
         when (sortedBy) {
             TIME_PLAYED -> {
                 progress?.max = getSeconds(topHero)
-                progress?.progress = getSeconds(hero)
+                progress?.progress = minTwoPercent(getSeconds(topHero), getSeconds(hero))
                 data?.text = hero.timePlayed
             }
             GAMES_WON -> {
                 progress?.max = topHero.gamesWon.toInt()
-                progress?.progress = hero.gamesWon.toInt()
+                progress?.progress = minTwoPercent(topHero.gamesWon.toInt(), hero.gamesWon.toInt())
                 data?.text = hero.gamesWon.toInt().toString()
             }
             WEAPON_ACCURACY -> {
                 progress?.max = topHero.weaponAccuracy.toInt()
-                progress?.progress = hero.weaponAccuracy.toInt()
+                progress?.progress = minTwoPercent(topHero.weaponAccuracy.toInt(), hero.weaponAccuracy.toInt())
                 val tempData: String = hero.weaponAccuracy.toInt().toString() + "%"
                 data!!.text = tempData
             }
             ELIMINATIONS_PER_LIFE -> {
                 progress?.max = topHero.eliminationsPerLife.toInt()
-                progress?.progress = hero.eliminationsPerLife.toInt()
+                progress?.progress = minTwoPercent(topHero.eliminationsPerLife.toInt(), hero.eliminationsPerLife.toInt())
                 data?.text = hero.eliminationsPerLife.toString()
             }
             MULTIKILL_BEST -> {
                 progress?.max = topHero.multiKillBest.toInt()
-                progress?.progress = hero.multiKillBest.toInt()
+                progress?.progress = minTwoPercent(topHero.multiKillBest.toInt(), hero.multiKillBest.toInt())
                 data?.text = hero.multiKillBest.toInt().toString()
             }
             OBJECTIVE_KILLS -> {
                 progress?.max = topHero.objectiveKills.toInt()
-                progress?.progress = hero.objectiveKills.toInt()
+                progress?.progress = minTwoPercent(topHero.objectiveKills.toInt(), hero.objectiveKills.toInt())
                 data?.text = hero.objectiveKills.toInt().toString()
             }
         }
+    }
+
+    private fun minTwoPercent(top: Int, current: Int): Int {
+        return if (current < (top * 0.02).roundToInt()) (top * 0.02).roundToInt() else current
     }
 
     private fun getSeconds(hero: TopHero): Int {

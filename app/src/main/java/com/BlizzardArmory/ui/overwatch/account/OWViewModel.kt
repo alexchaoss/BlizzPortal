@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.overwatch.account
 
 import android.app.Application
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.overwatch.account.Profile
@@ -9,10 +10,12 @@ import com.BlizzardArmory.model.overwatch.account.topheroes.TopHero
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
+import java.io.InputStream
 
 class OWViewModel(application: Application) : BaseViewModel(application) {
 
@@ -31,7 +34,7 @@ class OWViewModel(application: Application) : BaseViewModel(application) {
     private var topHeroesCompetitive: MutableLiveData<ArrayList<TopHero>> = MutableLiveData()
     private var careerQuickPlay: MutableLiveData<ArrayList<Hero>> = MutableLiveData()
     private var careerCompetitive: MutableLiveData<ArrayList<Hero>> = MutableLiveData()
-
+    private var endorsementByteStream: MutableLiveData<InputStream> = MutableLiveData()
     private var profile: MutableLiveData<Profile> = MutableLiveData()
 
     init {
@@ -43,6 +46,10 @@ class OWViewModel(application: Application) : BaseViewModel(application) {
 
     fun getProfile(): LiveData<Profile> {
         return profile
+    }
+
+    fun getEndorsementByteStream(): LiveData<InputStream> {
+        return endorsementByteStream
     }
 
     fun getCompToggle(): MutableLiveData<Boolean> {
@@ -96,12 +103,18 @@ class OWViewModel(application: Application) : BaseViewModel(application) {
         sortCareerHeroes.addAll(career.map { it.getName() })
     }
 
-    fun setTopHeroesLists() {
+    private fun setTopHeroesLists() {
         topHeroesQuickPlay.value = profile.value?.quickPlayStats?.topHeroes?.getFullHeroList()!!
         topHeroesCompetitive.value = profile.value?.competitiveStats?.topHeroes?.getFullHeroList()!!
 
         sortList(topHeroesCompetitive.value, sortHeroList[0])
         sortList(topHeroesQuickPlay.value, sortHeroList[0])
+    }
+
+    fun downloadEndorsementIcon(url: String) {
+        executeAPICall({ RetroClient.getOWClient(getApplication()).getEndorsementSVG(url)}, {
+            endorsementByteStream.value = it.body()?.byteStream()
+        })
     }
 
 

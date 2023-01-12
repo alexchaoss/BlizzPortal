@@ -101,7 +101,6 @@ class AchievementsFragment : Fragment() {
         if (subCurrentCategory != -1L) {
             binding.achievementTab.visibility = View.VISIBLE
             binding.subCategoryTab.visibility = View.VISIBLE
-            binding.separator.visibility = View.VISIBLE
             if (subCurrentCategory == 92L) {
                 binding.subCategoryLayout.visibility = View.GONE
             }
@@ -205,7 +204,6 @@ class AchievementsFragment : Fragment() {
         }
         binding.achievementTab.visibility = View.GONE
         binding.subCategoryTab.visibility = View.GONE
-        binding.separator.visibility = View.GONE
         setAchievementRecycler(subCurrentCategory)
     }
 

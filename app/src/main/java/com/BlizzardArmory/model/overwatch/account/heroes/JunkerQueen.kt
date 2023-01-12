@@ -5,6 +5,6 @@ package com.BlizzardArmory.model.overwatch.account.heroes
  */
 class JunkerQueen : Hero() {
     override fun getName(): String {
-        return "Junker Queen"
+        return "JunkerQueen"
     }
 }

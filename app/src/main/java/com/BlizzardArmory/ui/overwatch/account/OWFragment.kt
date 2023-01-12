@@ -35,9 +35,9 @@ import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.pixplicity.sharp.Sharp
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 /**
  * The type Ow activity.
@@ -99,11 +99,16 @@ class OWFragment : Fragment() {
             manageFavorite()
             downloadAvatar()
             setName()
-            downloadLevelIcon()
             setGamesWon()
             setRatingInformation()
             setTopButtons()
+            viewModel.downloadEndorsementIcon(it.endorsementIcon)
             binding.loadingCircle.visibility = View.GONE
+        }
+
+        viewModel.getEndorsementByteStream().observe(viewLifecycleOwner) {
+            Sharp.loadInputStream(it).into(binding.levelIcon)
+            it.close()
         }
 
         viewModel.getErrorCode().observe(viewLifecycleOwner) {
@@ -248,7 +253,7 @@ class OWFragment : Fragment() {
         val arrayAdapter: ArrayAdapter<String> = object :
             ArrayAdapter<String>(
                 requireActivity(),
-                android.R.layout.simple_dropdown_item_1line,
+                android.R.layout.simple_spinner_item,
                 viewModel.getSortList()
             ) {
             override fun getDropDownView(
@@ -272,7 +277,7 @@ class OWFragment : Fragment() {
                 return View(requireContext())
             }
         }
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner!!.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -322,7 +327,7 @@ class OWFragment : Fragment() {
         val arrayAdapter: ArrayAdapter<String> = object :
             ArrayAdapter<String>(
                 requireActivity(),
-                android.R.layout.simple_dropdown_item_1line,
+                android.R.layout.simple_spinner_item,
                 viewModel.getCareerSortList()
             ) {
             override fun getDropDownView(
@@ -345,7 +350,7 @@ class OWFragment : Fragment() {
                 return View(requireContext())
             }
         }
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner!!.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -381,41 +386,13 @@ class OWFragment : Fragment() {
         binding.combat.removeViews(1, binding.combat.childCount - 1)
         binding.misc.removeViews(1, binding.misc.childCount - 1)
         binding.match.removeViews(1, binding.match.childCount - 1)
-        try {
-            setSpecificCareerList(career[position].best?.bestList!!, binding.best, 0)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            setSpecificCareerList(career[position].assists?.assists!!, binding.assist, 5)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            setSpecificCareerList(career[position].average?.average!!, binding.average, 5)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            setSpecificCareerList(career[position].game?.game!!, binding.game, 5)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            setSpecificCareerList(career[position].miscellaneous!!.misc, binding.misc, 5)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            setSpecificCareerList(career[position].matchAwards!!.match, binding.match, 5)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            setSpecificCareerList(career[position].combat?.combat!!, binding.combat, 5)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        career[position].best?.bestList?.let { setSpecificCareerList(it, binding.best, 0) }
+        career[position].assists?.assists?.let { setSpecificCareerList(it, binding.assist, 5) }
+        career[position].average?.average?.let { setSpecificCareerList(it, binding.average, 5) }
+        career[position].game?.game?.let { setSpecificCareerList(it, binding.game, 5) }
+        career[position].miscellaneous?.let { setSpecificCareerList(it.misc, binding.misc, 5) }
+        career[position].matchAwards?.let { setSpecificCareerList(it.match, binding.match, 5) }
+        career[position].combat?.combat?.let { setSpecificCareerList(it, binding.combat, 5) }
     }
 
     private fun setSpecificCareerList(
@@ -462,7 +439,7 @@ class OWFragment : Fragment() {
     }
 
     private fun setTopCharacterImage(topCharacterName: String) {
-        Glide.with(this).load(getOWPortraitImage(topCharacterName.lowercase(Locale.getDefault())))
+        Glide.with(this).load(getOWPortraitImage(topCharacterName.lowercase(Locale.getDefault()) ))
             .into(binding.topCharacter)
     }
 
@@ -553,7 +530,7 @@ class OWFragment : Fragment() {
             val accountInfo = viewModel.getProfile().value!!.name + " "
             binding.name.text = accountInfo
         }
-        binding.level.text = viewModel.getProfile().value!!.level.toString()
+        //binding.level.text = viewModel.getProfile().value!!.level.toString()
     }
 
     private fun downloadAvatar() {
@@ -562,12 +539,6 @@ class OWFragment : Fragment() {
 
     private fun downloadRatingIcon(url: String, imageView: ImageView?) {
         Glide.with(this).load(url).into(imageView!!)
-    }
-
-    private fun downloadLevelIcon() {
-        Glide.with(this).load(viewModel.getProfile().value!!.levelIcon).into(binding.levelIcon)
-        Glide.with(this).load(viewModel.getProfile().value!!.prestigeIcon)
-            .into(binding.prestigeIcon)
     }
 
     private fun getErrorMessage(responseCode: Int): String {
