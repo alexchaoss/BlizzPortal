@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.auth
 
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.BlizzardArmory.databinding.AuthorizationFragmentBinding
 import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
+import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.util.state.FavoriteState
 import com.google.android.material.snackbar.Snackbar
@@ -50,8 +52,11 @@ class AuthorizationFragment : Fragment() {
         visibility = arguments?.getInt("visible")!!
         Log.i(BattlenetConstants.TAG, "Starting task to retrieve request token")
         setOberservers()
-        viewModel.getBnetParams().value =
+        viewModel.getBnetParams().value = if (Build.VERSION.SDK_INT >= 33) {
+            arguments?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS, BattlenetOAuth2Params::class.java)
+        } else {
             arguments?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        }
     }
 
     private fun initWebView() {

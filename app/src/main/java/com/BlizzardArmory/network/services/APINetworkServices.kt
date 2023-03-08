@@ -3,11 +3,9 @@ package com.BlizzardArmory.network.services
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievements
 import com.BlizzardArmory.model.warcraft.covenant.covenant.custom.CovenantSpells
-import com.BlizzardArmory.model.warcraft.covenant.techtalent.TechTalentWithIcon
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.expansion.Expansion
 import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
 import com.BlizzardArmory.model.warcraft.specialization.Specialization
-import com.BlizzardArmory.model.warcraft.talentold.TalentsIcons
 import com.BlizzardArmory.network.NetworkUtils
 import retrofit2.Response
 import retrofit2.http.GET
@@ -21,14 +19,6 @@ interface APINetworkServices {
 
     @GET("/achievements/{locale}")
     suspend fun getAllAchievements(@Path("locale") locale: String = NetworkUtils.locale): Response<DetailedAchievements>
-
-    @GET("talents/{playableClassId}/{locale}")
-    suspend fun getTalentsWithIcon(@Path("playableClassId") playableClassId: Int,
-                                   @Path("locale") locale: String = NetworkUtils.locale): Response<List<TalentsIcons>>
-
-    @GET("/tech_talents/{soulbindId}/{locale}")
-    suspend fun getTechTalentsWithIcon(@Path("soulbindId") soulbindId: Int,
-                                       @Path("locale") locale: String = NetworkUtils.locale): Response<List<TechTalentWithIcon>>
 
     @GET("/covenant/{covenantId}/{locale}")
     suspend fun getCovenantSpells(@Path("covenantId") covenantId: Int,

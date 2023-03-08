@@ -11,10 +11,10 @@ class ExceptionHandler(val context: Context) : Thread.UncaughtExceptionHandler {
         Snackbar.make((context as NativeActivity).findViewById(android.R.id.content), "There was an error, some information might not be displayed", Snackbar.LENGTH_SHORT)
             .show()
         Log.e("Crash Prevented", p1.message!!)
-        handleUncaughtException(p0, p1)
+        handleUncaughtException(p1)
     }
 
-    private fun handleUncaughtException(thread: Thread?, e: Throwable) {
+    private fun handleUncaughtException(e: Throwable) {
         FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 

@@ -17,7 +17,7 @@ import kotlin.properties.Delegates
 class ExpandableCardview(context: Context, attrs: AttributeSet? = null) : CardView(context, attrs),
     View.OnClickListener {
 
-    private var currentState: ExpandableState by Delegates.observable(ExpandableState.CLOSED) { prop, old, new ->
+    private var currentState: ExpandableState by Delegates.observable(ExpandableState.CLOSED) { _, _, new ->
         stateListener?.onChangeStateListener(new)
     }
     private var headerRotationExpanded = 180F

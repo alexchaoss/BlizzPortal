@@ -20,17 +20,14 @@ import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.ind
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Leaderboard
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.Season
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.index.SeasonsIndex
-import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.period.Period
 import com.BlizzardArmory.model.warcraft.mythicraid.MythicRaidLeaderboard
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.leaderboards.season.SeasonIndex
 import com.BlizzardArmory.model.warcraft.pvp.summary.PvPSummary
 import com.BlizzardArmory.model.warcraft.pvp.tiers.Tier
-import com.BlizzardArmory.model.warcraft.realm.Realms
 import com.BlizzardArmory.model.warcraft.realm.connected.ConnectedRealms
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.Reputation
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
-import com.BlizzardArmory.model.warcraft.talentold.Talents
 import com.BlizzardArmory.model.warcraft.talents.playerspec.PlayerSpecializations
 import com.BlizzardArmory.model.warcraft.talents.trees.TalentTrees
 import com.BlizzardArmory.network.NetworkUtils
@@ -39,13 +36,6 @@ import retrofit2.http.*
 
 interface WoWNetworkServices {
     //Game Data
-    @GET("/data/wow/realm/index")
-    suspend fun getRealmIndex(
-        @Query("namespace") namespace: String,
-        @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
-    ): Response<Realms>
-
     @POST("/data/wow/search/connected-realms")
     suspend fun getConnectedRealms(
         @Query("namespace") namespace: String,
@@ -186,14 +176,6 @@ interface WoWNetworkServices {
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Season>
-
-    @GET("/data/wow/mythic-keystone/period/{periodId}")
-    suspend fun getMythicKeystonePeriod(
-        @Path("periodId") periodId: Int,
-        @Query("namespace") namespace: String,
-        @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
-    ): Response<Period>
 
     @GET("/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/index")
     suspend fun getMythicKeystoneLeaderboardsIndex(
