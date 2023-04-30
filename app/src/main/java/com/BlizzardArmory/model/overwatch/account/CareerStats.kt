@@ -48,6 +48,9 @@ class CareerStats {
     @SerializedName("kiriko")
     var kiriko: Kiriko? = null
 
+    @SerializedName("lifeweaver")
+    var lifeweaver: Lifeweaver? = null
+
     @SerializedName("lucio")
     var lucio: Lúcio? = null
 
@@ -135,6 +138,7 @@ class CareerStats {
         junkrat?.let { heroList.add(it) }
         kiriko?.let { heroList.add(it) }
         lucio?.let { heroList.add(it) }
+        lifeweaver?.let { heroList.add(it) }
         cassidy?.let { heroList.add(it) }
         mei?.let { heroList.add(it) }
         mercy?.let { heroList.add(it) }

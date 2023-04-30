@@ -52,7 +52,6 @@ object WebNewsScrapper {
                 val date = element.select(".ArticleDetail-bylineDate").text()
                 val imageURL = "https:${element.select(".Image-image").attr("src")}"
                 val content = element.select(".ArticleDetail-Content").html()
-
                 return NewsPage(game, title, author, date, imageURL, content)
             }
         }

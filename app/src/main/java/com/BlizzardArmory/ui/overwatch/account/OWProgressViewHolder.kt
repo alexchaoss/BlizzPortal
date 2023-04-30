@@ -3,7 +3,6 @@ package com.BlizzardArmory.ui.overwatch.account
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,10 +13,8 @@ import com.BlizzardArmory.R
 import com.BlizzardArmory.model.overwatch.account.topheroes.TopHero
 import com.BlizzardArmory.network.NetworkUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import org.apache.commons.lang3.StringUtils
-import java.util.*
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
@@ -150,6 +147,7 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
             "JunkerQueen" -> Color.parseColor("#8EBDDE")
             "Junkrat" -> Color.parseColor("#F6CA67")
             "Kiriko" -> Color.parseColor("#E8C6EF")
+            "Lifeweaver" -> Color.parseColor("#E6C0D0")
             "Lúcio" -> Color.parseColor("#99D568")
             "Cassidy" -> Color.parseColor("#C17171")
             "Mei" -> Color.parseColor("#83BAF3")

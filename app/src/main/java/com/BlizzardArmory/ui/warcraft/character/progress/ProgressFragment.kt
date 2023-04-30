@@ -73,6 +73,7 @@ class ProgressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBackground()
         setObservers()
         viewModel.downloadEncounterInformation()
     }
@@ -169,18 +170,20 @@ class ProgressFragment : Fragment() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    fun classEventReceived(classEvent: ClassEvent) {
+    private fun setBackground() {
+        val charClass = EventBus.getDefault().getStickyEvent(ClassEvent::class.java)?.data
         var bgName = ""
-        when (classEvent.data) {
+        when (charClass) {
             6 -> {
                 binding.progressLayout.setBackgroundColor(Color.parseColor("#080812"))
                 bgName = "dk_bg"
             }
+
             12 -> {
                 binding.progressLayout.setBackgroundColor(Color.parseColor("#000900"))
                 bgName = "dh_bg"
             }
+
             11 -> {
                 binding.progressLayout.setBackgroundColor(Color.parseColor("#04100a"))
                 bgName = "druid_bg"
@@ -227,6 +230,5 @@ class ProgressFragment : Fragment() {
             }
         }
         Glide.with(this).load(NetworkUtils.getWoWAsset("class/$bgName")).into(binding.backgroundProgress)
-        EventBus.getDefault().unregister(this)
     }
 }

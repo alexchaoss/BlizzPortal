@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -36,7 +35,6 @@ import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
-import com.BlizzardArmory.util.OnFragmentResume
 import com.BlizzardArmory.util.WoWClassColor
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
@@ -45,7 +43,6 @@ import com.BlizzardArmory.util.events.RetryEvent
 import com.BlizzardArmory.util.state.FavoriteState
 import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
-import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -174,8 +171,8 @@ class WoWCharacterFragment : Fragment() {
                 }
             }
             manageFavorite(it)
-            EventBus.getDefault().post(FactionEvent(it.faction.type.lowercase(Locale.getDefault())))
-            EventBus.getDefault().post(ClassEvent(it.characterClass.id))
+            EventBus.getDefault().postSticky(FactionEvent(it.faction.type.lowercase(Locale.getDefault())))
+            EventBus.getDefault().postSticky(ClassEvent(it.characterClass.id))
             setTopCharacterStrings(it)
             viewModel.downloadEquipment()
         }

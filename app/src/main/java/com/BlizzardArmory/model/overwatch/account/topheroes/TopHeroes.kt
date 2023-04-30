@@ -43,6 +43,9 @@ class TopHeroes {
     @SerializedName("kiriko")
     var kirko: Kiriko? = null
 
+    @SerializedName("lifeweaver")
+    var lifeweaver: Lifeweaver? = null
+
     @SerializedName("lucio")
     var lucio: Lúcio? = null
 
@@ -128,6 +131,7 @@ class TopHeroes {
         junkerQueen?.let { heroList.add(it) }
         junkrat?.let { heroList.add(it) }
         kirko?.let { heroList.add(it) }
+        lifeweaver?.let { heroList.add(it) }
         lucio?.let { heroList.add(it) }
         cassidy?.let { heroList.add(it) }
         mei?.let { heroList.add(it) }

@@ -3,6 +3,7 @@ package com.BlizzardArmory.util
 import android.content.Context
 import android.graphics.Color
 import android.text.method.LinkMovementMethod
+import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -16,6 +17,13 @@ import com.stfalcon.imageviewer.StfalconImageViewer
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+enum class ViewType {
+    LINK,
+    TEXT,
+    IMAGE,
+    TABLE,
+    VIDEO,
+}
 
 class HTMLtoViewsConverter(val context: Context) {
 
@@ -38,32 +46,40 @@ class HTMLtoViewsConverter(val context: Context) {
     }
 
     fun parseHtml(source: String) {
-
-        val pattern = Pattern.compile("<img.+?>|<iframe.+?>")
+        val pattern = Pattern.compile("<img.+?>|<iframe.+?>|<table(.|\\s)+?table>")
         val matcher = pattern.matcher(source)
-        val splitSource = source.split("<img.+?>|<iframe.+?>".toRegex())
+        val splitSource = source.split("<img.+?>|<iframe.+?>|<table(.|\\s)+?table>".toRegex())
         val componentList = arrayListOf<Component>()
 
         if (splitSource.isEmpty() || splitSource.size == 1) {
-            componentList.add(getComponent(1, source))
+            componentList.add(getComponent(ViewType.LINK, source))
         } else {
             var index = 0
+
             while (matcher.find()) {
-                componentList.add(getComponent(1, splitSource[index]))
+                componentList.add(getComponent(ViewType.LINK, splitSource[index]))
                 val patternImg = Pattern.compile("<img.+?>")
                 val patternVid = Pattern.compile("<iframe.+?>")
+                val patternTable = Pattern.compile("<table(.|\\s)+?table>")
                 val matcherImg = patternImg.matcher(matcher.group())
                 val matcherVid = patternVid.matcher(matcher.group())
+                val matcherTable = patternTable.matcher(matcher.group())
                 when {
                     matcherImg.find() -> {
-                        componentList.add(getComponent(3, matcherImg.group()))
+                        componentList.add(getComponent(ViewType.IMAGE, matcherImg.group()))
                     }
+
                     matcherVid.find() -> {
-                        componentList.add(getComponent(4, matcherVid.group()))
+                        componentList.add(getComponent(ViewType.VIDEO, matcherVid.group()))
+                    }
+
+                    matcherTable.find() -> {
+                        componentList.add(getComponent(ViewType.TABLE, matcherTable.group()))
                     }
                 }
                 index++
             }
+            componentList.add(getComponent(ViewType.LINK, splitSource[index]))
         }
         parseComponents(componentList)
     }
@@ -71,28 +87,24 @@ class HTMLtoViewsConverter(val context: Context) {
     private fun parseComponents(componentList: ArrayList<Component>) {
         for ((i, component) in componentList.withIndex()) {
             when (component.type) {
-                1 -> {
+                ViewType.LINK -> {
                     val textView = TextView(context)
                     textView.setTextColor(Color.parseColor("#888888"))
-                    component.info =
-                        component.info.replace("<a href", "</font><font color=#2788b5><a href")
+                    component.info = component.info.replace("<a href", "</font><font color=#2788b5><a href")
                     component.info = component.info.replace("</a>", "</a></font>")
-                    textView.text =
-                        HtmlCompat.fromHtml(component.info, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                    textView.text = HtmlCompat.fromHtml(component.info, HtmlCompat.FROM_HTML_MODE_LEGACY)
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     linearLayout.addView(textView)
                 }
-                2 -> {
-                    val textView = TextView(context)
-                    textView.text = HtmlCompat.fromHtml(
-                        "<font color=#2788b5>" + component.info + "</font>",
-                        HtmlCompat.FROM_HTML_MODE_COMPACT
-                    )
-                    textView.movementMethod = LinkMovementMethod.getInstance()
-                    linearLayout.addView(textView)
 
+                ViewType.TEXT -> {
+                    val textView = TextView(context)
+                    textView.text = HtmlCompat.fromHtml("<font color=#2788b5>" + component.info + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    textView.movementMethod = LinkMovementMethod.getInstance()
+                    linearLayout.addView(textView)
                 }
-                3 -> {
+
+                ViewType.IMAGE -> {
                     val params = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -118,7 +130,8 @@ class HTMLtoViewsConverter(val context: Context) {
                     }
                     linearLayout.addView(relativeLayout)
                 }
-                4 -> {
+
+                ViewType.VIDEO -> {
                     val youtubePlayerView = YouTubePlayerView(context)
                     youtubePlayerView.tag = "youtube_view${i}"
                     youtubePlayerView.getPlayerUiController().showFullscreenButton(true)
@@ -136,11 +149,22 @@ class HTMLtoViewsConverter(val context: Context) {
                     })
                     linearLayout.addView(youtubePlayerView)
                 }
+
+                ViewType.TABLE -> {
+                    val params = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    val webView = WebView(context)
+                    webView.setBackgroundColor(0)
+                    webView.loadData(component.info.replace("<table", "<table style=\"color: rgb(136, 136, 136)\""), "text/html", "UTF-8")
+                    linearLayout.addView(webView, params)
+                }
             }
         }
     }
 
-    private fun getComponent(type: Int, info: String): Component {
+    private fun getComponent(type: ViewType, info: String): Component {
         val component = Component()
         component.type = type
         component.info = info
@@ -149,6 +173,6 @@ class HTMLtoViewsConverter(val context: Context) {
 }
 
 internal class Component {
-    var type = 0
+    var type: ViewType = ViewType.TEXT
     var info: String = ""
 }

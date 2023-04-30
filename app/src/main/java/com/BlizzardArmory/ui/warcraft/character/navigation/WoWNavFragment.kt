@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.navigation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import com.BlizzardArmory.ui.warcraft.account.AccountFragment
 import com.BlizzardArmory.ui.warcraft.favorites.WoWFavoritesFragment
 import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.util.events.NetworkEvent
-import com.BlizzardArmory.util.OnFragmentResume
 import com.BlizzardArmory.util.state.FragmentTag
 import com.discord.panels.PanelsChildGestureRegionObserver
 import com.google.android.material.tabs.TabLayoutMediator
@@ -67,7 +65,7 @@ class WoWNavFragment : Fragment() {
 
         binding.wowPager.apply {
             adapter = NavAdapter(childFragmentManager, this@WoWNavFragment.lifecycle, binding.navBar.tabCount, bundle)
-            offscreenPageLimit = 5
+            offscreenPageLimit = 1
             PanelsChildGestureRegionObserver.Provider.get().register(this)
         }
 

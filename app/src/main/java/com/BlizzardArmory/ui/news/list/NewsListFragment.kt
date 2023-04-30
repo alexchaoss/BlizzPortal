@@ -37,7 +37,7 @@ class NewsListFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.getDownloaded().observe(viewLifecycleOwner, {
+        viewModel.getDownloaded().observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.filterList()
                 viewModel.setupRecycler()
@@ -49,13 +49,13 @@ class NewsListFragment : Fragment() {
                 viewModel.downloadNews()
                 binding.swipe.isRefreshing = false
             }
-        })
-        viewModel.getShowMore().observe(viewLifecycleOwner, {
+        }
+        viewModel.getShowMore().observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.filterList()
                 (binding.newsRecycler.adapter as NewsAdapter).addItems(viewModel.getNewsList().value!!)
             }
-        })
+        }
     }
 
     private fun setBackToTopButton() {

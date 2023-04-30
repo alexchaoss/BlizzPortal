@@ -14,7 +14,11 @@ import com.BlizzardArmory.databinding.WowAchievementsFragmentBinding
 import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
-import com.BlizzardArmory.util.events.*
+import com.BlizzardArmory.util.events.ClassEvent
+import com.BlizzardArmory.util.events.FactionEvent
+import com.BlizzardArmory.util.events.ParentCategoryEvent
+import com.BlizzardArmory.util.events.RetryEvent
+import com.BlizzardArmory.util.events.SubCategoryEvent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -79,7 +83,7 @@ class AchievementsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         gson = GsonBuilder().create()
         prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
-
+        setBackground()
         binding.backArrow.setOnClickListener {
             backArrow()
         }
@@ -249,18 +253,20 @@ class AchievementsFragment : Fragment() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    fun classEventReceived(classEvent: ClassEvent) {
+    private fun setBackground() {
+        val charClass = EventBus.getDefault().getStickyEvent(ClassEvent::class.java)?.data
         var bgName = ""
-        when (classEvent.data) {
+        when (charClass) {
             6 -> {
                 binding.achievLayout.setBackgroundColor(Color.parseColor("#080812"))
                 bgName = "dk_bg"
             }
+
             12 -> {
                 binding.achievLayout.setBackgroundColor(Color.parseColor("#000900"))
                 bgName = "dh_bg"
             }
+
             11 -> {
                 binding.achievLayout.setBackgroundColor(Color.parseColor("#04100a"))
                 bgName = "druid_bg"

@@ -21,8 +21,13 @@ android {
     }
     buildTypes {
         release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+//        debug {
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
     }
     bundle {
         language {
@@ -70,17 +75,17 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.google.android.material:material:1.8.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
     implementation 'com.github.discord:OverlappingPanels:0.1.5'
-    implementation 'androidx.core:core-splashscreen:1.0.0'
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
     implementation "com.google.android.play:core:1.10.3"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.21"
-    implementation 'androidx.fragment:fragment-ktx:1.5.5'
+    implementation 'androidx.fragment:fragment-ktx:1.5.7'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
