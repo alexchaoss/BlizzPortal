@@ -5,7 +5,7 @@
     android:layout_margin="2dp"
     android:background="#00000000">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -18,7 +18,7 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_gravity="center" />
-    </RelativeLayout>
+    </FrameLayout>
 
 
     <TextView

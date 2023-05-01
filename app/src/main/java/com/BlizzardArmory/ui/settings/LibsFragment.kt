@@ -22,8 +22,6 @@ class LibsFragment : LibsSupportFragment() {
             SettingsFragment.addBackPressedCallBack(requireActivity() as NavigationActivity)
             activity?.supportFragmentManager?.popBackStack()
         }
-
-        libsFragmentCompat.onViewCreated(view)
     }
 
 

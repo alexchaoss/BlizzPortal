@@ -463,7 +463,7 @@
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clipToPadding="true">
@@ -472,16 +472,22 @@
                         android:id="@+id/weapon_effect"
                         android:layout_width="95dp"
                         android:layout_height="140dp"
-                        android:layout_centerInParent="true"
-                        android:contentDescription="@string/weapon_effect" />
+                        android:contentDescription="@string/weapon_effect"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="parent" />
 
                     <ImageView
                         android:id="@+id/item_icon"
                         android:layout_width="74dp"
                         android:layout_height="125dp"
-                        android:layout_centerInParent="true"
-                        android:contentDescription="@string/item_icon" />
-                </RelativeLayout>
+                        android:contentDescription="@string/item_icon"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:id="@+id/armor_damage"

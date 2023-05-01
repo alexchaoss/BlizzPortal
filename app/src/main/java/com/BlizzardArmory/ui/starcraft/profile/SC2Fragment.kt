@@ -33,7 +33,7 @@ import com.BlizzardArmory.util.DialogPrompt
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import java.util.*
+import java.util.Locale
 
 class SC2Fragment : Fragment() {
     private var prefs: SharedPreferences? = null
@@ -111,7 +111,9 @@ class SC2Fragment : Fragment() {
 
     private fun setObservers() {
         viewModel.getBnetParams().observe(viewLifecycleOwner) {
-            viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
+            it?.let {
+                viewModel.battlenetOAuth2Helper = BattlenetOAuth2Helper(it)
+            }
             if (profileId == null || realmId == null || profileId == null) {
                 viewModel.downloadAccountInformation()
             } else {

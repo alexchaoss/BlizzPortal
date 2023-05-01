@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.news.list
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.news.NewsMetaData
@@ -19,7 +20,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class NewsListViewModel(application: Application) : BaseViewModel(application) {
 
@@ -54,6 +55,7 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadNews() {
         val job = coroutineScope.launch {
+            Log.i("TEST", "TERST")
             WebNewsScrapper.parseNewsList("https://news.blizzard.com/${NetworkUtils.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
             withContext(Dispatchers.Main) {
                 downloaded.value = true

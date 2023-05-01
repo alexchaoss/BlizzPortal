@@ -16,7 +16,6 @@ interface Sc2NetworkServices {
     @GET("sc2/player/{id}")
     suspend fun getSc2Player(
         @Path("id") id: String?,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<List<Player>>
@@ -26,7 +25,6 @@ interface Sc2NetworkServices {
         @Path("region_id") regionId: String,
         @Path("realm_id") realmId: Int,
         @Path("profile_id") profileId: String?,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Profile>

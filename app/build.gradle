@@ -4,7 +4,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
-apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
     configurations.all {
@@ -57,13 +56,13 @@ buildscript {
 }
 
 dependencies {
-    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'org.greenrobot:eventbus:3.3.1'
 
     implementation platform('com.google.firebase:firebase-bom:28.2.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
-    implementation 'org.apache.commons:commons-lang3:3.11'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "androidx.preference:preference-ktx:1.2.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -76,36 +75,36 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.0'
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
     implementation 'com.github.discord:OverlappingPanels:0.1.5'
     implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
     implementation "com.google.android.play:core:1.10.3"
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.21"
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21"
     implementation 'androidx.fragment:fragment-ktx:1.5.7'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-    implementation "com.github.bumptech.glide:glide:4.13.2"
+    implementation "com.github.bumptech.glide:glide:4.15.1"
     implementation "com.pixplicity.sharp:sharp:1.1.3@aar"
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'org.jsoup:jsoup:1.13.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
     implementation 'com.github.PierfrancescoSoffritti.android-youtube-player:core:10.0.5'
-    implementation "io.reactivex.rxjava3:rxjava:3.0.8"
+    implementation "io.reactivex.rxjava3:rxjava:3.1.6"
 
     implementation 'com.github.akexorcist:Android-LocalizationActivity:1.2.7'
 
-    implementation 'com.mikepenz:aboutlibraries:8.9.1'
+    implementation 'com.mikepenz:aboutlibraries:10.6.2'
 
-    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.2")
+    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.0")
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     implementation('com.google.apis:google-api-services-oauth2:v2-rev99-1.21.0') {

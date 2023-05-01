@@ -1,7 +1,12 @@
 package com.BlizzardArmory.network
 
 import android.content.Context
-import com.BlizzardArmory.network.services.*
+import com.BlizzardArmory.network.services.APINetworkServices
+import com.BlizzardArmory.network.services.D3NetworkServices
+import com.BlizzardArmory.network.services.GeneralNetworkServices
+import com.BlizzardArmory.network.services.OWNetworkServices
+import com.BlizzardArmory.network.services.Sc2NetworkServices
+import com.BlizzardArmory.network.services.WoWNetworkServices
 import com.BlizzardArmory.util.ConnectionStatus
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
@@ -36,7 +41,7 @@ object RetroClient {
             client.addInterceptor(interceptor)
         }
 
-        client.cache(cache).callTimeout(Duration.ofSeconds(20))
+        client.cache(cache).readTimeout(Duration.ofSeconds(45)).connectTimeout(Duration.ofSeconds(45))
 
         if (cacheTime == 0L) {
             return OkHttpClient.Builder().build()

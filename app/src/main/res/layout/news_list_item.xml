@@ -21,7 +21,7 @@
         android:orientation="vertical"
         android:padding="15dp">
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#888"
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true" />
 
-        </RelativeLayout>
+        </FrameLayout>
 
 
         <TextView

@@ -230,7 +230,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loading_circle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -244,6 +244,10 @@
             android:layout_width="125dp"
             android:layout_height="125dp"
             android:layout_centerInParent="true"
-            app:SpinKit_Color="#fff" />
-    </RelativeLayout>
+            app:SpinKit_Color="#fff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
