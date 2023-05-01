@@ -44,8 +44,11 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
     namespace 'com.BlizzardArmory'
-}
 
+    lintOptions {
+        lintConfig = file("$rootDir/lintConfig.xml")
+    }
+}
 
 buildscript {
     repositories {
