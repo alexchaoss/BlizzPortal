@@ -28,8 +28,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
     }
 
     fun bind(instances: Instances, level: String) {
-        Glide.with(itemView.context).load(NetworkUtils.getWoWAsset("raids/" + findBanner(instances)))
-            .into(banner!!)
+        Glide.with(itemView.context).load(NetworkUtils.getWoWAsset("raids/" + findBanner(instances))).into(banner!!)
         raidName?.text = instances.instance.name
         raidLevel?.text = level
         recyclerView?.apply {
@@ -39,7 +38,7 @@ class EncounterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun findBanner(instances: Instances): String {
         when (instances.instance.id) {
-            0L -> return "aberrus-the-shadowed-crucible-small"
+            1208L -> return "aberrus_the_shadowed_crucible_small"
             1200L -> return "vault_of_the_incarnates_small"
             1195L -> return "sepulcher_of_the_first_ones_small"
             1193L -> return "sanctum_of_domination_small"
