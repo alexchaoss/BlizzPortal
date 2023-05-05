@@ -18,6 +18,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
@@ -129,6 +130,10 @@ class NavigationActivity : LocalizationActivity(),
 
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             handleUncaughtException(thread, throwable)
+        }
+
+        setContent {
+
         }
 
         barBinding = NavigationActivityBarBinding.inflate(layoutInflater)
