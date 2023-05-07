@@ -86,8 +86,7 @@ class D3Fragment : Fragment() {
         battleTag = arguments?.getString("battletag")
         selectedRegion = arguments?.getString("region")
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        viewModel.getBnetParams().value =
-            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         navigationActivity.toggleFavoriteButton(FavoriteState.Shown)
         setObservers()
     }

@@ -31,12 +31,12 @@ class AffixesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val
 
     fun bind(affix: KeystoneAffixes) {
         name?.text = affix.keystone_affixstone_affix.name
-        downloadSpecializations(affix.keystone_affixstone_affix.id)
+        downloadAffixMedia(affix.keystone_affixstone_affix.id)
     }
 
-    private fun downloadSpecializations(id: Int) {
+    private fun downloadAffixMedia(id: Int) {
         CoroutineScope(Dispatchers.Default).launch {
-            val response = RetroClient.getWoWClient(context)
+            val response = RetroClient.getWoWClient(context, cacheTime = 365L)
                 .getMythicKeystoneAffixMedia(id, "static-${NetworkUtils.region}")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

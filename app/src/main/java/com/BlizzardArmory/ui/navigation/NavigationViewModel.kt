@@ -14,11 +14,9 @@ import com.BlizzardArmory.ui.BaseViewModel
 import com.discord.panels.PanelState
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Locale
 
 class NavigationViewModel(application: Application) : BaseViewModel(application) {
 
@@ -141,7 +139,7 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     }
 
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getMedia(
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 365L).getMedia(
             characterClicked.lowercase(Locale.getDefault()),
             characterRealm.lowercase(Locale.getDefault()),
             selectedRegion.lowercase(Locale.getDefault()),

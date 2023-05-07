@@ -52,7 +52,7 @@ class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         }
         downloadMedia(tooltip!!.spellTooltip.spell.id)
         name?.text = tooltip.talent.name
-        rank?.text = "Rank " + talentRank.toString()
+        rank?.text = "Rank $talentRank"
 
         if (tooltip.spellTooltip.powerCost == null) {
             spellCost?.visibility = View.GONE
@@ -65,8 +65,7 @@ class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
 
     private fun downloadMedia(id: Int) {
         CoroutineScope(Dispatchers.Default).launch {
-            val response = RetroClient.getWoWClient(context)
-                .getSpellMedia(id)
+            val response = RetroClient.getWoWClient(context, cacheTime = 365L).getSpellMedia(id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val media = response.body()!!

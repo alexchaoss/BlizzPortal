@@ -2,7 +2,6 @@ package com.BlizzardArmory.ui.warcraft.guild.activity
 
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.guild.Guild
 import com.BlizzardArmory.model.warcraft.guild.activity.ActivitiesInformation
@@ -10,9 +9,6 @@ import com.BlizzardArmory.model.warcraft.guild.media.Media
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 
 class ActivityViewModel(application: Application) : BaseViewModel(application) {
@@ -49,8 +45,8 @@ class ActivityViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun downloadGuildCrest() {
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getGuildCrestBorder(guildSummary.value?.crest?.border?.id!!) }, { guildCrestBorder.value = it.body() })
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getGuildCrestEmblem(guildSummary.value?.crest?.emblem?.id!!) }, { guildCrestEmblem.value = it.body() })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 365L).getGuildCrestBorder(guildSummary.value?.crest?.border?.id!!) }, { guildCrestBorder.value = it.body() })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 365L).getGuildCrestEmblem(guildSummary.value?.crest?.emblem?.id!!) }, { guildCrestEmblem.value = it.body() })
     }
 
     fun downloadGuildActivity(realm: String, name: String, region: String) {

@@ -1,4 +1,4 @@
-package com.BlizzardArmory.ui.warcraft.character.progress
+package com.BlizzardArmory.ui.warcraft.character.raids
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -145,4 +145,7 @@
     <string name="connection_guide">Guía de conexión</string>
     <string name="overwatch_league">Overwatch League</string>
     <string name="talents">Talents</string>
+    <string name="raids">Raids</string>
+    <string name="mythic">Mythic+</string>
+    <string name="view_party">View Party</string>
 </resources>

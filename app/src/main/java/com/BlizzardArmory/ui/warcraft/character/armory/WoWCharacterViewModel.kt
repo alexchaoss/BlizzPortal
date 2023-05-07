@@ -3,7 +3,6 @@ package com.BlizzardArmory.ui.warcraft.character.armory
 import android.app.Application
 import android.graphics.Color
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
@@ -20,7 +19,7 @@ import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
+import java.util.Locale
 
 class WoWCharacterViewModel(application: Application) : BaseViewModel(application) {
 
@@ -106,9 +105,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-        }, {
-            showErrorDialog.value = true
-        }, { media.value = it.body() })
+        }, { media.value = it.body() }, {showErrorDialog.value = true} )
     }
 
     fun downloadIcons(equippedItem: EquippedItem) {
@@ -118,7 +115,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
         var uri = replaceUriParameter(Uri.parse(equippedItem.media.key.href), "namespace", "static-${region.lowercase(Locale.getDefault())}")
         uri = uri?.buildUpon()?.path(uri.path?.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL))?.build()
 
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getDynamicEquipmentMedia(uri?.path!!) },
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 365L).getDynamicEquipmentMedia(uri?.path!!) },
             {
                 val mediaItem = it.body()!!
                 imageURLsTemp[equippedItem.slot.type] = mediaItem.assets[0].value

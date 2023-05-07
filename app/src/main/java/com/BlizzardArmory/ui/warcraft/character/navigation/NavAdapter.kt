@@ -8,8 +8,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.BlizzardArmory.ui.warcraft.character.achievements.AchievementsFragment
 import com.BlizzardArmory.ui.warcraft.character.armory.WoWCharacterFragment
-import com.BlizzardArmory.ui.warcraft.character.progress.ProgressFragment
+import com.BlizzardArmory.ui.warcraft.character.mythicplus.MythicPlusFragment
 import com.BlizzardArmory.ui.warcraft.character.pvp.PvPFragment
+import com.BlizzardArmory.ui.warcraft.character.raids.RaidsFragment
 import com.BlizzardArmory.ui.warcraft.character.reputations.ReputationsFragment
 import com.BlizzardArmory.ui.warcraft.character.talents.TalentsFragment
 
@@ -38,16 +39,21 @@ class NavAdapter(fm: FragmentManager, lifecycle: Lifecycle, private var totalTab
                 return reputationsFragment
             }
             3 -> {
-                val progressFragment = ProgressFragment()
-                progressFragment.arguments = bundle
-                return progressFragment
+                val raidsFragment = RaidsFragment()
+                raidsFragment.arguments = bundle
+                return raidsFragment
             }
             4 -> {
+                val mythicPlusFragment = MythicPlusFragment()
+                mythicPlusFragment.arguments = bundle
+                return mythicPlusFragment
+            }
+            5 -> {
                 val pvpFragment = PvPFragment()
                 pvpFragment.arguments = bundle
                 return pvpFragment
             }
-            5 -> {
+            6 -> {
                 val categoriesFragment = AchievementsFragment()
                 categoriesFragment.arguments = bundle
                 return categoriesFragment

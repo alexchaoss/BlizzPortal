@@ -3,7 +3,7 @@ package com.BlizzardArmory.network
 import android.net.Uri
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.util.Version
-import java.util.*
+import java.util.Locale
 
 /**
  * The type Url constants.
@@ -70,6 +70,8 @@ object NetworkUtils {
      */
     const val WOW_ASSETS = "https://alexchaoss.github.io/BnetAuthorize/img/wow/image.jpg"
 
+    const val WOW_DUNGEON_ASSETS = "https://render.worldofwarcraft.com/us/zones/image.jpg"
+
     const val WOW_SERVER = "https://blizzard-armory-server.herokuapp.com/"
 
     /**
@@ -129,6 +131,10 @@ object NetworkUtils {
 
     fun getWoWAsset(name: String): String {
         return WOW_ASSETS.replace("image", name)
+    }
+
+    fun getWoWDungeonAsset(name: String): String {
+        return WOW_DUNGEON_ASSETS.replace("image", name)
     }
 
     /*

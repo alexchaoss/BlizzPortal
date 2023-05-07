@@ -1,7 +1,6 @@
-package com.BlizzardArmory.ui.warcraft.character.progress
+package com.BlizzardArmory.ui.warcraft.character.raids
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.encounters.EncountersInformation
@@ -9,14 +8,11 @@ import com.BlizzardArmory.model.warcraft.encounters.Expansions
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
+import java.util.Locale
 
-class ProgressViewModel(application: Application) : BaseViewModel(application) {
+class RaidsViewModel(application: Application) : BaseViewModel(application) {
 
     lateinit var character: String
     lateinit var realm: String
@@ -34,8 +30,8 @@ class ProgressViewModel(application: Application) : BaseViewModel(application) {
             realm.lowercase(Locale.getDefault()),
             region.lowercase(Locale.getDefault()),
         ) }, { encounters.value = it.body() }, onComplete = {
-            if (!EventBus.getDefault().isRegistered(this@ProgressViewModel)) {
-                EventBus.getDefault().register(this@ProgressViewModel)
+            if (!EventBus.getDefault().isRegistered(this@RaidsViewModel)) {
+                EventBus.getDefault().register(this@RaidsViewModel)
             }
         })
     }

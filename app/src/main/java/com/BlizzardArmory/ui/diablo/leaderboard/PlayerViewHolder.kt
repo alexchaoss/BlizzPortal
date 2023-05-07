@@ -17,6 +17,7 @@ import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.diablo.account.D3Fragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
+import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 
@@ -26,6 +27,7 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
 
     var btag: TextView? = null
     var icon: ImageView? = null
+    var dialog: DialogPrompt? = null
 
     init {
         btag = itemView.findViewById(R.id.btag)
@@ -48,7 +50,7 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
 
         val battlenetOAuth2Params: BattlenetOAuth2Params? = (context as NavigationActivity).intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
         if (playerName != "unavailable") {
-            onClickCharacter(player, region, battlenetOAuth2Params!!)
+            onClickCharacter(player, region, battlenetOAuth2Params)
         }
     }
 
@@ -65,18 +67,37 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         }
     }
 
-    private fun onClickCharacter(player: Player, region: String, battlenetOAuth2Params: BattlenetOAuth2Params) {
+    private fun onClickCharacter(player: Player, region: String, battlenetOAuth2Params: BattlenetOAuth2Params?) {
         itemView.setOnClickListener {
-            val fragment: Fragment = D3Fragment()
-            val bundle = Bundle()
-            bundle.putString("battletag", player.data.find { it.id == "HeroBattleTag" }?.string)
-            bundle.putString("region", region)
-            bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
-            fragment.arguments = bundle
-            (context as NavigationActivity).supportFragmentManager.beginTransaction()
-                .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
-                .addToBackStack(FragmentTag.D3FRAGMENT.name).commit()
-            context.supportFragmentManager.executePendingTransactions()
+            if (battlenetOAuth2Params == null) {
+                dialog = DialogPrompt(context)
+                dialog?.let {
+                    it.addTitle("Error", 20f, "title")
+                        .addMessage("You need to be logged in to access profiles", 18f, "message")
+                        .addButtons(
+                            dialog!!.Button(
+                                "Close",
+                                18f,
+                                {
+                                    dialog!!.dismiss()
+                                    dialog = null
+                                },
+                                "close"
+                            )
+                        ).show()
+                }
+            } else {
+                val fragment: Fragment = D3Fragment()
+                val bundle = Bundle()
+                bundle.putString("battletag", player.data.find { it.id == "HeroBattleTag" }?.string)
+                bundle.putString("region", region)
+                bundle.putParcelable(BattlenetConstants.BUNDLE_BNPARAMS, battlenetOAuth2Params)
+                fragment.arguments = bundle
+                (context as NavigationActivity).supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
+                    .addToBackStack(FragmentTag.D3FRAGMENT.name).commit()
+                context.supportFragmentManager.executePendingTransactions()
+            }
         }
     }
 

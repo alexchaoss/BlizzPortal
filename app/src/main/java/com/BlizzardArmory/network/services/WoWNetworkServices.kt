@@ -20,6 +20,8 @@ import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.ind
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Leaderboard
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.Season
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.season.index.SeasonsIndex
+import com.BlizzardArmory.model.warcraft.mythicplusprofile.index.MythicPlusProfileIndex
+import com.BlizzardArmory.model.warcraft.mythicplusprofile.season.MythicPlusProfileSeason
 import com.BlizzardArmory.model.warcraft.mythicraid.MythicRaidLeaderboard
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
 import com.BlizzardArmory.model.warcraft.pvp.leaderboards.season.SeasonIndex
@@ -325,4 +327,21 @@ interface WoWNetworkServices {
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<CharacterSoulbinds>
+
+    @GET("profile/wow/character/{realm}/{character}/mythic-keystone-profile")
+    suspend fun getMythicKeystoneProfileIndex(
+        @Path("character", encoded = true) character: String,
+        @Path("realm", encoded = true) realm: String,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<MythicPlusProfileIndex>
+
+    @GET("/profile/wow/character/{realm}/{character}/mythic-keystone-profile/season/{seasonId}")
+    suspend fun getMythicKeystoneProfileSeason(
+        @Path("seasonId") seasonId: Int,
+        @Path("character", encoded = true) character: String,
+        @Path("realm", encoded = true) realm: String,
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<MythicPlusProfileSeason>
 }

@@ -18,7 +18,7 @@ interface D3NetworkServices {
     @GET("d3/profile/{battletag}/")
     suspend fun getD3Profile(
         @Path("battletag") battletag: String?,
-        @Query("token") accessToken: String,
+        @Query("token") accessToken: String?,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<AccountInformation>
@@ -27,7 +27,7 @@ interface D3NetworkServices {
     suspend fun getD3Hero(
         @Path("battletag") battletag: String?,
         @Path("id") id: Long,
-        @Query("token") accessToken: String,
+        @Query("token") accessToken: String?,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<CharacterInformation>
@@ -36,7 +36,6 @@ interface D3NetworkServices {
     suspend fun getHeroItems(
         @Path("battletag") battletag: String?,
         @Path("id") id: Long,
-        @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Items>

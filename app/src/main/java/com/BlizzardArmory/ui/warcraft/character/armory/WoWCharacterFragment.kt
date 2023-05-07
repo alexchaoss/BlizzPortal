@@ -36,6 +36,7 @@ import com.BlizzardArmory.ui.warcraft.guild.activity.ActivityFragment
 import com.BlizzardArmory.ui.warcraft.guild.navigation.GuildNavFragment
 import com.BlizzardArmory.util.DialogPrompt
 import com.BlizzardArmory.util.WoWClassColor
+import com.BlizzardArmory.util.WoWClassName
 import com.BlizzardArmory.util.events.ClassEvent
 import com.BlizzardArmory.util.events.FactionEvent
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -82,8 +83,7 @@ class WoWCharacterFragment : Fragment() {
         viewModel.realm = bundle.getString("realm")!!
         viewModel.character = bundle.getString("character")!!
         if (Gson().fromJson(bundle.getString("media"), Media::class.java) != null) {
-            viewModel.getMedia().value =
-                Gson().fromJson(bundle.getString("media"), Media::class.java)
+            viewModel.getMedia().value = Gson().fromJson(bundle.getString("media"), Media::class.java)
         } else {
             viewModel.getMedia().value = null
         }
@@ -147,7 +147,6 @@ class WoWCharacterFragment : Fragment() {
         }
 
         viewModel.getCharacterSummary().observe(viewLifecycleOwner) {
-            setBackgroundColor()
             binding.characterName.text = it.name
             binding.characterName.setTextColor(Color.parseColor(WoWClassColor.getClassColor(it.characterClass.id)))
             if (it.guild == null) {
@@ -173,15 +172,17 @@ class WoWCharacterFragment : Fragment() {
             manageFavorite(it)
             EventBus.getDefault().postSticky(FactionEvent(it.faction.type.lowercase(Locale.getDefault())))
             EventBus.getDefault().postSticky(ClassEvent(it.characterClass.id))
+            WoWClassName.setBackground(binding.itemFragment, binding.background, requireContext(), it.characterClass.id)
             setTopCharacterStrings(it)
             viewModel.downloadEquipment()
         }
 
         viewModel.getMedia().observe(viewLifecycleOwner) { media ->
             if (media != null) {
-                Glide.with(this).load(media.assets?.first { it.key == "main" }?.value)
-                    .placeholder(R.color.colorPrimaryDark).override(1080, 1440).centerCrop()
-                    .into(binding.background)
+                Glide.with(this).load(media.assets?.first { it.key.contains("main") }?.value)
+                    .placeholder(R.color.colorPrimaryDark)
+                    .override(1080, 1440)
+                    .into(binding.characterAsset)
             } else {
                 viewModel.downloadBackground()
             }
@@ -345,51 +346,6 @@ class WoWCharacterFragment : Fragment() {
             }
         }
     }
-
-    private fun setBackgroundColor() {
-        when (viewModel.getCharacterSummary().value!!.characterClass.id) {
-            6 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#080812"))
-            }
-            12 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#000900"))
-            }
-            11 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#04100a"))
-            }
-            3 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#0f091b"))
-            }
-            8 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#110617"))
-            }
-            10 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#040b17"))
-            }
-            2 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#13040a"))
-            }
-            5 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#15060e"))
-            }
-            4 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#160720"))
-            }
-            7 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#050414"))
-            }
-            9 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#080516"))
-            }
-            1 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#1a0407"))
-            }
-            13 -> {
-                binding.itemFragment.setBackgroundColor(Color.parseColor("#07060C"))
-            }
-        }
-    }
-
 
     private fun setIcon(equippedItem: EquippedItem, item: Drawable?) {
         if (item != null) {

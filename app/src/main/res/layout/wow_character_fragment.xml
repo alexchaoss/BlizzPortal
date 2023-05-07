@@ -18,14 +18,27 @@
 
             <ImageView
                 android:id="@+id/background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/background_character"
+                android:adjustViewBounds="true"
+                app:layout_constrainedHeight="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/character_asset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
+                app:layout_constrainedHeight="false"
                 android:contentDescription="@string/background_character"
                 app:layout_constraintEnd_toStartOf="parent"
                 app:layout_constraintStart_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toTopOf="@+id/stats_layout" />
 
             <TextView
                 android:id="@+id/character_name"

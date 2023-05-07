@@ -8,12 +8,9 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
+import java.util.Locale
 
 class D3ViewModel(application: Application) : BaseViewModel(application) {
 
@@ -29,7 +26,7 @@ class D3ViewModel(application: Application) : BaseViewModel(application) {
         this.battleTag = battleTag
         this.selectedRegion = selectedRegion
         NetworkUtils.loading = true
-        executeAPICall({ RetroClient.getD3Client(getApplication()).getD3Profile(battleTag, battlenetOAuth2Helper!!.accessToken, selectedRegion.lowercase(Locale.getDefault())) },
+        executeAPICall({ RetroClient.getD3Client(getApplication()).getD3Profile(battleTag, battlenetOAuth2Helper?.accessToken, selectedRegion.lowercase(Locale.getDefault())) },
             {
                 profile.value = it.body()
                 sortHeroes()

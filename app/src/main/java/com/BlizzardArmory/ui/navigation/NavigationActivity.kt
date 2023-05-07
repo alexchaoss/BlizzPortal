@@ -8,10 +8,8 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
-import android.os.StrictMode
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.AutoCompleteTextView
@@ -23,7 +21,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.NavigationActivityBarBinding
 import com.BlizzardArmory.databinding.NavigationActivityBinding
@@ -78,7 +75,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
+import java.util.Locale
 
 class NavigationActivity : LocalizationActivity(),
     PanelsChildGestureRegionObserver.GestureRegionsListener {
@@ -112,27 +109,13 @@ class NavigationActivity : LocalizationActivity(),
 
         installSplashScreen()
 
-        val content: View = findViewById(android.R.id.content)
-
-        content.viewTreeObserver.addOnPreDrawListener(
-            object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    return if (viewModel.getIsReady().value == true) {
-                        content.viewTreeObserver.removeOnPreDrawListener(this)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
-        )
-
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             handleUncaughtException(thread, throwable)
         }
 
         barBinding = NavigationActivityBarBinding.inflate(layoutInflater)
         binding = NavigationActivityBinding.inflate(layoutInflater)
+        binding.loadingCircle.visibility = View.VISIBLE
     }
 
     private fun initActivity() {
@@ -407,6 +390,7 @@ class NavigationActivity : LocalizationActivity(),
                 viewModel.getConnectedRealms()
                 viewModel.initWoWServer()
                 initActivity()
+                binding.loadingCircle.visibility = View.GONE
             }
         }
 
@@ -644,6 +628,9 @@ class NavigationActivity : LocalizationActivity(),
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     fun menuItemClickedReceived(menuItem: MenuItemEvent) {
+        if (viewModel.getIsReady().value != true) {
+            return
+        }
         OauthFlowStarter.lastOpenedFragmentNeedingOAuth = ""
         val fragment: Fragment
         val searchDialog = DialogPrompt(this)

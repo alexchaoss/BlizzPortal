@@ -22,11 +22,16 @@ import com.BlizzardArmory.util.state.FragmentTag
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
+import java.util.Locale
 
 
 class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -81,7 +86,7 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun downloadMedia() {
         CoroutineScope(Dispatchers.IO).launch {
-            val response = RetroClient.getWoWClient(context)
+            val response = RetroClient.getWoWClient(context, cacheTime = 365L)
                 .getMedia(character?.name?.lowercase(Locale.getDefault())!!, character?.realm?.slug!!)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
