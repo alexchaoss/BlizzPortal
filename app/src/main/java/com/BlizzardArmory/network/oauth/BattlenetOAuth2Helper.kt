@@ -21,7 +21,7 @@ class BattlenetOAuth2Helper(private val oauth2Params: BattlenetOAuth2Params) {
             .setScopes(convertScopesToString(oauth2Params.scope)).build()
 
     fun storeAccessToken(token: TokenResponse) {
-        Log.i("TOKEN", "$token")
+        Log.d("TOKEN", "$token")
         flow.createAndStoreCredential(token, oauth2Params.userId)
     }
 

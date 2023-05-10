@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.diablo.character.items
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Off hand.
  */
+@Keep
 data class OffHand(
 
     @SerializedName("id")

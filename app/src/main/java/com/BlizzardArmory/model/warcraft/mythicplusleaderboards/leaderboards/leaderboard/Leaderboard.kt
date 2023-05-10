@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Leaderboard(
 
     @SerializedName("_links") val _links: Links,

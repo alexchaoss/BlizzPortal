@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.covenant.techtalent
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class TechTalentWithIcon(
 
     @SerializedName("id") val id: Int,

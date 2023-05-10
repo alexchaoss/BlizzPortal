@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowGuildRosterBinding
 import com.BlizzardArmory.model.warcraft.guild.roster.Members
 import com.BlizzardArmory.util.events.FactionEvent
@@ -61,7 +60,7 @@ class RosterFragment : Fragment(), SearchView.OnQueryTextListener {
 
         binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
-        val textView: TextView = binding.searchView.findViewById(R.id.search_src_text)
+        val textView: TextView = binding.searchView.findViewById(com.pierfrancescosoffritti.androidyoutubeplayer.R.id.search_src_text)
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
 

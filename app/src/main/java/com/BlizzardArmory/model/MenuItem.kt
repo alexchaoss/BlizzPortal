@@ -1,5 +1,8 @@
 package com.BlizzardArmory.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class MenuItem(
     val header: Boolean,
     val parent: String,

@@ -1,9 +1,11 @@
 package com.BlizzardArmory.model.diablo.data.common
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Leaderboard(
 
     @SerializedName("_links") val Links: Links,

@@ -14,8 +14,8 @@ import com.BlizzardArmory.model.warcraft.pvp.leaderboards.Entries
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
+import com.BlizzardArmory.util.state.FragmentTag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +71,7 @@ class LeaderboardViewHolder(inflater: LayoutInflater, parent: ViewGroup, private
                     characterSummary = response.body()!!
                     player?.setTextColor(Color.parseColor(WoWClassColor.getClassColor(characterSummary.characterClass.id)))
                 } else {
-                    Log.i("Error", "Couldn't download character summary")
+                    Log.d("Error", "Couldn't download character summary")
                 }
             }
         }

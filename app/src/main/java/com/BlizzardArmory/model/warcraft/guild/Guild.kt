@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.warcraft.guild
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Faction
 import com.BlizzardArmory.model.common.Links
 import com.BlizzardArmory.model.common.Realm
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Guild(
 
     @SerializedName("_links") val links: Links,

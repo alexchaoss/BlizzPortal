@@ -1,9 +1,11 @@
 package com.BlizzardArmory.model.warcraft.covenant.techtalenttree
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class TechTalentTree(
 
     @SerializedName("_links") val links: Links,

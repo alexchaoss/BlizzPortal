@@ -1,10 +1,12 @@
 package com.BlizzardArmory.model.warcraft.mythicplusprofile.index
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.BlizzardArmory.model.warcraft.mythicplusprofile.Character
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class MythicPlusProfileIndex(
     @SerializedName("_links") var Links: Links,
     @SerializedName("current_period") var currentPeriod: CurrentPeriod,

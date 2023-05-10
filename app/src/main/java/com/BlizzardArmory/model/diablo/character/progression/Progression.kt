@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.diablo.character.progression
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Progression.
  */
+@Keep
 data class Progression(
 
     @SerializedName("act1")

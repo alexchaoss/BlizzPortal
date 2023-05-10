@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.diablo.character.follower
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Followers.
  */
+@Keep
 data class Followers(
 
     @SerializedName("templar")

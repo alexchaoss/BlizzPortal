@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.diablo.character.follower
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.diablo.character.ItemsCharacter
 import com.BlizzardArmory.model.diablo.character.Stats
 import com.google.gson.annotations.SerializedName
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Scoundrel.
  */
+@Keep
 data class Scoundrel(
 
     @SerializedName("slug")

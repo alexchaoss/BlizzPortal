@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.starcraft.league
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Key(
 
     @SerializedName("league_id") val league_id: Int,

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.warcraft.charactersummary
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Key
 import com.BlizzardArmory.model.common.Realm
 import com.google.gson.annotations.SerializedName
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Guild.
  */
+@Keep
 data class Guild(
 
     @SerializedName("key")

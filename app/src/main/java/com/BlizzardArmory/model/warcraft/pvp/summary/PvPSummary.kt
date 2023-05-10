@@ -1,10 +1,12 @@
 package com.BlizzardArmory.model.warcraft.pvp.summary
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Character
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class PvPSummary(
 
     @SerializedName("_links") val links: Links,

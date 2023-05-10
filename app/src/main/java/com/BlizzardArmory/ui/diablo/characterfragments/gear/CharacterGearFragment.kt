@@ -270,7 +270,7 @@ class CharacterGearFragment : Fragment() {
                     setSecondaryStats(secondaryStatsInfo)
                     setGems(gemsInfo)
                 } catch (e: Exception) {
-                    Log.i("Gems", "no gems")
+                    Log.d("Gems", "no gems")
                 }
                 setSetTextAndDescription(item)
                 setTransmog(item)
@@ -300,7 +300,7 @@ class CharacterGearFragment : Fragment() {
             }
             binding.itemStats.addView(misctext, layoutParamsStats)
         } catch (e: Exception) {
-            Log.i("Misc", "no misc")
+            Log.d("Misc", "no misc")
         }
     }
 
@@ -311,7 +311,7 @@ class CharacterGearFragment : Fragment() {
                 binding.itemStats.addView(flavortext, layoutParamsStats)
             }
         } catch (e: Exception) {
-            Log.i("Flavor Text", "no flavor text")
+            Log.d("Flavor Text", "no flavor text")
         }
     }
 
@@ -321,7 +321,7 @@ class CharacterGearFragment : Fragment() {
                     + selectColor(item.transmog?.displayColor!!, isEtheral(item.typeName!!)) + "\">" + item.transmog?.name + "</font><br>", HtmlCompat.FROM_HTML_MODE_LEGACY)
             binding.itemStats.addView(transmog, layoutParamsStats)
         } catch (e: Exception) {
-            Log.i("Transmog", "no transmog")
+            Log.d("Transmog", "no transmog")
         }
     }
 
@@ -345,7 +345,7 @@ class CharacterGearFragment : Fragment() {
             }, null)
             binding.itemStats.addView(set, layoutParamsStats)
         } catch (e: Exception) {
-            Log.i("Set", "no set")
+            Log.d("Set", "no set")
         }
     }
 
@@ -421,7 +421,7 @@ class CharacterGearFragment : Fragment() {
                 binding.slot.text = item.slots
             }
         } catch (e: Exception) {
-            Log.i("Type", "no type")
+            Log.d("Type", "no type")
         }
     }
 
@@ -432,7 +432,7 @@ class CharacterGearFragment : Fragment() {
                 binding.armorDamage.addView(armor, layoutParamsStats)
             }
         } catch (e: Exception) {
-            Log.i("Armor", "no armor")
+            Log.d("Armor", "no armor")
         }
     }
 
@@ -456,7 +456,7 @@ class CharacterGearFragment : Fragment() {
                 binding.itemName.textSize = 18f
             }
         } catch (e: Exception) {
-            Log.i("Name", "no name")
+            Log.d("Name", "no name")
         }
     }
 

@@ -76,7 +76,7 @@ class MythicPlusFragment : Fragment() {
     private fun setObservers() {
         viewModel.getIndex().observe(viewLifecycleOwner) {index ->
             val seasonId = index.seasons.maxByOrNull { season -> season.id as Int }?.id
-            Log.i("SEASON ID", seasonId.toString())
+            Log.d("SEASON ID", seasonId.toString())
             seasonId?.let { viewModel.downloadMythicKeystoneSeason(it) }
             val color = Color.argb(255, index.currentMythicRating.color.r, index.currentMythicRating.color.g, index.currentMythicRating.color.b)
             binding.mplusrating.setTextColor(color)

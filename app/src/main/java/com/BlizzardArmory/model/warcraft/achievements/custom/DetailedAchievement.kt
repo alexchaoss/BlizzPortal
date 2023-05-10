@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.achievements.custom
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class DetailedAchievement(
 
     @SerializedName("id") val id: Long,

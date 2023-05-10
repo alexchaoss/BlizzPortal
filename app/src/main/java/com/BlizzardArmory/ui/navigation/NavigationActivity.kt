@@ -458,7 +458,7 @@ class NavigationActivity : LocalizationActivity(),
         }
 
         viewModel.getWowConnectedRealms().observe(this) {
-            Log.i("TEST REALMS", it.toString())
+            Log.d("TEST REALMS", it.toString())
             realms = it
         }
 

@@ -38,7 +38,7 @@ class AffixViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val c
                     Glide.with(itemView).load(response.body()?.assets!![0].value).centerCrop()
                         .into(icon!!)
                 } else {
-                    Log.i("Asset Affix", "Error downloading asset")
+                    Log.d("Asset Affix", "Error downloading asset")
                 }
             }
         }

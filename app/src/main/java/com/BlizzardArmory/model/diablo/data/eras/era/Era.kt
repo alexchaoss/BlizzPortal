@@ -1,10 +1,12 @@
 package com.BlizzardArmory.model.diablo.data.eras.era
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.BlizzardArmory.model.diablo.data.common.LeaderboardInfo
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Era(
 
     @SerializedName("_links") val links: Links,

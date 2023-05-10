@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.realm.connected
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class ConnectedRealm(
 
     @SerializedName("realms") val realms: List<Realms>,

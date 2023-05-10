@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.mythicplusprofile
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class BestRuns(
     @SerializedName("completed_timestamp") var completedTimestamp: Long,
     @SerializedName("duration") var duration: Long,

@@ -9,8 +9,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -36,7 +41,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.pixplicity.sharp.Sharp
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -261,7 +266,7 @@ class OWFragment : Fragment() {
                 convertView: View?,
                 parent: ViewGroup
             ): View {
-                Log.i("TEST", "$position, $convertView, $parent")
+                Log.d("TEST", "$position, $convertView, $parent")
                 try {
                     val view = super.getDropDownView(position, convertView, parent)
                     val tv = view as TextView

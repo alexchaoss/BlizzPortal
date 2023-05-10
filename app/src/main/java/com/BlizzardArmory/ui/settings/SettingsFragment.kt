@@ -63,7 +63,7 @@ class SettingsFragment : Fragment() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 
         val languageAdapter = setAdapater(languageList)
-        languageAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        languageAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         binding.spinnerLanguage.adapter = languageAdapter
         spinnerSelector(binding.spinnerLanguage)
 

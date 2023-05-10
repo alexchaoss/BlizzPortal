@@ -1,7 +1,9 @@
 package com.BlizzardArmory.model.warcraft.specialization
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Specialization(
 
     @SerializedName("id") val id: Int,

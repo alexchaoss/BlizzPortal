@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.diablo.character
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.diablo.character.items.*
 import com.google.gson.annotations.SerializedName
 
@@ -7,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Items character.
  */
+@Keep
 data class ItemsCharacter(
 
     @SerializedName("head")

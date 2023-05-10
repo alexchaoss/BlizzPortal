@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.diablo.items
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Gem.
  */
+@Keep
 data class Gem(
 
     @SerializedName("item")

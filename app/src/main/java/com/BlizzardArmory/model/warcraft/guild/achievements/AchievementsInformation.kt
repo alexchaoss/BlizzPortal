@@ -1,9 +1,11 @@
 package com.BlizzardArmory.model.warcraft.guild.achievements
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class AchievementsInformation(
 
     @SerializedName("_links") val _links: Links,

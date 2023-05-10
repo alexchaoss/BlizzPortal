@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.overwatch.account
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Assists hero.
  */
+@Keep
 data class AssistsHero(
 
     @SerializedName("defensiveAssists")

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.overwatch.account
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
@@ -9,6 +10,7 @@ import java.util.*
  * The type Game.
  */
 
+@Keep
 data class Game(
 
     @SerializedName("gamesWon")

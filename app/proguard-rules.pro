@@ -6,6 +6,8 @@
 # For using GSON @Expose annotation
 -keepattributes *Annotation*
 
+-keepattributes SourceFile,LineNumberTable
+
 # Gson specific classes
 -dontwarn sun.misc.**
 -dontwarn org.bouncycastle.jsse.BCSSLSocket

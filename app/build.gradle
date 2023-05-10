@@ -14,21 +14,24 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 137
-        versionName "5.2.6"
+        versionCode 139
+        versionName "5.3.1"
         multiDexEnabled true
+        signingConfig signingConfigs.debug
     }
     buildTypes {
         release {
-            debuggable true
-            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
         }
-//        debug {
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//        }
+        stage {
+            minifyEnabled true
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
     bundle {
         language {
@@ -78,7 +81,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -87,7 +90,6 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
     implementation "com.google.android.play:core:1.10.3"
-    implementation 'com.google.android.material:material:1.8.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21"
     implementation 'androidx.fragment:fragment-ktx:1.5.7'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"

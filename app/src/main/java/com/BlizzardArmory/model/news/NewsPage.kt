@@ -1,5 +1,8 @@
 package com.BlizzardArmory.model.news
 
+import androidx.annotation.Keep
+
+@Keep
 data class NewsPage(
     val game: String,
     val title: String,

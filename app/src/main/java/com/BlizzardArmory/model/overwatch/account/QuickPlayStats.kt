@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.overwatch.account
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Quick play stats.
  */
+@Keep
 data class QuickPlayStats(
 
     @SerializedName("eliminationsAvg")

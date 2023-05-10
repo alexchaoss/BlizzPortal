@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.warcraft.account
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Self
 import com.google.gson.annotations.SerializedName
 
@@ -7,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Links.
  */
+@Keep
 data class Links(
 
     @SerializedName("self")

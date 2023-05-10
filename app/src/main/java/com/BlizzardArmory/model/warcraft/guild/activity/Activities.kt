@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.guild.activity
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Activities(
 
     @SerializedName("character_achievement") val characterAchievement: CharacterAchievement,

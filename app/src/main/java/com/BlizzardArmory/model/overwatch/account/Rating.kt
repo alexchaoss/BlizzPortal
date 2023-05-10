@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.overwatch.account
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Rating.
  */
+@Keep
 data class Rating(
 
     @SerializedName("level")

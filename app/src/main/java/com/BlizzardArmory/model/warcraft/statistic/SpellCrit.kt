@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.warcraft.statistic
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Spell crit.
  */
+@Keep
 data class SpellCrit(
 
     @SerializedName("rating")

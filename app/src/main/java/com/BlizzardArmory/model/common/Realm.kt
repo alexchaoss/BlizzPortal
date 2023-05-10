@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.common
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Realm.
  */
+@Keep
 data class Realm(
 
     @SerializedName("key")

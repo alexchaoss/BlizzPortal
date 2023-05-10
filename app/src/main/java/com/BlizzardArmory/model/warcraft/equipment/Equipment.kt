@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.warcraft.equipment
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Character
 import com.BlizzardArmory.model.common.Links
 import com.google.gson.annotations.SerializedName
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Equipment.
  */
+@Keep
 data class Equipment(
 
     @SerializedName("_links")

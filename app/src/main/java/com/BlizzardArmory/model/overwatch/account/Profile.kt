@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.overwatch.account
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.overwatch.account.competitive.CompetitiveStats
 import com.BlizzardArmory.model.overwatch.account.quickplay.QuickPlayStats
 import com.google.gson.annotations.SerializedName
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Profile.
  */
+@Keep
 data class Profile(
     @SerializedName("icon")
     var icon: String,

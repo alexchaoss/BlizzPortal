@@ -1,10 +1,12 @@
 package com.BlizzardArmory.model.warcraft.covenant.covenant
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.BlizzardArmory.model.common.Media
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Covenant(
 
     @SerializedName("_links") val links: Links,

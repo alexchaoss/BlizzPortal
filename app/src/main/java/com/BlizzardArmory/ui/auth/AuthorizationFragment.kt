@@ -50,7 +50,7 @@ class AuthorizationFragment : Fragment() {
         super.onCreate(savedInstanceState)
         navigationActivity = (requireActivity() as NavigationActivity)
         visibility = arguments?.getInt("visible")!!
-        Log.i(BattlenetConstants.TAG, "Starting task to retrieve request token")
+        Log.d(BattlenetConstants.TAG, "Starting task to retrieve request token")
         setOberservers()
         viewModel.getBnetParams().value = if (Build.VERSION.SDK_INT >= 33) {
             arguments?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS, BattlenetOAuth2Params::class.java)
@@ -62,7 +62,7 @@ class AuthorizationFragment : Fragment() {
     private fun initWebView() {
         binding.webview.settings.javaScriptEnabled = true
         val authorizationUrl = viewModel.battlenetOAuth2Helper!!.authorizationUrl
-        Log.i(BattlenetConstants.TAG, "Using authorizationUrl = $authorizationUrl")
+        Log.d(BattlenetConstants.TAG, "Using authorizationUrl = $authorizationUrl")
         binding.webview.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 Log.d(BattlenetConstants.TAG, "onPageFinished : $url handled = ${viewModel.isHandled()}")
@@ -96,7 +96,7 @@ class AuthorizationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.i(BattlenetConstants.TAG, "onResume called with ${viewModel.hasLoggedIn().value!!}")
+        Log.d(BattlenetConstants.TAG, "onResume called with ${viewModel.hasLoggedIn().value!!}")
         if (viewModel.hasLoggedIn().value!!) {
             activity?.supportFragmentManager?.popBackStack()
         }
@@ -110,7 +110,7 @@ class AuthorizationFragment : Fragment() {
                 Snackbar.LENGTH_SHORT
             ).show()
         } else {
-            Log.i("Singed In", "Closing auth fragment")
+            Log.d("Singed In", "Closing auth fragment")
         }
         navigationActivity.intent.putExtra(
             BattlenetConstants.BUNDLE_BNPARAMS,

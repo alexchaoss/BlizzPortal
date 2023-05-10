@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.covenant.covenant.custom
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class CovenantSpells(
 
     @SerializedName("covenant_id") val covenant_id: Int,

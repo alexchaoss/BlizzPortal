@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.pvp.leaderboards
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.warcraft.mythicraid.Faction
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Entries(
 
     @SerializedName("character") val character: Character,

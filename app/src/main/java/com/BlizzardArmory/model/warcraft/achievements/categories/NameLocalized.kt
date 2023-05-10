@@ -1,9 +1,11 @@
 package com.BlizzardArmory.model.warcraft.achievements.categories
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class NameLocalized(
     @SerializedName("de_DE")
     val deDE: String,

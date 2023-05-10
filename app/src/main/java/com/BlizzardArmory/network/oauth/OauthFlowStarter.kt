@@ -19,7 +19,7 @@ object OauthFlowStarter {
         visible: Int
     ) {
         started = true
-        Log.i("OAuth2", "START OAUTH")
+        Log.d("OAuth2", "START OAUTH")
         val fragment = AuthorizationFragment()
         if (bundle == null) {
             bundle = Bundle()

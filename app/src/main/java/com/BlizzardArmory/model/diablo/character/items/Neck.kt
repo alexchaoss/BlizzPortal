@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.diablo.character.items
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 import org.apache.commons.lang3.builder.ToStringBuilder

@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.diablo.character.skills
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Rune.
  */
+@Keep
 data class Rune(
 
     @SerializedName("slug")

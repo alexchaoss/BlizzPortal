@@ -119,7 +119,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
         binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
-        val textView: TextView = binding.searchView.findViewById(R.id.search_src_text)
+        val textView: TextView = binding.searchView.findViewById(com.pierfrancescosoffritti.androidyoutubeplayer.R.id.search_src_text)
         textView.setTextColor(Color.parseColor("#ffffff"))
         textView.setHintTextColor(Color.parseColor("#ffffff"))
 
@@ -391,7 +391,7 @@ class SC2LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
                 return view
             }
         }
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        arrayAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(

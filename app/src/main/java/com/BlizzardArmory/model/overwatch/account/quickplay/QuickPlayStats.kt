@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.overwatch.account.quickplay
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.overwatch.account.Awards
 import com.BlizzardArmory.model.overwatch.account.CareerStats
 import com.BlizzardArmory.model.overwatch.account.Games
@@ -10,6 +11,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Quick play stats.
  */
+@Keep
 data class QuickPlayStats(
 
     @SerializedName("awards")

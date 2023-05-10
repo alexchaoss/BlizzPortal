@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.starcraft
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Player.
  */
+@Keep
 data class Player(
 
     @SerializedName("name")

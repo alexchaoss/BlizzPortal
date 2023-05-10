@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.overwatch.account
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
@@ -11,6 +12,7 @@ import java.util.*
  * The type Match awards.
  */
 
+@Keep
 data class MatchAwards(
     @SerializedName("cards")
     var cards: Double,

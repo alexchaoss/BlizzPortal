@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.warcraft.statistic
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Dodge.
  */
+@Keep
 data class Dodge(
 
     @SerializedName("rating")

@@ -1,7 +1,9 @@
 package com.BlizzardArmory.model.warcraft.talents.trees.tree
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class SpecTalentNodes (
 
 	@SerializedName("id") val id : Int,

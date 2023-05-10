@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.warcraft.equipment.media
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Asset.
  */
+@Keep
 data class Asset(
 
     @SerializedName("key")

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.warcraft.equipment
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Media
 import com.google.gson.annotations.SerializedName
 
@@ -7,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Selected essence.
  */
+@Keep
 data class SelectedEssence(
 
     @SerializedName("slot")

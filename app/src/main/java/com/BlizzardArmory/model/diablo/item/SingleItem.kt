@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.diablo.item
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.diablo.items.Type
 import com.google.gson.annotations.SerializedName
 
@@ -7,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Single item.
  */
+@Keep
 data class SingleItem(
 
     @SerializedName("accountBound")

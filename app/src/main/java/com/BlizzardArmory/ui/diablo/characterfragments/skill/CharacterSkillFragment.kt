@@ -162,7 +162,7 @@ class CharacterSkillFragment : Fragment() {
         closeButton!!.setOnTouchListener { v: View, event: MotionEvent ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 v.performClick()
-                Log.i("CLOSE", "CLICKED")
+                Log.d("CLOSE", "CLICKED")
                 binding.skillTooltipScroll.visibility = View.GONE
                 EventBus.getDefault().post(D3SpellShownEvent(false))
                 binding.skillTooltipScroll.scrollTo(0, 0)

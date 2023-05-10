@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.covenant.conduit
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Ranks(
 
     @SerializedName("id") val id: Int,

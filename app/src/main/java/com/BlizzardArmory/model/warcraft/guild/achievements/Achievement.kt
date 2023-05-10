@@ -1,9 +1,11 @@
 package com.BlizzardArmory.model.warcraft.guild.achievements
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Key
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Achievement(
 
     @SerializedName("key") val key: Key,

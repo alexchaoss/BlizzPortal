@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.pvp.summary
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class MatchStatistics(
 
     @SerializedName("played") val played: Int,

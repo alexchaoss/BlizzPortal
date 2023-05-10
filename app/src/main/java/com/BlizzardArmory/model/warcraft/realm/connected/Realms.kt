@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.realm.connected
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Realms(
 
     @SerializedName("is_tournament") val is_tournament: Boolean,

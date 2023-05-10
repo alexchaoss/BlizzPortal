@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.diablo.character
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Stats.
  */
+@Keep
 data class Stats(
 
     @SerializedName("life")

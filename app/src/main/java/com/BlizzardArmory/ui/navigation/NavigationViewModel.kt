@@ -2,6 +2,7 @@ package com.BlizzardArmory.ui.navigation
 
 import android.app.Application
 import android.util.Log
+import androidx.annotation.Keep
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.UserInformation
@@ -27,7 +28,8 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     private var wowMediaCharacter: MutableLiveData<Media?> = MutableLiveData()
     private var isReady: MutableLiveData<Boolean> = MutableLiveData()
 
-    data class ViewState(
+    @Keep
+data class ViewState(
         val startPanelState: PanelState,
         val endPanelState: PanelState
     )
@@ -118,7 +120,7 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     fun downloadUserInfo() {
         executeAPICall({ RetroClient.getGeneralClient(getApplication()).getUserInfo(battlenetOAuth2Helper?.accessToken, NetworkUtils.region) },
             {
-                Log.i("USER INFO", it.body().toString())
+                Log.d("USER INFO", it.body().toString())
                 userInformation.value = it.body()
             },
             {
@@ -127,7 +129,7 @@ class NavigationViewModel(application: Application) : BaseViewModel(application)
     }
 
     fun initWoWServer() {
-        executeAPICall({ RetroClient.getGeneralClient(getApplication()).initWoWServer(NetworkUtils.API_BASE_URL) }, { Log.i("init wow server", it.message()) })
+        executeAPICall({ RetroClient.getGeneralClient(getApplication()).initWoWServer(NetworkUtils.API_BASE_URL) }, { Log.d("init wow server", it.message()) })
     }
 
     fun getConnectedRealms() {

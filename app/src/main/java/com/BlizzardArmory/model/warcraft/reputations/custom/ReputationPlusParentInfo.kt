@@ -1,7 +1,9 @@
 package com.BlizzardArmory.model.warcraft.reputations.custom
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class ReputationPlusParentInfo(
     @SerializedName("id")
     val id: Long,

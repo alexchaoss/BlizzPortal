@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.starcraft.profile
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Season snapshot.
  */
+@Keep
 data class SeasonSnapshot(
     @SerializedName("1v1")
     var oneVone: OneVOne,

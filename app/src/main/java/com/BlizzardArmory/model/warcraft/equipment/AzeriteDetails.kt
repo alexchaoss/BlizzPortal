@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.warcraft.equipment
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Azerite details.
  */
+@Keep
 data class AzeriteDetails(
 
     @SerializedName("selected_powers")

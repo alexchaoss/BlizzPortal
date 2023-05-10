@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.warcraft.achievements.characterachievements
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Criteria(
 
     @SerializedName("id") val id: Int,

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.warcraft.charactersummary
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Faction
 import com.BlizzardArmory.model.common.Links
 import com.BlizzardArmory.model.common.Realm
@@ -9,6 +10,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Character summary.
  */
+@Keep
 data class CharacterSummary(
 
     @SerializedName("_links")

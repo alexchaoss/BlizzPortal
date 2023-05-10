@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.warcraft.statistic
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Ranged haste.
  */
+@Keep
 data class RangedHaste(
 
     @SerializedName("rating")

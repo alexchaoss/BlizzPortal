@@ -14,7 +14,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowCharacterRaidsFragmentBinding
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.WoWClassName
@@ -116,7 +115,7 @@ class RaidsFragment : Fragment() {
                 return view
             }
         }
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        arrayAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {

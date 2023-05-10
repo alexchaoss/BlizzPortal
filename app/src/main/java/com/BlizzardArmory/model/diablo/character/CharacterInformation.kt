@@ -1,5 +1,6 @@
 package com.BlizzardArmory.model.diablo.character
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.diablo.character.follower.Followers
 import com.BlizzardArmory.model.diablo.character.progression.Progression
 import com.BlizzardArmory.model.diablo.character.skills.Skills
@@ -9,6 +10,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * The type Character information.
  */
+@Keep
 data class CharacterInformation(
 
     @SerializedName("id")

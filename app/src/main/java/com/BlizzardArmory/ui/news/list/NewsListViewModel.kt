@@ -55,7 +55,7 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadNews() {
         val job = coroutineScope.launch {
-            Log.i("TEST", "TERST")
+            Log.d("TEST", "TERST")
             WebNewsScrapper.parseNewsList("https://news.blizzard.com/${NetworkUtils.locale}/blog/list?pageNum=${pageNumber}&pageSize=12&community=all")
             withContext(Dispatchers.Main) {
                 downloaded.value = true

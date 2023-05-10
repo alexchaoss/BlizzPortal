@@ -1,10 +1,12 @@
 package com.BlizzardArmory.model.warcraft.covenant.conduit
 
+import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Links
 import com.BlizzardArmory.model.common.SocketType
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class Conduit(
 
     @SerializedName("_links") val links: Links,

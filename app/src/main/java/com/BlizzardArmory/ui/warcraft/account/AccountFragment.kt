@@ -16,7 +16,6 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowAccountFragmentBinding
 import com.BlizzardArmory.network.ErrorMessages
 import com.BlizzardArmory.network.NetworkUtils
@@ -124,7 +123,7 @@ class AccountFragment : Fragment() {
                 return view
             }
         }
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        arrayAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(

@@ -1,8 +1,10 @@
 package com.BlizzardArmory.model.starcraft.leaderboard
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
+@Keep
 data class LadderMembers(
 
     @SerializedName("character") val character: Character,

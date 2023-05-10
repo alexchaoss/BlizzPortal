@@ -1,11 +1,13 @@
 package com.BlizzardArmory.model.starcraft.profile
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
  * The type Archon.
  */
+@Keep
 data class Archon(
     /**
      * Gets rank.

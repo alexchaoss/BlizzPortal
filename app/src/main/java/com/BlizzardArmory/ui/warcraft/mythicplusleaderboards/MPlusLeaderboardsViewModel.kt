@@ -15,9 +15,6 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 
 class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(application) {
@@ -61,7 +58,7 @@ class MPlusLeaderboardsViewModel(application: Application) : BaseViewModel(appli
                     expansions.add(it.body()!!)
                     if (expansions.size == 4) {
                         this@MPlusLeaderboardsViewModel.expansions.value = expansions.sortedBy { xpac -> xpac.dungeons[0].id }
-                        Log.i("EXPANSIONS", this@MPlusLeaderboardsViewModel.expansions.value?.last().toString())
+                        Log.d("EXPANSIONS", this@MPlusLeaderboardsViewModel.expansions.value?.last().toString())
                     }
                 }, {
                     showErrorDialog.value = true
