@@ -115,13 +115,13 @@ class NavigationActivity : LocalizationActivity(),
 
         barBinding = NavigationActivityBarBinding.inflate(layoutInflater)
         binding = NavigationActivityBinding.inflate(layoutInflater)
-        binding.loadingCircle.visibility = View.VISIBLE
+        initActivity()
     }
 
     private fun initActivity() {
         val view = binding.root
         setContentView(view)
-
+        binding.loadingCircle.visibility = View.VISIBLE
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (prefs != null && prefs!!.getBoolean("signedIn", false)) {
             selectedRegion = prefs?.getString("region", "us").toString()
@@ -389,7 +389,6 @@ class NavigationActivity : LocalizationActivity(),
             if (it!!) {
                 viewModel.getConnectedRealms()
                 viewModel.initWoWServer()
-                initActivity()
                 binding.loadingCircle.visibility = View.GONE
             }
         }
@@ -458,7 +457,6 @@ class NavigationActivity : LocalizationActivity(),
         }
 
         viewModel.getWowConnectedRealms().observe(this) {
-            Log.d("TEST REALMS", it.toString())
             realms = it
         }
 

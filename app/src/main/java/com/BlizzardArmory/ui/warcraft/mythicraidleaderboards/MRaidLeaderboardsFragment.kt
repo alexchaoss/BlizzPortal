@@ -109,6 +109,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun addRaidsToList() {
         raidList.add("Raid")
+        raidList.add("Aberrus, the Shadowed Crucible")
         raidList.add("Vault of The Incarnates")
         raidList.add("Sepulcher of the First Ones")
         raidList.add("Sanctum of Domination")

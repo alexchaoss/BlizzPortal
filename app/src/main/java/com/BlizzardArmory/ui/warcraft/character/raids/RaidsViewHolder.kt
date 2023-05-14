@@ -37,6 +37,6 @@ class RaidsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val c
     }
 
     private fun parseDungeonName(name: String): String {
-       return  "${name.replace("'", "").replace(",", "").replace(" ", "-").lowercase()}-small"
+        return "${name.replace("'", "").replace(",", "").replace(":", "").replace(" ", "-").lowercase()}-small"
     }
 }

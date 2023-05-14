@@ -92,6 +92,7 @@ class ReputationsFragment : Fragment() {
                 .filter { expansionsId.contains(it.id) }
                 .sortedBy { expansionsId.indexOf(it.id) }.map { it.name }
             setAdapter(xpacs.toMutableList(), binding.repSpinner)
+            binding.repSpinner.setSelection(xpacs.size)
         }
 
         viewModel.getErrorCode().observe(viewLifecycleOwner) {

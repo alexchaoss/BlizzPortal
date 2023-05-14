@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/background"
         android:scaleType="centerCrop"
-        android:scrollY="-100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
 
 @Keep
 data class Seasons(
-    @SerializedName("key") var key: Key? = null,
-    @SerializedName("id") var id: Int? = null
+    @SerializedName("key") var key: Key,
+    @SerializedName("id") var id: Int
 )

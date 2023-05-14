@@ -69,25 +69,41 @@ class MythicPlusFragment : Fragment() {
         val charClass = EventBus.getDefault().getStickyEvent(ClassEvent::class.java)?.data
         WoWClassName.setBackground(binding.mplusLayout, binding.backgroundMplus, requireContext(), charClass)
         setObservers()
-        viewModel.downloadMythicKeystoneIndex()
+        viewModel.downloadSeasonIndex()
     }
 
 
     private fun setObservers() {
-        viewModel.getIndex().observe(viewLifecycleOwner) {index ->
-            val seasonId = index.seasons.maxByOrNull { season -> season.id as Int }?.id
-            Log.d("SEASON ID", seasonId.toString())
-            seasonId?.let { viewModel.downloadMythicKeystoneSeason(it) }
-            val color = Color.argb(255, index.currentMythicRating.color.r, index.currentMythicRating.color.g, index.currentMythicRating.color.b)
-            binding.mplusrating.setTextColor(color)
-            binding.mplusrating.text = "Total M+ Rating: ${index.currentMythicRating.rating.toInt()}"
+        viewModel.getIndex().observe(viewLifecycleOwner) { index ->
+            val season = index.seasons.find { it.id == viewModel.getSeason().value?.id!! }
+            Log.i("TEST", season.toString())
+            season?.let {
+                Log.i("TEST", "has DATA")
+                viewModel.downloadMythicKeystoneSeason(season.id)
+                val color = Color.argb(255, index.currentMythicRating.color.r, index.currentMythicRating.color.g, index.currentMythicRating.color.b)
+                binding.mplusrating.setTextColor(color)
+                binding.mplusrating.text = "Total M+ Rating: ${index.currentMythicRating.rating.toInt()}"
+            }
+            if (season == null) {
+                Log.i("TEST", "TEST NO DATA")
+                binding.outdated.text = "No data for current season"
+                binding.outdated.visibility = View.VISIBLE
+            }
         }
 
-        viewModel.getSeason().observe(viewLifecycleOwner) { season ->
+        viewModel.getMplusSeason().observe(viewLifecycleOwner) { season ->
             binding.raidRecycler.apply {
                 adapter = MythicPlusAdapter(findBestRuns(season.bestRuns), context)
                 adapter!!.notifyDataSetChanged()
             }
+        }
+
+        viewModel.getSeasonIndex().observe(viewLifecycleOwner) {
+            viewModel.downloadSeason(viewModel.getSeasonIndex().value?.current_season?.id!!)
+        }
+
+        viewModel.getSeason().observe(viewLifecycleOwner) {
+            viewModel.downloadMythicKeystoneIndex()
         }
 
         viewModel.getErrorCode().observe(viewLifecycleOwner) {

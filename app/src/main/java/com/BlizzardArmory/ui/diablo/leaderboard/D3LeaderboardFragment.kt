@@ -306,7 +306,6 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
 
     override fun onQueryTextChange(newText: String?): Boolean {
         try {
-            Log.d("TEST", "TEST")
             (binding.leaderboardRecycler.adapter as LeaderboardAdapter).filter(newText!!)
         } catch (e: Exception) {
             Log.e("Error", "Couldn't filter leaderboards")

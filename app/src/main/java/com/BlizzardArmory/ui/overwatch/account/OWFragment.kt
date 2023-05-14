@@ -266,7 +266,6 @@ class OWFragment : Fragment() {
                 convertView: View?,
                 parent: ViewGroup
             ): View {
-                Log.d("TEST", "$position, $convertView, $parent")
                 try {
                     val view = super.getDropDownView(position, convertView, parent)
                     val tv = view as TextView
