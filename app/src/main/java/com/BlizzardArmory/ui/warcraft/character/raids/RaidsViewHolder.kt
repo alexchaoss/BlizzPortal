@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.encounters.Instances
 import com.BlizzardArmory.network.NetworkUtils
+import com.BlizzardArmory.util.ParseDungeonName
 import com.bumptech.glide.Glide
 
 class RaidsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -37,6 +38,6 @@ class RaidsViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val c
     }
 
     private fun parseDungeonName(name: String): String {
-        return "${name.replace("'", "").replace(",", "").replace(":", "").replace(" ", "-").lowercase()}-small"
+        return "${ParseDungeonName.parseName(name).lowercase()}-small"
     }
 }

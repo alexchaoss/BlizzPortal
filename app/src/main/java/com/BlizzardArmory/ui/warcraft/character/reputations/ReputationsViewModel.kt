@@ -44,7 +44,7 @@ class ReputationsViewModel(application: Application) : BaseViewModel(application
     }
 
     fun downloadReputationsPlusParentInfo() {
-        executeAPICall({ RetroClient.getAPIClient(getApplication()).getReputationPlusParentInfo() },
+        executeAPICall({ RetroClient.getAPIClient(getApplication(), true).getReputationPlusParentInfo() },
             {
                 reputationsWithParentInfo.value = it.body()
                 downloadReputations()

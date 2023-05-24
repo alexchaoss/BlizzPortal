@@ -13,14 +13,14 @@ interface GeneralNetworkServices {
     @GET("/")
     suspend fun getRoot(): Response<Status>
 
-    @GET("oauth/token")
+    @GET("/oauth/token")
     suspend fun getAccessToken(
         @Query("code") clientId: String?,
         @Query("region") region: String?,
         @Query("redirect_uri") redirectUri: String?
     ): Response<TokenResponse>
 
-    @GET("oauth/userinfo")
+    @GET("/oauth/userinfo")
     suspend fun getUserInfo(
         @Query("token") accessToken: String?,
         @Query("region") region: String?

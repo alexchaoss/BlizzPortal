@@ -247,7 +247,7 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Achievements>
 
-    @GET("profile/wow/character/{realm}/{character}/encounters/raids")
+    @GET("/profile/wow/character/{realm}/{character}/encounters/raids")
     suspend fun getEncounters(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -255,7 +255,7 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<EncountersInformation>
 
-    @GET("profile/wow/character/{realm}/{character}/equipment")
+    @GET("/profile/wow/character/{realm}/{character}/equipment")
     suspend fun getEquippedItems(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -263,7 +263,7 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Equipment>
 
-    @GET("profile/wow/character/{realm}/{character}/statistics")
+    @GET("/profile/wow/character/{realm}/{character}/statistics")
     suspend fun getStats(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -271,7 +271,7 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Statistic>
 
-    @GET("profile/wow/character/{realm}/{character}/specializations")
+    @GET("/profile/wow/character/{realm}/{character}/specializations")
     suspend fun getSpecs(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -280,7 +280,7 @@ interface WoWNetworkServices {
     ): Response<PlayerSpecializations>
 
 
-    @GET("profile/wow/character/{realm}/{character}")
+    @GET("/profile/wow/character/{realm}/{character}")
     suspend fun getCharacter(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -288,14 +288,14 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<CharacterSummary>
 
-    @GET("profile/user/wow")
+    @GET("/profile/user/wow")
     suspend fun getAccount(
         @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Account>
 
-    @GET("profile/wow/character/{realm}/{character}/pvp-summary")
+    @GET("/profile/wow/character/{realm}/{character}/pvp-summary")
     suspend fun getPvPSummary(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -303,7 +303,7 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<PvPSummary>
 
-    @GET("profile/wow/character/{realm}/{character}/pvp-bracket/{BRACKET}")
+    @GET("/profile/wow/character/{realm}/{character}/pvp-bracket/{BRACKET}")
     suspend fun getPvPBrackets(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -312,7 +312,7 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<BracketStatistics>
 
-    @GET("profile/wow/character/{realm}/{character}/reputations")
+    @GET("/profile/wow/character/{realm}/{character}/reputations")
     suspend fun getReputations(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
@@ -328,7 +328,7 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<CharacterSoulbinds>
 
-    @GET("profile/wow/character/{realm}/{character}/mythic-keystone-profile")
+    @GET("/profile/wow/character/{realm}/{character}/mythic-keystone-profile")
     suspend fun getMythicKeystoneProfileIndex(
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,

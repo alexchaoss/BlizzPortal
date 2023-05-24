@@ -7,6 +7,7 @@ import com.BlizzardArmory.model.warcraft.mythicraid.Entries
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
+import com.BlizzardArmory.util.ParseDungeonName
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     }
 
     private fun parseRaidName(name: String): String {
-        return name.replace("'", "").replace(" ", "-").lowercase(Locale.getDefault())
+        return ParseDungeonName.parseName(name).lowercase(Locale.getDefault())
     }
 
     @Subscribe

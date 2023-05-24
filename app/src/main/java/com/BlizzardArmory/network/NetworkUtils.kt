@@ -14,8 +14,8 @@ object NetworkUtils {
      */
     @JvmField
     var loading = false
-    var PROXY_BASE_URL = "https://blizzportal-proxy.onrender.com/"
-    var API_BASE_URL = "https://blizzportal-api-node.onrender.com"
+    var PROXY_BASE_URL = "https://proxy.astpierre.dev/"
+    var API_BASE_URL = "https://api.astpierre.dev/"
 
     const val logs = false
 
