@@ -83,7 +83,7 @@ class RaidsFragment : Fragment() {
             if (encounters.expansions != null) {
                 setAdapter(encounters.expansions.map { it.expansion.name }.filter { !it.contains("Mythic+ Dungeons") }
                     .toMutableList(), binding.progSpinner)
-                binding.progSpinner.setSelection(encounters.expansions.size)
+                binding.progSpinner.setSelection(binding.progSpinner.count - 1)
             }
         }
 

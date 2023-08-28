@@ -1,6 +1,6 @@
 package com.BlizzardArmory.util.events
 
-import com.BlizzardArmory.model.diablo.account.Hero
+import com.BlizzardArmory.model.diablo.diablo3.account.Hero
 
 /**
  * The type Faction event.

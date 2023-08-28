@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
@@ -18,7 +20,6 @@ import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.util.state.FavoriteState
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 
@@ -79,6 +80,15 @@ class AuthorizationFragment : Fragment() {
                     }
                 }
             }
+
+            override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+                super.onReceivedHttpError(view, request, errorResponse)
+                errorResponse?.let {
+                    if (it.statusCode >= 400 && !viewModel.isHandled()) {
+                        onTokenProcessed(signedIn = false, error = true)
+                    }
+                }
+            }
         }
         binding.webview.loadUrl(authorizationUrl)
     }
@@ -102,21 +112,15 @@ class AuthorizationFragment : Fragment() {
         }
     }
 
-    private fun onTokenProcessed(signedIn: Boolean) {
-        if (!signedIn) {
-            Snackbar.make(
-                binding.root,
-                "Oops! There was an error, please try again!",
-                Snackbar.LENGTH_SHORT
-            ).show()
-        } else {
-            Log.d("Singed In", "Closing auth fragment")
-        }
+    private fun onTokenProcessed(signedIn: Boolean, error: Boolean = false) {
         navigationActivity.intent.putExtra(
             BattlenetConstants.BUNDLE_BNPARAMS,
             viewModel.getBnetParams().value
         )
+        navigationActivity.setSignInError(error)
         navigationActivity.setSignedInStatus(signedIn)
-        requireActivity().supportFragmentManager.popBackStack()
+        if (_binding !== null) {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 }

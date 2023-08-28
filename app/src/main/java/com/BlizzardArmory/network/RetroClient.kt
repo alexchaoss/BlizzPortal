@@ -3,6 +3,7 @@ package com.BlizzardArmory.network
 import android.content.Context
 import com.BlizzardArmory.network.services.APINetworkServices
 import com.BlizzardArmory.network.services.D3NetworkServices
+import com.BlizzardArmory.network.services.D4NetworkServices
 import com.BlizzardArmory.network.services.GeneralNetworkServices
 import com.BlizzardArmory.network.services.OWNetworkServices
 import com.BlizzardArmory.network.services.Sc2NetworkServices
@@ -70,6 +71,16 @@ object RetroClient {
             .build()
     }
 
+    private fun d4Client(context: Context, logsToggled: Boolean, cacheTime: Long = 10): Retrofit {
+        val gson = GsonBuilder().create()
+
+        return Retrofit.Builder()
+            .baseUrl(NetworkUtils.DIABLO_4_API)
+            .client(getClient(context, logsToggled, cacheTime))
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
     fun getAPIClient(context: Context, logsToggled: Boolean = false, cacheTime: Long = 10): APINetworkServices {
         return apiClient(context, logsToggled, cacheTime).create(APINetworkServices::class.java)
     }
@@ -84,6 +95,10 @@ object RetroClient {
 
     fun getD3Client(context: Context, logsToggled: Boolean = false, cacheTime: Long = 10): D3NetworkServices {
         return proxyClient(context, logsToggled, cacheTime).create(D3NetworkServices::class.java)
+    }
+
+    fun getD4Client(context: Context, logsToggled: Boolean = false, cacheTime: Long = 10): D4NetworkServices {
+        return d4Client(context, logsToggled, cacheTime).create(D4NetworkServices::class.java)
     }
 
     fun getSc2Client(context: Context, logsToggled: Boolean = false, cacheTime: Long = 10): Sc2NetworkServices {

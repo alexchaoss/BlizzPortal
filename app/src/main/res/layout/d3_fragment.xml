@@ -8,8 +8,7 @@
     android:background="@drawable/diablo3_background"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical"
-    tools:context=".ui.main.MainActivity">
+    android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/scrollView5"

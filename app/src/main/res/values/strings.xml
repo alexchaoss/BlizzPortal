@@ -109,6 +109,7 @@
     <string name="logout">Logout</string>
     <string name="world_of_warcraft">World of Warcraft</string>
     <string name="diablo_3">Diablo 3</string>
+    <string name="diablo_4" translatable="false">Diablo 4</string>
     <string name="starcraft_2">Starcraft 2</string>
     <string name="overwatch">Overwatch</string>
     <string name="search_character">Search character</string>

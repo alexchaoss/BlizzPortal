@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.HelpFragmentBinding
 import com.BlizzardArmory.model.help.Help
-import com.BlizzardArmory.ui.diablo.account.D3Fragment
-import com.BlizzardArmory.ui.diablo.characterfragments.stats.CharacterStatsFragment
-import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
-import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
+import com.BlizzardArmory.ui.diablo.diablo3.account.D3Fragment
+import com.BlizzardArmory.ui.diablo.diablo3.characterfragments.stats.CharacterStatsFragment
+import com.BlizzardArmory.ui.diablo.diablo3.favorites.D3FavoriteFragment
+import com.BlizzardArmory.ui.diablo.diablo3.leaderboard.D3LeaderboardFragment
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.ui.overwatch.account.OWFragment

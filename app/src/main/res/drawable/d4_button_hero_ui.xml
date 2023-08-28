@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="1000dp"
+        android:gravity="center">
+        <bitmap
+            android:src="@drawable/d4_button_primary_tile_base"
+            android:tileMode="repeat" />
+    </item>
+    <item android:gravity="left">
+        <bitmap android:src="@drawable/d4_button_primary_left_base" />
+    </item>
+    <item android:gravity="right">
+        <bitmap android:src="@drawable/d4_button_primary_right_base" />
+    </item>
+</layer-list>

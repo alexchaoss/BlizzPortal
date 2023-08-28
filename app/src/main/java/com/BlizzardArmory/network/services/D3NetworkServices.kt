@@ -1,12 +1,12 @@
 package com.BlizzardArmory.network.services
 
-import com.BlizzardArmory.model.diablo.account.AccountInformation
-import com.BlizzardArmory.model.diablo.character.CharacterInformation
-import com.BlizzardArmory.model.diablo.data.common.Leaderboard
-import com.BlizzardArmory.model.diablo.data.eras.index.EraIndex
-import com.BlizzardArmory.model.diablo.data.seasons.index.SeasonIndex
-import com.BlizzardArmory.model.diablo.item.SingleItem
-import com.BlizzardArmory.model.diablo.items.Items
+import com.BlizzardArmory.model.diablo.diablo3.account.AccountInformation
+import com.BlizzardArmory.model.diablo.diablo3.character.CharacterInformation
+import com.BlizzardArmory.model.diablo.diablo3.data.common.Leaderboard
+import com.BlizzardArmory.model.diablo.diablo3.data.eras.index.EraIndex
+import com.BlizzardArmory.model.diablo.diablo3.data.seasons.index.SeasonIndex
+import com.BlizzardArmory.model.diablo.diablo3.item.SingleItem
+import com.BlizzardArmory.model.diablo.diablo3.items.Items
 import com.BlizzardArmory.network.NetworkUtils
 import retrofit2.Response
 import retrofit2.http.GET
@@ -36,6 +36,7 @@ interface D3NetworkServices {
     suspend fun getHeroItems(
         @Path("battletag") battletag: String?,
         @Path("id") id: Long,
+        @Query("token") accessToken: String?,
         @Query("region") region: String = NetworkUtils.region,
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Items>

@@ -16,6 +16,7 @@ object NetworkUtils {
     var loading = false
     var PROXY_BASE_URL = "https://proxy.astpierre.dev/"
     var API_BASE_URL = "https://api.astpierre.dev/"
+    var DIABLO_4_API = "https://d4armory.io/"
 
     const val logs = false
 
@@ -71,8 +72,6 @@ object NetworkUtils {
     const val WOW_ASSETS = "https://alexchaoss.github.io/BnetAuthorize/img/wow/image.jpg"
 
     const val WOW_DUNGEON_ASSETS = "https://render.worldofwarcraft.com/us/zones/image.jpg"
-
-    const val WOW_SERVER = "https://blizzard-armory-server.herokuapp.com/"
 
     /**
      * Gets region.

@@ -22,6 +22,7 @@ import java.util.Locale
 class NavigationViewModel(application: Application) : BaseViewModel(application) {
 
     private var signedIn: MutableLiveData<Boolean> = MutableLiveData()
+    private var signInError: MutableLiveData<Boolean> = MutableLiveData()
     private var wowConnectedRealms: MutableLiveData<MutableMap<String, ConnectedRealms>> =
         MutableLiveData()
     private var userInformation: MutableLiveData<UserInformation?> = MutableLiveData()
@@ -83,6 +84,14 @@ data class ViewState(
 
     fun getSignedInStatus(): LiveData<Boolean> {
         return signedIn
+    }
+
+    fun getSignInError(): LiveData<Boolean> {
+        return signInError
+    }
+
+    fun setSignInError(value: Boolean) {
+        signInError.value = value
     }
 
     fun isSignedIn(): Boolean? {

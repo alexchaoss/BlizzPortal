@@ -34,9 +34,10 @@ import com.BlizzardArmory.network.oauth.BattlenetConstants
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.network.oauth.OauthFlowStarter
-import com.BlizzardArmory.ui.diablo.account.D3Fragment
-import com.BlizzardArmory.ui.diablo.favorites.D3FavoriteFragment
-import com.BlizzardArmory.ui.diablo.leaderboard.D3LeaderboardFragment
+import com.BlizzardArmory.ui.diablo.diablo3.account.D3Fragment
+import com.BlizzardArmory.ui.diablo.diablo3.favorites.D3FavoriteFragment
+import com.BlizzardArmory.ui.diablo.diablo3.leaderboard.D3LeaderboardFragment
+import com.BlizzardArmory.ui.diablo.diablo4.account.D4Fragment
 import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.overwatch.account.OWFragment
 import com.BlizzardArmory.ui.overwatch.account.OWPlatformChoiceDialog
@@ -324,6 +325,10 @@ class NavigationActivity : LocalizationActivity(),
         viewModel.setSignedInStatus(value)
     }
 
+    fun setSignInError(value: Boolean) {
+        viewModel.setSignInError(value)
+    }
+
     fun toggleFavoriteButton(state: FavoriteState) {
         when (state) {
             FavoriteState.Hidden -> {
@@ -331,6 +336,7 @@ class NavigationActivity : LocalizationActivity(),
                 favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
                 favorite!!.tag = R.drawable.ic_star_border_black_24dp
             }
+
             FavoriteState.Shown -> {
                 favorite!!.visibility = View.VISIBLE
                 favorite!!.setImageResource(R.drawable.ic_star_border_black_24dp)
@@ -421,6 +427,7 @@ class NavigationActivity : LocalizationActivity(),
                     val fragment = SC2Fragment()
                     openSc2Fragment(fragment)
                 }
+
                 FragmentTag.OVERWATCHFRAGMENT.name -> {
                     val fragment = OWFragment()
                     openOverwatchFragment(fragment)
@@ -428,9 +435,19 @@ class NavigationActivity : LocalizationActivity(),
             }
         }
 
+        viewModel.getSignInError().observe(this) {
+            if (it) {
+                Snackbar.make(
+                    binding.root,
+                    "Oops! There was an error, please try again!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
+
         viewModel.getSignedInStatus().observe(this) {
             if (it) {
-                if(!newsOpened) {
+                if (!newsOpened) {
                     openNewsFragment()
                 }
                 newsOpened = true
@@ -685,12 +702,18 @@ class NavigationActivity : LocalizationActivity(),
                             openWoWAccount(fragment)
                         }
                     }
+
                     resources.getString(R.string.diablo_3) -> {
                         callD3Fragment(
                             viewModel.getUserInformation().value?.battleTag,
                             NetworkUtils.region
                         )
                     }
+
+                    resources.getString(R.string.diablo_4) -> {
+                        callD4Fragment(viewModel.getUserInformation().value?.battleTag)
+                    }
+
                     resources.getString(R.string.overwatch) -> {
                         fragment = OWFragment()
                         if (viewModel.isSignedIn() == false) {
@@ -1117,6 +1140,25 @@ class NavigationActivity : LocalizationActivity(),
                 .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
                 .add(R.id.fragment, fragment, FragmentTag.D3FRAGMENT.name)
                 .addToBackStack("d3_account").commit()
+            supportFragmentManager.executePendingTransactions()
+        }
+        binding.loadingCircle.visibility = View.GONE
+    }
+
+    private fun callD4Fragment(battletag: String?) {
+        val fragment: Fragment = D4Fragment()
+        if (viewModel.isSignedIn() == false) {
+            OauthFlowStarter.lastOpenedFragmentNeedingOAuth = FragmentTag.D4FRAGMENT.name
+            viewModel.openLoginToBattleNet()
+        } else {
+            val bundle = Bundle()
+            bundle.putString("battletag", battletag)
+            fragment.arguments = bundle
+            resetBackStack()
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
+                .add(R.id.fragment, fragment, FragmentTag.D4FRAGMENT.name)
+                .addToBackStack("d4_account").commit()
             supportFragmentManager.executePendingTransactions()
         }
         binding.loadingCircle.visibility = View.GONE
