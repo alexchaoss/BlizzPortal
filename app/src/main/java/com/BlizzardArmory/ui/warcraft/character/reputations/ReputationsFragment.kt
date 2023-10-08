@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.databinding.WowRepFragmentBinding
 import com.BlizzardArmory.model.warcraft.reputations.characterreputations.RepByExpansion
+import com.BlizzardArmory.model.warcraft.reputations.custom.ReputationPlusParentInfo
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.WoWClassName
 import com.BlizzardArmory.util.events.ClassEvent
@@ -88,7 +89,17 @@ class ReputationsFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.getReputations().observe(viewLifecycleOwner) {
-            val xpacs = viewModel.getReputationsWithParentInfo().value!!
+            val repsWithParentInfo = viewModel.getReputationsWithParentInfo().value?.toMutableList()
+            //Add Classic xpac because it was removed from the API data
+            val classic = ReputationPlusParentInfo(id = 1118L, name = "Classic", isHeader = true)
+            val wotlk = ReputationPlusParentInfo(id = 1097L, name = "Wrath of the Lich King", isHeader = true)
+            if (repsWithParentInfo?.contains(classic) == false) {
+                repsWithParentInfo.add(classic)
+            }
+            if (repsWithParentInfo?.contains(wotlk) == false) {
+                repsWithParentInfo.add(wotlk)
+            }
+            val xpacs = repsWithParentInfo!!
                 .filter { expansionsId.contains(it.id) }
                 .sortedBy { expansionsId.indexOf(it.id) }.map { it.name }
             setAdapter(xpacs.toMutableList(), binding.repSpinner)

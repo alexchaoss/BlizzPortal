@@ -8,9 +8,9 @@ data class ReputationPlusParentInfo(
     @SerializedName("id")
     val id: Long,
     @SerializedName("parent_faction_id")
-    val parentFactionId: Long,
+    val parentFactionId: Long? = null,
     @SerializedName("name")
     val name: String,
     @SerializedName("is_header")
-    val isHeader: Boolean
+    val isHeader: Boolean? = null
 )

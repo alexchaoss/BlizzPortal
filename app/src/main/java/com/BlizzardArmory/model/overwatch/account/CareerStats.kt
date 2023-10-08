@@ -42,6 +42,9 @@ class CareerStats {
     @SerializedName("hanzo")
     var hanzo: Hanzo? = null
 
+    @SerializedName("illari")
+    var illari: Illari? = null
+
     @SerializedName("junkrat")
     var junkrat: Junkrat? = null
 
@@ -135,6 +138,7 @@ class CareerStats {
         doomfist?.let { heroList.add(it) }
         genji?.let { heroList.add(it) }
         hanzo?.let { heroList.add(it) }
+        illari?.let { heroList.add(it) }
         junkrat?.let { heroList.add(it) }
         kiriko?.let { heroList.add(it) }
         lucio?.let { heroList.add(it) }

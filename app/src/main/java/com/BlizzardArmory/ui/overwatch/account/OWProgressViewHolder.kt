@@ -144,6 +144,7 @@ class OWProgressViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
             "Doomfist" -> Color.parseColor("#986A62")
             "Genji" -> Color.parseColor("#A8F858")
             "Hanzo" -> Color.parseColor("#C8C399")
+            "Illari" -> Color.parseColor("#BFB08E")
             "JunkerQueen" -> Color.parseColor("#8EBDDE")
             "Junkrat" -> Color.parseColor("#F6CA67")
             "Kiriko" -> Color.parseColor("#E8C6EF")
