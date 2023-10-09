@@ -75,6 +75,12 @@ class PvPFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val charClass = EventBus.getDefault().getStickyEvent(ClassEvent::class.java)?.data
+        val faction = EventBus.getDefault().getStickyEvent(FactionEvent::class.java)?.data
+        if (faction == "horde") {
+            binding.factionicon.setImageResource(R.drawable.horde_pvp_logo)
+        } else {
+            binding.factionicon.setImageResource(R.drawable.alliance_pvp_logo)
+        }
         WoWClassName.setBackground(binding.layoutPvp, binding.backgroundPvp, requireContext(), charClass)
         setObservers()
         viewModel.downloadPvPSummary()
@@ -171,15 +177,6 @@ class PvPFragment : Fragment() {
             viewModel.download2v2Info()
             viewModel.download3v3Info()
             viewModel.downloadRBGInfo()
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    fun factionEventReceived(factionEvent: FactionEvent) {
-        if (factionEvent.data == "horde") {
-            binding.factionicon.setImageResource(R.drawable.horde_pvp_logo)
-        } else {
-            binding.factionicon.setImageResource(R.drawable.alliance_pvp_logo)
         }
     }
 

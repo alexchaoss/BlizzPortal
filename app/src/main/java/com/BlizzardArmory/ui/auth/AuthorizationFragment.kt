@@ -84,7 +84,7 @@ class AuthorizationFragment : Fragment() {
             override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
                 super.onReceivedHttpError(view, request, errorResponse)
                 errorResponse?.let {
-                    if (it.statusCode >= 400 && !viewModel.isHandled()) {
+                    if (it.statusCode >= 400 && !viewModel.isHandled() && request?.isForMainFrame == true) {
                         onTokenProcessed(signedIn = false, error = true)
                     }
                 }

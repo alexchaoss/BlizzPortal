@@ -348,7 +348,7 @@ class NavigationActivity : LocalizationActivity(),
                 favorite!!.tag = R.drawable.ic_star_black_24dp
             }
         }
-    }
+        }
 
     fun selectRightPanel(state: RightPanelState) {
         when (state) {
@@ -502,6 +502,7 @@ class NavigationActivity : LocalizationActivity(),
                                 .contains(selectedRegion)
                         ) {
                             OauthFlowStarter.startOauthFlow(it, this, View.VISIBLE)
+                            dialog.dismiss()
                             dialog.dismiss()
                         } else {
                             Snackbar.make(

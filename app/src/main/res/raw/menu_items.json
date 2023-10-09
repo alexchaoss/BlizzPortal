@@ -48,28 +48,6 @@
       ]
     },
     {
-      "icon": "diablo4_icon",
-      "string": "diablo_4",
-      "sub_menu": [
-        {
-          "icon": "ic_baseline_account_circle_24",
-          "string": "account",
-          "parent": "diablo_4",
-          "private": true
-        },
-        {
-          "icon": "rep_search",
-          "string": "search_profile",
-          "parent": "diablo_4"
-        },
-        {
-          "icon": "ic_baseline_leaderboard_24",
-          "string": "leaderboards",
-          "parent": "diablo_3"
-        }
-      ]
-    },
-    {
       "icon": "diablo3_icon",
       "string": "diablo_3",
       "sub_menu": [

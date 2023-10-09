@@ -14,8 +14,8 @@ android {
         applicationId "com.BlizzardArmory"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 142
-        versionName "5.3.4"
+        versionCode 147
+        versionName "5.3.6"
         multiDexEnabled true
         signingConfig signingConfigs.debug
     }

@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.achievements
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
@@ -11,9 +10,6 @@ import com.BlizzardArmory.model.warcraft.achievements.custom.DetailedAchievement
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -45,12 +41,12 @@ class AchievementViewModel(application: Application) : BaseViewModel(application
     }
 
     fun downloadAchievementInformation() {
-        executeAPICall({ RetroClient.getAPIClient(getApplication()).getAllAchievements() }, { allAchievements.value = it.body() })
+        executeAPICall({ RetroClient.getAPIClient(getApplication(), true).getAllAchievements() }, { allAchievements.value = it.body() })
     }
 
     fun downloadCharacterAchievements() {
         executeAPICall({
-            RetroClient.getWoWClient(getApplication()).getCharacterAchievements(
+            RetroClient.getWoWClient(getApplication(), true).getCharacterAchievements(
                 character,
                 realm,
                 region,
@@ -59,7 +55,7 @@ class AchievementViewModel(application: Application) : BaseViewModel(application
     }
 
     fun downloadCategories() {
-        executeAPICall({ RetroClient.getAPIClient(getApplication()).getAchievementCategories() },
+        executeAPICall({ RetroClient.getAPIClient(getApplication(), true).getAchievementCategories() },
             {
                 categories.value = it.body()
                 val tempCats = categories.value?.filter { cat -> cat.id != 15076L }

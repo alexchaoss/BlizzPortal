@@ -84,6 +84,7 @@ class AchievementsFragment : Fragment() {
         gson = GsonBuilder().create()
         prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
         val charClass = EventBus.getDefault().getStickyEvent(ClassEvent::class.java)?.data
+        faction = EventBus.getDefault().getStickyEvent(FactionEvent::class.java)?.data
         WoWClassName.setBackground(binding.achievLayout, binding.backgroundAchieves, requireContext(), charClass)
         binding.backArrow.setOnClickListener {
             backArrow()
@@ -112,6 +113,7 @@ class AchievementsFragment : Fragment() {
             setAchievementInformation()
         }
         setObservers()
+        setAchievementInformation()
     }
 
     private fun setObservers() {
@@ -218,13 +220,6 @@ class AchievementsFragment : Fragment() {
                 adapter!!.notifyDataSetChanged()
             }
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun factionEventReceived(factionEvent: FactionEvent) {
-        faction = factionEvent.data
-        binding.loading.visibility = View.VISIBLE
-        setAchievementInformation()
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
