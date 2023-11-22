@@ -11,7 +11,13 @@ import com.BlizzardArmory.network.oauth.BattlenetOAuth2Helper
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
 import com.BlizzardArmory.util.IdGenarator
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -94,7 +100,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("Exception", "Message: ${e.message}")
+                    Log.e("Exception", "Message: ${e.message}\n ${e.printStackTrace()}")
                     if(e.message?.lowercase() == "timeout" && tries < 5) {
                         delay(1000)
                         executeAPICall(call, onResponse, onError, onCatch, onComplete, tries + 1, currentJobName + tries + 1)

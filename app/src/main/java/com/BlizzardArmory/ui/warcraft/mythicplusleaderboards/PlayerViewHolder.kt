@@ -13,8 +13,8 @@ import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.lea
 import com.BlizzardArmory.model.warcraft.specialization.Specialization
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
-import com.BlizzardArmory.util.state.FragmentTag
 import com.BlizzardArmory.util.WoWClassColor
+import com.BlizzardArmory.util.state.FragmentTag
 
 
 class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context, private val specialization: List<Specialization>) :
@@ -30,8 +30,8 @@ class PlayerViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
 
     fun bind(member: Members, region: String) {
         name?.text = member.profile.name
-        val classId = specialization.find { it.id == member.specialization.id }!!.playableClassId
-        name?.setTextColor(Color.parseColor(WoWClassColor.getClassColor(classId)))
+        val classId = specialization.find { it.id == member.specialization.id }?.playableClassId
+        name?.setTextColor(Color.parseColor(WoWClassColor.getClassColor(classId!!)))
         icon?.visibility = View.GONE
         onClickCharacter(member, region)
     }

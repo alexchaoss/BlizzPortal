@@ -1,8 +1,8 @@
 package com.BlizzardArmory.model.warcraft.account
 
 import androidx.annotation.Keep
-import com.BlizzardArmory.model.common.Faction
-import com.BlizzardArmory.model.common.Realm
+import com.BlizzardArmory.model.warcraft.common.Faction
+import com.BlizzardArmory.model.warcraft.common.Realm
 import com.google.gson.annotations.SerializedName
 
 

@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.guild.achievements
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.achievements.categories.Categories
@@ -11,9 +10,6 @@ import com.BlizzardArmory.model.warcraft.guild.achievements.AchievementsInformat
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -64,9 +60,9 @@ class AchievementViewModel(application: Application) : BaseViewModel(application
         mappedAchievements.value = categories.value?.groupBy { it.id }
             ?.mapValues { map ->
                 allAchievements.value?.filter { a ->
-                    a.category_id == map.key && guildAchievements.value!!.achievements.any { b -> a.id == b.id }
+                    a.category_id == map.key && guildAchievements.value?.achievements?.any { b -> a.id == b.id } == true
                 }
-            }?.toMutableMap()!!
+            }?.toMutableMap()
         if (!EventBus.getDefault().isRegistered(this@AchievementViewModel)) {
             EventBus.getDefault().register(this@AchievementViewModel)
         }

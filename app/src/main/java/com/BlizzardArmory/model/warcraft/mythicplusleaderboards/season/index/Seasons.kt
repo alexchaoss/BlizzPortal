@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 
 @Keep
 data class Seasons(
-
     @SerializedName("key") val key: Key,
     @SerializedName("id") val id: Int
 )

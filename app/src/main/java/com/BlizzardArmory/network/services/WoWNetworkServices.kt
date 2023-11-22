@@ -15,6 +15,7 @@ import com.BlizzardArmory.model.warcraft.guild.Guild
 import com.BlizzardArmory.model.warcraft.guild.achievements.AchievementsInformation
 import com.BlizzardArmory.model.warcraft.guild.activity.ActivitiesInformation
 import com.BlizzardArmory.model.warcraft.guild.roster.Roster
+import com.BlizzardArmory.model.warcraft.journal.JournalExpansion
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.index.LeaderboardsIndex
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.Leaderboard
@@ -40,10 +41,11 @@ interface WoWNetworkServices {
     //Game Data
     @POST("/data/wow/search/connected-realms")
     suspend fun getConnectedRealms(
-        @Query("namespace") namespace: String,
         @Body query: com.BlizzardArmory.model.warcraft.realm.connected.Query,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = null,
+        @Query("classic1x") classic1x: Boolean? = null
     ): Response<ConnectedRealms>
 
     @GET
@@ -109,6 +111,12 @@ interface WoWNetworkServices {
         @Query("locale") locale: String = NetworkUtils.locale
     ): Response<Media>
 
+    @GET("/data/wow/journal-expansion/index")
+    suspend fun getJournalExpansions(
+        @Query("region") region: String = NetworkUtils.region,
+        @Query("locale") locale: String = NetworkUtils.locale
+    ): Response<JournalExpansion>
+
     @GET("/data/wow/leaderboard/hall-of-fame/{raid}/{faction}")
     suspend fun getMythicRaidLeaderboards(
         @Path("raid") raid: String,
@@ -124,7 +132,9 @@ interface WoWNetworkServices {
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Guild>
 
     @GET("/data/wow/guild/{realmSlug}/{nameSlug}/activity")
@@ -133,7 +143,9 @@ interface WoWNetworkServices {
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<ActivitiesInformation>
 
     @GET("/data/wow/guild/{realmSlug}/{nameSlug}/roster")
@@ -142,7 +154,9 @@ interface WoWNetworkServices {
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Roster>
 
     @GET("/data/wow/guild/{realmSlug}/{nameSlug}/achievements")
@@ -151,7 +165,9 @@ interface WoWNetworkServices {
         @Path("nameSlug") nameSlug: String,
         @Query("namespace") namespace: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<AchievementsInformation>
 
     @GET("/data/wow/media/guild-crest/border/{id}")
@@ -236,7 +252,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Media>
 
     @GET("/profile/wow/character/{realm}/{character}/achievements")
@@ -244,7 +262,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Achievements>
 
     @GET("/profile/wow/character/{realm}/{character}/encounters/raids")
@@ -252,7 +272,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<EncountersInformation>
 
     @GET("/profile/wow/character/{realm}/{character}/equipment")
@@ -260,7 +282,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Equipment>
 
     @GET("/profile/wow/character/{realm}/{character}/statistics")
@@ -268,7 +292,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Statistic>
 
     @GET("/profile/wow/character/{realm}/{character}/specializations")
@@ -276,7 +302,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<PlayerSpecializations>
 
 
@@ -285,14 +313,18 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<CharacterSummary>
 
     @GET("/profile/user/wow")
     suspend fun getAccount(
         @Query("token") accessToken: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Account>
 
     @GET("/profile/wow/character/{realm}/{character}/pvp-summary")
@@ -300,7 +332,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<PvPSummary>
 
     @GET("/profile/wow/character/{realm}/{character}/pvp-bracket/{BRACKET}")
@@ -309,7 +343,9 @@ interface WoWNetworkServices {
         @Path("realm", encoded = true) realm: String,
         @Path("BRACKET") bracket: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<BracketStatistics>
 
     @GET("/profile/wow/character/{realm}/{character}/reputations")
@@ -317,7 +353,9 @@ interface WoWNetworkServices {
         @Path("character", encoded = true) character: String,
         @Path("realm", encoded = true) realm: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<Reputation>
 
     @GET("/profile/wow/character/{realm}/{character}/soulbinds")

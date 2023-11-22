@@ -143,10 +143,18 @@ data class ViewState(
 
     fun getConnectedRealms() {
         val query = Query()
-        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-us", query,"us") }, { wowConnectedRealms.value?.set("US", it.body()!!) })
-        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-eu", query,"eu") }, { wowConnectedRealms.value?.set("EU", it.body()!!) })
-        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-kr", query,"kr") }, { wowConnectedRealms.value?.set("KR", it.body()!!) })
-        executeAPICall({  RetroClient.getWoWClient(getApplication(), false, 0).getConnectedRealms("dynamic-tw", query,"tw") }, { wowConnectedRealms.value?.set("TW", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "us") }, { wowConnectedRealms.value?.set("US", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "eu") }, { wowConnectedRealms.value?.set("EU", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "kr") }, { wowConnectedRealms.value?.set("KR", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "tw") }, { wowConnectedRealms.value?.set("TW", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "us", classic = true) }, { wowConnectedRealms.value?.set("US-classic", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "eu", classic = true) }, { wowConnectedRealms.value?.set("EU-classic", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "kr", classic = true) }, { wowConnectedRealms.value?.set("KR-classic", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "tw", classic = true) }, { wowConnectedRealms.value?.set("TW-classic", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "us", classic1x = true) }, { wowConnectedRealms.value?.set("US-classic1x", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "eu", classic1x = true) }, { wowConnectedRealms.value?.set("EU-classic1x", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "kr", classic1x = true) }, { wowConnectedRealms.value?.set("KR-classic1x", it.body()!!) })
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 0).getConnectedRealms(query, "tw", classic1x = true) }, { wowConnectedRealms.value?.set("TW-classic1x", it.body()!!) })
     }
 
     fun downloadMedia(characterClicked: String, characterRealm: String, selectedRegion: String) {

@@ -77,6 +77,7 @@ class AccountFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        NavigationActivity.classic = null
     }
 
     private fun populateRecyclerView() {

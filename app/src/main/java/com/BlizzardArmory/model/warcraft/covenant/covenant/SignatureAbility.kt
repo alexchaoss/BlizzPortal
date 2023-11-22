@@ -1,6 +1,7 @@
 package com.BlizzardArmory.model.warcraft.covenant.covenant
 
 import androidx.annotation.Keep
+import com.BlizzardArmory.model.warcraft.common.SpellTooltip
 import com.google.gson.annotations.SerializedName
 
 

@@ -1,4 +1,4 @@
-package com.BlizzardArmory.model.common
+package com.BlizzardArmory.model.warcraft.common
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName

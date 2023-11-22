@@ -1,4 +1,4 @@
-package com.BlizzardArmory.model.warcraft.talents.playerspec
+package com.BlizzardArmory.model.warcraft.common
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName

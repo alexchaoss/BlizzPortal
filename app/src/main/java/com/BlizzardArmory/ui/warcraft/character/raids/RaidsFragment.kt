@@ -81,7 +81,7 @@ class RaidsFragment : Fragment() {
     private fun setObservers() {
         viewModel.getEncounters().observe(viewLifecycleOwner) { encounters ->
             if (encounters.expansions != null) {
-                setAdapter(encounters.expansions.map { it.expansion.name }.filter { !it.contains("Mythic+ Dungeons") }
+                setAdapter(encounters.expansions.map { it.expansion.name }.filter { !it.contains("Current Season") }
                     .toMutableList(), binding.progSpinner)
                 binding.progSpinner.setSelection(binding.progSpinner.count - 1)
             }

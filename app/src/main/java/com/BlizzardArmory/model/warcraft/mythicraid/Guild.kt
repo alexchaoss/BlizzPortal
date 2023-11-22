@@ -1,7 +1,7 @@
 package com.BlizzardArmory.model.warcraft.mythicraid
 
 import androidx.annotation.Keep
-import com.BlizzardArmory.model.common.Realm
+import com.BlizzardArmory.model.warcraft.common.Realm
 import com.google.gson.annotations.SerializedName
 
 

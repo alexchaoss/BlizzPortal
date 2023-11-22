@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.news.list
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.news.NewsMetaData
@@ -64,32 +63,33 @@ class NewsListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun filterList() {
-        val blizzlist = WebNewsScrapper.newsList.filter {
-            NavigationActivity.userNews?.blizzNews!! && it.game.lowercase(Locale.getDefault())
+        val newsListCopy = WebNewsScrapper.newsList.toList()
+        val blizzlist = newsListCopy.filter {
+            NavigationActivity.userNews?.blizzNews == true && it.game.lowercase(Locale.getDefault())
                 .contains("blizzard|深入暴雪|블리자드 인사이드".toRegex())
         }
-        val wowlist = WebNewsScrapper.newsList.filter {
-            NavigationActivity.userNews?.wowNews!! && it.game.lowercase(Locale.getDefault())
+        val wowlist = newsListCopy.filter {
+            NavigationActivity.userNews?.wowNews == true && it.game.lowercase(Locale.getDefault())
                 .contains("warcraft|魔獸|워크 래프트".toRegex())
         }
-        val d3list = WebNewsScrapper.newsList.filter {
-            NavigationActivity.userNews?.d3News!! && it.game.lowercase(Locale.getDefault())
+        val d3list = newsListCopy.filter {
+            NavigationActivity.userNews?.d3News == true && it.game.lowercase(Locale.getDefault())
                 .contains("diablo|暗黑破壞神|디아블로".toRegex())
         }
-        val sc2list = WebNewsScrapper.newsList.filter {
-            NavigationActivity.userNews?.sc2News!! && it.game.lowercase(Locale.getDefault())
+        val sc2list = newsListCopy.filter {
+            NavigationActivity.userNews?.sc2News == true && it.game.lowercase(Locale.getDefault())
                 .contains("starcraft|星海爭霸|스타크래프트".toRegex())
         }
-        val owlist = WebNewsScrapper.newsList.filter {
-            NavigationActivity.userNews?.owNews!! && it.game.lowercase(Locale.getDefault())
+        val owlist = newsListCopy.filter {
+            NavigationActivity.userNews?.owNews == true && it.game.lowercase(Locale.getDefault())
                 .contains("overwatch|鬥陣特攻|오버워치".toRegex())
         }
-        val hslist = WebNewsScrapper.newsList.filter {
-            NavigationActivity.userNews?.hsNews!! && it.game.lowercase(Locale.getDefault())
+        val hslist = newsListCopy.filter {
+            NavigationActivity.userNews?.hsNews == true && it.game.lowercase(Locale.getDefault())
                 .contains("hearthstone|爐石戰記|하스스톤".toRegex())
         }
-        val hotslist = WebNewsScrapper.newsList.filter {
-            NavigationActivity.userNews?.hotsNews!! && it.game.lowercase(Locale.getDefault())
+        val hotslist = newsListCopy.filter {
+            NavigationActivity.userNews?.hotsNews == true && it.game.lowercase(Locale.getDefault())
                 .contains("heroes|暴雪英霸|히어로즈 오브 더 스톰".toRegex())
         }
 

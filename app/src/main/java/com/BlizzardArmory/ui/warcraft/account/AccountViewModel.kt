@@ -1,6 +1,7 @@
 package com.BlizzardArmory.ui.warcraft.account
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.account.Account
@@ -21,7 +22,8 @@ class AccountViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadWoWCharacters() {
         NetworkUtils.loading = true
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getAccount(battlenetOAuth2Helper!!.accessToken) },
+        Log.i("NAMESPACE", NetworkUtils.classic.toString())
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getAccount(battlenetOAuth2Helper!!.accessToken) },
             {
                 characters.value = it.body()
             }, onComplete = {

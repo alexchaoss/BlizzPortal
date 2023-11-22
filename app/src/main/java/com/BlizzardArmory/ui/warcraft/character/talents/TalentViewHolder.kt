@@ -5,12 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
+import com.BlizzardArmory.model.common.Key
 import com.BlizzardArmory.model.warcraft.talents.playerspec.SelectedClassTalents
 import com.BlizzardArmory.model.warcraft.talents.playerspec.SelectedSpecTalents
+import com.BlizzardArmory.model.warcraft.talents.playerspec.Talent
+import com.BlizzardArmory.model.warcraft.talents.playerspec.Talents
 import com.BlizzardArmory.model.warcraft.talents.playerspec.Tooltip
 import com.BlizzardArmory.network.RetroClient
 import com.bumptech.glide.Glide
@@ -22,6 +27,7 @@ import kotlinx.coroutines.withContext
 class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.wow_talent_list, parent, false)) {
 
+    private var iconLayout: FrameLayout? = null
     private var icon: ImageView? = null
     private var name: TextView? = null
     private var rank: TextView? = null
@@ -31,6 +37,7 @@ class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
     private var spellCD: TextView? = null
 
     init {
+        iconLayout = itemView.findViewById(R.id.iconLayout)
         icon = itemView.findViewById(R.id.icon)
         name = itemView.findViewById(R.id.name)
         rank = itemView.findViewById(R.id.rank)
@@ -46,26 +53,33 @@ class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         if (talent is SelectedClassTalents) {
             tooltip = talent.tooltip
             talentRank = talent.rank
+            downloadMedia(tooltip.spellTooltip.spell.id)
         } else if (talent is SelectedSpecTalents) {
             tooltip = talent.tooltip
             talentRank = talent.rank
+            downloadMedia(tooltip.spellTooltip.spell.id)
+        } else if (talent is Talents) {
+            tooltip = Tooltip(Talent(Key(""), talent.spellTooltip.spell.name, talent.talent.id), talent.spellTooltip)
+            talentRank = talent.talentRank
+            iconLayout?.visibility = View.GONE
+            name?.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         }
-        downloadMedia(tooltip!!.spellTooltip.spell.id)
-        name?.text = tooltip.talent.name
+
+        name?.text = tooltip?.talent?.name
         rank?.text = "Rank $talentRank"
 
-        if (tooltip.spellTooltip.powerCost == null) {
+        if (tooltip?.spellTooltip?.powerCost == null) {
             spellCost?.visibility = View.GONE
         }
-        spellCost?.text = tooltip.spellTooltip.powerCost
-        spellCast?.text = tooltip.spellTooltip.castTime
-        spellDesc?.text = tooltip.spellTooltip.description
-        spellCD?.text = tooltip.spellTooltip.cooldown
+        spellCost?.text = tooltip?.spellTooltip?.powerCost
+        spellCast?.text = tooltip?.spellTooltip?.castTime
+        spellDesc?.text = tooltip?.spellTooltip?.description
+        spellCD?.text = tooltip?.spellTooltip?.cooldown
     }
 
     private fun downloadMedia(id: Int) {
         CoroutineScope(Dispatchers.Default).launch {
-            val response = RetroClient.getWoWClient(context, cacheTime = 365L).getSpellMedia(id)
+            val response = RetroClient.getWoWClient(context, true, cacheTime = 365L).getSpellMedia(id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val media = response.body()!!

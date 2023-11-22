@@ -18,7 +18,7 @@ object NetworkUtils {
     var API_BASE_URL = "https://api.astpierre.dev/"
     var DIABLO_4_API = "https://d4armory.io/"
 
-    const val logs = false
+    const val logs = true
 
     /**
      * The constant paypalURL.
@@ -83,6 +83,12 @@ object NetworkUtils {
 
     val locale: String
         get() = NavigationActivity.locale
+
+    val classic: Boolean?
+        get() = NavigationActivity.classic
+
+    val classic1x: Boolean?
+        get() = NavigationActivity.classic1x
 
     /**
      * Gets ow profile.
@@ -151,10 +157,7 @@ object NetworkUtils {
         val params: Set<String> = uri.queryParameterNames
         val newUri: Uri.Builder = uri.buildUpon().clearQuery()
         for (param in params) {
-            newUri.appendQueryParameter(
-                param,
-                if (param == key) newValue else uri.getQueryParameter(param)
-            )
+            newUri.appendQueryParameter(param, if (param == key) newValue else uri.getQueryParameter(param))
         }
         return newUri.build()
     }

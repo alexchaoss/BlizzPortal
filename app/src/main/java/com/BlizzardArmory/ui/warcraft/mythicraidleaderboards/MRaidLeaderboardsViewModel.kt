@@ -7,13 +7,13 @@ import com.BlizzardArmory.model.warcraft.mythicraid.Entries
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
-import com.BlizzardArmory.util.ParseDungeonName
+import com.BlizzardArmory.util.SlugName
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
+import java.util.Locale
 
 class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(application) {
 
@@ -27,7 +27,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     fun downloadBothLeaderboard(raid: String) {
         tempEntries.clear()
         val job = coroutineScope.launch {
-            val job1 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(parseRaidName(raid), "horde", "dynamic-" + NetworkUtils.region) },
+            val job1 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toSlug(raid), "horde", "dynamic-" + NetworkUtils.region) },
                 {
                     if (it.body()?.entries != null) {
                         val list = it.body()?.entries?.toMutableList()!!
@@ -39,7 +39,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
                 })
             job1.join()
 
-            val job2 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(parseRaidName(raid), "alliance", "dynamic-" + NetworkUtils.region) },
+            val job2 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toSlug(raid), "alliance", "dynamic-" + NetworkUtils.region) },
                 {
                     if (it.body()?.entries != null) {
                         val list = it.body()?.entries?.toMutableList()!!
@@ -60,16 +60,12 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     }
 
     fun downloadLeaderboard(raid: String, faction: String) {
-        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(parseRaidName(raid), faction.lowercase(Locale.getDefault()), "dynamic-" + NetworkUtils.region) },
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toSlug(raid), faction.lowercase(Locale.getDefault()), "dynamic-" + NetworkUtils.region) },
             {
                 entries.value = it.body()?.entries
                 NetworkUtils.loading = false
             },
             { NetworkUtils.loading = false })
-    }
-
-    private fun parseRaidName(name: String): String {
-        return ParseDungeonName.parseName(name).lowercase(Locale.getDefault())
     }
 
     @Subscribe

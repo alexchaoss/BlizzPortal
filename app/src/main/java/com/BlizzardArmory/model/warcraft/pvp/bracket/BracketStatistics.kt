@@ -1,9 +1,9 @@
 package com.BlizzardArmory.model.warcraft.pvp.bracket
 
 import androidx.annotation.Keep
-import com.BlizzardArmory.model.common.Character
-import com.BlizzardArmory.model.common.Faction
 import com.BlizzardArmory.model.common.Links
+import com.BlizzardArmory.model.warcraft.common.Character
+import com.BlizzardArmory.model.warcraft.common.Faction
 import com.google.gson.annotations.SerializedName
 
 

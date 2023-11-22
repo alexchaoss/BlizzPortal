@@ -9,9 +9,6 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 
 class PvpLeaderboardsViewModel(application: Application) : BaseViewModel(application) {
@@ -28,12 +25,12 @@ class PvpLeaderboardsViewModel(application: Application) : BaseViewModel(applica
     }
 
     fun downloadSeasonIndex() {
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPSeasonIndex("dynamic-" + NetworkUtils.region) },
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getPvPSeasonIndex("dynamic-" + NetworkUtils.region) },
             { seasonIndex.value = it.body() })
     }
 
     fun downloadLeaderboard(seasonId: Int, bracket: String, region: String) {
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPLeaderboard(seasonId, bracket, "dynamic-$region", region) },
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getPvPLeaderboard(seasonId, bracket, "dynamic-$region", region) },
             { pvpLeaderboard.value = it.body() })
     }
 

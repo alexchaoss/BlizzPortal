@@ -1,10 +1,12 @@
 package com.BlizzardArmory.model.warcraft.reputations.characterreputations
 
 enum class RepByExpansion(expansion: String, name: String, faction: String, id: Int) {
-    GLIMMEROGG_RACER("Dragonflight", "Glimmerogg Racer", "df base", 2564),
+    DREAM_WARDENS("Dragonflight", "Dream Wardens", "df base", 2574),
+    GLIMMEROGG_RACER("Dragonflight", "Glimmerogg Racer", "df base", 2568),
     LOAMM_NIFFEN("Dragonflight", "Loamm Niffen", "df base", 2564),
+    SORIDOMI("Dragonflight", "Soridomi", "df base", 2553),
     ARTISAN_S_CONSORTIUM_DRAGON_ISLES_BRANCH("Dragonflight", "Artisan's Consortium - Dragon Isles Branch", "Valdrakken Accord", 2544),
-    COBALT_ASSEMBLY("Dragonflight", "Cobalt Assembly", "Valdrakken Accord", 2548),
+    COBALT_ASSEMBLY("Dragonflight", "Cobalt Assembly", "Valdrakken Accord", 2550),
     VALDRAKKEN_ACCORD_RENOWN("Dragonflight", "Valdrakken Accord (Renown)", "df base", 2548),
     WINTERPELT_FURBOLG("Dragonflight", "Winterpelt Furbolg", "df base", 2526),
     OBSIDIAN_WARDENS("Dragonflight", "Obsidian Warders", "df base", 2524),

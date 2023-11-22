@@ -1,4 +1,5 @@
-package com.BlizzardArmory.model.warcraft.talents.trees.tree
+package com.BlizzardArmory.model.warcraft.common
+
 import androidx.annotation.Keep
 import com.BlizzardArmory.model.common.Key
 import com.google.gson.annotations.SerializedName

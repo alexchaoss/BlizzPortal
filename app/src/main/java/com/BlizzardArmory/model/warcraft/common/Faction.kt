@@ -1,14 +1,14 @@
-package com.BlizzardArmory.model.warcraft.equipment
+package com.BlizzardArmory.model.warcraft.common
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
 /**
- * The type Socket type.
+ * The type Faction.
  */
 @Keep
-data class SocketType(
+data class Faction(
 
     @SerializedName("type")
     var type: String,

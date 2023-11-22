@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowMythicPlusLeaderboardsFragmentBinding
+import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.expansion.Seasons
 import com.BlizzardArmory.model.warcraft.mythicplusleaderboards.leaderboards.leaderboard.LeadingGroups
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
@@ -40,6 +41,7 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
     private var selectedDungeon = 0L
     private var selectedSeason = 0
 
+    private val seasons = mutableListOf<Seasons>()
     private var dungeonList = mutableListOf("Dungeon")
     private val seasonList = mutableListOf("Season")
 
@@ -112,6 +114,11 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
         viewModel.getExpansions().observe(viewLifecycleOwner) {
             viewModel.downloadSeasonIndex()
             selectedDungeon = it.last().dungeons.first().challenge_mode_id
+            viewModel.getExpansions().value?.flatMap {
+                it.seasons.distinctBy { s ->
+                    s.shortName.firstOrNull { c -> c.isDigit() }
+                }.filter { s -> !s.shortName.matches(Regex("(\\d+\\.)*\\d*|\\D+")) }
+            }?.let { list -> seasons.addAll(list.reversed()) }
         }
 
         viewModel.getSeasonIndex().observe(viewLifecycleOwner) {
@@ -191,10 +198,12 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                     Snackbar.make(binding.root, "Please select a season", Snackbar.LENGTH_SHORT)
                         .show()
                 }
+
                 navigationActivity.binding.rightPanelWowMplus.dungeon.selectedItemPosition == 0 -> {
                     Snackbar.make(binding.root, "Please select a dungeon", Snackbar.LENGTH_SHORT)
                         .show()
                 }
+
                 !NavigationActivity.realms.flatMap { it.value.results }
                     .flatMap { data -> data.connectedRealm.realms }
                     .map { it.name }.flatMap { it.getAllNames() }
@@ -206,6 +215,7 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                     )
                         .show()
                 }
+
                 else -> {
                     selectedConnectedRealm = NavigationActivity.realms.flatMap {
                         it.value.results
@@ -216,7 +226,7 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
                             .contains(navigationActivity.binding.rightPanelWowMplus.realm.text.toString())
                     }?.connectedRealm?.id!!
 
-                    region = NavigationActivity.realms.entries.find { it.value.results.any { it.connectedRealm.id == selectedConnectedRealm } }!!.key
+                    region = NavigationActivity.realms.filterKeys { key -> !key.contains("classic") }.entries.find { it.value.results.any { it.connectedRealm.id == selectedConnectedRealm } }!!.key
 
                     selectedSeason = navigationActivity.binding.rightPanelWowMplus.season.selectedItem.toString().toInt()
 
@@ -277,32 +287,14 @@ class MPlusLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener,
 
                     if (parent.getItemAtPosition(0) == "Season") {
                         dungeonList = dungeonList.subList(0, 1)
-                        dungeonList.forEach {
 
-                        }
-                        when (position) {
-                            1, 2, 3, 4 -> {
-                                dungeonList.addAll(viewModel.getExpansions().value!![1].dungeons.map { it.name })
-                                setAdapter(
-                                    dungeonList,
-                                    navigationActivity.binding.rightPanelWowMplus.dungeon
-                                )
-                            }
-                            5, 6, 7, 8 -> {
-                                dungeonList.addAll(viewModel.getExpansions().value!![2].dungeons.map { it.name })
-                                setAdapter(
-                                    dungeonList,
-                                    navigationActivity.binding.rightPanelWowMplus.dungeon
-                                )
-                            }
-                            9, 10, 11, 12 -> {
-                                dungeonList.addAll(viewModel.getExpansions().value!![3].dungeons.map { it.name })
-                                setAdapter(
-                                    dungeonList,
-                                    navigationActivity.binding.rightPanelWowMplus.dungeon
-                                )
-                            }
-                        }
+                        viewModel.getSeasonIndex().value?.seasons
+
+                        dungeonList.addAll(seasons[position - 1].dungeons.map { it.name })
+                        setAdapter(
+                            dungeonList,
+                            navigationActivity.binding.rightPanelWowMplus.dungeon
+                        )
                     }
                 } catch (e: Exception) {
                     Log.e("Error", e.toString())

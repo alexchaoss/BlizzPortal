@@ -3,6 +3,7 @@ package com.BlizzardArmory.ui.warcraft.character.armory
 import android.app.Application
 import android.graphics.Color
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
@@ -37,6 +38,10 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     val nameList = HashMap<String, String>()
     private val imageURLsTemp = hashMapOf<String, String>()
 
+    init {
+        imageURLs.value = hashMapOf()
+    }
+
     fun getCharacterSummary(): LiveData<CharacterSummary> {
         return characterSummary
     }
@@ -59,7 +64,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
 
     fun downloadCharacterSummary() {
         executeAPICall({
-            RetroClient.getWoWClient(getApplication()).getCharacter(
+            RetroClient.getWoWClient(getApplication(), true).getCharacter(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
@@ -76,7 +81,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
 
     fun downloadStats() {
         executeAPICall({
-            RetroClient.getWoWClient(getApplication()).getStats(
+            RetroClient.getWoWClient(getApplication(), true).getStats(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
@@ -88,7 +93,7 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
 
     fun downloadEquipment() {
         executeAPICall({
-            RetroClient.getWoWClient(getApplication()).getEquippedItems(
+            RetroClient.getWoWClient(getApplication(), true).getEquippedItems(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
@@ -99,26 +104,35 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     fun downloadBackground() {
+        Log.i("TEST1", "MEDIA DOWNLOAD")
         executeAPICall({
-            RetroClient.getWoWClient(getApplication()).getMedia(
+            RetroClient.getWoWClient(getApplication(), true).getMedia(
                 character.lowercase(Locale.getDefault()),
                 realm.lowercase(Locale.getDefault()),
                 region.lowercase(Locale.getDefault()),
             )
-        }, { media.value = it.body() }, {showErrorDialog.value = true} )
+        }, { media.value = it.body() })
     }
 
     fun downloadIcons(equippedItem: EquippedItem) {
-        if (imageURLs.value == null) {
-            imageURLs.value = hashMapOf()
+        Log.i("equipitemsmedia", "test2")
+        var namespace = "static-"
+        namespace += if (NetworkUtils.classic != null) {
+            "classic-${region.lowercase(Locale.getDefault())}"
+        } else if (NetworkUtils.classic1x != null) {
+            "classic1x-${region.lowercase(Locale.getDefault())}"
+        } else {
+            region.lowercase(Locale.getDefault())
         }
-        var uri = replaceUriParameter(Uri.parse(equippedItem.media.key.href), "namespace", "static-${region.lowercase(Locale.getDefault())}")
+        Log.i("equipitemsmedia", "test3")
+        var uri = replaceUriParameter(Uri.parse(equippedItem.media.key.href), "namespace", namespace)
         uri = uri?.buildUpon()?.path(uri.path?.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL))?.build()
-
+        Log.i("equipitemsmedia", "test4")
         executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 365L).getDynamicEquipmentMedia(uri?.path!!) },
             {
                 val mediaItem = it.body()!!
                 imageURLsTemp[equippedItem.slot.type] = mediaItem.assets[0].value
+
             },
             {
                 imageURLsTemp[equippedItem.slot.type] = "empty"
@@ -151,7 +165,10 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     fun setCharacterItemsInformation(equippedItem: EquippedItem) {
         nameList[equippedItem.slot.type] = equippedItem.name
         var slot = StringBuilder(equippedItem.inventoryType.name)
-        val itemLvl = "<font color=#edc201>" + equippedItem.level.displayString + "</font><br>"
+        var itemLvl = ""
+        if (equippedItem.level != null) {
+            itemLvl = "<font color=#edc201>" + equippedItem.level?.displayString + "</font><br>"
+        }
         var nameDescription = ""
         var damageInfo = StringBuilder()
         var durability = ""

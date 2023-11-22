@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowNavbarFragmentBinding
+import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.list.NewsListFragment
 import com.BlizzardArmory.ui.warcraft.account.AccountFragment
@@ -37,7 +38,8 @@ class WoWNavFragment : Fragment() {
     private var _binding: WowNavbarFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val tabsText = listOf(R.string.character, R.string.talents, R.string.reputation, R.string.raids, R.string.mythic, R.string.pvp, R.string.achievements)
+    private val tabsTextClassic = listOf(R.string.character, R.string.talents, R.string.pvp, R.string.achievements)
+    private var tabsText = listOf(R.string.character, R.string.talents, R.string.reputation, R.string.raids, R.string.mythic, R.string.pvp, R.string.achievements)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +65,12 @@ class WoWNavFragment : Fragment() {
         bundle.putString("media", media)
         bundle.putString("region", region)
 
+        if (NetworkUtils.classic == true || NetworkUtils.classic1x == true) {
+            tabsText = tabsTextClassic
+        }
+
         binding.wowPager.apply {
-            adapter = NavAdapter(childFragmentManager, this@WoWNavFragment.lifecycle, binding.navBar.tabCount, bundle)
+            adapter = NavAdapter(childFragmentManager, this@WoWNavFragment.lifecycle, tabsText.size, bundle)
             offscreenPageLimit = 1
             PanelsChildGestureRegionObserver.Provider.get().register(this)
         }
@@ -103,22 +109,27 @@ class WoWNavFragment : Fragment() {
                 activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                 }
+
                 activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWFRAGMENT.name) != null -> {
                     AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
+
                 activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWFAVORITES.name) != null -> {
                     WoWFavoritesFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
+
                 activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWMPLUSLEADERBOARD.name) != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
+
                 activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWPVPLEADERBOARD.name) != null -> {
                     ActivityFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }
+
                 else -> {
                     NewsListFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)

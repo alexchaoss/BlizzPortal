@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -178,13 +179,16 @@ class WoWCharacterFragment : Fragment() {
         }
 
         viewModel.getMedia().observe(viewLifecycleOwner) { media ->
-            if (media != null) {
-                Glide.with(this).load(media.assets?.first { it.key.contains("main") }?.value)
-                    .placeholder(R.color.colorPrimaryDark)
-                    .override(1080, 1440)
-                    .into(binding.characterAsset)
-            } else {
-                viewModel.downloadBackground()
+            if (NetworkUtils.classic == null && NetworkUtils.classic1x == null) {
+                val mediaAsset = media?.assets?.firstOrNull { it.key.contains("main") }?.value
+                if (mediaAsset != null) {
+                    Glide.with(this).load(mediaAsset)
+                        .placeholder(R.color.colorPrimaryDark)
+                        .override(1080, 1440)
+                        .into(binding.characterAsset)
+                } else {
+                    viewModel.downloadBackground()
+                }
             }
         }
 
@@ -194,6 +198,7 @@ class WoWCharacterFragment : Fragment() {
 
         viewModel.getEquipment().observe(viewLifecycleOwner) {
             for (i in it.equippedItems.indices) {
+                Log.i("equipitemsmedia", "test")
                 viewModel.downloadIcons(it.equippedItems[i])
                 viewModel.setCharacterItemsInformation(it.equippedItems[i])
                 setOnPressItemInformation(it.equippedItems[i])
@@ -201,17 +206,24 @@ class WoWCharacterFragment : Fragment() {
         }
 
         viewModel.getIconURLs().observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                return@observe
+            }
             val equippedItems = viewModel.getEquipment().value!!.equippedItems
             binding.loadingCircle.visibility = View.GONE
             val errorIcon = ResourcesCompat.getDrawable(resources, R.drawable.error_icon, context?.theme)
             for (item in equippedItems) {
-                Glide.with(this).load(it[item.slot.type])
-                    .placeholder(R.drawable.loading_placeholder)
-                    .into(gearImageView[item.slot.type]!!)
-                if (it[item.slot.type] == "empty") {
-                    setIcon(item, errorIcon)
-                } else {
-                    setIcon(item, null)
+                gearImageView[item.slot.type].let { imgView ->
+                    if (imgView != null) {
+                        Glide.with(this).load(it[item.slot.type])
+                            .placeholder(R.drawable.loading_placeholder)
+                            .into(imgView)
+                    }
+                    if (it[item.slot.type] == "empty") {
+                        setIcon(item, errorIcon)
+                    } else {
+                        setIcon(item, null)
+                    }
                 }
             }
         }

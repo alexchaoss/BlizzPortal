@@ -63,7 +63,7 @@ data class EquippedItem(
     var requirements: Requirements,
 
     @SerializedName("level")
-    var level: Level,
+    var level: Level? = null,
 
     @SerializedName("transmog")
     var transmog: Transmog,

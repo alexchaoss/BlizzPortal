@@ -34,7 +34,6 @@
                     android:gravity="center"
                     android:padding="1dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/name"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -54,8 +53,9 @@
                     android:layout_marginStart="10dp"
                     android:textColor="@color/owHeaderColor"
                     android:textSize="19sp"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/name"
+                    app:layout_constraintEnd_toStartOf="@id/rank"
                     app:layout_constraintStart_toEndOf="@+id/iconLayout"
                     app:layout_constraintTop_toTopOf="parent" />
 

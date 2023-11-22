@@ -76,16 +76,17 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
     }
 
     private fun setOnTalenttouchAction(talent: TechTalent, node: ConstraintLayout) {
-        if (talent.spell_tooltip != null) {
+        if (talent.spellTooltip != null) {
             node.setOnTouchListener { _, event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
                         EventBus.getDefault()
-                            .post(TechTalentClickedEvent(talent.spell_tooltip.description, talent.name, talent.spell_tooltip.cast_time, true))
+                            .post(TechTalentClickedEvent(talent.spellTooltip.description, talent.name, talent.spellTooltip.castTime, true))
                     }
+
                     MotionEvent.ACTION_UP -> {
                         EventBus.getDefault()
-                            .post(TechTalentClickedEvent(talent.spell_tooltip.description, talent.name, talent.spell_tooltip.cast_time, false))
+                            .post(TechTalentClickedEvent(talent.spellTooltip.description, talent.name, talent.spellTooltip.castTime, false))
                     }
                 }
                 return@setOnTouchListener true
@@ -185,11 +186,25 @@ class SoulbindViewHolder(inflater: LayoutInflater, parent: ViewGroup, private va
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     EventBus.getDefault()
-                        .post(TechTalentClickedEvent(conduit.ranks[rank - 1].spell_tooltip.description, conduit.ranks[rank - 1].spell_tooltip.spell.name, conduit.ranks[rank - 1].spell_tooltip.cast_time, true))
+                        .post(
+                            TechTalentClickedEvent(
+                                conduit.ranks[rank - 1].spell_tooltip.description,
+                                conduit.ranks[rank - 1].spell_tooltip.spell.name,
+                                conduit.ranks[rank - 1].spell_tooltip.castTime,
+                                true
+                            )
+                        )
                 }
                 MotionEvent.ACTION_UP -> {
                     EventBus.getDefault()
-                        .post(TechTalentClickedEvent(conduit.ranks[rank - 1].spell_tooltip.description, conduit.ranks[rank - 1].spell_tooltip.spell.name, conduit.ranks[rank - 1].spell_tooltip.cast_time, false))
+                        .post(
+                            TechTalentClickedEvent(
+                                conduit.ranks[rank - 1].spell_tooltip.description,
+                                conduit.ranks[rank - 1].spell_tooltip.spell.name,
+                                conduit.ranks[rank - 1].spell_tooltip.castTime,
+                                false
+                            )
+                        )
                 }
             }
             return@setOnTouchListener true

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BlizzardArmory.R
 import com.BlizzardArmory.model.warcraft.mythicplusprofile.BestRuns
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.util.ParseDungeonName
+import com.BlizzardArmory.util.SlugName
 import com.bumptech.glide.Glide
 
 class MythicPlusViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val context: Context) :
@@ -60,6 +60,9 @@ class MythicPlusViewHolder(inflater: LayoutInflater, parent: ViewGroup, private 
     }
 
     private fun parseDungeonName(name: String): String {
-        return "${ParseDungeonName.parseName(name).lowercase()}-small"
+        if (name.contains("Dawn of the Infinite")) {
+            return "${SlugName.toSlug(name.substring(0, name.indexOf(":")))}-small"
+        }
+        return "${SlugName.toSlug(name)}-small"
     }
 }

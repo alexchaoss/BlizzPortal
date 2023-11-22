@@ -1,6 +1,7 @@
 package com.BlizzardArmory.model.warcraft.equipment
 
 import com.BlizzardArmory.model.common.Media
+import com.BlizzardArmory.model.warcraft.common.SocketType
 import com.google.gson.annotations.SerializedName
 
 

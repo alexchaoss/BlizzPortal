@@ -1,14 +1,15 @@
-package com.BlizzardArmory.model.common
+package com.BlizzardArmory.model.warcraft.common
 
 import androidx.annotation.Keep
+import com.BlizzardArmory.model.common.Key
 import com.google.gson.annotations.SerializedName
 
 
 /**
- * The type Character.
+ * The type Realm.
  */
 @Keep
-data class Character(
+data class Realm(
 
     @SerializedName("key")
     var key: Key,
@@ -19,7 +20,6 @@ data class Character(
     @SerializedName("id")
     var id: Long,
 
-    @SerializedName("realm")
-    var realm: Realm
-
+    @SerializedName("slug")
+    var slug: String
 )

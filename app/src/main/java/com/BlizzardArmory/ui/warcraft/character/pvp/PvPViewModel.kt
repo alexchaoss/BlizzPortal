@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.character.pvp
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.pvp.bracket.BracketStatistics
@@ -11,12 +10,9 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
+import java.util.Locale
 
 class PvPViewModel(application: Application) : BaseViewModel(application) {
 
@@ -108,11 +104,13 @@ class PvPViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun downloadPvPSummary() {
-        executeAPICall({ RetroClient.getWoWClient(getApplication()).getPvPSummary(
-            character.lowercase(Locale.getDefault()),
-            realm.lowercase(Locale.getDefault()),
-            region.lowercase(Locale.getDefault()),
-        ) }, {summary.value = it.body()}, onComplete = {
+        executeAPICall({
+            RetroClient.getWoWClient(getApplication(), true).getPvPSummary(
+                character.lowercase(Locale.getDefault()),
+                realm.lowercase(Locale.getDefault()),
+                region.lowercase(Locale.getDefault()),
+            )
+        }, { summary.value = it.body() }, onComplete = {
             if (!EventBus.getDefault().isRegistered(this@PvPViewModel)) {
                 EventBus.getDefault().register(this@PvPViewModel)
             }
