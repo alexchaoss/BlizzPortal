@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.account
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -53,8 +54,7 @@ class AccountFragment : Fragment() {
         binding.loadingCircle.visibility = View.VISIBLE
         setObservers()
         prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        viewModel.getBnetParams().value =
-            activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
+        viewModel.getBnetParams().value = activity?.intent?.extras?.getParcelable(BattlenetConstants.BUNDLE_BNPARAMS)
     }
 
     private fun setObservers() {
@@ -77,9 +77,9 @@ class AccountFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        NavigationActivity.classic = null
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun populateRecyclerView() {
         binding.characterRecycler.apply {
             adapter = CharacterAdapter(viewModel.getCharacters().value?.wowAccounts!!
@@ -88,7 +88,7 @@ class AccountFragment : Fragment() {
                 .sortedByDescending { it.level.toInt() },
                 parentFragmentManager, requireActivity(), viewModel.getBnetParams().value!!
             )
-            adapter!!.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
         }
     }
 

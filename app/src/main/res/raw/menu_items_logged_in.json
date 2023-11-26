@@ -22,6 +22,12 @@
           "private": true
         },
         {
+          "icon": "ic_baseline_account_circle_24",
+          "string": "classic_account_era",
+          "parent": "world_of_warcraft",
+          "private": true
+        },
+        {
           "icon": "rep_search",
           "string": "search_character",
           "parent": "world_of_warcraft"

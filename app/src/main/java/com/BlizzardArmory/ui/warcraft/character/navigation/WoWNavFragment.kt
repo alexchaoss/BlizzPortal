@@ -39,6 +39,7 @@ class WoWNavFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val tabsTextClassic = listOf(R.string.character, R.string.talents, R.string.pvp, R.string.achievements)
+    private val tabsTextClassic1x = listOf(R.string.character, R.string.talents, R.string.pvp)
     private var tabsText = listOf(R.string.character, R.string.talents, R.string.reputation, R.string.raids, R.string.mythic, R.string.pvp, R.string.achievements)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,9 +66,12 @@ class WoWNavFragment : Fragment() {
         bundle.putString("media", media)
         bundle.putString("region", region)
 
-        if (NetworkUtils.classic == true || NetworkUtils.classic1x == true) {
+        if (NetworkUtils.classic == true) {
             tabsText = tabsTextClassic
+        } else if (NetworkUtils.classic1x == true) {
+            tabsText = tabsTextClassic1x
         }
+
 
         binding.wowPager.apply {
             adapter = NavAdapter(childFragmentManager, this@WoWNavFragment.lifecycle, tabsText.size, bundle)
@@ -111,6 +115,16 @@ class WoWNavFragment : Fragment() {
                 }
 
                 activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWFRAGMENT.name) != null -> {
+                    AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    activity?.supportFragmentManager?.popBackStack()
+                }
+
+                activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWFRAGMENTCLASSICERA.name) != null -> {
+                    AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
+                    activity?.supportFragmentManager?.popBackStack()
+                }
+
+                activity?.supportFragmentManager?.findFragmentByTag(FragmentTag.WOWFRAGMENTCLASSIC.name) != null -> {
                     AccountFragment.addOnBackPressCallback(activity as NavigationActivity)
                     activity?.supportFragmentManager?.popBackStack()
                 }

@@ -1,5 +1,6 @@
 package com.BlizzardArmory.ui.navigation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -231,6 +232,7 @@ class NavigationActivity : LocalizationActivity(),
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun clearCredentials() {
         val webview = WebView(this)
         webview.settings.javaScriptEnabled = true
@@ -285,7 +287,6 @@ class NavigationActivity : LocalizationActivity(),
 
     override fun onResume() {
         super.onResume()
-
         binding.overlappingPanel.registerStartPanelStateListeners(object :
             OverlappingPanelsLayout.PanelStateListener {
             override fun onPanelStateChange(panelState: PanelState) {
@@ -424,6 +425,8 @@ class NavigationActivity : LocalizationActivity(),
             binding.topBar.barTitle.text = it?.battleTag
             userInformation = it
             when (OauthFlowStarter.lastOpenedFragmentNeedingOAuth) {
+                FragmentTag.WOWFRAGMENTCLASSIC.name,
+                FragmentTag.WOWFRAGMENTCLASSICERA.name,
                 FragmentTag.WOWFRAGMENT.name -> {
                     val fragment = AccountFragment()
                     openWoWAccount(fragment)
@@ -666,6 +669,7 @@ class NavigationActivity : LocalizationActivity(),
         val searchDialog = DialogPrompt(this)
         when (this.resources.getString(getStringIdFromString(menuItem.menuItem.string, this))) {
             this.resources.getString(R.string.home) -> {
+                turnOffClassic()
                 toggleFavoriteButton(FavoriteState.Hidden)
                 resetBackStack()
                 binding.overlappingPanel.closePanels()
@@ -677,6 +681,7 @@ class NavigationActivity : LocalizationActivity(),
             }
 
             resources.getString(R.string.logout) -> {
+                turnOffClassic()
                 binding.overlappingPanel.closePanels()
                 searchDialog.addTitle("Logout", 18F, "title")
                     .addMessage("Do you want to log out?", 16F, "message")
@@ -703,13 +708,29 @@ class NavigationActivity : LocalizationActivity(),
             }
 
             resources.getString(R.string.classic_account) -> {
+                turnOffClassic()
+                classic = true
                 fragment = AccountFragment()
                 if (viewModel.isSignedIn() == false) {
                     OauthFlowStarter.lastOpenedFragmentNeedingOAuth =
-                        FragmentTag.WOWFRAGMENT.name
+                        FragmentTag.WOWFRAGMENTCLASSIC.name
                     viewModel.openLoginToBattleNet()
                 } else {
-                    openWoWAccount(fragment, true)
+                    openWoWAccount(fragment)
+                }
+                binding.overlappingPanel.closePanels()
+            }
+
+            resources.getString(R.string.classic_account_era) -> {
+                turnOffClassic()
+                classic1x = true
+                fragment = AccountFragment()
+                if (viewModel.isSignedIn() == false) {
+                    OauthFlowStarter.lastOpenedFragmentNeedingOAuth =
+                        FragmentTag.WOWFRAGMENTCLASSICERA.name
+                    viewModel.openLoginToBattleNet()
+                } else {
+                    openWoWAccount(fragment)
                 }
                 binding.overlappingPanel.closePanels()
             }
@@ -723,6 +744,7 @@ class NavigationActivity : LocalizationActivity(),
                     )
                 )) {
                     resources.getString(R.string.world_of_warcraft) -> {
+                        turnOffClassic()
                         fragment = AccountFragment()
                         if (viewModel.isSignedIn() == false) {
                             OauthFlowStarter.lastOpenedFragmentNeedingOAuth =
@@ -885,6 +907,7 @@ class NavigationActivity : LocalizationActivity(),
                     )
                 )) {
                     resources.getString(R.string.world_of_warcraft) -> {
+                        turnOffClassic()
                         fragment = WoWFavoritesFragment()
                         supportFragmentManager.beginTransaction()
                             .add(R.id.fragment, fragment, FragmentTag.WOWFAVORITES.name)
@@ -945,6 +968,7 @@ class NavigationActivity : LocalizationActivity(),
             }
 
             resources.getString(R.string.raid_leaderboards) -> {
+                turnOffClassic()
                 toggleFavoriteButton(FavoriteState.Hidden)
                 fragment = MRaidLeaderboardsFragment()
                 resetBackStack()
@@ -956,6 +980,7 @@ class NavigationActivity : LocalizationActivity(),
             }
 
             resources.getString(R.string.mplus_leaderboards) -> {
+                turnOffClassic()
                 toggleFavoriteButton(FavoriteState.Hidden)
                 fragment = MPlusLeaderboardsFragment()
                 resetBackStack()
@@ -967,6 +992,7 @@ class NavigationActivity : LocalizationActivity(),
             }
 
             resources.getString(R.string.pvp_leaderboards) -> {
+                turnOffClassic()
                 toggleFavoriteButton(FavoriteState.Hidden)
                 fragment = PvpLeaderboardsFragment()
                 resetBackStack()
@@ -1001,6 +1027,11 @@ class NavigationActivity : LocalizationActivity(),
         }
     }
 
+    private fun turnOffClassic() {
+        classic = null
+        classic1x = null
+    }
+
     private fun openOverwatchFragment(fragment: OWFragment) {
         val bundle = Bundle()
         bundle.putString("username", viewModel.getUserInformation().value?.battleTag)
@@ -1026,11 +1057,17 @@ class NavigationActivity : LocalizationActivity(),
         binding.overlappingPanel.closePanels()
     }
 
-    private fun openWoWAccount(fragment: Fragment, isClassic: Boolean? = null) {
-        classic = isClassic
+    private fun openWoWAccount(fragment: Fragment) {
         resetBackStack()
+        val tag = if (classic == true) {
+            FragmentTag.WOWFRAGMENTCLASSIC.name
+        } else if (classic1x == true) {
+            FragmentTag.WOWFRAGMENTCLASSICERA.name
+        } else {
+            FragmentTag.WOWFRAGMENT.name
+        }
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment, fragment, FragmentTag.WOWFRAGMENT.name)
+            .add(R.id.fragment, fragment, tag)
             .addToBackStack("wow_account").commit()
         supportFragmentManager.executePendingTransactions()
     }
@@ -1081,8 +1118,7 @@ class NavigationActivity : LocalizationActivity(),
         (dialog.tagMap["retail"] as Button).setTextColor(Color.WHITE)
         (dialog.tagMap["classic"] as Button).setTextColor(Color.BLACK)
         (dialog.tagMap["classic1x"] as Button).setTextColor(Color.BLACK)
-        classic = null
-        classic1x = null
+        turnOffClassic()
     }
 
     private fun toggleClassic(dialog: DialogPrompt) {

@@ -594,14 +594,26 @@ class WoWCharacterFragment : Fragment() {
         fun addOnBackPressCallback(activity: NavigationActivity) {
             activity.onBackPressedDispatcher.addCallback {
                 when {
+                    activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWFRAGMENTCLASSIC.name) != null -> {
+                        AccountFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    }
+
+                    activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWFRAGMENTCLASSICERA.name) != null -> {
+                        AccountFragment.addOnBackPressCallback(activity)
+                        activity.supportFragmentManager.popBackStack()
+                    }
+
                     activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWFRAGMENT.name) != null -> {
                         AccountFragment.addOnBackPressCallback(activity)
                         activity.supportFragmentManager.popBackStack()
                     }
+
                     activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWFAVORITES.name) != null -> {
                         WoWFavoritesFragment.addOnBackPressCallback(activity)
                         activity.supportFragmentManager.popBackStack()
                     }
+
                     activity.supportFragmentManager.findFragmentByTag(FragmentTag.WOWGUILDNAVFRAGMENT.name) != null -> {
                         ActivityFragment.addOnBackPressCallback(activity)
                         activity.supportFragmentManager.popBackStack()

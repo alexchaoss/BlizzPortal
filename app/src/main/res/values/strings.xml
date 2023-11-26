@@ -139,7 +139,7 @@
     <string name="turn_on_connection">Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
     <string name="retry">Retry</string>
     <string name="back">Back</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="unavailable">Unavailable</string>
     <string name="unexpected">There was an unexpected error, please try again.</string>
     <string name="account_not_found">The account could not be found</string>
@@ -219,6 +219,7 @@
     <string name="mythic">Mythic+</string>
     <string name="view_party">View Party</string>
     <string name="classic_account" translatable="false">Classic Account</string>
+    <string name="classic_account_era" translatable="false">Classic Era Account</string>
 
     <string-array name="regions">
         <item>@string/select_region</item>

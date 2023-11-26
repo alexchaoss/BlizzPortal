@@ -183,6 +183,8 @@ class SettingsFragment : Fragment() {
                         FragmentTag.D3LEADERBOARD.name -> D3LeaderboardFragment.addOnBackPressCallback(activity)
                         FragmentTag.NAVFRAGMENT.name -> WoWCharacterFragment.addOnBackPressCallback(activity)
                         FragmentTag.WOWFRAGMENT.name -> AccountFragment.addOnBackPressCallback(activity)
+                        FragmentTag.WOWFRAGMENTCLASSIC.name -> AccountFragment.addOnBackPressCallback(activity)
+                        FragmentTag.WOWFRAGMENTCLASSICERA.name -> AccountFragment.addOnBackPressCallback(activity)
                         FragmentTag.WOWGUILDNAVFRAGMENT.name -> ActivityFragment.addOnBackPressCallback(activity)
                         FragmentTag.WOWMPLUSLEADERBOARD.name -> MPlusLeaderboardsFragment.addOnBackPressCallback(activity)
                         FragmentTag.WOWPVPLEADERBOARD.name -> PvpLeaderboardsFragment.addOnBackPressCallback(activity)

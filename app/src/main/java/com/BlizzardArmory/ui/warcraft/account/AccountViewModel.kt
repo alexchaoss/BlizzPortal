@@ -1,7 +1,6 @@
 package com.BlizzardArmory.ui.warcraft.account
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.account.Account
@@ -22,7 +21,6 @@ class AccountViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadWoWCharacters() {
         NetworkUtils.loading = true
-        Log.i("NAMESPACE", NetworkUtils.classic.toString())
         executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getAccount(battlenetOAuth2Helper!!.accessToken) },
             {
                 characters.value = it.body()
@@ -35,8 +33,8 @@ class AccountViewModel(application: Application) : BaseViewModel(application) {
     }
 
     @Subscribe
-    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        super.localeSelectedReceived(LocaleSelectedEvent)
+    override fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(localeSelectedEvent)
         downloadWoWCharacters()
     }
 }
