@@ -2,8 +2,6 @@ package com.BlizzardArmory.ui.warcraft.character.armory
 
 import android.app.Application
 import android.graphics.Color
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
@@ -14,7 +12,6 @@ import com.BlizzardArmory.model.warcraft.equipment.Socket
 import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.model.warcraft.statistic.Statistic
 import com.BlizzardArmory.network.NetworkUtils
-import com.BlizzardArmory.network.NetworkUtils.replaceUriParameter
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.ui.BaseViewModel
 import com.BlizzardArmory.util.events.LocaleSelectedEvent
@@ -104,7 +101,6 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     fun downloadBackground() {
-        Log.i("TEST1", "MEDIA DOWNLOAD")
         executeAPICall({
             RetroClient.getWoWClient(getApplication(), true).getMedia(
                 character.lowercase(Locale.getDefault()),
@@ -115,20 +111,8 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     fun downloadIcons(equippedItem: EquippedItem) {
-        Log.i("equipitemsmedia", "test2")
-        var namespace = "static-"
-        namespace += if (NetworkUtils.classic != null) {
-            "classic-${region.lowercase(Locale.getDefault())}"
-        } else if (NetworkUtils.classic1x != null) {
-            "classic1x-${region.lowercase(Locale.getDefault())}"
-        } else {
-            region.lowercase(Locale.getDefault())
-        }
-        Log.i("equipitemsmedia", "test3")
-        var uri = replaceUriParameter(Uri.parse(equippedItem.media.key.href), "namespace", namespace)
-        uri = uri?.buildUpon()?.path(uri.path?.replace("https://${region.lowercase(Locale.getDefault())}.api.blizzard.com/", NetworkUtils.PROXY_BASE_URL))?.build()
-        Log.i("equipitemsmedia", "test4")
-        executeAPICall({ RetroClient.getWoWClient(getApplication(), cacheTime = 365L).getDynamicEquipmentMedia(uri?.path!!) },
+        executeAPICall(
+            { RetroClient.getWoWClient(getApplication(), cacheTime = 365L).getEquipmentMedia(itemId = equippedItem.media.id, namespace = "static-" + NetworkUtils.region) },
             {
                 val mediaItem = it.body()!!
                 imageURLsTemp[equippedItem.slot.type] = mediaItem.assets[0].value
@@ -470,8 +454,8 @@ class WoWCharacterViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     @Subscribe
-    override fun localeSelectedReceived(LocaleSelectedEvent: LocaleSelectedEvent) {
-        super.localeSelectedReceived(LocaleSelectedEvent)
+    override fun localeSelectedReceived(localeSelectedEvent: LocaleSelectedEvent) {
+        super.localeSelectedReceived(localeSelectedEvent)
         downloadCharacterSummary()
         downloadStats()
         downloadEquipment()

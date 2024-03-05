@@ -15,6 +15,7 @@ import com.BlizzardArmory.model.warcraft.media.Media
 import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.network.RetroClient
 import com.BlizzardArmory.network.oauth.BattlenetOAuth2Params
+import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.warcraft.character.navigation.WoWNavFragment
 import com.BlizzardArmory.util.ConnectionStatus
 import com.BlizzardArmory.util.events.NetworkEvent
@@ -91,6 +92,8 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
                 character?.characterSummary?.name?.lowercase(Locale.getDefault())!!,
                 character?.characterSummary?.realm?.slug!!,
                 character?.region?.lowercase(Locale.getDefault())!!,
+                classic = character?.classic,
+                classic1x = character?.classic1x
             )
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -119,8 +122,9 @@ class FavoritesViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
 
     private fun onClickCharacter(media: String, fragmentManager: FragmentManager) {
         characterLayout?.setOnClickListener {
-            val woWNavFragment =
-                WoWNavFragment.newInstance(character?.characterSummary?.name?.lowercase(Locale.getDefault())!!, character?.characterSummary?.realm?.slug!!, media, character?.region!!)
+            NavigationActivity.classic = character?.classic
+            NavigationActivity.classic1x = character?.classic1x
+            val woWNavFragment = WoWNavFragment.newInstance(character?.characterSummary?.name?.lowercase(Locale.getDefault())!!, character?.characterSummary?.realm?.slug!!, media, character?.region!!)
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(R.anim.pop_enter, R.anim.pop_exit)
             fragmentTransaction.replace(R.id.fragment, woWNavFragment, FragmentTag.NAVFRAGMENT.name)

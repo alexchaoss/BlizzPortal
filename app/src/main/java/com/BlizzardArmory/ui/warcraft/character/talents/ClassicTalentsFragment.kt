@@ -111,6 +111,7 @@ class ClassicTalentsFragment : Fragment() {
     private fun setObservers() {
         viewModel.getPlayerSpecialization().observe(viewLifecycleOwner) {
             setTabClickListeners()
+            //val trees = it.specializationGroups.flatMap { group -> group.specializations }.sortedByDescending { spec -> spec.spentPoints }
             mainTree = it.specializationGroups.find { group -> group.isActive }?.specializations?.maxBy { spec -> spec.spentPoints }
             secondaryTree = it.specializationGroups.find { group -> group.isActive }?.specializations?.minBy { spec -> spec.spentPoints }
             binding.classText.text = mainTree?.specializationName

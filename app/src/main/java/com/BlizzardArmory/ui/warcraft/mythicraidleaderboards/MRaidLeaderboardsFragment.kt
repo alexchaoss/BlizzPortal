@@ -21,16 +21,20 @@ import com.BlizzardArmory.network.NetworkUtils
 import com.BlizzardArmory.ui.navigation.NavigationActivity
 import com.BlizzardArmory.ui.news.page.NewsPageFragment
 import com.BlizzardArmory.util.DialogPrompt
+import com.BlizzardArmory.util.state.RightPanelState
+import com.google.android.material.snackbar.Snackbar
 
 class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
-    private val raidList = arrayListOf<String>()
-    private val factionList = arrayListOf("Faction", "Horde & Alliance", "Horde", "Alliance")
+    private val raidList = mutableMapOf<String, ArrayList<String>>()
 
     private var _binding: WowMythicRaidLeaderboardsFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MRaidLeaderboardsViewModel by activityViewModels()
     private var dialog: DialogPrompt? = null
+    private lateinit var rightPanel: NavigationActivity
+    private var alliance = true
+    private var horde = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,11 +48,50 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        rightPanel = (requireActivity() as NavigationActivity)
+        rightPanel.selectRightPanel(RightPanelState.WoWMythicRaidLeaderboard)
+        rightPanel.binding.rightPanelWowRaid.allianceButton.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+        rightPanel.binding.rightPanelWowRaid.hordeButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+
         setObservers()
         addRaidsToList()
 
-        setAdapter(raidList, binding.raid)
-        setAdapter(factionList, binding.faction)
+        setAdapter(raidList.keys.toList(), rightPanel.binding.rightPanelWowRaid.spinnerXpac) { selected ->
+            raidList[selected]?.let {
+                setAdapter(
+                    it,
+                    rightPanel.binding.rightPanelWowRaid.spinnerRaid
+                )
+            }
+        }
+        setAdapter(raidList.entries.first().value, rightPanel.binding.rightPanelWowRaid.spinnerRaid)
+
+        rightPanel.binding.rightPanelWowRaid.allianceButton.setOnClickListener {
+            alliance = !alliance
+            if (alliance) {
+                rightPanel.binding.rightPanelWowRaid.allianceButton.setBackgroundResource(R.drawable.sc2_leaderboards_button_selected)
+            } else {
+                rightPanel.binding.rightPanelWowRaid.allianceButton.setBackgroundResource(R.drawable.leaderboards_button)
+            }
+        }
+
+        rightPanel.binding.rightPanelWowRaid.hordeButton.setOnClickListener {
+            horde = !horde
+            if (horde) {
+                rightPanel.binding.rightPanelWowRaid.hordeButton.setBackgroundResource(R.drawable.d3_leaderboards_button_selected)
+            } else {
+                rightPanel.binding.rightPanelWowRaid.hordeButton.setBackgroundResource(R.drawable.leaderboards_button)
+            }
+        }
+
+        rightPanel.binding.rightPanelWowRaid.search.setOnClickListener {
+            if (!horde && !alliance) {
+                Snackbar.make(binding.root, "Please select a faction", Snackbar.LENGTH_SHORT).show()
+            } else {
+                downloadLeaderboard()
+                rightPanel.binding.overlappingPanel.closePanels()
+            }
+        }
 
         binding.searchView.setOnQueryTextListener(this)
         binding.searchView.queryHint = "Search.."
@@ -58,13 +101,16 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
 
         NetworkUtils.loading = true
         binding.loadingCircle.visibility = View.VISIBLE
-        viewModel.downloadBothLeaderboard(raidList[1])
-
+        raidList.entries.first().value[0].let {
+            binding.raidName.text = it
+            viewModel.downloadBothLeaderboard(it)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        rightPanel.selectRightPanel(RightPanelState.NewsSelection)
         requireActivity().viewModelStore.clear()
     }
 
@@ -92,7 +138,7 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
                         dialog!!.Button(requireActivity().resources.getString(R.string.retry), 18f, {
                             dialog!!.dismiss()
                             dialog = null
-                            viewModel.downloadBothLeaderboard(raidList[1])
+                            raidList.entries.first().value[0].let { raid -> viewModel.downloadBothLeaderboard(raid) }
                             binding.loadingCircle.visibility = View.VISIBLE
                             NetworkUtils.loading = true
                         }, "retry"), dialog!!.Button(
@@ -108,31 +154,23 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun addRaidsToList() {
-        raidList.add("Raid")
-        raidList.add("Amirdrassil, the Dream's Hope")
-        raidList.add("Aberrus, the Shadowed Crucible")
-        raidList.add("Vault of The Incarnates")
-        raidList.add("Sepulcher of the First Ones")
-        raidList.add("Sanctum of Domination")
-        raidList.add("Castle Nathria")
-        raidList.add("Ny'alotha The Waking City")
-        raidList.add("The Eternal Palace")
-        raidList.add("Crucible of Storms")
-        raidList.add("Battle of Dazaralor")
-        raidList.add("Uldir")
+        raidList["Dragonflight"] = arrayListOf()
+        raidList["Dragonflight"]?.addAll(arrayListOf("Amirdrassil, the Dream's Hope", "Aberrus, the Shadowed Crucible", "Vault of The Incarnates"))
+
+        raidList["Shadowlands"] = arrayListOf()
+        raidList["Shadowlands"]?.addAll(arrayListOf("Sepulcher of the First Ones", "Sanctum of Domination", "Castle Nathria"))
+
+        raidList["Battle for Azeroth"] = arrayListOf()
+        raidList["Battle for Azeroth"]?.addAll(arrayListOf("Ny'alotha The Waking City", "The Eternal Palace", "Crucible of Storms", "Battle of Dazaralor", "Uldir"))
     }
 
-    private fun setAdapter(spinnerList: List<String>, spinner: Spinner) {
+    private fun setAdapter(spinnerList: List<String>, spinner: Spinner, onItemSelected: (selected: String) -> Unit? = {}) {
         val arrayAdapter: ArrayAdapter<*> = object :
             ArrayAdapter<String?>(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
                 spinnerList
             ) {
-            override fun isEnabled(position: Int): Boolean {
-                return position != 0
-            }
-
             override fun getDropDownView(
                 position: Int,
                 convertView: View?,
@@ -140,14 +178,10 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
             ): View {
                 val view = super.getDropDownView(position, convertView, parent)
                 val tv = view as TextView
-                tv.textSize = 20f
+                tv.textSize = 16f
                 tv.gravity = Gravity.CENTER
                 tv.setBackgroundColor(Color.parseColor("#000000"))
-                if (position == 0) {
-                    tv.setTextColor(Color.GRAY)
-                } else {
-                    tv.setTextColor(Color.WHITE)
-                }
+                tv.setTextColor(Color.WHITE)
                 return view
             }
         }
@@ -161,10 +195,10 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
                 id: Long
             ) {
                 try {
+                    onItemSelected(parent.getItemAtPosition(position).toString())
                     (view as TextView).setTextColor(Color.WHITE)
-                    view.textSize = 20f
+                    view.textSize = 16f
                     view.gravity = Gravity.CENTER
-                    downloadLeaderboard()
                 } catch (e: Exception) {
                     Log.e("Error", e.toString())
                 }
@@ -178,16 +212,16 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun downloadLeaderboard() {
-        if (binding.raid.selectedItemPosition != 0 && binding.faction.selectedItemPosition != 0) {
-            binding.loadingCircle.visibility = View.VISIBLE
-            if (binding.faction.selectedItem.toString() == factionList[1]) {
-                viewModel.downloadBothLeaderboard(binding.raid.selectedItem.toString())
-            } else {
-                viewModel.downloadLeaderboard(
-                    binding.raid.selectedItem.toString(),
-                    binding.faction.selectedItem.toString()
-                )
-            }
+        val spinner = rightPanel.binding.rightPanelWowRaid.spinnerRaid
+        binding.loadingCircle.visibility = View.VISIBLE
+        val raid = spinner.selectedItem.toString()
+        binding.raidName.text = raid
+        if (horde && alliance) {
+            viewModel.downloadBothLeaderboard(raid)
+        } else if (horde) {
+            viewModel.downloadLeaderboard(raid, "horde")
+        } else if (alliance) {
+            viewModel.downloadLeaderboard(raid, "alliance")
         }
     }
 

@@ -105,10 +105,7 @@ class D3LeaderboardFragment : Fragment(), SearchView.OnQueryTextListener,
         }
 
         setAdapter(leaderboardList, rightPanel.binding.rightPanelD3.leaderboard)
-        setAdapter(
-            resources.getStringArray(R.array.regions)
-                .asList(), rightPanel.binding.rightPanelD3.region
-        )
+        setAdapter(resources.getStringArray(R.array.regions).asList(), rightPanel.binding.rightPanelD3.region)
 
         setSearchButton()
 

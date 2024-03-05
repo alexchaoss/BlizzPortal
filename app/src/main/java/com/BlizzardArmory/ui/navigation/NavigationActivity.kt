@@ -356,45 +356,36 @@ class NavigationActivity : LocalizationActivity(),
     }
 
     fun selectRightPanel(state: RightPanelState) {
+        binding.rightPanelGames.root.visibility = View.GONE
+        binding.rightPanelSc2.root.visibility = View.GONE
+        binding.rightPanelD3.root.visibility = View.GONE
+        binding.rightPanelWowMplus.root.visibility = View.GONE
+        binding.rightPanelWowRaid.root.visibility = View.GONE
+        binding.rightPanelWowPvp.root.visibility = View.GONE
+
         when (state) {
             RightPanelState.NewsSelection -> {
                 binding.rightPanelGames.root.visibility = View.VISIBLE
-                binding.rightPanelSc2.root.visibility = View.GONE
-                binding.rightPanelD3.root.visibility = View.GONE
-                binding.rightPanelWowMplus.root.visibility = View.GONE
-                binding.rightPanelWowPvp.root.visibility = View.GONE
             }
 
             RightPanelState.D3Leaderboard -> {
-                binding.rightPanelGames.root.visibility = View.GONE
-                binding.rightPanelSc2.root.visibility = View.GONE
                 binding.rightPanelD3.root.visibility = View.VISIBLE
-                binding.rightPanelWowMplus.root.visibility = View.GONE
-                binding.rightPanelWowPvp.root.visibility = View.GONE
             }
 
             RightPanelState.Sc2Leaderboard -> {
-                binding.rightPanelGames.root.visibility = View.GONE
                 binding.rightPanelSc2.root.visibility = View.VISIBLE
-                binding.rightPanelD3.root.visibility = View.GONE
-                binding.rightPanelWowMplus.root.visibility = View.GONE
-                binding.rightPanelWowPvp.root.visibility = View.GONE
             }
 
             RightPanelState.WoWMPlusLeaderboard -> {
-                binding.rightPanelGames.root.visibility = View.GONE
-                binding.rightPanelSc2.root.visibility = View.GONE
-                binding.rightPanelD3.root.visibility = View.GONE
                 binding.rightPanelWowMplus.root.visibility = View.VISIBLE
-                binding.rightPanelWowPvp.root.visibility = View.GONE
             }
 
             RightPanelState.WoWPvPLeaderboard -> {
-                binding.rightPanelGames.root.visibility = View.GONE
-                binding.rightPanelSc2.root.visibility = View.GONE
-                binding.rightPanelD3.root.visibility = View.GONE
-                binding.rightPanelWowMplus.root.visibility = View.GONE
                 binding.rightPanelWowPvp.root.visibility = View.VISIBLE
+            }
+
+            RightPanelState.WoWMythicRaidLeaderboard -> {
+                binding.rightPanelWowRaid.root.visibility = View.VISIBLE
             }
         }
     }

@@ -7,7 +7,11 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -49,7 +53,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.greenrobot.eventbus.EventBus
-import java.util.*
+import java.util.Locale
 
 class WoWCharacterFragment : Fragment() {
     private var dialog: DialogPrompt? = null
@@ -136,6 +140,11 @@ class WoWCharacterFragment : Fragment() {
         gearImageView["TRINKET_2"] = binding.trinket2
         gearImageView["MAIN_HAND"] = binding.mainHand
         gearImageView["OFF_HAND"] = binding.offHand
+        if (NetworkUtils.classic == true || NetworkUtils.classic1x == true) {
+            binding.rangedRelic.visibility = View.VISIBLE
+            gearImageView["RANGED"] = binding.rangedRelic
+            gearImageView["RELIC"] = binding.rangedRelic
+        }
         setObservers()
         startDownloads()
     }
@@ -173,6 +182,15 @@ class WoWCharacterFragment : Fragment() {
             manageFavorite(it)
             EventBus.getDefault().postSticky(FactionEvent(it.faction.type.lowercase(Locale.getDefault())))
             EventBus.getDefault().postSticky(ClassEvent(it.characterClass.id))
+            when (it.characterClass.id) {
+                2, 6, 7, 11 -> {
+                    gearImageView["RELIC"]?.setImageResource(R.drawable.empty_relic)
+                }
+
+                else -> {
+                    gearImageView["RANGED"]?.setImageResource(R.drawable.empty_range)
+                }
+            }
             WoWClassName.setBackground(binding.itemFragment, binding.background, requireContext(), it.characterClass.id)
             setTopCharacterStrings(it)
             viewModel.downloadEquipment()
@@ -267,8 +285,7 @@ class WoWCharacterFragment : Fragment() {
         val gson = GsonBuilder().create()
         val favoriteCharactersString = prefs.getString("wow-favorites", "DEFAULT")
         if (favoriteCharactersString != null && favoriteCharactersString != "{\"characters\":[]}" && favoriteCharactersString != "DEFAULT") {
-            favoriteCharacters =
-                gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
+            favoriteCharacters = gson.fromJson(favoriteCharactersString, FavoriteCharacters::class.java)
             var indexOfCharacter = -1
             var indexTemp = 0
             for (favoriteCharacter in favoriteCharacters.characters) {
@@ -276,7 +293,7 @@ class WoWCharacterFragment : Fragment() {
                     indexOfCharacter = indexTemp
                     navigationActivity.toggleFavoriteButton(FavoriteState.Full)
                     favoriteCharacters.characters[indexOfCharacter] =
-                        FavoriteCharacter(characterSummary, viewModel.region)
+                        FavoriteCharacter(characterSummary, viewModel.region, NetworkUtils.classic, NetworkUtils.classic1x)
                     prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()
                     break
                 } else {
@@ -348,7 +365,9 @@ class WoWCharacterFragment : Fragment() {
                 favoriteCharacters.characters.add(
                     FavoriteCharacter(
                         characterSummary,
-                        viewModel.region
+                        viewModel.region,
+                        NetworkUtils.classic,
+                        NetworkUtils.classic1x
                     )
                 )
                 prefs.edit().putString("wow-favorites", gson.toJson(favoriteCharacters)).apply()

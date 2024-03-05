@@ -35,7 +35,12 @@ import com.BlizzardArmory.model.warcraft.talents.playerspec.PlayerSpecialization
 import com.BlizzardArmory.model.warcraft.talents.trees.TalentTrees
 import com.BlizzardArmory.network.NetworkUtils
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface WoWNetworkServices {
     //Game Data
@@ -48,11 +53,14 @@ interface WoWNetworkServices {
         @Query("classic1x") classic1x: Boolean? = null
     ): Response<ConnectedRealms>
 
-    @GET
-    suspend fun getDynamicEquipmentMedia(
-        @Url url: String,
+    @GET("/data/wow/media/item/{itemId}")
+    suspend fun getEquipmentMedia(
+        @Path("itemId") itemId: Long,
+        @Query("namespace") namespace: String,
         @Query("region") region: String = NetworkUtils.region,
-        @Query("locale") locale: String = NetworkUtils.locale
+        @Query("locale") locale: String = NetworkUtils.locale,
+        @Query("classic") classic: Boolean? = NetworkUtils.classic,
+        @Query("classic1x") classic1x: Boolean? = NetworkUtils.classic1x
     ): Response<com.BlizzardArmory.model.warcraft.equipment.media.Media>
 
     @GET

@@ -68,7 +68,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@id/item_lvl"
-                app:layout_constraintEnd_toStartOf="@id/item_col4"
+                app:layout_constraintEnd_toStartOf="@id/item_col3"
                 app:layout_constraintStart_toEndOf="@id/item_col1"
                 app:layout_constraintTop_toBottomOf="@id/guild" />
 
@@ -86,12 +86,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="40dp"
                 android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
                 android:gravity="start"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@id/stats_layout"
-                app:layout_constraintEnd_toStartOf="@id/item_col2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -239,11 +238,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="10dp"
                 android:gravity="bottom"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@id/stats_layout"
                 app:layout_constraintEnd_toStartOf="@id/item_col3"
                 app:layout_constraintStart_toEndOf="@id/item_col1">
-
                 <ImageView
                     android:id="@+id/main_hand"
                     android:layout_width="56dp"
@@ -251,22 +249,9 @@
                     android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"
+                    android:layout_marginHorizontal="5dp"
                     android:src="@drawable/empty_main_hand"
                     app:srcCompat="@android:color/transparent" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/item_col3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:gravity="bottom"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@id/stats_layout"
-                app:layout_constraintEnd_toStartOf="@id/item_col4"
-                app:layout_constraintStart_toEndOf="@id/item_col2">
-
                 <ImageView
                     android:id="@+id/off_hand"
                     android:layout_width="56dp"
@@ -274,24 +259,35 @@
                     android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"
+                    android:layout_marginHorizontal="5dp"
                     android:src="@drawable/empty_shield"
+                    app:srcCompat="@android:color/transparent" />
+
+                <ImageView
+                    android:id="@+id/ranged_relic"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/empty_slot_border"
+                    android:contentDescription="@string/itemsCharacter"
+                    android:padding="1dp"
+                    android:src="@drawable/empty_relic"
+                    android:visibility="gone"
                     app:srcCompat="@android:color/transparent" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/item_col4"
-                android:layout_width="wrap_content"
+                android:id="@+id/item_col3"
+                android:layout_width="72dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="60dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:gravity="end"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@id/stats_layout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/item_col3"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
@@ -309,7 +305,7 @@
                     android:id="@+id/waist"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="6dp"
                     android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"
@@ -320,7 +316,7 @@
                     android:id="@+id/legs"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="6dp"
                     android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"
@@ -342,7 +338,7 @@
                     android:id="@+id/finger1"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="6dp"
                     android:background="@drawable/empty_slot_border"
                     android:contentDescription="@string/itemsCharacter"
                     android:padding="1dp"

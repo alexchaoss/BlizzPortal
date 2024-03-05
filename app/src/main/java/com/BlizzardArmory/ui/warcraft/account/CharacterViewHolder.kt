@@ -82,6 +82,7 @@ class CharacterViewHolder(inflater: LayoutInflater, parent: ViewGroup, private v
             faction?.setBackgroundResource(R.drawable.alliance_logo)
         }
         downloadMedia()
+        onClickCharacter(character, "", fragmentManager)
     }
 
     private fun downloadMedia() {
