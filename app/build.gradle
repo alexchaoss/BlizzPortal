@@ -48,6 +48,9 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+    lintOptions {
+        lintConfig = file("$rootDir/lintConfig.xml")
+    }
     namespace 'com.BlizzardArmory'
 
 }
