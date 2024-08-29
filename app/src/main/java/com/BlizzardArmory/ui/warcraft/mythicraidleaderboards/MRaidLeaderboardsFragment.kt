@@ -154,6 +154,9 @@ class MRaidLeaderboardsFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun addRaidsToList() {
+        raidList["The War Within"] = arrayListOf()
+        raidList["The War Within"]?.addAll(arrayListOf("Nerub-ar Palace"))
+
         raidList["Dragonflight"] = arrayListOf()
         raidList["Dragonflight"]?.addAll(arrayListOf("Amirdrassil, the Dream's Hope", "Aberrus, the Shadowed Crucible", "Vault of The Incarnates"))
 

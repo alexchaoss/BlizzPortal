@@ -1,6 +1,15 @@
 package com.BlizzardArmory.model.warcraft.reputations.characterreputations
 
 enum class RepByExpansion(expansion: String, name: String, faction: String, id: Int) {
+    THE_WEAVER("The War Within", "The Weaver", "The Severed Threads", 2601),
+    THE_VIZIER("The War Within", "The Vizier", "The Severed Threads", 2607),
+    THE_GENERAL("The War Within", "The General", "The Severed Threads", 2605),
+    BRANN_BRONZEBEARD("The War Within", "Brann Bronzebeard", "tww base", 2640),
+    AZEROTHIAN_ARCHIVES("The War Within", "Azerothian Archives", "tww base", 2615),
+    THE_ASSEMBLY_OF_THE_DEEP("The War Within", "The Assembly of the Deeps", "tww base", 2594),
+    THE_SEVERED_THREAD("The War Within", "The Severed Threads", "tww base", 2600),
+    COUNCIL_OF_DORNOGAL("The War Within", "Council of Dornogal", "tww base", 2590),
+    HALLOWFALL_ARATHI("The War Within", "Hallowfall Arathi", "tww base", 2570),
     DREAM_WARDENS("Dragonflight", "Dream Wardens", "df base", 2574),
     GLIMMEROGG_RACER("Dragonflight", "Glimmerogg Racer", "df base", 2568),
     LOAMM_NIFFEN("Dragonflight", "Loamm Niffen", "df base", 2564),

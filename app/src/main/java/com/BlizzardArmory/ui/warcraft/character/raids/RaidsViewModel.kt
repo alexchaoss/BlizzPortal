@@ -49,6 +49,7 @@ class RaidsViewModel(application: Application) : BaseViewModel(application) {
             396L -> "Level 50"
             397L -> "Level 60"
             503L -> "Level 70"
+            514L -> "Level 80"
             else -> ""
         }
     }

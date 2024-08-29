@@ -53,11 +53,11 @@ class TalentViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val 
         if (talent is SelectedClassTalents) {
             tooltip = talent.tooltip
             talentRank = talent.rank
-            downloadMedia(tooltip.spellTooltip.spell.id)
+            tooltip?.spellTooltip?.spell?.id?.let { downloadMedia(it) }
         } else if (talent is SelectedSpecTalents) {
             tooltip = talent.tooltip
             talentRank = talent.rank
-            downloadMedia(tooltip.spellTooltip.spell.id)
+            tooltip?.spellTooltip?.spell?.id?.let { downloadMedia(it) }
         } else if (talent is Talents) {
             tooltip = Tooltip(Talent(Key(""), talent.spellTooltip.spell.name, talent.talent.id), talent.spellTooltip)
             talentRank = talent.talentRank

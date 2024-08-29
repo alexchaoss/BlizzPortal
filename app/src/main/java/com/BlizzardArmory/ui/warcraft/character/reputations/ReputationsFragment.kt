@@ -38,7 +38,7 @@ class ReputationsFragment : Fragment() {
     private var media: String? = null
 
     private val expansionsId =
-        listOf(1118L, 980L, 1097L, 1162L, 1245L, 1444L, 1834L, 2104L, 2414L, 2506L)
+        listOf(1118L, 980L, 1097L, 1162L, 1245L, 1444L, 1834L, 2104L, 2414L, 2506L, 2569L)
 
     private var _binding: WowRepFragmentBinding? = null
     private val binding get() = _binding!!

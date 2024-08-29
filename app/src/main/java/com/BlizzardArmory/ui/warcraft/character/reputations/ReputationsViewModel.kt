@@ -30,7 +30,7 @@ class ReputationsViewModel(application: Application) : BaseViewModel(application
     private var reputationsWithParentInfo: MutableLiveData<List<ReputationPlusParentInfo>> = MutableLiveData()
 
     init {
-        for (i in 0..9) {
+        for (i in 0..10) {
             repsByExpac.add(arrayListOf())
         }
     }
@@ -89,6 +89,7 @@ class ReputationsViewModel(application: Application) : BaseViewModel(application
                         "Battle for Azeroth" -> repsByExpac[7].add(reps)
                         "Shadowlands" -> repsByExpac[8].add(reps)
                         "Dragonflight" -> repsByExpac[9].add(reps)
+                        "The War Within" -> repsByExpac[10].add(reps)
                     }
                 }
             }
