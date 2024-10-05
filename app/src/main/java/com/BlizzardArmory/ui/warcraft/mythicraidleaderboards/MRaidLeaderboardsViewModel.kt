@@ -27,7 +27,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     fun downloadBothLeaderboard(raid: String) {
         tempEntries.clear()
         val job = coroutineScope.launch {
-            val job1 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toSlug(raid), "horde", "dynamic-" + NetworkUtils.region) },
+            val job1 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toRaidSlug(raid), "horde", "dynamic-" + NetworkUtils.region) },
                 {
                     if (it.body()?.entries != null) {
                         val list = it.body()?.entries?.toMutableList()!!
@@ -39,7 +39,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
                 })
             job1.join()
 
-            val job2 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toSlug(raid), "alliance", "dynamic-" + NetworkUtils.region) },
+            val job2 = executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toRaidSlug(raid), "alliance", "dynamic-" + NetworkUtils.region) },
                 {
                     if (it.body()?.entries != null) {
                         val list = it.body()?.entries?.toMutableList()!!
@@ -60,7 +60,7 @@ class MRaidLeaderboardsViewModel(application: Application) : BaseViewModel(appli
     }
 
     fun downloadLeaderboard(raid: String, faction: String) {
-        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toSlug(raid), faction.lowercase(Locale.getDefault()), "dynamic-" + NetworkUtils.region) },
+        executeAPICall({ RetroClient.getWoWClient(getApplication(), true).getMythicRaidLeaderboards(SlugName.toRaidSlug(raid), faction.lowercase(Locale.getDefault()), "dynamic-" + NetworkUtils.region) },
             {
                 entries.value = it.body()?.entries
                 NetworkUtils.loading = false
