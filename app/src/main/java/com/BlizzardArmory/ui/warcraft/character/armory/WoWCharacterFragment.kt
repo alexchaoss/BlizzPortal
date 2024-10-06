@@ -22,7 +22,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.WowCharacterFragmentBinding
 import com.BlizzardArmory.model.warcraft.charactersummary.CharacterSummary
@@ -433,7 +432,7 @@ class WoWCharacterFragment : Fragment() {
                                 resources.getIdentifier(
                                     source,
                                     "drawable",
-                                    BuildConfig.APPLICATION_ID
+                                    context?.packageName
                                 )
                             val drawable =
                                 ResourcesCompat.getDrawable(resources, resourceId, context?.theme)

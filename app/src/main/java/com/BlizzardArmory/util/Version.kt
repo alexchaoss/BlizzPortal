@@ -1,14 +1,23 @@
 package com.BlizzardArmory.util
 
 import android.content.Context
-import com.BlizzardArmory.BuildConfig
+import com.BlizzardArmory.BlizzardArmory
+
 
 object Version {
     fun code(): Int {
-        return BuildConfig.VERSION_CODE
+        return BlizzardArmory.instance.let { instance ->
+            instance?.packageName?.let {
+                instance.applicationContext?.packageManager?.getPackageInfo(it, 0)?.versionCode
+            }
+        } ?: 0
     }
 
     fun name(): String {
-        return BuildConfig.VERSION_NAME
+        return BlizzardArmory.instance.let { instance ->
+            instance?.packageName?.let {
+                instance.applicationContext?.packageManager?.getPackageInfo(it, 0)?.versionName
+            }
+        } ?: ""
     }
 }

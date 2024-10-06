@@ -75,7 +75,6 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.reactivex.rxjava3.disposables.Disposable
@@ -556,7 +555,6 @@ class NavigationActivity : LocalizationActivity(),
 
     private fun handleUncaughtException(thread: Thread?, e: Throwable) {
         Log.e("Crash Prevented", e.message!!, e)
-        FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 
     private fun setUserNews() {

@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.akexorcist.localizationactivity.core.LocalizationApplicationDelegate
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.*
 
 /**
@@ -26,12 +25,7 @@ class BlizzardArmory : Application() {
         }
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("Crash Prevented", throwable.message!!)
-            handleUncaughtException(throwable)
         }
-    }
-
-    private fun handleUncaughtException(e: Throwable) {
-        FirebaseCrashlytics.getInstance().log(e.message!!)
     }
 
     companion object {

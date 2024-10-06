@@ -19,7 +19,6 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.Sc2FragmentBinding
 import com.BlizzardArmory.model.starcraft.Player
@@ -522,7 +521,7 @@ class SC2Fragment : Fragment() {
                 HtmlCompat.FROM_HTML_MODE_LEGACY,
                 { source: String? ->
                     val resourceId =
-                        resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                        resources.getIdentifier(source, "drawable", context?.packageName)
                     val drawable =
                         ResourcesCompat.getDrawable(resources, resourceId, context?.theme)
                     drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)

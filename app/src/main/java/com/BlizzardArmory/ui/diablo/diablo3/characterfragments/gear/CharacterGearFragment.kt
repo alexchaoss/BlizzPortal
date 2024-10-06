@@ -16,7 +16,6 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
-import com.BlizzardArmory.BuildConfig
 import com.BlizzardArmory.R
 import com.BlizzardArmory.databinding.D3GearFragmentBinding
 import com.BlizzardArmory.model.diablo.diablo3.items.Item
@@ -338,7 +337,7 @@ class CharacterGearFragment : Fragment() {
             setText = setText.replace("<span class=\"d3-color-ff".toRegex(), "<font color=\"#")
                 .replace("</span>".toRegex(), "</font>")
             set!!.text = HtmlCompat.fromHtml(setText, HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
-                val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+                val resourceId = resources.getIdentifier(source, "drawable", context?.packageName)
                 val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
                 drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
                 drawable
@@ -351,7 +350,7 @@ class CharacterGearFragment : Fragment() {
 
     private fun setGems(gemsInfo: String) {
         gems!!.text = HtmlCompat.fromHtml(gemsInfo, HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
-            val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+            val resourceId = resources.getIdentifier(source, "drawable", context?.packageName)
             val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
             drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
             drawable
@@ -364,7 +363,7 @@ class CharacterGearFragment : Fragment() {
 
     private fun setSecondaryStats(secondaryStatsInfo: String) {
         secondarystats!!.text = HtmlCompat.fromHtml("Secondary<br>$secondaryStatsInfo", HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
-            val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+            val resourceId = resources.getIdentifier(source, "drawable", context?.packageName)
             val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
             drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
             drawable
@@ -374,7 +373,7 @@ class CharacterGearFragment : Fragment() {
 
     private fun setPrimaryStats(primaryStatsInfo: String) {
         primarystats!!.text = HtmlCompat.fromHtml("Primary<br>$primaryStatsInfo", HtmlCompat.FROM_HTML_MODE_LEGACY, { source: String? ->
-            val resourceId = resources.getIdentifier(source, "drawable", BuildConfig.APPLICATION_ID)
+            val resourceId = resources.getIdentifier(source, "drawable", context?.packageName)
             val drawable = ContextCompat.getDrawable(requireContext(), resourceId)!!
             drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
             drawable
@@ -624,7 +623,7 @@ class CharacterGearFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    fun closePanelReceived(d3ClosePanelEvent: D3ClosePanelEvent) {
+    fun closePanelReceived(@Suppress("unused") d3ClosePanelEvent: D3ClosePanelEvent) {
         closeViewsWithoutButton()
     }
 }
