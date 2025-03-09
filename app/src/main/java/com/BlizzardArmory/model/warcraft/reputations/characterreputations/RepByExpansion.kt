@@ -1,6 +1,13 @@
 package com.BlizzardArmory.model.warcraft.reputations.characterreputations
 
 enum class RepByExpansion(expansion: String, name: String, faction: String, id: Int) {
+    KEG_S_LEG_CLUB("The War Within", "Keg Leg's Crew", "tww base", 2593),
+    GALLAGIO_LOYALTY_REWARDS_CLUB("The War Within", "Gallagio Loyalty Rewards Club", "tww base", 2685),
+    THE_CARTELS_OF_UNDERMINE("The War Within", "The Cartels of Undermine", "The Cartels of Undermine", 2653),
+    VENTURE_COMPANY("The War Within", "Venture Company", "The Cartels of Undermine", 2671),
+    BILGEWATER_CARTEL_TWW("The War Within", "Bilgewater Cartel", "The Cartels of Undermine", 2673),
+    BLACKWATER_CARTEL("The War Within", "Blackwater Cartel", "The Cartels of Undermine", 2675),
+    STEAMWHEEDLE_CARTEL("The War Within", "Steamwheedle Cartel", "The Cartels of Undermine", 2677),
     THE_WEAVER("The War Within", "The Weaver", "The Severed Threads", 2601),
     THE_VIZIER("The War Within", "The Vizier", "The Severed Threads", 2607),
     THE_GENERAL("The War Within", "The General", "The Severed Threads", 2605),
@@ -24,7 +31,6 @@ enum class RepByExpansion(expansion: String, name: String, faction: String, id: 
     SABELLIAN("Dragonflight", "Sabellian", "Valdrakken Accord", 2518),
     WRATHION("Dragonflight", "Wrathion", "Valdrakken Accord", 2517),
     ISKAARA_TUSKARR("Dragonflight", "Iskaara Tuskarr", "df base", 2511),
-    VALDRAKKEN_ACCORD("Dragonflight", "Valdrakken Accord", "df base", 2510),
     MARUUK_CENTAUR("Dragonflight", "Maruuk Centaur", "df base", 2503),
     THE_ENLIGHTENED("Shadowlands", "The Enlightened", "sl base", 2478),
     THE_ARCHIVISTS_CODEX("Shadowlands", "The Archivists' Codex", "sl base", 2472),
